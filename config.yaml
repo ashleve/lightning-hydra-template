@@ -1,0 +1,42 @@
+max_epochs: 100
+batch_size: 128
+auto_scale_batch_size: False
+learning_rate: 0.001
+accumulate_grad_batches: 1
+gradient_clip_val: 0.5
+num_of_gpus: 1
+
+model:
+    name: "ModelMNISTv1"
+    lin1_size: 128
+    lin2_size: 256
+
+resume:
+    resume_from_ckpt: False
+    ckpt_path: "logs/checkpoints/model-epoch=04-val_loss=3.85.ckpt"
+
+dataset:
+    name: "MnistSuperpixelsDataModule"
+    use_validation_set: True
+    validation_set_size: 5_000
+    use_test_set: True
+    test_set_size: 10_000
+    use_augmentation: False
+
+loggers:
+    wandb:
+        project: "hackathon_template_test"
+        team: "kino"
+        group: None
+        job_type: "train"
+        tags: []
+
+callbacks:
+    checkpoint:
+        monitor: "val_loss"
+        save_top_k: 3
+        mode: "min"
+    early_stop:
+        monitor: "val_loss"
+        patience: 5
+        mode: "min"
