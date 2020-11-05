@@ -1,0 +1,4 @@
+pytorch-lightning>=1.0.5
+pytorch-lightning-bolts>=0.2.5
+wandb>=0.10.8
+PyYAML>=5.3.1
