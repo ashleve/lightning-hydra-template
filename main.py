@@ -22,7 +22,7 @@ def main(config):
     model = LitModel(config=config)
 
     # Init data loader
-    dataloader = MNISTDataModule(batch_size=128)
+    dataloader = MNISTDataModule(batch_size=config["hparams"]["batch_size"])
     dataloader.prepare_data()
     dataloader.setup()
 
@@ -40,6 +40,10 @@ def main(config):
         "model_name": model.model.__class__.__name__,
         "dataset_name": dataloader.__class__.__name__,
         "optimizer": model.configure_optimizers().__class__.__name__,
+        "train_size": len(dataloader.data_train),
+        "val_size": len(dataloader.data_val),
+        "test_size": len(dataloader.data_test),
+        "input_dims": dataloader.dims,
     })
 
     # Init callbacks
@@ -49,14 +53,12 @@ def main(config):
             monitor=config["callbacks"]["early_stop"]["monitor"],
             patience=config["callbacks"]["early_stop"]["patience"],
             mode=config["callbacks"]["early_stop"]["mode"],
-            verbose=False
         ),
         ModelCheckpoint(
             monitor=config["callbacks"]["checkpoint"]["monitor"],
             save_top_k=config["callbacks"]["checkpoint"]["save_top_k"],
             mode=config["callbacks"]["checkpoint"]["mode"],
             save_last=config["callbacks"]["checkpoint"]["save_last"],
-            verbose=False
         )
     ]
 
@@ -73,11 +75,11 @@ def main(config):
         profiler=SimpleProfiler() if config["printing"]["profiler"] else None,
         weights_summary=config["printing"]["weights_summary"],
         # fast_dev_run=True,
+        # min_epochs=10,
         # limit_train_batches=0.01
         # limit_val_batches=0.01
         # limit_test_batches=0.01
         # auto_scale_batch_size="power",
-        # min_epochs=10,
         # amp_backend='apex',
         # precision=16,
     )

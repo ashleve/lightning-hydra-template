@@ -9,11 +9,6 @@ hparams:
         lin1_size: 128
         lin2_size: 256
         lin3_size: 128
-    dataset:
-        use_val: True
-        val_size: 5_000
-        use_test: True
-        test_size: 10_000
 
 resume:
     resume_from_ckpt: False
@@ -31,7 +26,7 @@ callbacks:
     checkpoint:
         monitor: "val_loss"
         save_top_k: 1
-        save_last: True
+        save_last: False
         mode: "min"
     early_stop:
         monitor: "val_loss"

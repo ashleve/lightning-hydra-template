@@ -16,6 +16,7 @@ class MNISTDataModule(pl.LightningDataModule):
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.transform = transforms.ToTensor()
+        self.dims = None
 
         self.data_train = None
         self.data_val = None
@@ -29,6 +30,7 @@ class MNISTDataModule(pl.LightningDataModule):
     def setup(self, stage=None):
         mnist_train = MNIST(self.data_dir, train=True, transform=self.transform)
         self.data_train, self.data_val = random_split(mnist_train, [55000, 5000])
+        self.dims = self.data_train[0][0].shape
         self.data_test = MNIST(self.data_dir, train=False, transform=self.transform)
 
     def train_dataloader(self):
