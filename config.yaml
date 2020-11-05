@@ -37,3 +37,8 @@ callbacks:
         monitor: "val_loss"
         patience: 10
         mode: "min"
+
+printing:
+    progress_bar_refresh_rate: 50
+    weights_summary: "full"
+    profiler: True
