@@ -21,7 +21,12 @@ https://pytorch.org/get-started/locally/
 
 ### Useful tips
 - PyTorch Lightning Bolts is official collection of prebuilt models across many research domains:
-https://pytorch-lightning.readthedocs.io/en/latest/bolts.html
+    - https://pytorch-lightning.readthedocs.io/en/latest/bolts.html
+    - https://github.com/PyTorchLightning/pytorch-lightning-bolts
+- Pre-trained pytorch model repository designed for research exploration:
+    - https://pytorch.org/hub/
+- List of all tools in PyTorch ecosystem:
+    - https://pytorch.org/ecosystem/
 
 - Useful pl.Trainer() parameters:
     - <b>accumulate_grad_batches=5</b> - perform optimisation after accumulating gradient from 5 batches
