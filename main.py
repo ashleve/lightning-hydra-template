@@ -1,32 +1,23 @@
-# regular imports
-import yaml
-
 # pytorch lightning
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.profiler import SimpleProfiler, AdvancedProfiler
 
+# yaml
+import yaml
+
 # wandb
 import wandb
 from pytorch_lightning.loggers import WandbLogger
 
 # custom utils
-from utils.data_modules import MNISTDataModule
 from utils.lightning_wrapper import LitModel
+from utils.data_modules import MNISTDataModule
 from utils.callbacks import ExampleCallback
 
 
-def main(config):
-    # Init our model
-    model = LitModel(config=config)
-
-    # Init data loader
-    dataloader = MNISTDataModule(batch_size=config["hparams"]["batch_size"])
-    dataloader.prepare_data()
-    dataloader.setup()
-
-    # Init wandb logger
+def init_wandb(config, model, dataloader):
     wandb_logger = WandbLogger(
         project=config["loggers"]["wandb"]["project"],
         job_type=config["loggers"]["wandb"]["job_type"],
@@ -45,6 +36,20 @@ def main(config):
         "test_size": len(dataloader.data_test),
         "input_dims": dataloader.dims,
     })
+    return wandb_logger
+
+
+def main(config):
+    # Init our model
+    model = LitModel(config)
+
+    # Init data loader
+    dataloader = MNISTDataModule(batch_size=config["hparams"]["batch_size"])
+    dataloader.prepare_data()
+    dataloader.setup()
+
+    # Init wandb logger
+    wandb_logger = init_wandb(config, model, dataloader)
 
     # Init callbacks
     callbacks = [
