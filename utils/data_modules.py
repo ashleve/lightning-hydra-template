@@ -27,13 +27,9 @@ class MNISTDataModule(pl.LightningDataModule):
         MNIST(self.data_dir, train=False, download=True)
 
     def setup(self, stage=None):
-        # we set up only relevant datasets when stage is specified (automatically set by Pytorch-Lightning)
-        if stage == 'fit' or stage is None:
-            mnist_train = MNIST(self.data_dir, train=True, transform=self.transform)
-            self.data_train, self.data_val = random_split(mnist_train, [55000, 5000])
-
-        if stage == 'test' or stage is None:
-            self.data_test = MNIST(self.data_dir, train=False, transform=self.transform)
+        mnist_train = MNIST(self.data_dir, train=True, transform=self.transform)
+        self.data_train, self.data_val = random_split(mnist_train, [55000, 5000])
+        self.data_test = MNIST(self.data_dir, train=False, transform=self.transform)
 
     def train_dataloader(self):
         return DataLoader(self.data_train, batch_size=self.batch_size)

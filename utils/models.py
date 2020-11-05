@@ -8,9 +8,9 @@ class ModelMNISTv1(nn.Module):
         super().__init__()
 
         # mnist images are (1, 28, 28) (channels, width, height)
-        self.layer_1 = nn.Linear(28 * 28, 128)
-        self.layer_2 = nn.Linear(128, 256)
-        self.layer_3 = nn.Linear(256, 10)
+        self.layer_1 = nn.Linear(28 * 28, config["lin1_size"])
+        self.layer_2 = nn.Linear(config["lin1_size"], config["lin2_size"])
+        self.layer_3 = nn.Linear(config["lin2_size"], 10)
 
     def forward(self, x):
         batch_size, channels, width, height = x.size()
@@ -32,10 +32,10 @@ class ModelMNISTv2(nn.Module):
         super().__init__()
 
         # mnist images are (1, 28, 28) (channels, width, height)
-        self.layer_1 = nn.Linear(28 * 28, 256)
-        self.layer_2 = nn.Linear(256, 128)
-        self.layer_3 = nn.Linear(128, 64)
-        self.layer_4 = nn.Linear(64, 10)
+        self.layer_1 = nn.Linear(28 * 28, config["lin1_size"])
+        self.layer_2 = nn.Linear(config["lin1_size"], config["lin2_size"])
+        self.layer_3 = nn.Linear(config["lin2_size"], config["lin3_size"])
+        self.layer_4 = nn.Linear(config["lin3_size"], 10)
 
     def forward(self, x):
         batch_size, channels, width, height = x.size()

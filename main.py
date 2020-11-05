@@ -42,51 +42,53 @@ wandb_logger = WandbLogger(
     offline=False
 )
 wandb_logger.watch(model.model, log='all')
+wandb_logger.log_hyperparams({
+    "model_name": model.model.__class__.__name__,
+    "dataset_name": dataloader.__class__.__name__,
+    "optimizer": model.configure_optimizers().__class__.__name__,
+})
 
 
 # Init callbacks
 callbacks = [
-    ExampleCallback(),
+    # ExampleCallback(),
     EarlyStopping(
         monitor=config["callbacks"]["early_stop"]["monitor"],
         patience=config["callbacks"]["early_stop"]["patience"],
         mode=config["callbacks"]["early_stop"]["mode"],
         verbose=False
     ),
+    ModelCheckpoint(
+        monitor=config["callbacks"]["checkpoint"]["monitor"],
+        save_top_k=config["callbacks"]["checkpoint"]["save_top_k"],
+        mode=config["callbacks"]["checkpoint"]["mode"],
+        save_last=config["callbacks"]["checkpoint"]["save_last"],
+        verbose=False
+    )
 ]
-
-checkpoint_callback = ModelCheckpoint(
-    monitor=config["callbacks"]["checkpoint"]["monitor"],
-    save_top_k=config["callbacks"]["checkpoint"]["save_top_k"],
-    mode=config["callbacks"]["checkpoint"]["mode"]
-)
 
 
 # Init trainer
 trainer = pl.Trainer(
-    gpus=config["num_of_gpus"],
-    max_epochs=config["max_epochs"],
+    gpus=config["hparams"]["num_of_gpus"],
+    max_epochs=config["hparams"]["max_epochs"],
     logger=wandb_logger,
     callbacks=callbacks,
-    checkpoint_callback=checkpoint_callback,
     resume_from_checkpoint=config["resume"]["ckpt_path"] if config["resume"]["resume_from_ckpt"] else None,
-    auto_scale_batch_size='power' if config["auto_scale_batch_size"] else False,
-    accumulate_grad_batches=config["accumulate_grad_batches"],
-    gradient_clip_val=config["gradient_clip_val"],
-    progress_bar_refresh_rate=1,
+    accumulate_grad_batches=config["hparams"]["accumulate_grad_batches"],
+    gradient_clip_val=config["hparams"]["gradient_clip_val"],
+    progress_bar_refresh_rate=50,
     profiler=SimpleProfiler(),
     weights_summary='full',
     # fast_dev_run=True,
     # limit_train_batches=0.01
     # limit_val_batches=0.01
     # limit_test_batches=0.01
+    # auto_scale_batch_size="power",
+    # min_epochs=10,
     # amp_backend='apex',
     # precision=16,
 )
-
-# Tune trainer (finds biggest possible batch size if enabled)
-if config["auto_scale_batch_size"]:
-    trainer.tune(model=model, datamodule=dataloader)
 
 # Train the model ⚡
 trainer.fit(model=model, datamodule=dataloader)

@@ -15,9 +15,8 @@ class LitModel(pl.LightningModule):
     def __init__(self, config):
         super().__init__()
 
-        self.save_hyperparameters(config)
+        self.save_hyperparameters(config["hparams"])
         self.model = ModelMNISTv1(config=self.hparams.model)
-        # self.model = ModelMNISTv2(config=self.hparams.model)
 
     def forward(self, data):
         return self.model(data)
