@@ -1,5 +1,8 @@
 # Hackathon template
-A convenient starting template for any deep learning hackathon. Built with PyTorch Lightning and Weights&Biases(wandb).
+A convenient starting template for most deep learning projects. Built with PyTorch Lightning and Weights&Biases (wandb).
+
+### Install anaconda
+https://docs.conda.io/projects/conda/en/latest/user-guide/install/download.html
 
 
 ### Create conda env
@@ -15,20 +18,16 @@ https://pytorch.org/get-started/locally/
 ### Clone repo
 ```
     git clone https://github.com/kinoai/hackathon-template
+```
+### Install requirements with pip
+```
     cd hackathon-template
     pip install -r requirements.txt
 ```
 
 ### Useful tips
-- PyTorch Lightning Bolts is official collection of prebuilt models across many research domains:
-    - https://pytorch-lightning.readthedocs.io/en/latest/bolts.html
-    - https://github.com/PyTorchLightning/pytorch-lightning-bolts
-- Pre-trained pytorch model repository designed for research exploration:
-    - https://pytorch.org/hub/
-- List of all tools in PyTorch ecosystem:
-    - https://pytorch.org/ecosystem/
-
 - Useful pl.Trainer() parameters:
+    - <b>gpus=-1</b> - use all gpus available on your machine
     - <b>accumulate_grad_batches=5</b> - perform optimisation after accumulating gradient from 5 batches
     - <b>accumulate_grad_batches={5: 3, 10: 20}</b> - no accumulation for epochs 1-4. accumulate 3 for epochs 5-10. accumulate 20 after that
     - <b>auto_scale_batch_size='power'</b> - automatically find the largest batch size that fits into memory and is power of 2 (requires calling trainer.tune(model, datamodule))
@@ -46,4 +45,12 @@ https://pytorch.org/get-started/locally/
     - <b>profiler=SimpleProfiler()</b> - print execution time info for each method used
     - <b>weights_summary='full'</b> - print model info
     - <b>amp_backend='apex'</b> - apex backend for mixed precision training https://github.com/NVIDIA/apex
+    
+- PyTorch Lightning Bolts is official collection of prebuilt models across many research domains:
+    - https://pytorch-lightning.readthedocs.io/en/latest/bolts.html
+    - https://github.com/PyTorchLightning/pytorch-lightning-bolts
+- Pre-trained pytorch model repository designed for research exploration:
+    - https://pytorch.org/hub/
+- List of all tools in PyTorch ecosystem:
+    - https://pytorch.org/ecosystem/
 
