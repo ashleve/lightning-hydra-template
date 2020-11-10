@@ -71,7 +71,7 @@ def main(config):
     trainer = pl.Trainer(
         logger=wandb_logger,
         callbacks=callbacks,
-        gpus=config["hparams"]["num_of_gpus"],
+        gpus=config["num_of_gpus"],
         max_epochs=config["hparams"]["max_epochs"],
         resume_from_checkpoint=config["resume"]["ckpt_path"] if config["resume"]["resume_from_ckpt"] else None,
         accumulate_grad_batches=config["hparams"]["accumulate_grad_batches"],
@@ -94,9 +94,6 @@ def main(config):
 
     # Evaluate model on test set
     trainer.test()
-
-    # Close wandb run
-    wandb.finish()
 
 
 def load_config():

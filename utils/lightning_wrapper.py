@@ -16,10 +16,10 @@ class LitModel(pl.LightningModule):
         super().__init__()
 
         self.save_hyperparameters(config["hparams"])
-        self.model = ModelMNISTv1(config=self.hparams.model)
+        self.model = ModelMNISTv2(config=self.hparams)
 
-    def forward(self, data):
-        return self.model(data)
+    def forward(self, x):
+        return self.model(x)
 
     # logic for a single training step
     def training_step(self, batch, batch_idx):
@@ -64,4 +64,4 @@ class LitModel(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.hparams.learning_rate)
+        return torch.optim.Adam(self.parameters(), lr=self.hparams.lr)

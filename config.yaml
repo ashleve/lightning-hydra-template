@@ -1,14 +1,14 @@
+num_of_gpus: -1
+
 hparams:
-    max_epochs: 30
-    batch_size: 128
-    learning_rate: 0.001
+    max_epochs: 20
+    batch_size: 64
+    lr: 0.001
     accumulate_grad_batches: 1
     gradient_clip_val: 0.5
-    num_of_gpus: 1
-    model:
-        lin1_size: 128
-        lin2_size: 256
-        lin3_size: 128
+    lin1_size: 128
+    lin2_size: 256
+    lin3_size: 128
 
 resume:
     resume_from_ckpt: False
@@ -30,7 +30,7 @@ callbacks:
         mode: "min"
     early_stop:
         monitor: "val_loss"
-        patience: 10
+        patience: 100
         mode: "min"
 
 printing:
