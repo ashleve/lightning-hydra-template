@@ -1,20 +1,18 @@
 # pytorch lightning
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping, LearningRateMonitor
 from pytorch_lightning.profiler import SimpleProfiler, AdvancedProfiler
 
 # yaml
 import yaml
 
 # wandb
-import wandb
 from pytorch_lightning.loggers import WandbLogger
 
 # custom utils
 from utils.lightning_wrapper import LitModel
 from utils.data_modules import MNISTDataModule
-from utils.callbacks import ExampleCallback
+from utils.callbacks import ExampleCallback, SaveOnnxToWandbCallback
 
 
 def init_wandb(config, model, dataloader):
@@ -23,6 +21,7 @@ def init_wandb(config, model, dataloader):
         job_type=config["loggers"]["wandb"]["job_type"],
         tags=config["loggers"]["wandb"]["tags"],
         entity=config["loggers"]["wandb"]["team"],
+        id=config["resume"]["wandb_run_id"] if config["resume"]["resume_from_ckpt"] else None,
         log_model=True,
         offline=False
     )
@@ -36,6 +35,8 @@ def init_wandb(config, model, dataloader):
         "test_size": len(dataloader.data_test),
         "input_dims": dataloader.dims,
     })
+    # download model from a specific wandb run
+    # wandb.restore('model-best.h5', run_path="kino/some_project/a1b2c3d")
     return wandb_logger
 
 
@@ -43,17 +44,16 @@ def main(config):
     # Init our model
     model = LitModel(config)
 
-    # Init data loader
-    dataloader = MNISTDataModule(batch_size=config["hparams"]["batch_size"])
-    dataloader.prepare_data()
-    dataloader.setup()
+    # Init data module
+    datamodule = MNISTDataModule(batch_size=config["hparams"]["batch_size"])
+    datamodule.prepare_data()
+    datamodule.setup()
 
     # Init wandb logger
-    wandb_logger = init_wandb(config, model, dataloader)
+    wandb_logger = init_wandb(config, model, datamodule)
 
     # Init callbacks
     callbacks = [
-        # ExampleCallback(),
         EarlyStopping(
             monitor=config["callbacks"]["early_stop"]["monitor"],
             patience=config["callbacks"]["early_stop"]["patience"],
@@ -64,7 +64,10 @@ def main(config):
             save_top_k=config["callbacks"]["checkpoint"]["save_top_k"],
             mode=config["callbacks"]["checkpoint"]["mode"],
             save_last=config["callbacks"]["checkpoint"]["save_last"],
-        )
+        ),
+        # ExampleCallback(),
+        # LearningRateMonitor(),
+        # SaveOnnxToWandbCallback(dataloader=datamodule.train_dataloader(), wandb_save_dir=wandb_logger.save_dir)
     ]
 
     # Init trainer
@@ -90,7 +93,7 @@ def main(config):
     )
 
     # Train the model ⚡
-    trainer.fit(model=model, datamodule=dataloader)
+    trainer.fit(model=model, datamodule=datamodule)
 
     # Evaluate model on test set
     trainer.test()

@@ -1,7 +1,7 @@
 num_of_gpus: -1
 
 hparams:
-    max_epochs: 20
+    max_epochs: 30
     batch_size: 64
     lr: 0.001
     accumulate_grad_batches: 1
@@ -12,7 +12,8 @@ hparams:
 
 resume:
     resume_from_ckpt: False
-    ckpt_path: "logs/checkpoints/model-epoch=04-val_loss=3.85.ckpt"
+    wandb_run_id: "8uuomodb"
+    ckpt_path: "wandb/run-20201111_022721-8uuomodb/files/hackathon_template_test/8uuomodb/checkpoints/epoch=2.ckpt"
 
 loggers:
     wandb:
@@ -24,16 +25,16 @@ loggers:
 
 callbacks:
     checkpoint:
-        monitor: "val_loss"
+        monitor: "val_acc"
         save_top_k: 1
-        save_last: False
-        mode: "min"
+        save_last: True
+        mode: "max"
     early_stop:
-        monitor: "val_loss"
+        monitor: "val_acc"
         patience: 100
-        mode: "min"
+        mode: "max"
 
 printing:
-    progress_bar_refresh_rate: 50
+    progress_bar_refresh_rate: 20
     weights_summary: "full"
     profiler: True
