@@ -17,7 +17,7 @@ Unix
 ```
 Windows
 ```
-for %i in (python.exe) do @echo. %~$PATH:i
+    for %i in (python.exe) do @echo. %~$PATH:i
 ```
 Expected result: `PATH_TO_CONDA/envs/ENV_NAME/bin/python`
 ### Install pytorch with conda
@@ -36,10 +36,9 @@ https://pytorch.org/get-started/locally/
 ```
 
 ### Important notes!
-- If you are not using GPU (CUDA incompatible GPU) you may need to specify the number of GPUs manually instead of leaving the default `-1`:
-= in config.yaml
+- If you are not using GPU (CUDA incompatible GPU) you may need to specify the number of GPUs manually instead of leaving the default `-1` in `config.yaml`:
 ```
-num_of_gpus: 0
+    num_of_gpus: 0
 ```
 
 ### Useful tips
