@@ -1,6 +1,6 @@
 # pytorch lightning
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping, LearningRateMonitor
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.profiler import SimpleProfiler, AdvancedProfiler
 
 # yaml
@@ -9,10 +9,9 @@ import yaml
 # wandb
 from pytorch_lightning.loggers import WandbLogger
 
-# custom utils
-from utils.lightning_wrapper import LitModel
-from utils.data_modules import MNISTDataModule
-from utils.callbacks import ExampleCallback, SaveOnnxToWandbCallback
+# custom pipeline_modules
+from pipeline_modules.lightning_wrapper import LitModel
+from project.pipeline_modules.data_modules import MNISTDataModule
 
 
 def init_wandb(config, model, dataloader):

@@ -7,7 +7,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.metrics.functional import accuracy, precision, recall, f1_score, fbeta_score
 
 # custom models
-from utils.models import ModelMNISTv1, ModelMNISTv2
+from pipeline_modules.models import ModelMNISTv1, ModelMNISTv2
 
 
 class LitModel(pl.LightningModule):
