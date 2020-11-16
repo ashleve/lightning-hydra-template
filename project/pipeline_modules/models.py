@@ -28,7 +28,6 @@ class SimpleLinearMNIST(nn.Module):
 
         # (b, 1, 28, 28) -> (b, 1*28*28)
         x = x.view(batch_size, -1)
-
         return self.model(x)
 
 

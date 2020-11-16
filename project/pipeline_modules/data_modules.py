@@ -10,6 +10,7 @@ from pipeline_modules.datasets import *
 
 
 class ExampleDataModule(pl.LightningDataModule):
+    """All datamodules should look like this!"""
     def __init__(self, data_dir="data/example_data", batch_size=64, split_ratio=0.90):
         super().__init__()
 

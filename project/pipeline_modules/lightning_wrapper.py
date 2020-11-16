@@ -32,9 +32,9 @@ class LitModel(pl.LightningModule):
         preds, y = preds.cpu(), y.cpu()
         acc = accuracy_score(preds, y)
         f1 = f1_score(preds, y, average="micro")
-        self.log('train_loss', loss, on_step=False, on_epoch=True, logger=True)
-        self.log('train_acc', acc, on_step=False, on_epoch=True, logger=True)
-        self.log('train_f1', f1, on_step=False, on_epoch=True, logger=True)
+        self.log('train_loss', loss, on_step=False, on_epoch=True, logger=True, prog_bar=True)
+        self.log('train_acc', acc, on_step=False, on_epoch=True, logger=True, prog_bar=True)
+        self.log('train_f1', f1, on_step=False, on_epoch=True, logger=True, prog_bar=True)
 
         return loss
 
@@ -49,11 +49,11 @@ class LitModel(pl.LightningModule):
         preds, y = preds.cpu(), y.cpu()
         acc = accuracy_score(preds, y)
         f1 = f1_score(preds, y, average="micro")
-        self.log('val_loss', loss, prog_bar=True, logger=True)
-        self.log('val_acc', acc, prog_bar=True, logger=True)
-        self.log('val_f1', f1, prog_bar=True, logger=True)
+        self.log('val_loss', loss, on_step=False, on_epoch=True, logger=True, prog_bar=True)
+        self.log('val_acc', acc, on_step=False, on_epoch=True, logger=True, prog_bar=True)
+        self.log('val_f1', f1, on_step=False, on_epoch=True, logger=True, prog_bar=True)
 
-        return loss
+        return preds, y
 
     # logic for a single testing step
     def test_step(self, batch, batch_idx):
@@ -66,9 +66,9 @@ class LitModel(pl.LightningModule):
         preds, y = preds.cpu(), y.cpu()
         acc = accuracy_score(preds, y)
         f1 = f1_score(preds, y, average="micro")
-        self.log('test_loss', loss, prog_bar=True, logger=True)
-        self.log('test_acc', acc, prog_bar=True, logger=True)
-        self.log('test_f1', f1, prog_bar=True, logger=True)
+        self.log('test_loss', loss, on_step=False, on_epoch=True, logger=True, prog_bar=True)
+        self.log('test_acc', acc, on_step=False, on_epoch=True, logger=True, prog_bar=True)
+        self.log('test_f1', f1, on_step=False, on_epoch=True, logger=True, prog_bar=True)
 
         return loss
 
