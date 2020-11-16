@@ -6,6 +6,7 @@ import yaml
 # custom
 from pipeline_modules.lightning_wrapper import LitModel
 from project.pipeline_modules.data_modules import *
+from project.pipeline_modules.callbacks import *
 
 
 def train(config):
@@ -38,8 +39,9 @@ def train(config):
             save_last=config["callbacks"]["checkpoint"]["save_last"],
         ),
         # ExampleCallback(),
-        # LearningRateMonitor(),
-        # SaveOnnxToWandbCallback(dataloader=datamodule.train_dataloader(), wandb_save_dir=wandb_logger.save_dir)
+        # ConfusionMatrixLoggerCallback(),
+        # UnFreezeModelCallback(wait_epochs=5),
+        # SaveOnnxToWandbCallback(datamodule=datamodule, save_dir=wandb_logger.save_dir)
     ]
 
     # Init trainer
@@ -54,6 +56,7 @@ def train(config):
         progress_bar_refresh_rate=config["printing"]["progress_bar_refresh_rate"],
         profiler=SimpleProfiler() if config["printing"]["profiler"] else None,
         weights_summary=config["printing"]["weights_summary"],
+        num_sanity_val_steps=3,
         # fast_dev_run=True,
         # min_epochs=10,
         # limit_train_batches=0.01
@@ -85,7 +88,7 @@ def init_wandb(config, model, dataloader):
         entity=config["loggers"]["wandb"]["team"],
         id=config["resume"]["wandb_run_id"] if config["resume"]["resume_from_ckpt"] else None,
         log_model=config["loggers"]["wandb"]["log_model"],
-        offline=False
+        offline=config["loggers"]["wandb"]["offline"]
     )
     wandb_logger.watch(model.model, log=None)
     wandb_logger.log_hyperparams({

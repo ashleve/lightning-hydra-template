@@ -1,7 +1,7 @@
 num_of_gpus: -1
 
 hparams:
-    max_epochs: 20
+    max_epochs: 10
     batch_size: 64
     lr: 0.001
     accumulate_grad_batches: 1
@@ -26,6 +26,7 @@ loggers:
         job_type: "train"
         tags: []
         log_model: True
+        offline: False
 
 callbacks:
     checkpoint:
