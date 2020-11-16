@@ -1,9 +1,9 @@
 import wandb
-import main
+import train
 
 
 # Load project config
-config = main.load_config()
+config = train.load_config()
 
 # Initialize wandb
 wandb.init()
@@ -15,4 +15,4 @@ for key, value in sweep_hparams.items():
         config["hparams"][key] = value
 
 # Execute run
-main.main(config)
+train.train(config)

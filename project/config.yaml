@@ -9,6 +9,9 @@ hparams:
     lin1_size: 128
     lin2_size: 256
     lin3_size: 128
+    output_size: 38
+    weight_decay: 0.00001
+    split_ratio: 0.9
 
 resume:
     resume_from_ckpt: False
@@ -22,6 +25,7 @@ loggers:
         group: None
         job_type: "train"
         tags: []
+        log_model: True
 
 callbacks:
     checkpoint:
@@ -35,6 +39,6 @@ callbacks:
         mode: "max"
 
 printing:
-    progress_bar_refresh_rate: 20
-    weights_summary: "full"
-    profiler: True
+    progress_bar_refresh_rate: 10
+    weights_summary: "top"  # or "full"
+    profiler: False

@@ -1,52 +1,25 @@
-# pytorch lightning
-import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.profiler import SimpleProfiler, AdvancedProfiler
-
-# yaml
+from pytorch_lightning.loggers import WandbLogger
 import yaml
 
-# wandb
-from pytorch_lightning.loggers import WandbLogger
-
-# custom pipeline_modules
+# custom
 from pipeline_modules.lightning_wrapper import LitModel
-from project.pipeline_modules.data_modules import MNISTDataModule
+from project.pipeline_modules.data_modules import *
 
 
-def init_wandb(config, model, dataloader):
-    wandb_logger = WandbLogger(
-        project=config["loggers"]["wandb"]["project"],
-        job_type=config["loggers"]["wandb"]["job_type"],
-        tags=config["loggers"]["wandb"]["tags"],
-        entity=config["loggers"]["wandb"]["team"],
-        id=config["resume"]["wandb_run_id"] if config["resume"]["resume_from_ckpt"] else None,
-        log_model=True,
-        offline=False
-    )
-    wandb_logger.watch(model.model, log='all')
-    wandb_logger.log_hyperparams({
-        "model_name": model.model.__class__.__name__,
-        "dataset_name": dataloader.__class__.__name__,
-        "optimizer": model.configure_optimizers().__class__.__name__,
-        "train_size": len(dataloader.data_train),
-        "val_size": len(dataloader.data_val),
-        "test_size": len(dataloader.data_test),
-        "input_dims": dataloader.dims,
-    })
-    # download model from a specific wandb run
-    # wandb.restore('model-best.h5', run_path="kino/some_project/a1b2c3d")
-    return wandb_logger
-
-
-def main(config):
-    # Init our model
-    model = LitModel(config)
+def train(config):
 
     # Init data module
-    datamodule = MNISTDataModule(batch_size=config["hparams"]["batch_size"])
+    datamodule = MNISTDataModule(
+        batch_size=config["hparams"]["batch_size"],
+        split_ratio=config["hparams"]["split_ratio"]
+    )
     datamodule.prepare_data()
     datamodule.setup()
+
+    # Init our model
+    model = LitModel(config)
 
     # Init wandb logger
     wandb_logger = init_wandb(config, model, datamodule)
@@ -91,11 +64,43 @@ def main(config):
         # precision=16,
     )
 
+    # Test before training
+    # trainer.test(model=model, datamodule=datamodule)
+
+    # Save randomly initialized model
+    # trainer.save_checkpoint("random.ckpt")
+
     # Train the model ⚡
     trainer.fit(model=model, datamodule=datamodule)
 
     # Evaluate model on test set
     trainer.test()
+
+
+def init_wandb(config, model, dataloader):
+    wandb_logger = WandbLogger(
+        project=config["loggers"]["wandb"]["project"],
+        job_type=config["loggers"]["wandb"]["job_type"],
+        tags=config["loggers"]["wandb"]["tags"],
+        entity=config["loggers"]["wandb"]["team"],
+        id=config["resume"]["wandb_run_id"] if config["resume"]["resume_from_ckpt"] else None,
+        log_model=config["loggers"]["wandb"]["log_model"],
+        offline=False
+    )
+    wandb_logger.watch(model.model, log=None)
+    wandb_logger.log_hyperparams({
+        "model_name": model.model.__class__.__name__,
+        "dataset_name": dataloader.__class__.__name__,
+        "optimizer": model.configure_optimizers().__class__.__name__,
+        "train_size": len(dataloader.data_train) if dataloader.data_train is not None else 0,
+        "val_size": len(dataloader.data_val) if dataloader.data_train is not None else 0,
+        "test_size": len(dataloader.data_test) if dataloader.data_train is not None else 0,
+        "input_dims": dataloader.input_dims,
+        "input_size": dataloader.input_size,
+    })
+    # download model from a specific wandb run
+    # wandb.restore('model-best.h5', run_path="kino/some_project/a1b2c3d")
+    return wandb_logger
 
 
 def load_config():
@@ -105,4 +110,4 @@ def load_config():
 
 
 if __name__ == "__main__":
-    main(config=load_config())
+    train(config=load_config())

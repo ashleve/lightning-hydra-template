@@ -1,13 +1,13 @@
-# pytorch
-import torch
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from pl_bolts.models.regression import LogisticRegression
+from pl_bolts.models.regression import LinearRegression
 import torch.nn.functional as F
-
-# pytorch lightning
 import pytorch_lightning as pl
-from pytorch_lightning.metrics.functional import accuracy, precision, recall, f1_score, fbeta_score
+import torch
+import wandb
 
 # custom models
-from pipeline_modules.models import ModelMNISTv1, ModelMNISTv2
+from pipeline_modules.models import *
 
 
 class LitModel(pl.LightningModule):
@@ -16,7 +16,7 @@ class LitModel(pl.LightningModule):
         super().__init__()
 
         self.save_hyperparameters(config["hparams"])
-        self.model = ModelMNISTv2(config=self.hparams)
+        self.model = SimpleLinearMNIST(config=self.hparams)
 
     def forward(self, x):
         return self.model(x)
@@ -29,9 +29,12 @@ class LitModel(pl.LightningModule):
 
         # training metrics
         preds = torch.argmax(logits, dim=1)
-        acc = accuracy(preds, y)
-        self.log('train_loss', loss, on_epoch=True, logger=True)
-        self.log('train_acc', acc, on_epoch=True, logger=True)
+        preds, y = preds.cpu(), y.cpu()
+        acc = accuracy_score(preds, y)
+        f1 = f1_score(preds, y, average="micro")
+        self.log('train_loss', loss, on_step=False, on_epoch=True, logger=True)
+        self.log('train_acc', acc, on_step=False, on_epoch=True, logger=True)
+        self.log('train_f1', f1, on_step=False, on_epoch=True, logger=True)
 
         return loss
 
@@ -43,9 +46,12 @@ class LitModel(pl.LightningModule):
 
         # validation metrics
         preds = torch.argmax(logits, dim=1)
-        acc = accuracy(preds, y)
+        preds, y = preds.cpu(), y.cpu()
+        acc = accuracy_score(preds, y)
+        f1 = f1_score(preds, y, average="micro")
         self.log('val_loss', loss, prog_bar=True, logger=True)
         self.log('val_acc', acc, prog_bar=True, logger=True)
+        self.log('val_f1', f1, prog_bar=True, logger=True)
 
         return loss
 
@@ -57,11 +63,14 @@ class LitModel(pl.LightningModule):
 
         # test metrics
         preds = torch.argmax(logits, dim=1)
-        acc = accuracy(preds, y)
+        preds, y = preds.cpu(), y.cpu()
+        acc = accuracy_score(preds, y)
+        f1 = f1_score(preds, y, average="micro")
         self.log('test_loss', loss, prog_bar=True, logger=True)
         self.log('test_acc', acc, prog_bar=True, logger=True)
+        self.log('test_f1', f1, prog_bar=True, logger=True)
 
         return loss
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.hparams.lr)
+        return torch.optim.Adam(self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams["weight_decay"])
