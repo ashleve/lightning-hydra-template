@@ -86,7 +86,7 @@ class MNISTDataModule(pl.LightningDataModule):
         return DataLoader(self.data_test, batch_size=self.batch_size)
 
 
-class Cifar10DataModule(pl.LightningDataModule):
+class CIFAR10DataModule(pl.LightningDataModule):
     def __init__(self, data_dir="data/cifar10", batch_size=64, split_ratio=0.90):
         super().__init__()
 
