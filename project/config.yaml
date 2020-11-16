@@ -1,16 +1,16 @@
 num_of_gpus: -1
 
 hparams:
-    max_epochs: 30
+    max_epochs: 20
     batch_size: 64
     lr: 0.001
     accumulate_grad_batches: 1
     gradient_clip_val: 0.5
-    lin1_size: 128
+    lin1_size: 256
     lin2_size: 256
     lin3_size: 128
-    output_size: 38
-    weight_decay: 0.00001
+    output_size: 10
+    weight_decay: 0.000001
     split_ratio: 0.9
 
 resume:
@@ -39,6 +39,6 @@ callbacks:
         mode: "max"
 
 printing:
-    progress_bar_refresh_rate: 10
+    progress_bar_refresh_rate: 5
     weights_summary: "top"  # or "full"
     profiler: False
