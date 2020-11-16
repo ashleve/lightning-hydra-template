@@ -35,11 +35,23 @@ https://pytorch.org/get-started/locally/
     pip install -r requirements.txt
 ```
 
+### PyCharm set up
+- open this repository as PyCharm project
+- set "hack_env" as project interpreter:<br> 
+`Ctrl + Shift + A -> type "Project Interpreter"`
+- mark folder "project" as sources root:<br>
+`right click on directory -> "Mark Directory as" -> "Sources Root"`
+- set terminal emulation:<br> 
+`Ctrl + Shift + A -> type "Edit Configurations..." -> select "Emulate terminal in output console"`
+
+
 ### Important notes!
 - If you are not using GPU (CUDA incompatible GPU) you may need to specify the number of GPUs manually instead of leaving the default `-1` in `config.yaml`:
 ```
     num_of_gpus: 0
 ```
+
+
 
 ### Useful tips
 - Useful pl.Trainer() parameters:
