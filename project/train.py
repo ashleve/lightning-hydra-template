@@ -40,8 +40,8 @@ def train(config):
         ),
         # ExampleCallback(),
         # ConfusionMatrixLoggerCallback(),
-        # UnFreezeModelCallback(wait_epochs=5),
-        # SaveOnnxToWandbCallback(datamodule=datamodule, save_dir=wandb_logger.save_dir)
+        # UnfreezeModelCallback(wait_epochs=5),
+        # SaveModelOnnxCallback(datamodule=datamodule, save_dir=wandb_logger.save_dir)
     ]
 
     # Init trainer

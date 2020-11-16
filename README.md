@@ -35,7 +35,7 @@ https://pytorch.org/get-started/locally/
     pip install -r requirements.txt
 ```
 
-### PyCharm set up
+### PyCharm setup
 - open this repository as PyCharm project
 - set "hack_env" as project interpreter:<br> 
 `Ctrl + Shift + A -> type "Project Interpreter"`

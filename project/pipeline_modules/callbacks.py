@@ -18,7 +18,7 @@ class ExampleCallback(Callback):
         print('Do something when training ends.')
 
 
-class SaveOnnxToWandbCallback(Callback):
+class SaveModelOnnxCallback(Callback):
     """Save model in .onnx format."""
     def __init__(self, datamodule, save_dir):
         first_batch = next(iter(datamodule.train_dataloader()))
@@ -55,7 +55,7 @@ class ImagePredictionLoggerCallback(Callback):
         ]})
 
 
-class UnFreezeModelCallback(Callback):
+class UnfreezeModelCallback(Callback):
     """Unfreeze model after a few epochs."""
     def __init__(self, wait_epochs=5):
         self.wait_epochs = wait_epochs
