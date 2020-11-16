@@ -6,6 +6,7 @@ import yaml
 # custom
 from pipeline_modules.lightning_wrapper import LitModel
 from project.pipeline_modules.data_modules import *
+from project.pipeline_modules.callbacks import *
 
 
 def train(config):
@@ -39,6 +40,8 @@ def train(config):
         ),
         # ExampleCallback(),
         # LearningRateMonitor(),
+        # ConfusionMatrixLoggerCallback(),
+        # UnFreezeModelCallback(wait_epochs=5),
         # SaveOnnxToWandbCallback(dataloader=datamodule.train_dataloader(), wandb_save_dir=wandb_logger.save_dir)
     ]
 

@@ -17,7 +17,6 @@ class ExampleCallback(Callback):
 
 
 class SaveOnnxToWandbCallback(Callback):
-
     def __init__(self, dataloader, wandb_save_dir):
         first_batch = next(iter(dataloader))
         x, y = first_batch
@@ -50,5 +49,23 @@ class ImagePredictionLoggerCallback(Callback):
         trainer.logger.experiment.log({
             "examples": [wandb.Image(x, caption=f"Pred:{pred}, Label:{y}")
                          for x, pred, y in zip(val_imgs, preds, self.val_labels)],
-            "global_step": trainer.global_step
         })
+
+
+class UnFreezeModelCallback(Callback):
+    def __init__(self, wait_epochs=5):
+        self.wait_epochs = wait_epochs
+
+    def on_epoch_end(self, trainer, pl_module):
+        if trainer.current_epoch == self.wait_epochs:
+            for param in pl_module.model.model.parameters():
+                param.requires_grad = True
+
+
+class ConfusionMatrixLoggerCallback(Callback):
+    def __init__(self):
+        pass
+
+    def on_validation_epoch_end(self, trainer, pl_module):
+        print(trainer.callback_metrics)
+
