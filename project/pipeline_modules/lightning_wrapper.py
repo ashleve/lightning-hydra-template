@@ -1,6 +1,5 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from pl_bolts.models.regression import LogisticRegression
-from pl_bolts.models.regression import LinearRegression
+from pl_bolts.models.regression import LinearRegression, LogisticRegression
 from torch.nn.functional import one_hot
 import torch.nn.functional as F
 import pytorch_lightning as pl

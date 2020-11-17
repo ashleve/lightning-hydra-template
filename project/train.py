@@ -95,7 +95,7 @@ def init_wandb(config, model, datamodule):
     wandb_logger.watch(model.model, log=None)
     wandb_logger.log_hyperparams({
         "model_name": model.model.__class__.__name__,
-        "dataset_name": datamodule.__class__.__name__,
+        "datamodule_name": datamodule.__class__.__name__,
         "optimizer": model.configure_optimizers().__class__.__name__,
         "train_size": len(datamodule.data_train) if datamodule.data_train is not None else 0,
         "val_size": len(datamodule.data_val) if datamodule.data_train is not None else 0,
