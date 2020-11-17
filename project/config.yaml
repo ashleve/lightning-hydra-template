@@ -16,7 +16,7 @@ hparams:
 resume:
     resume_from_ckpt: False
     wandb_run_id: "8uuomodb"
-    ckpt_path: "wandb/run-20201111_022721-8uuomodb/files/hackathon_template_test/8uuomodb/checkpoints/epoch=2.ckpt"
+    ckpt_path: "checkpoints/epoch=2.ckpt"
 
 loggers:
     wandb:
@@ -41,5 +41,5 @@ callbacks:
 
 printing:
     progress_bar_refresh_rate: 5
-    weights_summary: "top"  # or "full"
+    weights_summary: "top"  # "full"
     profiler: False

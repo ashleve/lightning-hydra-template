@@ -12,10 +12,10 @@ from pipeline_modules.models import *
 
 class LitModel(pl.LightningModule):
 
-    def __init__(self, config):
+    def __init__(self, hparams):
         super().__init__()
 
-        self.save_hyperparameters(config["hparams"])
+        self.save_hyperparameters(hparams)
         self.model = SimpleLinearMNIST(config=self.hparams)
 
     def forward(self, x):
