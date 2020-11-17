@@ -57,7 +57,7 @@ def train(config):
         profiler=SimpleProfiler() if config["printing"]["profiler"] else None,
         weights_summary=config["printing"]["weights_summary"],
         num_sanity_val_steps=3,
-        default_root_dir="logs/"
+        default_root_dir="logs/lightning_logs"
         # fast_dev_run=True,
         # min_epochs=10,
         # limit_train_batches=0.1
@@ -81,7 +81,7 @@ def train(config):
     trainer.test()
 
 
-def init_wandb(config, model, dataloader):
+def init_wandb(config, model, datamodule):
     wandb_logger = WandbLogger(
         project=config["loggers"]["wandb"]["project"],
         job_type=config["loggers"]["wandb"]["job_type"],
@@ -89,18 +89,19 @@ def init_wandb(config, model, dataloader):
         entity=config["loggers"]["wandb"]["team"],
         id=config["resume"]["wandb_run_id"] if config["resume"]["resume_from_ckpt"] else None,
         log_model=config["loggers"]["wandb"]["log_model"],
-        offline=config["loggers"]["wandb"]["offline"]
+        offline=config["loggers"]["wandb"]["offline"],
+        save_dir="logs/"
     )
     wandb_logger.watch(model.model, log=None)
     wandb_logger.log_hyperparams({
         "model_name": model.model.__class__.__name__,
-        "dataset_name": dataloader.__class__.__name__,
+        "dataset_name": datamodule.__class__.__name__,
         "optimizer": model.configure_optimizers().__class__.__name__,
-        "train_size": len(dataloader.data_train) if dataloader.data_train is not None else 0,
-        "val_size": len(dataloader.data_val) if dataloader.data_train is not None else 0,
-        "test_size": len(dataloader.data_test) if dataloader.data_train is not None else 0,
-        "input_dims": dataloader.input_dims,
-        "input_size": dataloader.input_size,
+        "train_size": len(datamodule.data_train) if datamodule.data_train is not None else 0,
+        "val_size": len(datamodule.data_val) if datamodule.data_train is not None else 0,
+        "test_size": len(datamodule.data_test) if datamodule.data_train is not None else 0,
+        "input_dims": datamodule.input_dims,
+        "input_size": datamodule.input_size,
     })
     # download model from a specific wandb run
     # wandb.restore('model-best.h5', run_path="kino/some_project/a1b2c3d")
