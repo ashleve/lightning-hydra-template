@@ -1,7 +1,7 @@
 num_of_gpus: -1
 
 hparams:
-    max_epochs: 10
+    max_epochs: 3
     batch_size: 64
     lr: 0.001
     accumulate_grad_batches: 1
