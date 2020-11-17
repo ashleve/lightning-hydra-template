@@ -1,6 +1,7 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from pl_bolts.models.regression import LogisticRegression
 from pl_bolts.models.regression import LinearRegression
+from torch.nn.functional import one_hot
 import torch.nn.functional as F
 import pytorch_lightning as pl
 import torch
@@ -31,10 +32,10 @@ class LitModel(pl.LightningModule):
         preds = torch.argmax(logits, dim=1)
         preds, y = preds.cpu(), y.cpu()
         acc = accuracy_score(preds, y)
-        f1 = f1_score(preds, y, average="micro")
         self.log('train_loss', loss, on_step=False, on_epoch=True, logger=True, prog_bar=True)
         self.log('train_acc', acc, on_step=False, on_epoch=True, logger=True, prog_bar=True)
-        self.log('train_f1', f1, on_step=False, on_epoch=True, logger=True, prog_bar=True)
+        # f1 = f1_score(preds, y, average="micro")
+        # self.log('train_f1', f1, on_step=False, on_epoch=True, logger=True, prog_bar=True)
 
         return loss
 
@@ -48,10 +49,10 @@ class LitModel(pl.LightningModule):
         preds = torch.argmax(logits, dim=1)
         preds, y = preds.cpu(), y.cpu()
         acc = accuracy_score(preds, y)
-        f1 = f1_score(preds, y, average="micro")
         self.log('val_loss', loss, on_step=False, on_epoch=True, logger=True, prog_bar=True)
         self.log('val_acc', acc, on_step=False, on_epoch=True, logger=True, prog_bar=True)
-        self.log('val_f1', f1, on_step=False, on_epoch=True, logger=True, prog_bar=True)
+        # f1 = f1_score(preds, y, average="micro")
+        # self.log('val_f1', f1, on_step=False, on_epoch=True, logger=True, prog_bar=True)
 
         return preds, y
 
@@ -65,10 +66,10 @@ class LitModel(pl.LightningModule):
         preds = torch.argmax(logits, dim=1)
         preds, y = preds.cpu(), y.cpu()
         acc = accuracy_score(preds, y)
-        f1 = f1_score(preds, y, average="micro")
         self.log('test_loss', loss, on_step=False, on_epoch=True, logger=True, prog_bar=True)
         self.log('test_acc', acc, on_step=False, on_epoch=True, logger=True, prog_bar=True)
-        self.log('test_f1', f1, on_step=False, on_epoch=True, logger=True, prog_bar=True)
+        # f1 = f1_score(preds, y, average="micro")
+        # self.log('test_f1', f1, on_step=False, on_epoch=True, logger=True, prog_bar=True)
 
         return loss
 

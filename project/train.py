@@ -38,10 +38,10 @@ def train(config):
             mode=config["callbacks"]["checkpoint"]["mode"],
             save_last=config["callbacks"]["checkpoint"]["save_last"],
         ),
-        # ExampleCallback(),
-        # ConfusionMatrixLoggerCallback(),
-        # UnFreezeModelCallback(wait_epochs=5),
-        # SaveOnnxToWandbCallback(datamodule=datamodule, save_dir=wandb_logger.save_dir)
+        # MetricsHeatmapLoggerCallback(),
+        # UnfreezeModelCallback(wait_epochs=5),
+        # ImagePredictionLoggerCallback(datamodule=datamodule),
+        # SaveModelOnnxCallback(datamodule=datamodule, save_dir=wandb_logger.save_dir)
     ]
 
     # Init trainer
@@ -57,9 +57,10 @@ def train(config):
         profiler=SimpleProfiler() if config["printing"]["profiler"] else None,
         weights_summary=config["printing"]["weights_summary"],
         num_sanity_val_steps=3,
+        default_root_dir="logs/"
         # fast_dev_run=True,
         # min_epochs=10,
-        # limit_train_batches=0.01
+        # limit_train_batches=0.1
         # limit_val_batches=0.01
         # limit_test_batches=0.01
         # auto_scale_batch_size="power",
