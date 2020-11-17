@@ -38,8 +38,9 @@ def train(config):
             mode=config["callbacks"]["checkpoint"]["mode"],
             save_last=config["callbacks"]["checkpoint"]["save_last"],
         ),
-        MetricsHeatmapLoggerCallback(),
-        UnfreezeModelCallback(wait_epochs=1),
+        # MetricsHeatmapLoggerCallback(),
+        # UnfreezeModelCallback(wait_epochs=5),
+        # ImagePredictionLoggerCallback(datamodule=datamodule),
         # SaveModelOnnxCallback(datamodule=datamodule, save_dir=wandb_logger.save_dir)
     ]
 
