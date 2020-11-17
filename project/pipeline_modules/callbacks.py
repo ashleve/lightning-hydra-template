@@ -1,12 +1,12 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from pytorch_lightning.callbacks import Callback
+import pytorch_lightning as pl
 import seaborn
 import torch
 import wandb
 import os
 
 
-class ExampleCallback(Callback):
+class ExampleCallback(pl.Callback):
     def __init__(self):
         pass
 
@@ -20,7 +20,7 @@ class ExampleCallback(Callback):
         print('Do something when training ends.')
 
 
-class SaveModelOnnxCallback(Callback):
+class SaveModelOnnxCallback(pl.Callback):
     """
         Save model in .onnx format.
     """
@@ -42,7 +42,7 @@ class SaveModelOnnxCallback(Callback):
         wandb.save(file_path)
 
 
-class ImagePredictionLoggerCallback(Callback):
+class ImagePredictionLoggerCallback(pl.Callback):
     """
         Each epoch upload to wandb a couple of the same images with predicted labels.
     """
@@ -69,7 +69,7 @@ class ImagePredictionLoggerCallback(Callback):
             ]}, commit=False)
 
 
-class UnfreezeModelCallback(Callback):
+class UnfreezeModelCallback(pl.Callback):
     """
         Unfreeze model after a few epochs.
     """
@@ -82,7 +82,7 @@ class UnfreezeModelCallback(Callback):
                 param.requires_grad = True
 
 
-class MetricsHeatmapLoggerCallback(Callback):
+class MetricsHeatmapLoggerCallback(pl.Callback):
     """
         Generate f1, precision and recall heatmap calculated from each validation epoch outputs.
         Expects validation step to return predictions and targets.
