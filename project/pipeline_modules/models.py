@@ -12,8 +12,8 @@ class SimpleLinearMNIST(nn.Module):
         super().__init__()
 
         # mnist images are (1, 28, 28) (channels, width, height)
-        self.model.fc = nn.Sequential(
-            nn.Linear(self.model.fc.in_features, config["lin1_size"]),
+        self.model = nn.Sequential(
+            nn.Linear(28 * 28, config["lin1_size"]),
             nn.BatchNorm1d(config["lin1_size"]),
             nn.ReLU(),
             nn.Dropout(p=0.3),
@@ -43,13 +43,12 @@ class EfficientNetPretrained(nn.Module):
         super().__init__()
 
         self.model = EfficientNet.from_pretrained('efficientnet-b1')
-        # self.model = EfficientNet.from_pretrained('efficientnet-b7')
 
         for param in self.model.parameters():
             param.requires_grad = False
 
-        self.model.fc = nn.Sequential(
-            nn.Linear(self.model.fc.in_features, config["lin1_size"]),
+        self.model._fc = nn.Sequential(
+            nn.Linear(self.model._fc.in_features, config["lin1_size"]),
             nn.BatchNorm1d(config["lin1_size"]),
             nn.ReLU(),
             nn.Dropout(p=0.25),
