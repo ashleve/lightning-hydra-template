@@ -10,7 +10,7 @@ def predict():
     config = load_config()
 
     # load model from checkpoint
-    pretrained_model = LitModel.load_from_checkpoint("example.ckpt", config=config["hparams"])
+    pretrained_model = LitModel.load_from_checkpoint("example.ckpt", hparams=config["hparams"])
     pretrained_model.eval()
 
     # load data
