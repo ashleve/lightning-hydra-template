@@ -1,4 +1,5 @@
 from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger, CometLogger, MLFlowLogger, NeptuneLogger
+import os
 
 
 def init_wandb(config, lit_model, datamodule):
@@ -12,6 +13,7 @@ def init_wandb(config, lit_model, datamodule):
         offline=config["loggers"]["wandb"]["offline"],
         save_dir="logs/"
     )
+    os.mkdir("logs/") if not os.path.exists("logs/") else None
     wandb_logger.watch(lit_model.model, log=None)
     wandb_logger.log_hyperparams({
         "model_name": lit_model.model.__class__.__name__,

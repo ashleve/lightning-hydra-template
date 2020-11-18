@@ -4,7 +4,6 @@ from torch.nn.functional import one_hot
 import torch.nn.functional as F
 import pytorch_lightning as pl
 
-
 # custom models
 from pipeline_modules.models import *
 
