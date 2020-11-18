@@ -3,8 +3,7 @@ from pl_bolts.models.regression import LinearRegression, LogisticRegression
 from torch.nn.functional import one_hot
 import torch.nn.functional as F
 import pytorch_lightning as pl
-import torch
-import wandb
+
 
 # custom models
 from pipeline_modules.models import *
