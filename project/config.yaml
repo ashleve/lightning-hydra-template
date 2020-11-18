@@ -25,7 +25,7 @@ loggers:
         group: None
         job_type: "train"
         tags: []
-        log_model: False
+        log_model: True
         offline: False
 
 callbacks:
