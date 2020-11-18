@@ -17,7 +17,7 @@ The directory structure of new project looks like this:
 │   │   ├── data_modules.py         <- "LightningDataModule" modules (wrappers for PyTorch "Dataset")
 │   │   ├── datasets.py             <- PyTorch "Dataset" modules
 │   │   ├── lightning_wrapper.py    <- Contains train/val/test step methods executed during training
-│   │   ├── logger_initializers.py  <- Initializers for different loggers (weights&biases, tensorboard, etc.)
+│   │   ├── logger_initializers.py  <- Initializers for different loggers (wandb, tensorboard, etc.)
 │   │   ├── models.py               <- Declarations of neural networks
 │   │   └── transforms.py           <- Data transformations (preprocessing)
 │   │
