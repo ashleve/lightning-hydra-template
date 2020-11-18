@@ -17,7 +17,7 @@ The directory structure of new project looks like this:
 │   │   ├── data_modules.py         <- PyTorch Lightning "LightningDataModule" modules (wrappers for PyTorch "Dataset")
 │   │   ├── datasets.py             <- PyTorch "Dataset" modules
 │   │   ├── lightning_wrapper.py    <- Contains train/val/test step methods executed during training
-│   │   ├── logger_initializers.py  <- Initializers for different experiment loggers (like weights&biases, tensorboard, comet.ml)
+│   │   ├── logger_initializers.py  <- Initializers for different loggers (like weights&biases, tensorboard, etc.)
 │   │   ├── models.py               <- Declarations of neural networks
 │   │   └── transforms.py           <- Data transformations (preprocessing)
 │   │
@@ -32,17 +32,18 @@ The directory structure of new project looks like this:
 └── requirements.txt
 ```
 
+## Setup
 
-### Install anaconda
+#### 1. Install anaconda
 https://docs.conda.io/projects/conda/en/latest/user-guide/install/download.html
 
-
-### Create conda env
+#### 2. Create anaconda env
 ```
     conda create --name hack_env
     conda activate hack_env
 ```
-### Make sure proper python PATH is loaded
+
+#### 3. Make sure proper python PATH is loaded
 Unix
 ```
     which python
@@ -52,22 +53,25 @@ Windows
     for %i in (python.exe) do @echo. %~$PATH:i
 ```
 Expected result: `PATH_TO_CONDA/envs/ENV_NAME/bin/python`
-### Install pytorch with conda
-https://pytorch.org/get-started/locally/
+
+#### 4. Install pytorch with conda
+Installation command generator: https://pytorch.org/get-started/locally/
 ```
     conda install pytorch torchvision torchaudio cudatoolkit=11.0 -c pytorch
 ```
-### Clone repo
+
+#### 5. Clone repo
 ```
     git clone https://github.com/kinoai/hackathon-template
 ```
-### Install requirements with pip
+
+#### 6. Install requirements with pip
 ```
     cd hackathon-template
     pip install -r requirements.txt
 ```
 
-### PyCharm setup
+#### 7. PyCharm setup
 - open this repository as PyCharm project
 - set "hack_env" as project interpreter:<br> 
 `Ctrl + Shift + A -> type "Project Interpreter"`
@@ -77,15 +81,16 @@ https://pytorch.org/get-started/locally/
 `Ctrl + Shift + A -> type "Edit Configurations..." -> select "Emulate terminal in output console"`
 
 
-### Important notes!
+
+#### Important notes!
 - If you are not using GPU (CUDA incompatible GPU) you may need to specify the number of GPUs manually instead of leaving the default `-1` in `config.yaml`:
 ```
     num_of_gpus: 0
 ```
+<br>
 
 
-
-### Useful tips
+## Useful tips
 - Useful pl.Trainer() parameters:
     - <b>gpus=-1</b> - use all gpus available on your machine
     - <b>accumulate_grad_batches=5</b> - perform optimisation after accumulating gradient from 5 batches
