@@ -1,6 +1,38 @@
 # Hackathon template
 A convenient starting template for most deep learning projects. Built with PyTorch Lightning and Weights&Biases (wandb).
 
+
+## Project structure
+The directory structure of new project looks like this: 
+```
+├── project
+│   ├── data                        <- Data from third party sources
+│   │
+│   ├── docs                        <- Useful pdf files
+│   │
+│   ├── notebooks                   <- Jupyter notebooks
+│   │
+│   ├── pipeline_modules            <- All modules necessary for training deep learning models
+│   │   ├── callbacks.py            <- Useful training callbacks
+│   │   ├── data_modules.py         <- PyTorch Lightning "LightningDataModule" modules (wrappers for PyTorch "Dataset")
+│   │   ├── datasets.py             <- PyTorch "Dataset" modules
+│   │   ├── lightning_wrapper.py    <- Contains train/val/test step methods executed during training
+│   │   ├── logger_initializers.py  <- Initializers for different experiment loggers (like weights&biases, tensorboard, comet.ml)
+│   │   ├── models.py               <- Declarations of neural networks
+│   │   └── transforms.py           <- Data transformations (preprocessing)
+│   │
+│   ├── config.yaml         <- Training configuration
+│   ├── execute_sweep.py    <- Special file for executing wandb sweeps (hyperparameter search)
+│   ├── predict.py          <- Make predictions with trained model
+│   └── train.py            <- Train model
+│
+├── .gitignore
+├── LICENSE
+├── README.md
+└── requirements.txt
+```
+
+
 ### Install anaconda
 https://docs.conda.io/projects/conda/en/latest/user-guide/install/download.html
 
