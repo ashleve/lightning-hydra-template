@@ -1,16 +1,15 @@
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
-from pytorch_lightning.profiler import SimpleProfiler, AdvancedProfiler
-from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.profiler import SimpleProfiler
 import yaml
 
 # custom
 from pipeline_modules.lightning_wrapper import LitModel
-from project.pipeline_modules.data_modules import *
-from project.pipeline_modules.callbacks import *
+from pipeline_modules.logger_initializers import *
+from pipeline_modules.data_modules import *
+from pipeline_modules.callbacks import *
 
 
 def train(config):
-
     # Init data module
     datamodule = MNISTDataModule(
         batch_size=config["hparams"]["batch_size"],
@@ -20,7 +19,7 @@ def train(config):
     datamodule.setup()
 
     # Init our model
-    model = LitModel(config)
+    model = LitModel(hparams=config["hparams"])
 
     # Init wandb logger
     wandb_logger = init_wandb(config, model, datamodule)
@@ -79,33 +78,6 @@ def train(config):
 
     # Evaluate model on test set
     trainer.test()
-
-
-def init_wandb(config, model, datamodule):
-    wandb_logger = WandbLogger(
-        project=config["loggers"]["wandb"]["project"],
-        job_type=config["loggers"]["wandb"]["job_type"],
-        tags=config["loggers"]["wandb"]["tags"],
-        entity=config["loggers"]["wandb"]["team"],
-        id=config["resume"]["wandb_run_id"] if config["resume"]["resume_from_ckpt"] else None,
-        log_model=config["loggers"]["wandb"]["log_model"],
-        offline=config["loggers"]["wandb"]["offline"],
-        save_dir="logs/"
-    )
-    wandb_logger.watch(model.model, log=None)
-    wandb_logger.log_hyperparams({
-        "model_name": model.model.__class__.__name__,
-        "datamodule_name": datamodule.__class__.__name__,
-        "optimizer": model.configure_optimizers().__class__.__name__,
-        "train_size": len(datamodule.data_train) if datamodule.data_train is not None else 0,
-        "val_size": len(datamodule.data_val) if datamodule.data_train is not None else 0,
-        "test_size": len(datamodule.data_test) if datamodule.data_train is not None else 0,
-        "input_dims": datamodule.input_dims,
-        "input_size": datamodule.input_size,
-    })
-    # download model from a specific wandb run
-    # wandb.restore('model-best.h5', run_path="kino/some_project/a1b2c3d")
-    return wandb_logger
 
 
 def load_config():
