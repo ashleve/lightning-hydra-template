@@ -4,7 +4,7 @@ import yaml
 
 # custom
 from pipeline_modules.lightning_wrapper import LitModel
-from pipeline_modules.logger_initializers import *
+from pipeline_modules.loggers import *
 from pipeline_modules.data_modules import *
 from pipeline_modules.callbacks import *
 
@@ -21,8 +21,8 @@ def train(config):
     # Init our model
     model = LitModel(hparams=config["hparams"])
 
-    # Init wandb logger
-    wandb_logger = init_wandb(config, model, datamodule)
+    # Init experiment logger
+    logger = get_wandb_logger(config, model, datamodule)
 
     # Init callbacks
     callbacks = [
@@ -45,7 +45,7 @@ def train(config):
 
     # Init trainer
     trainer = pl.Trainer(
-        logger=wandb_logger,
+        logger=logger,
         callbacks=callbacks,
         gpus=config["num_of_gpus"],
         max_epochs=config["hparams"]["max_epochs"],

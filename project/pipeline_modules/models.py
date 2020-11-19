@@ -116,7 +116,7 @@ class ResnextPretrained(nn.Module):
         return self.model(x)
 
 
-# this model doesn't work yet, we wait for lightinng-bolts patch
+# this model doesn't work yet, we wait for lightning-bolts patch
 # class ResnetPretrainedUnsupervised(nn.Module):
 #     """
 #         Trained without labels on Imagenet.

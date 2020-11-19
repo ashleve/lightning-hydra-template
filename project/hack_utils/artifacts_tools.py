@@ -2,7 +2,7 @@ import wandb
 import os
 
 
-def make_artifact():
+def upload_artifact():
     DATASET_PATH = "../data/skyhacks"
 
     # Set project which will own the artifact
@@ -41,5 +41,5 @@ def download_artifact():
 
 
 if __name__ == "__main__":
-    make_artifact()
-    # download_artifact()
+    # upload_artifact()
+    download_artifact()
