@@ -1,5 +1,5 @@
-from pipeline_modules.lightning_wrapper import LitModel
-from pipeline_modules import transforms
+from training_modules.lightning_wrapper import LitModel
+from training_modules import transforms
 import pytorch_lightning as pl
 from train import load_config
 import torch
@@ -25,7 +25,10 @@ def predict():
     print(output)
 
 
-def download_from_wanb():
+def download_from_wandb():
+    """
+        WARNING: This will overwrite your models.py, lightning_wrapper.py and config.yaml files!
+    """
     MODEL_PATH = ""
     CODE_PATH = ""
 

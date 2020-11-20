@@ -23,6 +23,7 @@ class ExampleCallback(pl.Callback):
 class SaveModelOnnxCallback(pl.Callback):
     """
         Save model in .onnx format.
+        Might crash since not all models are compatible with onnx.
     """
     def __init__(self, datamodule, save_dir):
         first_batch = next(iter(datamodule.train_dataloader()))

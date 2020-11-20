@@ -10,16 +10,18 @@ The directory structure of new project looks like this:
 │   │
 │   ├── docs                        <- Useful pdf files
 │   │
+│   ├── hack_utils                  <- Any extra scripts not belonging to training pipeline
+│   │
 │   ├── notebooks                   <- Jupyter notebooks
 │   │
-│   ├── pipeline_modules            <- All modules necessary for training deep learning models
+│   ├── training_modules            <- All modules necessary for training deep learning models
 │   │   ├── callbacks.py            <- Useful training callbacks
 │   │   ├── data_modules.py         <- "LightningDataModule" modules (wrappers for PyTorch "Dataset")
 │   │   ├── datasets.py             <- PyTorch "Dataset" modules
 │   │   ├── lightning_wrapper.py    <- Contains train/val/test step methods executed during training
-│   │   ├── logger_initializers.py  <- Initializers for different loggers (wandb, tensorboard, etc.)
-│   │   ├── models.py               <- Declarations of neural networks
-│   │   └── transforms.py           <- Data transformations (preprocessing)
+│   │   ├── loggers.py              <- Initializers for different loggers (wandb, tensorboard, etc.)
+│   │   ├── models.py               <- Neural networks declarations
+│   │   └── transforms.py           <- Data transformations (data preprocessing)
 │   │
 │   ├── config.yaml         <- Training configuration
 │   ├── execute_sweep.py    <- Special file for executing wandb sweeps (hyperparameter search)
@@ -71,7 +73,12 @@ Installation command generator: https://pytorch.org/get-started/locally/
     pip install -r requirements.txt
 ```
 
-#### 7. PyCharm setup
+#### 7. Log into your wandb account
+```
+    wandb login
+```
+
+#### 8. PyCharm setup
 - open this repository as PyCharm project
 - set "hack_env" as project interpreter:<br> 
 `Ctrl + Shift + A -> type "Project Interpreter"`

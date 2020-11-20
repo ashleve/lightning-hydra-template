@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import pytorch_lightning as pl
 
 # custom models
-from pipeline_modules.models import *
+from training_modules.models import *
 
 
 class LitModel(pl.LightningModule):

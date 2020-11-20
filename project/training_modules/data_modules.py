@@ -5,8 +5,8 @@ import pytorch_lightning as pl
 import numpy as np
 
 # custom
-from pipeline_modules.transforms import *
-from pipeline_modules.datasets import *
+from training_modules.transforms import *
+from training_modules.datasets import *
 
 
 class ExampleDataModule(pl.LightningDataModule):

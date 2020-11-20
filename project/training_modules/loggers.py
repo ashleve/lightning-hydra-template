@@ -2,7 +2,7 @@ from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger, CometLogge
 import os
 
 
-def init_wandb(config, lit_model, datamodule):
+def get_wandb_logger(config, lit_model, datamodule):
     wandb_logger = WandbLogger(
         project=config["loggers"]["wandb"]["project"],
         job_type=config["loggers"]["wandb"]["job_type"],
@@ -28,3 +28,8 @@ def init_wandb(config, lit_model, datamodule):
     # download model from a specific wandb run
     # wandb.restore('model-best.h5', run_path="kino/some_project/a1b2c3d")
     return wandb_logger
+
+
+def get_tensorboard_loggger():
+    """TODO"""
+    return None
