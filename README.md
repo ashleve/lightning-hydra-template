@@ -6,13 +6,13 @@ A convenient starting template for most deep learning projects. Built with PyTor
 The directory structure of new project looks like this: 
 ```
 ├── project
-│   ├── data                        <- Data from third party sources
+│   ├── data                <- Data from third party sources
 │   │
-│   ├── docs                        <- Useful pdf files
+│   ├── docs                <- Useful pdf files
 │   │
-│   ├── hack_utils                  <- Any extra scripts not belonging to training pipeline
+│   ├── hack_utils          <- Any extra scripts not belonging to training pipeline
 │   │
-│   ├── notebooks                   <- Jupyter notebooks
+│   ├── notebooks           <- Jupyter notebooks
 │   │
 │   ├── training_modules            <- All modules necessary for training deep learning models
 │   │   ├── callbacks.py            <- Useful training callbacks
