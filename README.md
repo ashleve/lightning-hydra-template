@@ -113,7 +113,7 @@ hparams:                            <- you can add any parameters here and then 
 
 resume:
     resume_from_ckpt: False         <- set to True if you want to resume
-    wandb_run_id: "8uuomodb"        <- id of wandb run
+    wandb_run_id: "8uuomodb"        <- id of wandb run you want to resume
     ckpt_path: "epoch=2.ckpt"       <- lightning checkpoint path
 
 loggers:
@@ -131,11 +131,11 @@ callbacks:
         monitor: "val_acc"                  <- name of the logged metric that determines when ckpt is saved
         save_top_k: 1                       <- save k best models (determined by above metric)
         save_last: True                     <- additionaly always save model from last epoch
-        mode: "max"  # "min"                <- save models with best minimum or maximum metrics score
+        mode: "max"  # "min"                <- determine whether improving means minimizing or maximizing metrics score
     early_stop:
         monitor: "val_acc"                  <- name of the logged metric that determines when training is stopped
         patience: 100                       <- for how long metric needs to not improve in order to stop training 
-        mode: "max"  # "min"
+        mode: "max"  # "min"                <- determine whether improving means minimizing or maximizing metrics score
 
 printing:
     progress_bar_refresh_rate: 5            <- refresh rate of training bar in terminal
@@ -147,8 +147,17 @@ printing:
 
 
 ## Useful tips
-- Useful pl.Trainer() parameters:
-    - <b>gpus=-1</b> - use all gpus available on your machine
+- PyTorch Lightning Bolts is official collection of prebuilt models across many research domains:
+    - https://pytorch-lightning.readthedocs.io/en/latest/bolts.html
+    - https://github.com/PyTorchLightning/pytorch-lightning-bolts
+    
+- Pre-trained pytorch model repository designed for research exploration:
+    - https://pytorch.org/hub/
+    
+- List of all tools in PyTorch ecosystem:
+    - https://pytorch.org/ecosystem/
+
+- Additional pl.Trainer() parameters which can be useful:
     - <b>accumulate_grad_batches=5</b> - perform optimisation after accumulating gradient from 5 batches
     - <b>accumulate_grad_batches={5: 3, 10: 20}</b> - no accumulation for epochs 1-4. accumulate 3 for epochs 5-10. accumulate 20 after that
     - <b>auto_scale_batch_size='power'</b> - automatically find the largest batch size that fits into memory and is power of 2 (requires calling trainer.tune(model, datamodule))
@@ -162,15 +171,4 @@ printing:
     - <b>limit_val_batches=0.25</b>
     - <b>limit_test_batches=0.25</b>
     - <b>precision=16</b> - set tensor precision (default is 32 bits)
-    - <b>gradient_clip_val=0.5</b> - gradient clipping value (0 means don’t clip), helps with exploding gradient issues
-    - <b>profiler=SimpleProfiler()</b> - print execution time info for each method used
-    - <b>weights_summary='full'</b> - print model info
     - <b>amp_backend='apex'</b> - apex backend for mixed precision training https://github.com/NVIDIA/apex
-    
-- PyTorch Lightning Bolts is official collection of prebuilt models across many research domains:
-    - https://pytorch-lightning.readthedocs.io/en/latest/bolts.html
-    - https://github.com/PyTorchLightning/pytorch-lightning-bolts
-- Pre-trained pytorch model repository designed for research exploration:
-    - https://pytorch.org/hub/
-- List of all tools in PyTorch ecosystem:
-    - https://pytorch.org/ecosystem/
