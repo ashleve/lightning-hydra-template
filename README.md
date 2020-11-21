@@ -100,10 +100,10 @@ Installation command generator: https://pytorch.org/get-started/locally/
 
 
 ## [config.yaml](project/config.yaml) parameters explanation:
-```
+```yaml
 num_of_gpus: -1                     <- -1 means use all gpus available on your machine, 0 means train on cpu
 
-hparams:                            <- you can add any parameters here and then acces them in your network model or datamodule
+hparams:                            <- you can add any parameters here and then acces them in your network model or datamodule, those parameters are always saved to wandb config
     max_epochs: 3
     batch_size: 64
     lr: 0.001
@@ -131,15 +131,15 @@ callbacks:
         monitor: "val_acc"                  <- name of the logged metric that determines when ckpt is saved
         save_top_k: 1                       <- save k best models (determined by above metric)
         save_last: True                     <- additionaly always save model from last epoch
-        mode: "max"  # "min"                <- determine whether improving means minimizing or maximizing metrics score
+        mode: "max"                         <- determine whether improving means minimizing or maximizing metrics score (alternatively "min")
     early_stop:
         monitor: "val_acc"                  <- name of the logged metric that determines when training is stopped
         patience: 100                       <- for how long metric needs to not improve in order to stop training 
-        mode: "max"  # "min"                <- determine whether improving means minimizing or maximizing metrics score
+        mode: "max"                         <- determine whether improving means minimizing or maximizing metrics score (alternatively "min")
 
 printing:
     progress_bar_refresh_rate: 5            <- refresh rate of training bar in terminal
-    weights_summary: "top"  # "full"        <- print summary of model an the beginning of the run
+    weights_summary: "top"                  <- print summary of model an the beginning of the run (alternatively "full")
     profiler: False                         <- True will print mean execution time of all methods at the end of the training
 
 ```
