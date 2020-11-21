@@ -13,7 +13,7 @@ def train(config):
     # Init data module
     datamodule = MNISTDataModule(
         batch_size=config["hparams"]["batch_size"],
-        split_ratio=config["hparams"]["split_ratio"]
+        split_ratio=config["hparams"]["train_val_split_ratio"]
     )
     datamodule.prepare_data()
     datamodule.setup()
