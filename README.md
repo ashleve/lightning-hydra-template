@@ -99,6 +99,53 @@ Installation command generator: https://pytorch.org/get-started/locally/
 <br>
 
 
+## [config.yaml](project/config.yaml) parameters explanation:
+```
+num_of_gpus: -1                     <- -1 means use all gpus available on your machine, 0 means train on cpu
+
+hparams:                            <- you can add any parameters here and then acces them in your network model or datamodule
+    max_epochs: 3
+    batch_size: 64
+    lr: 0.001
+    weight_decay: 0.000001                  <- L2 normalization set in optimizer
+    gradient_clip_val: 0.5                  <- gradient clipping value (0 means don’t clip), helps with exploding gradient issues
+    accumulate_grad_batches: 1              <- perform optimisation after accumulating gradient from n batches
+
+resume:
+    resume_from_ckpt: False         <- set to True if you want to resume
+    wandb_run_id: "8uuomodb"        <- id of wandb run
+    ckpt_path: "epoch=2.ckpt"       <- lightning checkpoint path
+
+loggers:
+    wandb:
+        project: "hackathon_template_test"  <- wandb project name
+        team: "kino"                        <- entity name (your username or team name you belong to)
+        group: None
+        job_type: "train"
+        tags: []
+        log_model: True                     <- True if you want to automatically upload your model to wandb at the end of training
+        offline: False                      <- True if you don't want to send any data to wandb server
+
+callbacks:
+    checkpoint:
+        monitor: "val_acc"                  <- name of the logged metric that determines when ckpt is saved
+        save_top_k: 1                       <- save k best models (determined by above metric)
+        save_last: True                     <- additionaly always save model from last epoch
+        mode: "max"  # "min"                <- save models with best minimum or maximum metrics score
+    early_stop:
+        monitor: "val_acc"                  <- name of the logged metric that determines when training is stopped
+        patience: 100                       <- for how long metric needs to not improve in order to stop training 
+        mode: "max"  # "min"
+
+printing:
+    progress_bar_refresh_rate: 5            <- refresh rate of training bar in terminal
+    weights_summary: "top"  # "full"        <- print summary of model an the beginning of the run
+    profiler: False                         <- True will print mean execution time of all methods at the end of the training
+
+```
+<br>
+
+
 ## Useful tips
 - Useful pl.Trainer() parameters:
     - <b>gpus=-1</b> - use all gpus available on your machine
