@@ -14,10 +14,10 @@ The directory structure of new project looks like this:
 │   │
 │   ├── notebooks           <- Jupyter notebooks
 │   │
-│   ├── training_modules            <- All modules necessary for training deep learning models
+│   ├── training_modules    <- All modules useful for training deep learning models
 │   │   ├── callbacks.py            <- Useful training callbacks
-│   │   ├── data_modules.py         <- "LightningDataModule" modules (wrappers for PyTorch "Dataset")
 │   │   ├── datasets.py             <- PyTorch "Dataset" modules
+│   │   ├── datamodules.py          <- "LightningDataModule" modules (wrappers for PyTorch "Dataset")
 │   │   ├── lightning_wrapper.py    <- Contains train/val/test step methods executed during training
 │   │   ├── loggers.py              <- Initializers for different loggers (wandb, tensorboard, etc.)
 │   │   ├── models.py               <- Neural networks declarations
@@ -86,6 +86,8 @@ Installation command generator: https://pytorch.org/get-started/locally/
 `right click on directory -> "Mark Directory as" -> "Sources Root"`
 - set terminal emulation:<br> 
 `Ctrl + Shift + A -> type "Edit Configurations..." -> select "Emulate terminal in output console"`
+- run training:<br>
+`right click on train.py file -> "Run 'train'"`
 
 
 

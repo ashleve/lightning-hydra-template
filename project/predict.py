@@ -1,20 +1,28 @@
 from training_modules.lightning_wrapper import LitModel
+from training_modules.datamodules import *
+from training_modules.datasets import *
 from training_modules import transforms
-import pytorch_lightning as pl
-from train import load_config
-import torch
+from PIL import Image
 
 
 def predict():
-    # load config
-    config = load_config()
+    """
+        Loads model from checkpoint.
+        Model used in training_modules/lightning_wrapper.py and declaration of that model in training_modules/models.py
+        should be the same as during training.
+    """
+
+    CKPT_PATH = "epoch=0.ckpt"
 
     # load model from checkpoint
-    pretrained_model = LitModel.load_from_checkpoint("example.ckpt", hparams=config["hparams"])
+    pretrained_model = LitModel.load_from_checkpoint(checkpoint_path=CKPT_PATH)
+
+    # switch to evaluation mode
     pretrained_model.eval()
+    pretrained_model.freeze()
 
     # load data
-    img = None
+    img = Image.open("example_img.png").convert("RGB")
 
     # preprocess
     img = transforms.efficient_net_test_preprocess(img)
@@ -23,14 +31,6 @@ def predict():
     # inference
     output = pretrained_model(img)
     print(output)
-
-
-def download_from_wandb():
-    """
-        WARNING: This will overwrite your models.py, lightning_wrapper.py and config.yaml files!
-    """
-    MODEL_PATH = ""
-    CODE_PATH = ""
 
 
 if __name__ == "__main__":

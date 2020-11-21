@@ -11,9 +11,11 @@ def get_wandb_logger(config, lit_model, datamodule):
         id=config["resume"]["wandb_run_id"] if config["resume"]["resume_from_ckpt"] else None,
         log_model=config["loggers"]["wandb"]["log_model"],
         offline=config["loggers"]["wandb"]["offline"],
-        save_dir="logs/"
+        save_dir="logs/",
+        save_code=False
     )
-    os.mkdir("logs/") if not os.path.exists("logs/") else None
+    if not os.path.exists("logs/"):
+        os.mkdir("logs/")
     wandb_logger.watch(lit_model.model, log=None)
     wandb_logger.log_hyperparams({
         "model_name": lit_model.model.__class__.__name__,

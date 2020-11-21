@@ -10,10 +10,12 @@ from training_modules.models import *
 
 class LitModel(pl.LightningModule):
 
-    def __init__(self, hparams):
+    def __init__(self, hparams=None):
         super().__init__()
 
-        self.save_hyperparameters(hparams)
+        if hparams:
+            self.save_hyperparameters(hparams)
+
         self.model = SimpleLinearMNIST(config=self.hparams)
 
     def forward(self, x):

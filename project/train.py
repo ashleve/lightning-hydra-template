@@ -5,7 +5,7 @@ import yaml
 # custom
 from training_modules.lightning_wrapper import LitModel
 from training_modules.loggers import *
-from training_modules.data_modules import *
+from training_modules.datamodules import *
 from training_modules.callbacks import *
 
 
@@ -40,7 +40,8 @@ def train(config):
         # MetricsHeatmapLoggerCallback(),
         # UnfreezeModelCallback(wait_epochs=5),
         # ImagePredictionLoggerCallback(datamodule=datamodule),
-        # SaveModelOnnxCallback(datamodule=datamodule, save_dir=wandb_logger.save_dir)
+        SaveCodeToWandbCallback(wandb_save_dir=logger.save_dir),
+        # SaveOnnxModelToWandbCallback(datamodule=datamodule, save_dir=logger.save_dir)
     ]
 
     # Init trainer

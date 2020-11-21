@@ -3,7 +3,7 @@ from PIL import Image
 import os
 
 
-class TestDataset(Dataset):
+class TestDatasetForImgs(Dataset):
 
     def __init__(self, img_dir, transform):
         self.transform = transform
