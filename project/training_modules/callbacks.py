@@ -134,7 +134,7 @@ class SaveCodeToWandbCallback(pl.Callback):
         self.wandb_save_dir = wandb_save_dir
         self.files_to_be_saved = [
             "training_modules/callbacks.py",
-            "training_modules/data_modules.py",
+            "training_modules/datamodules.py",
             "training_modules/datasets.py",
             "training_modules/lightning_wrapper.py",
             "training_modules/loggers.py",

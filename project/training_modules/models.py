@@ -13,7 +13,8 @@ class SimpleLinearMNIST(nn.Module):
 
         # mnist images are (1, 28, 28) (channels, width, height)
         self.model = nn.Sequential(
-            nn.Linear(28 * 28, config["lin1_size"]),
+            nn.Linear(28*28, config["lin1_size"]),
+            # nn.Linear(3*32*32, config["lin1_size"]),  # for CIFAR10
             nn.BatchNorm1d(config["lin1_size"]),
             nn.ReLU(),
             nn.Dropout(p=0.3),

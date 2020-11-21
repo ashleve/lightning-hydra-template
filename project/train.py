@@ -5,7 +5,7 @@ import yaml
 # custom
 from training_modules.lightning_wrapper import LitModel
 from training_modules.loggers import *
-from training_modules.data_modules import *
+from training_modules.datamodules import *
 from training_modules.callbacks import *
 
 
