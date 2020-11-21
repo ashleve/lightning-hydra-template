@@ -1,5 +1,6 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import pytorch_lightning as pl
+from shutil import copy, copyfile
 import seaborn
 import torch
 import wandb
@@ -20,9 +21,9 @@ class ExampleCallback(pl.Callback):
         print('Do something when training ends.')
 
 
-class SaveModelOnnxCallback(pl.Callback):
+class SaveOnnxModelToWandbCallback(pl.Callback):
     """
-        Save model in .onnx format.
+        Save model in .onnx format and upload to wandb.
         Might crash since not all models are compatible with onnx.
     """
     def __init__(self, datamodule, save_dir):
@@ -40,7 +41,7 @@ class SaveModelOnnxCallback(pl.Callback):
     def save_onnx_model(self, pl_module):
         file_path = os.path.join(self.save_dir, "model.onnx")
         pl_module.to_onnx(file_path=file_path, input_sample=self.dummy_input.to(pl_module.device))
-        wandb.save(file_path)
+        wandb.save(file_path, base_path=self.save_dir)
 
 
 class ImagePredictionLoggerCallback(pl.Callback):
@@ -123,3 +124,34 @@ class MetricsHeatmapLoggerCallback(pl.Callback):
 
             self.preds = []
             self.targets = []
+
+
+class SaveCodeToWandbCallback(pl.Callback):
+    """
+        Upload specified files to wandb at the beginning of the run.
+    """
+    def __init__(self, wandb_save_dir):
+        self.wandb_save_dir = wandb_save_dir
+        self.files_to_be_saved = [
+            "training_modules/callbacks.py",
+            "training_modules/data_modules.py",
+            "training_modules/datasets.py",
+            "training_modules/lightning_wrapper.py",
+            "training_modules/loggers.py",
+            "training_modules/models.py",
+            "training_modules/transforms.py",
+            "train.py",
+            "config.yaml"
+        ]
+
+    def on_sanity_check_end(self, trainer, pl_module):
+        """Upload files when all validation sanity checks end."""
+        for file in self.files_to_be_saved:
+            dst_path = os.path.join(self.wandb_save_dir, "code", file)
+
+            path, filename = os.path.split(dst_path)
+            if not os.path.exists(path):
+                os.makedirs(path)
+
+            copy(file, dst_path)
+            wandb.save(dst_path, base_path=self.wandb_save_dir)  # this line is only to make upload immediate
