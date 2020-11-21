@@ -3,11 +3,13 @@ import os
 
 
 def upload_artifact():
-    WANDB_PROJECT = "hackathon_template_test"
-    WANDB_TEAM = "kino"
-    FILES_TO_UPLOAD_PATH = "../data/skyhacks"
+    FOLDER_TO_UPLOAD_PATH = "../data/skyhacks"
+
     ARTIFACT_NAME = "skyhacks-dataset"
     TYPE = "dataset"  # type can be anything but we recommend sticking to "dataset" / "model" / "result"
+
+    WANDB_PROJECT = "hackathon_template_test"
+    WANDB_TEAM = "kino"
 
     # Set project which will own the artifact
     os.mkdir("../logs") if not os.path.exists("../logs") else None
@@ -24,7 +26,8 @@ def upload_artifact():
         name=ARTIFACT_NAME,
         type=TYPE
     )
-    artifact.add_dir(FILES_TO_UPLOAD_PATH)
+    artifact.add_dir(FOLDER_TO_UPLOAD_PATH)
+    # artifact.add_file(MODEL_PATH)
 
     # Upload artifact
     run.log_artifact(artifact, aliases=["latest"])
@@ -45,5 +48,5 @@ def download_artifact():
 
 
 if __name__ == "__main__":
-    # upload_artifact()
-    download_artifact()
+    upload_artifact()
+    # download_artifact()
