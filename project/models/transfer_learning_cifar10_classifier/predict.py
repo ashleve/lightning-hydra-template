@@ -1,14 +1,12 @@
-from training_modules.lightning_wrapper import LitModel
-from training_modules.datamodules import *
-from training_modules.datasets import *
-from training_modules import transforms
+from models.transfer_learning_cifar10_classifier.lightning_module import LitModel
+from models.transfer_learning_cifar10_classifier import transforms
 from PIL import Image
 
 
 def predict():
     """
         Loads model from checkpoint.
-        Model used in training_modules/lightning_wrapper.py and declaration of that model in training_modules/models.py
+        Model used in lightning_module.py and declaration of that model in models.py
         should be the same as during training.
     """
 
@@ -22,10 +20,10 @@ def predict():
     pretrained_model.freeze()
 
     # load data
-    img = Image.open("example_img.png").convert("RGB")
+    img = Image.open("../../example_img.png").convert("RGB")
 
     # preprocess
-    img = transforms.efficient_net_test_preprocess(img)
+    img = transforms.test_preprocess(img)
     img = img.reshape((1, *img.size()))  # reshape to form batch of size 1
 
     # inference

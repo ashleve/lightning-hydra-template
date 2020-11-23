@@ -1,11 +1,10 @@
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from pl_bolts.models.regression import LinearRegression, LogisticRegression
-from torch.nn.functional import one_hot
-import torch.nn.functional as F
+from sklearn.metrics import accuracy_score
 import pytorch_lightning as pl
+import torch.nn.functional as F
+import torch
 
 # custom models
-from training_modules.models import *
+from models.simple_mnist_classifier.models import *
 
 
 class LitModel(pl.LightningModule):
@@ -16,7 +15,7 @@ class LitModel(pl.LightningModule):
         if hparams:
             self.save_hyperparameters(hparams)
 
-        self.model = SimpleLinearMNIST(config=self.hparams)
+        self.model = SimpleMNISTClassifier(config=self.hparams)
 
     def forward(self, x):
         return self.model(x)

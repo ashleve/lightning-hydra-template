@@ -1,7 +1,6 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import pytorch_lightning as pl
-from shutil import copy, copyfile
-import seaborn
+from shutil import copy
 import torch
 import wandb
 import os
@@ -88,6 +87,7 @@ class MetricsHeatmapLoggerCallback(pl.Callback):
     """
         Generate f1, precision and recall heatmap calculated from each validation epoch outputs.
         Expects validation step to return predictions and targets.
+        Works only for single label classification!
     """
     def __init__(self):
         self.preds = []
@@ -128,7 +128,7 @@ class MetricsHeatmapLoggerCallback(pl.Callback):
 
 class SaveCodeToWandbCallback(pl.Callback):
     """
-        Upload specified files to wandb at the beginning of the run.
+        Upload specified code files to wandb at the beginning of the run.
     """
     def __init__(self, wandb_save_dir):
         self.wandb_save_dir = wandb_save_dir
@@ -136,12 +136,12 @@ class SaveCodeToWandbCallback(pl.Callback):
             "training_modules/callbacks.py",
             "training_modules/datamodules.py",
             "training_modules/datasets.py",
-            "training_modules/lightning_wrapper.py",
+            "training_modules/lightning_module.py",
             "training_modules/loggers.py",
             "training_modules/models.py",
             "training_modules/transforms.py",
             "train.py",
-            "config.yaml"
+            "train_config.yaml"
         ]
 
     def on_sanity_check_end(self, trainer, pl_module):

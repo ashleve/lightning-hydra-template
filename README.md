@@ -99,7 +99,7 @@ Installation command generator: https://pytorch.org/get-started/locally/
 <br>
 
 
-## [config.yaml](project/config.yaml) parameters explanation:
+## [config.yaml](project/train_config.yaml) parameters explanation:
 ```yaml
 num_of_gpus: -1                     <- -1 means use all gpus available on your machine, 0 means train on cpu
 

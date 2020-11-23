@@ -2,15 +2,16 @@ from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger, CometLogge
 import os
 
 
-def get_wandb_logger(config, lit_model, datamodule):
+def get_wandb_logger(train_config, model_config, lit_model, datamodule):
     wandb_logger = WandbLogger(
-        project=config["loggers"]["wandb"]["project"],
-        job_type=config["loggers"]["wandb"]["job_type"],
-        tags=config["loggers"]["wandb"]["tags"],
-        entity=config["loggers"]["wandb"]["team"],
-        id=config["resume"]["wandb_run_id"] if config["resume"]["resume_from_ckpt"] else None,
-        log_model=config["loggers"]["wandb"]["log_model"],
-        offline=config["loggers"]["wandb"]["offline"],
+        project=train_config["loggers"]["wandb"]["project"],
+        job_type=train_config["loggers"]["wandb"]["job_type"],
+        tags=train_config["loggers"]["wandb"]["tags"],
+        entity=train_config["loggers"]["wandb"]["team"],
+        id=model_config["resume_training"]["wandb"]["wandb_run_id"]
+        if model_config["resume_training"]["wandb"]["resume_wandb_run"] else None,
+        log_model=train_config["loggers"]["wandb"]["log_model"],
+        offline=train_config["loggers"]["wandb"]["offline"],
         save_dir="logs/",
         save_code=False
     )

@@ -49,12 +49,12 @@ def download_artifact():
 
 def download_model_from_wandb_run():
     """
-        WARNING: This will overwrite your training_modules/models.py and training_modules/lightning_wrapper.py files!
+        WARNING: This will overwrite your training_modules/models.py and training_modules/lightning_module.py files!
     """
     RUN_ID = "kino/hackathon_template_test/lx9voyom"
     MODEL_PATH = "last.ckpt"
     CODE_PATHS = [
-        "code/training_modules/lightning_wrapper.py",
+        "code/training_modules/lightning_module.py",
         "code/training_modules/models.py"
     ]
 

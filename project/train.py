@@ -1,46 +1,54 @@
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.profiler import SimpleProfiler
+import importlib
 import yaml
 
-# custom
-from training_modules.lightning_wrapper import LitModel
-from training_modules.loggers import *
-from training_modules.datamodules import *
+# training modules
+import training_modules.datamodules
 from training_modules.callbacks import *
+from training_modules.loggers import *
 
 
-def train(config):
+def train():
+    # Load train config
+    train_config = load_config(path="train_config.yaml")
+
+    # Load model config
+    model_config_path = os.path.join("models", train_config["model"], "config.yaml")
+    model_config = load_config(path=model_config_path)
+
+    # Init lightning model
+    module_path = "models." + train_config["model"] + ".lightning_module"
+    lit_model = importlib.import_module(module_path).LitModel(hparams=model_config["hparams"])
+
     # Init data module
-    datamodule = MNISTDataModule(
-        batch_size=config["hparams"]["batch_size"],
-        split_ratio=config["hparams"]["train_val_split_ratio"]
-    )
+    datamodule_name = train_config["data"]
+    args = train_config["dataset_params"][datamodule_name]
+    args["batch_size"] = model_config["hparams"]["batch_size"]
+    datamodule = getattr(training_modules.datamodules, train_config["data"])(**args)
     datamodule.prepare_data()
     datamodule.setup()
 
-    # Init our model
-    model = LitModel(hparams=config["hparams"])
-
     # Init experiment logger
-    logger = get_wandb_logger(config, model, datamodule)
+    logger = get_wandb_logger(train_config, model_config, lit_model, datamodule)
 
     # Init callbacks
     callbacks = [
         EarlyStopping(
-            monitor=config["callbacks"]["early_stop"]["monitor"],
-            patience=config["callbacks"]["early_stop"]["patience"],
-            mode=config["callbacks"]["early_stop"]["mode"],
+            monitor=train_config["callbacks"]["early_stop"]["monitor"],
+            patience=train_config["callbacks"]["early_stop"]["patience"],
+            mode=train_config["callbacks"]["early_stop"]["mode"],
         ),
         ModelCheckpoint(
-            monitor=config["callbacks"]["checkpoint"]["monitor"],
-            save_top_k=config["callbacks"]["checkpoint"]["save_top_k"],
-            mode=config["callbacks"]["checkpoint"]["mode"],
-            save_last=config["callbacks"]["checkpoint"]["save_last"],
+            monitor=train_config["callbacks"]["checkpoint"]["monitor"],
+            save_top_k=train_config["callbacks"]["checkpoint"]["save_top_k"],
+            mode=train_config["callbacks"]["checkpoint"]["mode"],
+            save_last=train_config["callbacks"]["checkpoint"]["save_last"],
         ),
         # MetricsHeatmapLoggerCallback(),
         # UnfreezeModelCallback(wait_epochs=5),
         # ImagePredictionLoggerCallback(datamodule=datamodule),
-        SaveCodeToWandbCallback(wandb_save_dir=logger.save_dir),
+        # SaveCodeToWandbCallback(wandb_save_dir=logger.save_dir),
         # SaveOnnxModelToWandbCallback(datamodule=datamodule, save_dir=logger.save_dir)
     ]
 
@@ -48,14 +56,15 @@ def train(config):
     trainer = pl.Trainer(
         logger=logger,
         callbacks=callbacks,
-        gpus=config["num_of_gpus"],
-        max_epochs=config["hparams"]["max_epochs"],
-        resume_from_checkpoint=config["resume"]["ckpt_path"] if config["resume"]["resume_from_ckpt"] else None,
-        accumulate_grad_batches=config["hparams"]["accumulate_grad_batches"],
-        gradient_clip_val=config["hparams"]["gradient_clip_val"],
-        progress_bar_refresh_rate=config["printing"]["progress_bar_refresh_rate"],
-        profiler=SimpleProfiler() if config["printing"]["profiler"] else None,
-        weights_summary=config["printing"]["weights_summary"],
+        gpus=train_config["num_of_gpus"],
+        max_epochs=model_config["hparams"]["max_epochs"],
+        resume_from_checkpoint=model_config["resume_training"]["lightning_ckpt"]["ckpt_path"]
+        if model_config["resume_training"]["lightning_ckpt"]["resume_from_ckpt"] else None,
+        accumulate_grad_batches=model_config["hparams"]["accumulate_grad_batches"],
+        gradient_clip_val=model_config["hparams"]["gradient_clip_val"],
+        progress_bar_refresh_rate=train_config["printing"]["progress_bar_refresh_rate"],
+        profiler=SimpleProfiler() if train_config["printing"]["profiler"] else None,
+        weights_summary=train_config["printing"]["weights_summary"],
         num_sanity_val_steps=3,
         default_root_dir="logs/lightning_logs"
         # fast_dev_run=True,
@@ -75,17 +84,17 @@ def train(config):
     # trainer.save_checkpoint("random.ckpt")
 
     # Train the model ⚡
-    trainer.fit(model=model, datamodule=datamodule)
+    trainer.fit(model=lit_model, datamodule=datamodule)
 
     # Evaluate model on test set
     trainer.test()
 
 
-def load_config():
-    with open("config.yaml", "r") as ymlfile:
+def load_config(path):
+    with open(path, "r") as ymlfile:
         config = yaml.load(ymlfile, Loader=yaml.FullLoader)
     return config
 
 
 if __name__ == "__main__":
-    train(config=load_config())
+    train()

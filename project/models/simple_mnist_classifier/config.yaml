@@ -1,0 +1,21 @@
+hparams:
+    max_epochs: 3
+    batch_size: 64
+    lr: 0.001
+    weight_decay: 0.000001
+    gradient_clip_val: 0.5
+    accumulate_grad_batches: 1
+    input_size: 784  # img size is 28*28*1
+    output_size: 10
+    lin1_size: 256
+    lin2_size: 256
+    lin3_size: 128
+
+
+resume_training:
+    lightning_ckpt:
+        resume_from_ckpt: False
+        ckpt_path: "checkpoints/epoch=2.ckpt"
+    wandb:
+        resume_wandb_run: False
+        wandb_run_id: "8uuomodb"
