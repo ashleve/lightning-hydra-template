@@ -5,7 +5,7 @@ A convenient starting template for most deep learning projects. Built with <b>Py
 
 ## Setup
 Read [SETUP.md](SETUP.md)
-<br>
+<br><br>
 
 
 ## Project structure
@@ -22,7 +22,7 @@ The directory structure of new project looks like this:
 │   │
 │   ├── notebooks           <- Jupyter notebooks
 │   │
-│   ├── lightning_modules           <- PyTorch Lightning related modules
+│   ├── lightning_modules   <- PyTorch Lightning related modules
 │   │   ├── data_modules                <- Data related modules
 │   │   │   ├── datamodules.py              <- "LightningDataModule" modules
 │   │   │   ├── datasets.py                 <- "Dataset" modules
@@ -31,14 +31,19 @@ The directory structure of new project looks like this:
 │   │   ├── callbacks.py                <- Training callbacks
 │   │   └── init_utils.py               <- Some useful initializers
 │   │
-│   ├── models                      <- All your models should be located here
-│   │   ├── simple_mnist_classifier     <- Example model folder name
+│   ├── models
+│   │   ├── simple_mnist_classifier     <- Example model
 │   │   │   ├── lightning_module.py         <- Contains train/val/test step methods
 │   │   │   ├── models.py                   <- Neural networks declarations
 │   │   │   ├── predict.py                  <- Predicting from trained model
 │   │   │   └── __init__.py
 │   │   │
-│   │   ├── ...
+│   │   ├── simple_cifar10_classifier   <- Example model
+│   │   │   ├── lightning_module.py
+│   │   │   ├── models.py
+│   │   │   ├── predict.py
+│   │   │   └── __init__.py
+│   │   │
 │   │   └── ...
 │   │
 │   ├── config.yaml         <- Training configuration
@@ -52,7 +57,6 @@ The directory structure of new project looks like this:
 ├── TIPS.md
 └── requirements.txt
 ```
-<br>
 
 ## Config parameters 
 #### [config.yaml](project/config.yaml):
@@ -121,7 +125,6 @@ printing:
     weights_summary: "top"
     profiler: False
 ```
-<br>
 
 ## Tips
 Read [TIPS.md](TIPS.md)
