@@ -230,4 +230,4 @@ project/lightning_logs/
 project/wandb/
 project/logs/
 
-project/train_config.yaml
+project/config.yaml

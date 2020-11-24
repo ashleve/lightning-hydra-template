@@ -141,7 +141,7 @@ class SaveCodeToWandbCallback(pl.Callback):
             "training_modules/models.py",
             "training_modules/transforms.py",
             "train.py",
-            "train_config.yaml"
+            "config.yaml"
         ]
 
     def on_sanity_check_end(self, trainer, pl_module):

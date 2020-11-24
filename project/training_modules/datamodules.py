@@ -1,7 +1,6 @@
 from torch.utils.data import DataLoader, random_split
 from torchvision.datasets import MNIST, CIFAR10
 import pytorch_lightning as pl
-import numpy as np
 
 # custom
 from models.transfer_learning_cifar10_classifier.transforms import *
@@ -22,10 +21,6 @@ class ExampleDataModule(pl.LightningDataModule):
         self.data_train = None
         self.data_val = None
         self.data_test = None
-
-        # optional variables
-        self.input_dims = None
-        self.input_size = None
 
     def prepare_data(self):
         """Download data if needed."""
@@ -63,9 +58,6 @@ class MNISTDataModule(pl.LightningDataModule):
         self.data_val = None
         self.data_test = None
 
-        self.input_dims = None
-        self.input_size = None
-
     def prepare_data(self):
         """Download data if needed."""
         MNIST(self.data_dir, train=True, download=True)
@@ -80,9 +72,6 @@ class MNISTDataModule(pl.LightningDataModule):
 
         self.data_train, self.data_val = random_split(trainset, train_val_split)
         self.data_test = MNIST(self.data_dir, train=False, transform=transforms.ToTensor())
-
-        self.input_dims = self.data_train[0][0].shape
-        self.input_size = np.prod(self.input_dims)
 
     def train_dataloader(self):
         return DataLoader(self.data_train, batch_size=self.batch_size, num_workers=self.num_workers,
@@ -112,9 +101,6 @@ class CIFAR10DataModule(pl.LightningDataModule):
         self.data_val = None
         self.data_test = None
 
-        self.input_dims = None
-        self.input_size = None
-
     def prepare_data(self):
         """Download data if needed."""
         CIFAR10(self.data_dir, train=True, download=True)
@@ -129,9 +115,6 @@ class CIFAR10DataModule(pl.LightningDataModule):
 
         self.data_train, self.data_val = random_split(trainset, train_val_split)
         self.data_test = CIFAR10(self.data_dir, train=False, transform=transforms.ToTensor())
-
-        self.input_dims = self.data_train[0][0].shape
-        self.input_size = np.prod(self.input_dims)
 
     def train_dataloader(self):
         return DataLoader(self.data_train, batch_size=self.batch_size, num_workers=self.num_workers,
