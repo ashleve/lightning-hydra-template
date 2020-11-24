@@ -47,26 +47,27 @@ def download_artifact():
     print("Files are being downloaded now...")
 
 
-def download_model_from_wandb_run():
-    """
-        WARNING: This will overwrite your training_modules/models.py and training_modules/lightning_module.py files!
-    """
-    RUN_ID = "kino/hackathon_template_test/lx9voyom"
-    MODEL_PATH = "last.ckpt"
-    CODE_PATHS = [
-        "code/training_modules/lightning_module.py",
-        "code/training_modules/models.py"
-    ]
-
-    api = wandb.Api()
-    run = api.run(path=RUN_ID)
-
-    # download model
-    run.file(MODEL_PATH).download(replace=True)
-
-    # download and replace your code
-    for path in CODE_PATHS:
-        run.file(path).download(root="../training_modules/", replace=True)
+# TODO
+# def download_model_from_wandb_run():
+#     """
+#         WARNING: This will overwrite your lightning_modules/models.py and lightning_modules/lightning_module.py files!
+#     """
+#     RUN_ID = "kino/hackathon_template_test/lx9voyom"
+#     MODEL_PATH = "last.ckpt"
+#     CODE_PATHS = [
+#         "code/lightning_modules/lightning_module.py",
+#         "code/lightning_modules/models.py"
+#     ]
+#
+#     api = wandb.Api()
+#     run = api.run(path=RUN_ID)
+#
+#     # download model
+#     run.file(MODEL_PATH).download(replace=True)
+#
+#     # download and replace your code
+#     for path in CODE_PATHS:
+#         run.file(path).download(root="../lightning_modules/", replace=True)
 
 
 if __name__ == "__main__":

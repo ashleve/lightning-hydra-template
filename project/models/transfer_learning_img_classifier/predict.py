@@ -1,5 +1,5 @@
 from models.transfer_learning_img_classifier.lightning_module import LitModel
-from models.transfer_learning_img_classifier import transforms
+from lightning_modules.data_modules import transforms
 from PIL import Image
 
 
@@ -23,7 +23,7 @@ def predict():
     img = Image.open("../../example_img.png").convert("RGB")
 
     # preprocess
-    img = transforms.test_preprocess(img)
+    img = transforms.imagenet_test_preprocess(img)
     img = img.reshape((1, *img.size()))  # reshape to form batch of size 1
 
     # inference

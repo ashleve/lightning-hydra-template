@@ -1,6 +1,7 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import pytorch_lightning as pl
 from shutil import copy
+import inspect
 import torch
 import wandb
 import os
@@ -130,17 +131,18 @@ class SaveCodeToWandbCallback(pl.Callback):
     """
         Upload specified code files to wandb at the beginning of the run.
     """
-    def __init__(self, wandb_save_dir, model):
+    def __init__(self, wandb_save_dir, lit_model):
         self.wandb_save_dir = wandb_save_dir
         self.additional_files_to_be_saved = [
-            "training_modules/callbacks.py",
-            "training_modules/datamodules.py",
-            "training_modules/datasets.py",
-            "training_modules/loggers.py",
+            "lightning_modules/data_modules/datamodules.py",
+            "lightning_modules/data_modules/datasets.py",
+            "lightning_modules/data_modules/transforms.py",
+            "lightning_modules/callbacks.py",
+            "lightning_modules/init_utils.py",
             "train.py",
             "config.yaml"
         ]
-        self.model_path = os.path.dirname(model.__file__)
+        self.model_path = os.path.dirname(inspect.getfile(lit_model.__class__))
 
     def on_sanity_check_end(self, trainer, pl_module):
         """Upload files when all validation sanity checks end."""
@@ -156,7 +158,8 @@ class SaveCodeToWandbCallback(pl.Callback):
 
         for filename in os.listdir(self.model_path):
             if filename.endswith('.py'):
-                dst_path = os.path.join(self.wandb_save_dir, "code", "models", os.path.basename(self.model_path), filename)
+                dst_path = os.path.join(self.wandb_save_dir, "code", "models", os.path.basename(self.model_path),
+                                        filename)
 
                 path, filename = os.path.split(dst_path)
                 if not os.path.exists(path):
