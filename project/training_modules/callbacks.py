@@ -136,10 +136,10 @@ class SaveCodeToWandbCallback(pl.Callback):
             "training_modules/callbacks.py",
             "training_modules/datamodules.py",
             "training_modules/datasets.py",
-            "training_modules/lightning_module.py",
             "training_modules/loggers.py",
-            "training_modules/models.py",
-            "training_modules/transforms.py",
+            "lightning_module.py",
+            "models.py",
+            "transforms.py",
             "train.py",
             "config.yaml"
         ]

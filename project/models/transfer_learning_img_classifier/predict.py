@@ -1,5 +1,5 @@
-from models.transfer_learning_cifar10_classifier.lightning_module import LitModel
-from models.transfer_learning_cifar10_classifier import transforms
+from models.transfer_learning_img_classifier.lightning_module import LitModel
+from models.transfer_learning_img_classifier import transforms
 from PIL import Image
 
 

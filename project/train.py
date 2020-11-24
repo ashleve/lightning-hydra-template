@@ -9,7 +9,7 @@ from training_modules.loggers import *
 
 # custom models
 from models import simple_mnist_classifier
-from models import transfer_learning_cifar10_classifier
+from models import transfer_learning_img_classifier
 
 
 def train(config):
@@ -24,7 +24,7 @@ def train(config):
     lit_model = MODEL.LitModel(hparams=MODEL_PARAMS)
 
     # Init data
-    datamodule = DATASET(**DATASET_PARAMS)
+    datamodule = DATASET(**DATASET_PARAMS, transforms=MODEL.train_preprocess)
     datamodule.prepare_data()
     datamodule.setup()
 
@@ -65,18 +65,18 @@ def train(config):
         accumulate_grad_batches=MODEL_PARAMS["accumulate_grad_batches"],
         gradient_clip_val=MODEL_PARAMS["gradient_clip_val"],
 
-        # printing related:
+        # print related:
         progress_bar_refresh_rate=config["printing"]["progress_bar_refresh_rate"],
         profiler=SimpleProfiler() if config["printing"]["profiler"] else None,
         weights_summary=config["printing"]["weights_summary"],
 
         # these are mostly for debugging:
-        # fast_dev_run=False,
-        # num_sanity_val_steps=3,
-        # limit_train_batches=1.0,
-        # limit_val_batches=1.0,
-        # limit_test_batches=1.0,
-        # val_check_interval=1.0,
+        fast_dev_run=False,
+        num_sanity_val_steps=3,
+        limit_train_batches=1.0,
+        limit_val_batches=1.0,
+        limit_test_batches=1.0,
+        val_check_interval=1.0,
 
         default_root_dir="logs/lightning_logs",
     )

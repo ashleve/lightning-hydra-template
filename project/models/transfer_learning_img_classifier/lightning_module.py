@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch
 
 # custom models
-from models.transfer_learning_cifar10_classifier.models import *
+from models.transfer_learning_img_classifier.models import *
 
 
 class LitModel(pl.LightningModule):

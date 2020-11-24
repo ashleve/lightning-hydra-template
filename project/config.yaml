@@ -21,7 +21,7 @@ models:
                 num_workers: 1
                 pin_memory: False
 
-    transfer_learning_cifar10_classifier:
+    transfer_learning_img_classifier:
         hparams:
             max_epochs: 3
             lr: 0.001
