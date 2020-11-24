@@ -2,6 +2,7 @@ from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger, CometLogge
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from lightning_modules.data_modules import datamodules, transforms
 import importlib
+import os
 
 
 def init_lit_model(model_config):
@@ -52,6 +53,8 @@ def init_wandb_logger(config, lit_model, datamodule):
         save_dir="logs/",
         save_code=False
     )
+    if not os.path.exists("logs/"):
+        os.mkdir("logs/")
     wandb_logger.watch(lit_model.model, log=None)
     wandb_logger.log_hyperparams({
         "model_name": lit_model.model.__class__.__name__,
