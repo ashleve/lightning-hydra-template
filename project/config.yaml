@@ -1,48 +1,66 @@
 num_of_gpus: -1
 
 
-models:
-    simple_mnist_classifier:
-        hparams:
-            max_epochs: 3
-            lr: 0.001
-            weight_decay: 0.000001
-            gradient_clip_val: 0.5
-            accumulate_grad_batches: 1
-            input_size: 784  # img size is 28*28*1
-            output_size: 10
-            lin1_size: 256
-            lin2_size: 256
-            lin3_size: 128
-        datasets:
-            MNISTDataModule:
-                batch_size: 64
-                train_val_split_ratio: 0.9
-                num_workers: 1
-                pin_memory: False
+model_configs:
+    simple_mnist_classifier_v1:
+        max_epochs: 3
+        lr: 0.001
+        weight_decay: 0.000001
+        gradient_clip_val: 0.5
+        accumulate_grad_batches: 1
+        input_size: 784  # img size is 28*28*1
+        output_size: 10
+        lin1_size: 256
+        lin2_size: 256
+        lin3_size: 128
 
-    transfer_learning_img_classifier:
-        hparams:
-            max_epochs: 3
-            lr: 0.001
-            weight_decay: 0.000001
-            gradient_clip_val: 0.5
-            accumulate_grad_batches: 1
-            output_size: 10
-            lin1_size: 256
-            lin2_size: 256
-        datasets:
-            CIFAR10DataModule:
-                batch_size: 64
-                train_val_split_ratio: 0.9
-                num_workers: 1
-                pin_memory: False
+    simple_mnist_classifier_v2:
+        max_epochs: 10
+        lr: 0.0005
+        weight_decay: 0.0001
+        gradient_clip_val: 0.5
+        accumulate_grad_batches: 1
+        input_size: 784
+        output_size: 10
+        lin1_size: 256
+        lin2_size: 256
+        lin3_size: 128
+
+    transfer_learning_img_classifier_v1:
+        max_epochs: 5
+        lr: 0.001
+        weight_decay: 0.000001
+        gradient_clip_val: 0.5
+        accumulate_grad_batches: 1
+        output_size: 10
+        lin1_size: 512
+        lin2_size: 256
+
+
+dataset_configs:
+    mnist_digits_v1:
+        batch_size: 64
+        train_val_split_ratio: 0.8
+        num_workers: 1
+        pin_memory: False
+
+    mnist_digits_v2:
+        batch_size: 256
+        train_val_split_ratio: 0.9
+        num_workers: 4
+        pin_memory: True
+
+    cifar10_v1:
+        batch_size: 64
+        train_val_split_ratio: 0.9
+        num_workers: 1
+        pin_memory: False
 
 
 resume_training:
     lightning_ckpt:
         resume_from_ckpt: False
-        ckpt_path: "checkpoints/epoch=2.ckpt"
+        ckpt_path: "logs/checkpoints/epoch=2.ckpt"
     wandb:
         resume_wandb_run: False
         wandb_run_id: "8uuomodb"

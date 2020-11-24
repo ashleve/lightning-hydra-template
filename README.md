@@ -1,10 +1,10 @@
 # Hackathon template
-A convenient starting template for most deep learning projects. Built with PyTorch Lightning and Weights&Biases (wandb).
-
+A convenient starting template for most deep learning projects. Built with PyTorch Lightning and Weights&Biases.
+<br>
 
 ## Setup
 Read [SETUP.md](SETUP.md)
-
+<br>
 
 ## Project structure
 The directory structure of new project looks like this: 
@@ -37,7 +37,7 @@ The directory structure of new project looks like this:
 ├── README.md
 └── requirements.txt
 ```
-
+<br>
 
 ## Config parameters explanation 
 #### [config.yaml](project/config.yaml):
@@ -84,7 +84,7 @@ printing:
     profiler: False                         <- True will print mean execution time of all methods at the end of the training
 
 ```
-
+<br>
 
 ## Tips
-See [USEFUL_TIPS.md](USEFUL_TIPS.md)
+Read [TIPS.md](TIPS.md)

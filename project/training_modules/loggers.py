@@ -21,6 +21,7 @@ def get_wandb_logger(config, lit_model, datamodule):
         "model_name": lit_model.model.__class__.__name__,
         "parent_folder": os.path.basename(os.path.dirname((inspect.getfile(lit_model.__class__)))),
         "datamodule_name": datamodule.__class__.__name__,
+        "batch_size": datamodule.batch_size,
         "optimizer": lit_model.configure_optimizers().__class__.__name__,
         "train_size": len(datamodule.data_train) if datamodule.data_train is not None else 0,
         "val_size": len(datamodule.data_val) if datamodule.data_train is not None else 0,

@@ -14,17 +14,18 @@ from models import transfer_learning_img_classifier
 
 def train(config):
 
-    # CHOOSE MODEL AND DATASET HERE!!
+    # --------------------------------- CHOOSE MODEL, DATASET AND CONFIGS HERE!! --------------------------------- #
     MODEL = simple_mnist_classifier
     DATASET = MNISTDataModule
-    MODEL_PARAMS = config["models"]["simple_mnist_classifier"]["hparams"]
-    DATASET_PARAMS = config["models"]["simple_mnist_classifier"]["datasets"]["MNISTDataModule"]
+    MODEL_CONFIG = config["model_configs"]["simple_mnist_classifier_v1"]
+    DATASET_CONFIG = config["dataset_configs"]["mnist_digits_v1"]
+    # ------------------------------------------------------------------------------------------------------------ #
 
     # Init model
-    lit_model = MODEL.LitModel(hparams=MODEL_PARAMS)
+    lit_model = MODEL.LitModel(hparams=MODEL_CONFIG)
 
     # Init data
-    datamodule = DATASET(**DATASET_PARAMS, transforms=MODEL.train_preprocess)
+    datamodule = DATASET(**DATASET_CONFIG, transforms=MODEL.train_preprocess)
     datamodule.prepare_data()
     datamodule.setup()
 
@@ -61,9 +62,9 @@ def train(config):
         if config["resume_training"]["lightning_ckpt"]["resume_from_ckpt"] else None,
 
         # model related:
-        max_epochs=MODEL_PARAMS["max_epochs"],
-        accumulate_grad_batches=MODEL_PARAMS["accumulate_grad_batches"],
-        gradient_clip_val=MODEL_PARAMS["gradient_clip_val"],
+        max_epochs=MODEL_CONFIG["max_epochs"],
+        accumulate_grad_batches=MODEL_CONFIG["accumulate_grad_batches"],
+        gradient_clip_val=MODEL_CONFIG["gradient_clip_val"],
 
         # print related:
         progress_bar_refresh_rate=config["printing"]["progress_bar_refresh_rate"],
