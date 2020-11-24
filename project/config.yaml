@@ -1,26 +1,72 @@
 num_of_gpus: -1
 
-hparams:
-    # these hyperparameters should always be in this file
-    max_epochs: 3
-    batch_size: 64
-    lr: 0.001
-    weight_decay: 0.000001
-    gradient_clip_val: 0.5
-    accumulate_grad_batches: 1
+model_configs:
+    simple_mnist_classifier_v1: # everything inside will be saved to to wandb and in model checkpoint
+        model_folder_name: "simple_mnist_classifier"
+        max_epochs: 3
+        lr: 0.001
+        batch_size: 64
+        weight_decay: 0.000001
+        gradient_clip_val: 0.5
+        accumulate_grad_batches: 1
+        input_size: 784  # img size is 28*28*1
+        output_size: 10
+        lin1_size: 256
+        lin2_size: 256
+        lin3_size: 128
+        dataset:
+            class_name: "MNISTDataModule"
+            train_transforms: "minst_train_preprocess"
+            test_transforms: "minst_test_preprocess"
+            train_val_split_ratio: 0.8
+            num_workers: 1
+            pin_memory: False
 
-    # these hyperparameters are custom, you can add here anything
-    train_val_split_ratio: 0.9
-    output_size: 10
-    lin1_size: 256
-    lin2_size: 256
-    lin3_size: 128
+    transfer_learning_cifar10_classifier_v1:
+        model_folder_name: "transfer_learning_img_classifier"
+        max_epochs: 3
+        lr: 0.001
+        batch_size: 128
+        weight_decay: 0.000001
+        gradient_clip_val: 0.5
+        accumulate_grad_batches: 1
+        output_size: 10
+        lin1_size: 512
+        lin2_size: 256
+        dataset:
+            class_name: "CIFAR10DataModule"
+            train_transforms: "cifar10_train_preprocess"
+            test_transforms: "cifar10_test_preprocess"
+            train_val_split_ratio: 0.9
+            num_workers: 1
+            pin_memory: False
 
+    transfer_learning_cifar10_classifier_v2:
+        model_folder_name: "transfer_learning_img_classifier"
+        max_epochs: 3
+        lr: 0.001
+        batch_size: 128
+        weight_decay: 0.000001
+        gradient_clip_val: 0.5
+        accumulate_grad_batches: 1
+        output_size: 10
+        lin1_size: 512
+        lin2_size: 256
+        dataset:
+            class_name: "CIFAR10DataModule"
+            train_transforms: "cifar10_train_preprocess"
+            test_transforms: "cifar10_test_preprocess"
+            train_val_split_ratio: 0.9
+            num_workers: 1
+            pin_memory: False
 
-resume:  # this is for resuming training from lightning checkpoint
-    resume_from_ckpt: False
-    wandb_run_id: "8uuomodb"
-    ckpt_path: "checkpoints/epoch=2.ckpt"
+resume_training:
+    lightning_ckpt:
+        resume_from_ckpt: False
+        ckpt_path: "logs/checkpoints/epoch=2.ckpt"
+    wandb:
+        resume_wandb_run: False
+        wandb_run_id: "8uuomodb"
 
 loggers:
     wandb:

@@ -1,7 +1,7 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import pytorch_lightning as pl
-from shutil import copy, copyfile
-import seaborn
+from shutil import copy
+import inspect
 import torch
 import wandb
 import os
@@ -88,6 +88,7 @@ class MetricsHeatmapLoggerCallback(pl.Callback):
     """
         Generate f1, precision and recall heatmap calculated from each validation epoch outputs.
         Expects validation step to return predictions and targets.
+        Works only for single label classification!
     """
     def __init__(self):
         self.preds = []
@@ -128,25 +129,24 @@ class MetricsHeatmapLoggerCallback(pl.Callback):
 
 class SaveCodeToWandbCallback(pl.Callback):
     """
-        Upload specified files to wandb at the beginning of the run.
+        Upload specified code files to wandb at the beginning of the run.
     """
-    def __init__(self, wandb_save_dir):
+    def __init__(self, wandb_save_dir, lit_model):
         self.wandb_save_dir = wandb_save_dir
-        self.files_to_be_saved = [
-            "training_modules/callbacks.py",
-            "training_modules/datamodules.py",
-            "training_modules/datasets.py",
-            "training_modules/lightning_wrapper.py",
-            "training_modules/loggers.py",
-            "training_modules/models.py",
-            "training_modules/transforms.py",
+        self.additional_files_to_be_saved = [
+            "lightning_modules/data_modules/datamodules.py",
+            "lightning_modules/data_modules/datasets.py",
+            "lightning_modules/data_modules/transforms.py",
+            "lightning_modules/callbacks.py",
+            "lightning_modules/init_utils.py",
             "train.py",
             "config.yaml"
         ]
+        self.model_path = os.path.dirname(inspect.getfile(lit_model.__class__))
 
     def on_sanity_check_end(self, trainer, pl_module):
         """Upload files when all validation sanity checks end."""
-        for file in self.files_to_be_saved:
+        for file in self.additional_files_to_be_saved:
             dst_path = os.path.join(self.wandb_save_dir, "code", file)
 
             path, filename = os.path.split(dst_path)
@@ -155,3 +155,16 @@ class SaveCodeToWandbCallback(pl.Callback):
 
             copy(file, dst_path)
             wandb.save(dst_path, base_path=self.wandb_save_dir)  # this line is only to make upload immediate
+
+        for filename in os.listdir(self.model_path):
+            if filename.endswith('.py'):
+                dst_path = os.path.join(self.wandb_save_dir, "code", "models", os.path.basename(self.model_path),
+                                        filename)
+
+                path, filename = os.path.split(dst_path)
+                if not os.path.exists(path):
+                    os.makedirs(path)
+
+                file_path = os.path.join(self.model_path, filename)
+                copy(file_path, dst_path)
+                wandb.save(dst_path, base_path=self.wandb_save_dir)  # this line is only to make upload immediate
