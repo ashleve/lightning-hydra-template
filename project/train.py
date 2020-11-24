@@ -23,7 +23,7 @@ def train(config):
     # Init model
     lit_model = MODEL.LitModel(hparams=MODEL_PARAMS)
 
-    # Init dataset
+    # Init data
     datamodule = DATASET(**DATASET_PARAMS)
     datamodule.prepare_data()
     datamodule.setup()

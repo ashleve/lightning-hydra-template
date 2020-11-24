@@ -18,8 +18,8 @@ models:
             MNISTDataModule:
                 batch_size: 64
                 train_val_split_ratio: 0.9
-                num_workers: 4
-                pin_memory: True
+                num_workers: 1
+                pin_memory: False
 
     transfer_learning_cifar10_classifier:
         hparams:
@@ -35,8 +35,8 @@ models:
             CIFAR10DataModule:
                 batch_size: 64
                 train_val_split_ratio: 0.9
-                num_workers: 4
-                pin_memory: True
+                num_workers: 1
+                pin_memory: False
 
 
 resume_training:
