@@ -1,7 +1,6 @@
 num_of_gpus: -1
 
 model_configs:
-
     simple_mnist_classifier_v1: # everything inside will be saved to to wandb and in model checkpoint
         model_folder_name: "simple_mnist_classifier"
         max_epochs: 3
