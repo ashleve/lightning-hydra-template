@@ -47,7 +47,7 @@ def train(config):
         # MetricsHeatmapLoggerCallback(),
         # UnfreezeModelCallback(wait_epochs=5),
         # ImagePredictionLoggerCallback(datamodule=datamodule),
-        # SaveCodeToWandbCallback(wandb_save_dir=logger.save_dir),
+        SaveCodeToWandbCallback(wandb_save_dir=logger.save_dir, model=MODEL),
         # SaveOnnxModelToWandbCallback(datamodule=datamodule, save_dir=logger.save_dir)
     ]
 
