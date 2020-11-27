@@ -122,17 +122,12 @@ CIFAR10_CLASSIFIER_V2:
 The run configuration that you want to train with needs to be chose in [train.py](project/train.py):
 ```python
 if __name__ == "__main__":
-
-    # --------------------------------------- CHOOSE YOUR RUN CONFIG HEREE --------------------------------------- #
-    # --------------------------------------------------- ↓↓↓ ---------------------------------------------------- #
-    RUN_CONFIG = "MNIST_CLASSIFIER_V1"
-    # --------------------------------------------------- ↑↑↑ ---------------------------------------------------- #
-    # ------------------------------------------------------------------------------------------------------------ #
+    RUN_CONFIG = "MNIST_CLASSIFIER_V1"  # choose your run config here
 
     project_conf = load_config("project_config.yaml")
     run_conf = load_config("run_configs.yaml")[RUN_CONFIG]
-
-    train(project_config=project_conf, run_config=run_conf)
+    
+    train(project_config=project_conf, run_config=run_conf)  # train with chosen run config
 ```
 
 
