@@ -15,7 +15,7 @@ class LitModel(pl.LightningModule):
         if hparams:
             self.save_hyperparameters(hparams)
 
-        self.model = SimpleMNISTClassifier(config=self.hparams)
+        self.model = SimpleMNISTClassifier(hparams=self.hparams)
 
     def forward(self, x):
         return self.model(x)

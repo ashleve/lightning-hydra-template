@@ -1,30 +1,30 @@
 from pytorch_lightning.profiler import SimpleProfiler
 import yaml
 
-# lightning modules
-from lightning_modules.init_utils import *
-from lightning_modules.callbacks import *
+# utils
+from utils.init_utils import init_lit_model, init_data_module, init_main_callbacks, init_wandb_logger
+from utils.callbacks import *
 
 
 def train(project_config, run_config):
 
     # Init PyTorch Lightning model ⚡
-    lit_model = init_lit_model(model_config=run_config["model"])
+    lit_model = init_lit_model(hparams=run_config["model"])
 
     # Init PyTorch Lightning datamodule ⚡
-    datamodule = init_datamodule(dataset_config=run_config["dataset"])
+    datamodule = init_data_module(hparams=run_config["dataset"])
 
     # Init Weights&Biases logger
     logger = init_wandb_logger(project_config, run_config, lit_model, datamodule)
 
-    # Init checkpoint and early stoping callbacks
+    # Init ModelCheckpoint and EarlyStopping callbacks
     callbacks = init_main_callbacks(project_config)
 
-    # Add your custom callbacks
+    # Add custom callbacks from utils/callbacks.py
     callbacks.extend([
         # MetricsHeatmapLoggerCallback(),
         # UnfreezeModelCallback(wait_epochs=5),
-        SaveCodeToWandbCallback(wandb_save_dir=logger.save_dir, lit_model=lit_model),
+        SaveCodeToWandbCallback(wandb_save_dir=logger.save_dir, lit_model=lit_model, datamodule=datamodule),
     ])
 
     # Init PyTorch Lightning trainer ⚡
@@ -81,17 +81,15 @@ def load_config(path):
     return config
 
 
+def main(run_config_name):
+    # Load configs
+    project_config = load_config("project_config.yaml")
+    run_config = load_config("run_configs.yaml")[run_config_name]
+
+    # Train model
+    train(project_config=project_config, run_config=run_config)
+
+
 if __name__ == "__main__":
-
-    # --------------------------------------- CHOOSE YOUR RUN CONFIG HEREE --------------------------------------- #
-    # --------------------------------------------------- ↓↓↓ ---------------------------------------------------- #
-    RUN_CONFIG = "MNIST_CLASSIFIER_V1"
-    # RUN_CONFIG = "CIFAR10_CLASSIFIER_V1"
-    # RUN_CONFIG = "CIFAR10_CLASSIFIER_V2"
-    # --------------------------------------------------- ↑↑↑ ---------------------------------------------------- #
-    # --------------------------------------- CHOOSE YOUR RUN CONFIG HEREE --------------------------------------- #
-
-    project_conf = load_config("project_config.yaml")
-    run_conf = load_config("run_configs.yaml")[RUN_CONFIG]
-
-    train(project_config=project_conf, run_config=run_conf)
+    RUN_CONFIG_NAME = "MNIST_CLASSIFIER_V2"
+    main(run_config_name=RUN_CONFIG_NAME)

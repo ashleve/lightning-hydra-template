@@ -3,8 +3,11 @@ from PIL import Image
 import os
 
 
-class TestDatasetForImgs(Dataset):
-    """Example dataset class for loading images from folder."""
+class TestDataset(Dataset):
+    """
+        Example dataset class for loading images from folder.
+        'Dataset' classes can be used by 'DataModule' classes.
+    """
 
     def __init__(self, img_dir, transform):
         self.transform = transform

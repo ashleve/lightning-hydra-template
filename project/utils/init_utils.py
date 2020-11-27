@@ -1,24 +1,20 @@
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
-from data_modules import datamodules
 import importlib
 import os
 
 
-def init_lit_model(model_config):
+def init_lit_model(hparams):
     """Load LitModel from folder specified in run config."""
-    module_path = "models." + model_config["name"] + ".lightning_module"
-    model_config["model_folder_name"] = model_config.pop("name")
-    return importlib.import_module(module_path).LitModel(hparams=model_config)
+    module_path = "models." + hparams["model_folder"] + ".lightning_module"
+    lit_model = importlib.import_module(module_path).LitModel(hparams=hparams)
+    return lit_model
 
 
-def init_datamodule(dataset_config):
-    """Load datamodule from class specified in run config."""
-    datamodule_class = getattr(datamodules, dataset_config["name"])
-    dataset_config["datamodule_name"] = dataset_config.pop("name")
-    dataset_config = dataset_config.copy()
-    dataset_config.pop("datamodule_name")
-    datamodule = datamodule_class(**dataset_config)
+def init_data_module(hparams):
+    """Load DataModule from folder specified in run config."""
+    module_path = "data_modules." + hparams["datamodule_folder"] + ".datamodule"
+    datamodule = importlib.import_module(module_path).DataModule(hparams=hparams)
     datamodule.prepare_data()
     datamodule.setup()
     return datamodule
@@ -60,7 +56,8 @@ def init_wandb_logger(config, run_config, lit_model, datamodule):
         os.mkdir("logs/")
     if hasattr(lit_model, 'model'):
         wandb_logger.watch(lit_model.model, log=None)
-    wandb_logger.watch(lit_model, log=None)
+    else:
+        wandb_logger.watch(lit_model, log=None)
     wandb_logger.log_hyperparams({
         "model_name": lit_model.model.__class__.__name__,
         "optimizer": lit_model.configure_optimizers().__class__.__name__,
