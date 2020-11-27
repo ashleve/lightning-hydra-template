@@ -131,19 +131,17 @@ class SaveCodeToWandbCallback(pl.Callback):
     """
         Upload specified code files to wandb at the beginning of the run.
     """
-    def __init__(self, wandb_save_dir, lit_model):
+    def __init__(self, wandb_save_dir, lit_model, datamodule):
         self.wandb_save_dir = wandb_save_dir
         self.additional_files_to_be_saved = [
-            "data_modules/datamodules.py",
-            "data_modules/datasets.py",
-            "data_modules/transforms.py",
-            "lightning_modules/callbacks.py",
-            "lightning_modules/init_utils.py",
+            "utils/callbacks.py",
+            "utils/init_utils.py",
             "train.py",
             "project_config.yaml",
             "run_configs.yaml",
         ]
         self.model_path = os.path.dirname(inspect.getfile(lit_model.__class__))
+        self.datamodule_path = os.path.dirname(inspect.getfile(datamodule.__class__))
 
     def on_sanity_check_end(self, trainer, pl_module):
         """Upload files when all validation sanity checks end."""
@@ -167,5 +165,18 @@ class SaveCodeToWandbCallback(pl.Callback):
                     os.makedirs(path)
 
                 file_path = os.path.join(self.model_path, filename)
+                copy(file_path, dst_path)
+                wandb.save(dst_path, base_path=self.wandb_save_dir)  # this line is only to make upload immediate
+
+        for filename in os.listdir(self.datamodule_path):
+            if filename.endswith('.py'):
+                dst_path = os.path.join(self.wandb_save_dir, "code", "data_modules", os.path.basename(
+                    self.datamodule_path), filename)
+
+                path, filename = os.path.split(dst_path)
+                if not os.path.exists(path):
+                    os.makedirs(path)
+
+                file_path = os.path.join(self.datamodule_path, filename)
                 copy(file_path, dst_path)
                 wandb.save(dst_path, base_path=self.wandb_save_dir)  # this line is only to make upload immediate
