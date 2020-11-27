@@ -68,9 +68,9 @@ def init_wandb_logger(config, run_config, lit_model, datamodule):
         "val_size": len(datamodule.data_val) if datamodule.data_train is not None else 0,
         "test_size": len(datamodule.data_test) if datamodule.data_train is not None else 0,
     })
+    wandb_logger.log_hyperparams(run_config["trainer"])
     wandb_logger.log_hyperparams(run_config["model"])
     wandb_logger.log_hyperparams(run_config["dataset"])
-    wandb_logger.log_hyperparams(run_config["trainer"])
     return wandb_logger
 
 
