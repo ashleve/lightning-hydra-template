@@ -1,5 +1,5 @@
-from models.simple_mnist_classifier.lightning_module import LitModel
-from lightning_modules.data_modules import transforms
+from models.transfer_learning_img_classifier.lightning_module import LitModel
+from data_modules import transforms
 from PIL import Image
 
 
@@ -13,21 +13,21 @@ def predict():
     CKPT_PATH = "epoch=0.ckpt"
 
     # load model from checkpoint
-    pretrained_model = LitModel.load_from_checkpoint(checkpoint_path=CKPT_PATH)
+    trained_model = LitModel.load_from_checkpoint(checkpoint_path=CKPT_PATH)
 
     # switch to evaluation mode
-    pretrained_model.eval()
-    pretrained_model.freeze()
+    trained_model.eval()
+    trained_model.freeze()
 
     # load data
-    img = Image.open("../../example_img.png").convert("L")
+    img = Image.open("../../example_img.png").convert("RGB")
 
     # preprocess
-    img = transforms.mnist_test_preprocess(img)
+    img = transforms.imagenet_test_transforms(img)
     img = img.reshape((1, *img.size()))  # reshape to form batch of size 1
 
     # inference
-    output = pretrained_model(img)
+    output = trained_model(img)
     print(output)
 
 

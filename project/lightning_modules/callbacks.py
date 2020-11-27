@@ -134,13 +134,14 @@ class SaveCodeToWandbCallback(pl.Callback):
     def __init__(self, wandb_save_dir, lit_model):
         self.wandb_save_dir = wandb_save_dir
         self.additional_files_to_be_saved = [
-            "lightning_modules/data_modules/datamodules.py",
-            "lightning_modules/data_modules/datasets.py",
-            "lightning_modules/data_modules/transforms.py",
+            "data_modules/datamodules.py",
+            "data_modules/datasets.py",
+            "data_modules/transforms.py",
             "lightning_modules/callbacks.py",
             "lightning_modules/init_utils.py",
             "train.py",
-            "config.yaml"
+            "project_config.yaml",
+            "run_configs.yaml",
         ]
         self.model_path = os.path.dirname(inspect.getfile(lit_model.__class__))
 
