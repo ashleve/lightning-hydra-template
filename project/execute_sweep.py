@@ -20,4 +20,4 @@ for key, value in sweep_hparams.items():
         model_conf[key] = value
 
 # Execute run
-train.train(config=conf, model_config=model_conf)
+train.train(project_config=conf, run_config=model_conf)

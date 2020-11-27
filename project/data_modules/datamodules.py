@@ -1,22 +1,22 @@
 from torch.utils.data import DataLoader, random_split
 from torchvision.datasets import MNIST, CIFAR10
+from torchvision.transforms import transforms
 import pytorch_lightning as pl
-
-# custom data_modules
 
 
 class ExampleDataModule(pl.LightningDataModule):
     """All datamodules should look like this!"""
-    def __init__(self, transforms, data_dir="data/example_data", batch_size=64, data_split_ratio=0.90, num_workers=1,
-                 pin_memory=False, **args):
+    def __init__(self, data_dir="data/example_data", batch_size=64, data_split_ratio=0.90, num_workers=1,
+                 pin_memory=False):
         super().__init__()
 
-        self.transforms = transforms
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.data_split_ratio = data_split_ratio
         self.num_workers = num_workers
         self.pin_memory = pin_memory
+
+        self.transforms = None
 
         self.data_train = None
         self.data_val = None
@@ -44,16 +44,17 @@ class ExampleDataModule(pl.LightningDataModule):
 
 
 class MNISTDataModule(pl.LightningDataModule):
-    def __init__(self, transforms, data_dir='data/mnist', batch_size=64, train_val_split_ratio=0.90, num_workers=1,
-                 pin_memory=False, **args):
+    def __init__(self, data_dir='data/mnist', batch_size=64, train_val_split_ratio=0.90, num_workers=1,
+                 pin_memory=False):
         super().__init__()
 
-        self.transforms = transforms
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.train_val_split_ratio = train_val_split_ratio
         self.num_workers = num_workers
         self.pin_memory = pin_memory
+
+        self.transforms = transforms.ToTensor()
 
         self.data_train = None
         self.data_val = None
@@ -88,16 +89,17 @@ class MNISTDataModule(pl.LightningDataModule):
 
 
 class CIFAR10DataModule(pl.LightningDataModule):
-    def __init__(self, transforms, data_dir="data/cifar10", batch_size=64, train_val_split_ratio=0.90, num_workers=1,
-                 pin_memory=False, **args):
+    def __init__(self, data_dir="data/cifar10", batch_size=64, train_val_split_ratio=0.90, num_workers=1,
+                 pin_memory=False):
         super().__init__()
 
-        self.transforms = transforms
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.train_val_split_ratio = train_val_split_ratio
         self.num_workers = num_workers
         self.pin_memory = pin_memory
+
+        self.transforms = transforms.ToTensor()
 
         self.data_train = None
         self.data_val = None

@@ -1,5 +1,5 @@
-from models.simple_mnist_classifier.lightning_module import LitModel
-from lightning_modules.data_modules import transforms
+from models.transfer_learning_img_classifier.lightning_module import LitModel
+from data_modules import transforms
 from PIL import Image
 
 
@@ -20,10 +20,10 @@ def predict():
     pretrained_model.freeze()
 
     # load data
-    img = Image.open("../../example_img.png").convert("L")
+    img = Image.open("../../example_img.png").convert("RGB")
 
     # preprocess
-    img = transforms.mnist_test_preprocess(img)
+    img = transforms.imagenet_test_transforms(img)
     img = img.reshape((1, *img.size()))  # reshape to form batch of size 1
 
     # inference

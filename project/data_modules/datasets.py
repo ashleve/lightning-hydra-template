@@ -4,6 +4,7 @@ import os
 
 
 class TestDatasetForImgs(Dataset):
+    """Example dataset class for loading images from folder."""
 
     def __init__(self, img_dir, transform):
         self.transform = transform
