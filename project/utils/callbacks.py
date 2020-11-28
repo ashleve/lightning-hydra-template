@@ -137,8 +137,8 @@ class SaveCodeToWandbCallback(pl.Callback):
             "utils/callbacks.py",
             "utils/init_utils.py",
             "train.py",
-            "project_config.yaml",
-            "run_configs.yaml",
+            "project_config.yml",
+            "run_configs.yml",
         ]
         self.model_path = os.path.dirname(inspect.getfile(lit_model.__class__))
         self.datamodule_path = os.path.dirname(inspect.getfile(datamodule.__class__))

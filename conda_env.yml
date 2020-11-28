@@ -1,0 +1,13 @@
+#name: hack_env
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - pip
+  - cudatoolkit
+  - pytorch
+  - torchvision
+  - torchaudio
+#prefix: C:\Users\UserX\Anaconda3\envs\hack_env

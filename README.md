@@ -4,8 +4,19 @@ A convenient starting template for most deep learning projects. Built with <b>Py
 
 
 ## Setup
-Read [SETUP.md](SETUP.md)
-<br><br>
+Read [SETUP.md](SETUP.md) for more info or just do this quick setup:
+```
+    git clone https://github.com/kinoai/hackathon-template
+    cd hackathon-template
+    conda update conda
+    conda env create -f conda_env.yml -n hack_env
+    conda activate hack_env
+    pip install -r requirements.txt
+    wandb login
+    cd project
+    python train.py
+```
+<br>
 
 
 ## Project structure
@@ -50,7 +61,8 @@ The directory structure of new project looks like this:
 └── requirements.txt
 ```
 
-## Project config parameters ([project_config.yaml](project/project_config.yaml))
+
+## Project config parameters ([project_config.yaml](project/project_config.yml))
 ```yaml
 num_of_gpus: -1
 
@@ -89,7 +101,8 @@ printing:
     profiler: False
 ```
 
-## Run config parameters ([run_configs.yaml](project/run_configs.yaml))
+
+## Run config parameters ([run_configs.yaml](project/run_configs.yml))
 You can store many run configurations in this file.<br>
 Example run configuration:
 ```yaml
@@ -116,10 +129,17 @@ MNIST_CLASSIFIER_V1:
         num_workers: 4
         pin_memory: True
 ```
-The run configuration that you want to train with needs to be chosen in [train.py](project/train.py):
+To run training pass run config name as an argument:
+```
+    python train.py -c MNIST_CLASSIFIER_V1
+    python train.py --conf_name MNIST_CLASSIFIER_V1
+```
+Or modify default run config name in [train.py](project/train.py):
 ```python
 if __name__ == "__main__":
-    RUN_CONFIG_NAME = "MNIST_CLASSIFIER_V1"
-    main(run_config_name=RUN_CONFIG_NAME)
+    parser = ArgumentParser()
+    parser.add_argument("-c", "--conf_name", type=str, default="MNIST_CLASSIFIER_V1")
+    args = parser.parse_args()
 
+    main(run_config_name=args.conf_name)
 ```
