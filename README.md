@@ -108,34 +108,34 @@ You can store many run configurations in this file.<br>
 Example run configuration:
 ```yaml
 MNIST_CLASSIFIER_V1:
-    trainer:                                        <- lightning 'Trainer' parameters (all except 'max_epochs' are optional)
-        max_epochs: 5                                   <- number of training epochs
-        gradient_clip_val: 0.5                          <- gradient clipping value (helps with exploding gradient issues)
-        accumulate_grad_batches: 3                      <- optimise after accumulating gradient from 3 batches
-        limit_train_batches: 1.0                        <- 0.6 would mean to train only on 60% of training data
-    model:                                          <- all of the parameters here will be passed to 'LitModel' in 'hparams' dictionary
-        model_folder: "simple_mnist_classifier"         <- name of folder from which 'lightning_module.py' (with 'LitMdodel' class) will be loaded
-        lr: 0.001                                       <- learning rate
-        weight_decay: 0.000001                          <- L2 normalization set in optimizer
-        input_size: 784  # img size for mnist digits is 1*28*28
-        output_size: 10  # there are 10 digit classes
-        lin1_size: 256
-        lin2_size: 256
-        lin3_size: 128
-    dataset:                                        <- all of the parameters here will be passed to 'DataModule' in 'hparams' dictionary
-        datamodule_folder: "mnist_digits_datamodule"    <- name of folder from which 'datamodule.py' (with 'DataModule' class) will be loaded
-        batch_size: 256                                 <- batch size
-        train_val_split_ratio: 0.9                      <- split ratio between training and validation set
-        num_workers: 1                                  <- how many subprocesses to use for data loading
-        pin_memory: False                               <- if True, the data loader will copy Tensors into CUDA pinned memory before returning them.
+    trainer:                                            <- lightning 'Trainer' parameters (all except 'max_epochs' are optional)
+        max_epochs: 5                                       
+        gradient_clip_val: 0.5                              
+        accumulate_grad_batches: 3                          
+        limit_train_batches: 1.0                            
+    model:                                              <- all of the parameters here will be passed to 'LitModel' in 'hparams' dictionary
+        model_folder: "simple_mnist_classifier"             <- name of folder from which 'lightning_module.py' (with 'LitMdodel' class) will be loaded
+        lr: 0.001                                           
+        weight_decay: 0.000001                              
+        input_size: 784                                     
+        output_size: 10                                     
+        lin1_size: 256                                      
+        lin2_size: 256                                      
+        lin3_size: 128                                      
+    dataset:                                            <- all of the parameters here will be passed to 'DataModule' in 'hparams' dictionary
+        datamodule_folder: "mnist_digits_datamodule"        <- name of folder from which 'datamodule.py' (with 'DataModule' class) will be loaded
+        batch_size: 256                                     
+        train_val_split_ratio: 0.9                          
+        num_workers: 1                                      
+        pin_memory: False                                   
 ```
 
 
 ## Workflow
-1. Add your model to 'project/models' folder<br>
-    (you need to create folder with 'lightning_module.py' file containing 'LitModel' class)
-2. Add your datamodule to 'project/data_modules' folder<br>
-    (you need to create folder with 'datamodule.py' file containig 'DataModule' class)
+1. Add your model to `project/models` folder<br>
+    (you need to create folder with `lightning_module.py` file containing `LitModel` class)
+2. Add your datamodule to `project/data_modules` folder<br>
+    (you need to create folder with `datamodule.py` file containig `DataModule` class)
 3. Add your run config to [run_configs.yaml](project/run_configs.yaml) (specify there folders containing your model and datamodule)
 3. Configure [project_config.yaml](project/project_config.yaml)
 4. Run training:<br>
