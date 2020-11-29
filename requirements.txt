@@ -4,4 +4,3 @@ pytorch-lightning-bolts>=0.2.5
 wandb>=0.10.11
 PyYAML>=5.3.1
 scikit-learn>=0.23.2
-efficientnet-pytorch>=0.7.0

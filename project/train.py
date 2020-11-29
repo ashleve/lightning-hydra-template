@@ -1,4 +1,5 @@
 from pytorch_lightning.profiler import SimpleProfiler
+from argparse import ArgumentParser
 import yaml
 
 # utils
@@ -7,7 +8,6 @@ from utils.callbacks import *
 
 
 def train(project_config, run_config):
-
     # Init PyTorch Lightning model ⚡
     lit_model = init_lit_model(hparams=run_config["model"])
 
@@ -91,5 +91,8 @@ def main(run_config_name):
 
 
 if __name__ == "__main__":
-    RUN_CONFIG_NAME = "MNIST_CLASSIFIER_V2"
-    main(run_config_name=RUN_CONFIG_NAME)
+    parser = ArgumentParser()
+    parser.add_argument("-c", "--conf_name", type=str, default="MNIST_CLASSIFIER_V1")
+    args = parser.parse_args()
+
+    main(run_config_name=args.conf_name)

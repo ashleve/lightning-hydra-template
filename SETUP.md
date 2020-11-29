@@ -1,48 +1,55 @@
 ## Setup
+1. Install anaconda if you don't already have it
 
-#### 1. Install anaconda
-https://docs.conda.io/projects/conda/en/latest/user-guide/install/download.html
+    https://docs.conda.io/projects/conda/en/latest/user-guide/install/download.html
 
-#### 2. Create anaconda env
-```
-    conda create --name hack_env
-    conda activate hack_env
-```
+2. Clone repo
+    ```
+        git clone https://github.com/kinoai/hackathon-template
+        cd hackathon-template
+    ```
+3. Create conda environment (change 'hack_env' to any name you want)
+    ```
+        conda update conda
+        conda env create -f conda_env.yaml -n hack_env
+        conda activate hack_env
+    ```
+4. Make sure proper python PATH is loaded<br>
+    - Unix
+        ```
+            which python
+        ```
+    - Windows
+        ```
+            for %i in (python.exe) do @echo. %~$PATH:i
+        ```
+    Expected result: `PATH_TO_CONDA/envs/ENV_NAME/bin/python`
+5. Install requirements
+    ```
+        pip install -r requirements.txt
+    ```
+6. Log to your Weights&Biases account
+    ```
+        wandb login
+    ```
+7. Run training
+    ```
+        cd project
+        python train.py
+    ```
+<br>
 
-#### 3. Make sure proper python PATH is loaded
-Unix
-```
-    which python
-```
-Windows
-```
-    for %i in (python.exe) do @echo. %~$PATH:i
-```
-Expected result: `PATH_TO_CONDA/envs/ENV_NAME/bin/python`
 
-#### 4. Install pytorch with conda
-Installation command generator: https://pytorch.org/get-started/locally/
-```
-    conda install pytorch torchvision torchaudio cudatoolkit=11.0 -c pytorch
-```
+#### Important notes!
+- If you're using CUDA compatible GPU make sure your drivers are updated!
+- If you are not using GPU (CUDA incompatible GPU) you may need to specify the number of GPUs manually instead of leaving the default `-1` in `project_config.yaml`:
+    ```
+        num_of_gpus: 0
+    ```
+<br>
 
-#### 5. Clone repo
-```
-    git clone https://github.com/kinoai/hackathon-template
-```
 
-#### 6. Install requirements with pip
-```
-    cd hackathon-template
-    pip install -r requirements.txt
-```
-
-#### 7. Log into your wandb account
-```
-    wandb login
-```
-
-#### 8. PyCharm setup
+## PyCharm setup
 - open this repository as PyCharm project
 - set "hack_env" as project interpreter:<br> 
 `Ctrl + Shift + A -> type "Project Interpreter"`
@@ -52,11 +59,3 @@ Installation command generator: https://pytorch.org/get-started/locally/
 `Ctrl + Shift + A -> type "Edit Configurations..." -> select "Emulate terminal in output console"`
 - run training:<br>
 `right click on train.py file -> "Run 'train'"`
-
-
-
-#### Important notes!
-- If you are not using GPU (CUDA incompatible GPU) you may need to specify the number of GPUs manually instead of leaving the default `-1` in `config.yaml`:
-```
-    num_of_gpus: 0
-```

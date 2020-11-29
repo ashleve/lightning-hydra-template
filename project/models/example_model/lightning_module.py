@@ -9,12 +9,13 @@ from models.example_model.models import *
 class LitModel(pl.LightningModule):
     """
         This is example of lightning model.
-        The folder name of LitModel used during trainig should be specified in run config and all parameters from
+        It should always be located in file named 'lightninig_module.py' and always be named 'LitModel'!
+
+        The folder name of 'LitModel' used during training should be specified in run config and all parameters from
         'model' section will be passed in 'hparams' dictionary.
 
         It enables you to specify what happens during training, validation and test step.
-        You can just remove validatin_step() or test_step() if you don't want to use them during trainig and model
-        should still train correctly.
+        You can just remove 'validation_step()' or 'test_step()' methods if you don't want to have them during training.
 
         See 'simple_mnist_classifier' for more proper example.
     """
