@@ -8,8 +8,8 @@ import train
 RUN_CONFIG_NAME = "MNIST_CLASSIFIER_V1"
 
 # Load configs
-project_config = train.load_config("../project_config.yml")
-run_config = train.load_config("../run_configs.yml")[RUN_CONFIG_NAME]
+project_config = train.load_config("../project_config.yaml")
+run_config = train.load_config("../run_configs.yaml")[RUN_CONFIG_NAME]
 
 # Initialize wandb
 wandb.init()

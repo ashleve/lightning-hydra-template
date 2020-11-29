@@ -1,4 +1,4 @@
-num_of_gpus: -1
+num_of_gpus: 0
 
 resume_training:
     lightning_ckpt:

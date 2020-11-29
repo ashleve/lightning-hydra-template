@@ -11,7 +11,7 @@
 3. Create conda environment (change 'hack_env' to any name you want)
     ```
         conda update conda
-        conda env create -f conda_env.yml -n hack_env
+        conda env create -f conda_env.yaml -n hack_env
         conda activate hack_env
     ```
 4. Make sure proper python PATH is loaded<br>
@@ -41,6 +41,7 @@
 
 
 #### Important notes!
+- If you're using CUDA compatible GPU make sure your drivers are updated!
 - If you are not using GPU (CUDA incompatible GPU) you may need to specify the number of GPUs manually instead of leaving the default `-1` in `project_config.yaml`:
     ```
         num_of_gpus: 0

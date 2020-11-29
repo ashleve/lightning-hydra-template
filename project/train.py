@@ -83,8 +83,8 @@ def load_config(path):
 
 def main(run_config_name):
     # Load configs
-    project_config = load_config("project_config.yml")
-    run_config = load_config("run_configs.yml")[run_config_name]
+    project_config = load_config("project_config.yaml")
+    run_config = load_config("run_configs.yaml")[run_config_name]
 
     # Train model
     train(project_config=project_config, run_config=run_config)
