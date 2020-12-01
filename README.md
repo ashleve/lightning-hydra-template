@@ -1,5 +1,18 @@
-# Deep learning project template
+# Deep Learning Project Template
 A convenient starting template for most deep learning projects. Built with <b>PyTorch Lightning</b> and <b>Weights&Biases</b>.
+<br>
+
+Features:
+- Predefined folder structure
+- Storing project configuration in a convenient way ([project_config.yaml](project/project_config.yaml))
+- Storing many run configurations in a convenient way ([run_configs.yaml](project/run_configs.yaml))
+- All advanteges of Pytorch Lightning
+- Automates initialization of your model and datamodule
+- Automatically stores code, configurations and model checkpoints in Weights&Biases runs 
+- Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/utils/execute_sweep.py))
+- Built in requirements ([requirements.txt](requirements.txt))
+- Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
+- Example with MNIST digits classfication
 <br>
 
 
@@ -7,7 +20,7 @@ A convenient starting template for most deep learning projects. Built with <b>Py
 ##### Read [SETUP.md](SETUP.md) for more info and explanations or just do the quick setup as below.
 
 Firstly create your github repository from this template using "Use this template" button and then execute those lines:
-```
+```conda
 git clone https://github.com/your_username/your_repo_name
 cd your_repo_name
 conda update conda
@@ -15,7 +28,7 @@ conda env create -f conda_env.yaml -n your_env_name
 conda activate your_env_name
 pip install -r requirements.txt
 ```
-Log to your wandb account:
+Log to your [Weights&Biases](https://wandb.com) account:
 ```
 wandb login
 ```
@@ -126,11 +139,11 @@ MNIST_CLASSIFIER_V1:
         num_workers: 1                                      
         pin_memory: False
     wandb:                                              <- this section is optional and can be removed
-        group: None
+        group: ""
         tags: ["v2", "uwu"]
-    resume_training:                                    <- this section is optional and can be removed
-        checkpoint_path: "path_to_checkpoint/last.ckpt"
-        wandb_run_id: "7ab26xrj"                          
+    resume_training:                                    <- this section is optional and can be removed if you don't want to resume training
+        checkpoint_path: "path_to_checkpoint/last.ckpt"     <- path to checkpoint
+        wandb_run_id: None                                  <- you can set id of Weights&Biases run that you want to resume but it's optional                        
 ```
 
 
