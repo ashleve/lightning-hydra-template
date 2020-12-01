@@ -1,18 +1,19 @@
 ## Deep learning project template
 A convenient starting template for most deep learning projects. Built with <b>PyTorch Lightning</b> and <b>Weights&Biases</b>.<br>
-Click on <i>"Use this template"</i> button above to initialize new repository.<br>
+Click on <b>"Use this template"</b> button above to initialize new repository.<br>
 
 ## Features
+- All advantages of Pytorch Lightning
 - Predefined folder structure
 - Storing project configuration in a convenient way ([project_config.yaml](project/project_config.yaml))
 - Storing many run configurations in a convenient way ([run_configs.yaml](project/run_configs.yaml))
-- All advanteges of Pytorch Lightning
-- Automates initialization of your model and datamodule
-- Automatically stores code, configurations and model checkpoints in Weights&Biases runs
+- Automates the whole training process and initialization, you only need to create `model` and `datamodule` classes and specify them in [run_configs.yaml](project/run_configs.yaml)
+- Automatically stores all relevant code, configs and model checkpoints in Weights&Biases cloud
 - Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/utils/execute_sweep.py))
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
-- Example with MNIST digits classfication
+- Example with MNIST digits classification
+- Useful example callbacks ([callbacks.py](project/utils/callbacks.py))
 <br>
 
 
@@ -68,7 +69,7 @@ num_of_gpus: -1             <- '-1' to use all gpus available, '0' to train on c
 loggers:
     wandb:
         project: "project_name"     <- wandb project name
-        team: "kino"                <- wandb entity name
+        entity: "some_name"         <- wandb entity name
         log_model: True             <- set True if you want to upload ckpts to wandb automatically
         offline: False              <- set True if you want to store all data locally
 
@@ -118,7 +119,7 @@ MNIST_CLASSIFIER_V1:
         pin_memory: False
     wandb:                                              <- this section is optional and can be removed
         group: ""
-        tags: ["v2", "uwu"]
+        tags: ["v1", "uwu"]
     resume_training:                                    <- this section is optional and can be removed if you don't want to resume training
         checkpoint_path: "path_to_checkpoint/last.ckpt"     <- path to checkpoint
         wandb_run_id: None                                  <- you can set id of Weights&Biases run that you want to resume but it's optional                        
@@ -127,19 +128,19 @@ MNIST_CLASSIFIER_V1:
 
 
 ## Workflow
-1. Add your model to `project/models` folder<br>
-    (you need to create folder with `lightning_module.py` file containing `LitModel` class)
-2. Add your datamodule to `project/data_modules` folder<br>
-    (you need to create folder with `datamodule.py` file containig `DataModule` class)
+1. Add your model to `project/models` folder.<br>
+   You need to create folder with `lightning_module.py` file containing `LitModel` class
+2. Add your datamodule to `project/data_modules` folder.<br>
+   You need to create folder with `datamodule.py` file containing `DataModule` class
 3. Add your run config to [run_configs.yaml](project/run_configs.yaml) (specify there folders containing your model and datamodule)
 3. Configure [project_config.yaml](project/project_config.yaml)
 4. Run training:<br>
-    Either pass run config name as an argument:
+    Either pass run config name as an argument
     ```
     python train.py -r MNIST_CLASSIFIER_V1
     python train.py --run_conf_name MNIST_CLASSIFIER_V1
     ```
-   Or modify default run config name in [train.py](project/train.py):
+   Or modify default run config name in [train.py](project/train.py)
     ```python
     if __name__ == "__main__":
         parser = ArgumentParser()
@@ -210,6 +211,5 @@ wandb login
 cd project
 python train.py --use_wandb=True --run_conf_name MNIST_CLASSIFIER_V1
 ```
-All run configurations are located in [run_configs.yaml](project/run_configs.yaml).<br>
-
+All run configurations are located in [run_configs.yaml](project/run_configs.yaml).
 For PyCharm setup read [SETUP.md](SETUP.md).
