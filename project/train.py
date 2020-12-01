@@ -1,5 +1,7 @@
 from pytorch_lightning.profiler import SimpleProfiler
+from pytorch_lightning.loggers import WandbLogger
 from argparse import ArgumentParser
+import pytorch_lightning as pl
 import yaml
 
 # utils
@@ -7,18 +9,18 @@ from utils.init_utils import init_lit_model, init_data_module, init_main_callbac
 from utils.callbacks import *
 
 
-def train(project_config, run_config):
+def train(project_config: dict, run_config: dict):
     # Init PyTorch Lightning model ⚡
-    lit_model = init_lit_model(hparams=run_config["model"])
+    lit_model: pl.LightningModule = init_lit_model(hparams=run_config["model"])
 
     # Init PyTorch Lightning datamodule ⚡
-    datamodule = init_data_module(hparams=run_config["dataset"])
+    datamodule: pl.LightningDataModule = init_data_module(hparams=run_config["dataset"])
 
     # Init Weights&Biases logger
-    logger = init_wandb_logger(project_config, run_config, lit_model, datamodule)
+    logger: pl.loggers.WandbLogger = init_wandb_logger(project_config, run_config, lit_model, datamodule)
 
     # Init ModelCheckpoint and EarlyStopping callbacks
-    callbacks = init_main_callbacks(project_config)
+    callbacks: list = init_main_callbacks(project_config)
 
     # Add custom callbacks from utils/callbacks.py
     callbacks.extend([
@@ -89,8 +91,8 @@ def load_config(path):
 
 def main(run_config_name):
     # Load configs
-    project_config = load_config("project_config.yaml")
-    run_config = load_config("run_configs.yaml")[run_config_name]
+    project_config: dict = load_config("project_config.yaml")
+    run_config: dict = load_config("run_configs.yaml")[run_config_name]
 
     # Train model
     train(project_config=project_config, run_config=run_config)
