@@ -10,4 +10,4 @@ dependencies:
   - pytorch
   - torchvision
   - torchaudio
-#prefix: C:\Users\UserX\Anaconda3\envs\hack_env
+  - jupyter

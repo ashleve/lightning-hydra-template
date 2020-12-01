@@ -1,20 +1,9 @@
 num_of_gpus: 0
 
-resume_training:
-    lightning_ckpt:
-        resume_from_ckpt: False
-        ckpt_path: "logs/checkpoints/epoch=2.ckpt"
-    wandb:
-        resume_wandb_run: False
-        wandb_run_id: "8uuomodb"
-
 loggers:
     wandb:
         project: "hackathon_template_test"
         team: "kino"
-        group: None
-        job_type: "train"
-        tags: []
         log_model: True
         offline: False
 

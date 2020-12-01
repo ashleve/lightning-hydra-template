@@ -37,7 +37,7 @@ class DataModule(pl.LightningDataModule):
 
     def train_dataloader(self):
         return DataLoader(self.data_train, batch_size=self.batch_size, num_workers=self.num_workers,
-                          pin_memory=self.pin_memory)
+                          pin_memory=self.pin_memory, shuffle=True)
 
     def val_dataloader(self):
         return DataLoader(self.data_val, batch_size=self.batch_size, num_workers=self.num_workers,

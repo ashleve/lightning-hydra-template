@@ -40,15 +40,25 @@ def init_main_callbacks(project_config):
 
 def init_wandb_logger(config, run_config, lit_model, datamodule):
     """Initialize Weights&Biases logger."""
+    resume_from_checkpoint = run_config.get("resume_training", {}).get("resume_from_checkpoint", None)
+    wandb_run_id = run_config.get("resume_training", {}).get("wandb_run_id", None)
     wandb_logger = WandbLogger(
         project=config["loggers"]["wandb"]["project"],
-        job_type=config["loggers"]["wandb"]["job_type"],
-        tags=config["loggers"]["wandb"]["tags"],
         entity=config["loggers"]["wandb"]["team"],
-        id=config["resume_training"]["wandb"]["wandb_run_id"]
-        if config["resume_training"]["wandb"]["resume_wandb_run"] else None,
         log_model=config["loggers"]["wandb"]["log_model"],
         offline=config["loggers"]["wandb"]["offline"],
+
+        group=run_config.get("wandb", {}).get("group", None),
+        job_type=run_config.get("wandb", {}).get("job_type", "train"),
+        tags=run_config.get("wandb", {}).get("tags", []),
+
+        # resume run only if ckpt was set in the run config
+        id=wandb_run_id
+        if resume_from_checkpoint != "None" and wandb_run_id != "None"
+        and resume_from_checkpoint != "False" and wandb_run_id != "False"
+        and resume_from_checkpoint is not False and wandb_run_id is not False
+        else None,
+
         save_dir="logs/",
         save_code=False
     )
@@ -62,8 +72,8 @@ def init_wandb_logger(config, run_config, lit_model, datamodule):
         "model_name": lit_model.model.__class__.__name__,
         "optimizer": lit_model.configure_optimizers().__class__.__name__,
         "train_size": len(datamodule.data_train) if datamodule.data_train is not None else 0,
-        "val_size": len(datamodule.data_val) if datamodule.data_train is not None else 0,
-        "test_size": len(datamodule.data_test) if datamodule.data_train is not None else 0,
+        "val_size": len(datamodule.data_val) if datamodule.data_val is not None else 0,
+        "test_size": len(datamodule.data_test) if datamodule.data_test is not None else 0,
     })
     wandb_logger.log_hyperparams(run_config["trainer"])
     wandb_logger.log_hyperparams(run_config["model"])

@@ -21,6 +21,7 @@ MNIST_CLASSIFIER_V1:
         num_workers: 1
         pin_memory: False
 
+
 MNIST_CLASSIFIER_V2:
     trainer:
         min_epochs: 1
@@ -43,3 +44,9 @@ MNIST_CLASSIFIER_V2:
         train_val_split_ratio: 0.9
         num_workers: 1
         pin_memory: False
+    wandb:
+        group: None
+        tags: ["v2", "uwu"]
+    resume_training:
+        checkpoint_path: "logs/wandb/run-20201201_041527-7ab26xrj/files/tests/7ab26xrj/checkpoints/last.ckpt"
+        wandb_run_id: "7ab26xrj"
