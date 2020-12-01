@@ -58,6 +58,7 @@ The directory structure of new project looks like this:
 ├── conda_env.yaml
 └── requirements.txt
 ```
+<br>
 
 
 ## Project config parameters ([project_config.yaml](project/project_config.yaml))
@@ -87,6 +88,7 @@ printing:
     weights_summary: "top"          <- print summary of model (alternatively "full")
     profiler: False                 <- set True if you want to see execution time profiling
 ```
+<br>
 
 
 ## Run config parameters ([run_configs.yaml](project/run_configs.yaml))
@@ -141,14 +143,15 @@ MNIST_CLASSIFIER_V1:
     ```python
     if __name__ == "__main__":
         parser = ArgumentParser()
-        parser.add_argument("-c", "--conf_name", type=str, default="MNIST_CLASSIFIER_V1")
+        parser.add_argument("-r", "--run_conf_name", type=str, default="MNIST_CLASSIFIER_V1")
+        parser.add_argument("-u", "--use_wandb", type=bool, default=True)
         args = parser.parse_args()
-    
-        main(run_config_name=args.conf_name)
+
+        main(run_config_name=args.run_conf_name, use_wandb=args.use_wandb)
     ```
-
-
 <br><br>
+
+
 ### DELETE EVERYTHING ABOVE FOR YOUR PROJECT  
  
 ---
@@ -158,6 +161,9 @@ MNIST_CLASSIFIER_V1:
 # Your Project Name     
 
 [![Paper](http://img.shields.io/badge/paper-arxiv.1001.2234-B31B1B.svg)](https://www.nature.com/articles/nature14539)
+[![Conference](http://img.shields.io/badge/NeurIPS-2019-4b44ce.svg)](https://papers.nips.cc/book/advances-in-neural-information-processing-systems-31-2018)
+[![Conference](http://img.shields.io/badge/ICLR-2019-4b44ce.svg)](https://papers.nips.cc/book/advances-in-neural-information-processing-systems-31-2018)
+[![Conference](http://img.shields.io/badge/AnyConference-year-4b44ce.svg)](https://papers.nips.cc/book/advances-in-neural-information-processing-systems-31-2018)  
 
 </div>
 
@@ -179,15 +185,33 @@ conda activate your_env_name
 # install requirements
 pip install -r requirements.txt
 ```
-Next, log to your Weights&Biases account
+
+Next, you can train model without data logging
 ```bash
+# train model with chosen run configuration
+cd project
+python train.py --use_wandb=False --run_conf_name MNIST_CLASSIFIER_V1
+```
+
+Or you can train model with Weights&Biases data logging 
+```yaml
+# set project and enity names in project/project_config.yaml
+loggers:
+    wandb:
+        project: "your_project_name"
+        entity: "your_wandb_user_or_team_name"
+```
+```bash
+# log to your wandb account
 wandb login
 ```
-Finally, navigate to the main project folder and run training with chosen run configuration
 ```bash
+# train model with chosen run configuration
 cd project
-python train.py --conf_name MNIST_CLASSIFIER_V1
+python train.py --use_wandb=True --run_conf_name MNIST_CLASSIFIER_V1
 ```
 <br>
+
+All run configurations are located in [run_configs.yaml](project/run_configs.yaml).
 
 For PyCharm setup read [SETUP.md](SETUP.md).
