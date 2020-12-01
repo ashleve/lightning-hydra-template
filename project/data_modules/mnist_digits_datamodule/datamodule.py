@@ -5,7 +5,16 @@ import pytorch_lightning as pl
 
 
 class DataModule(pl.LightningDataModule):
-    """The proper datamodule for mnist digits dataset."""
+    """
+        This is example of datamodule for MNIST digits dataset.
+        All data modules should be located in separate folders with file named 'datamodule.py' containing class which
+        is always called 'DataModule'!
+
+        The folder name of datamodule used during training should be specified in run config and all parameters from
+        'dataset' section will be passed in 'hparams' dictionary.
+
+        All datamodules should have a structure like this one!
+    """
     def __init__(self, hparams):
         super().__init__()
 

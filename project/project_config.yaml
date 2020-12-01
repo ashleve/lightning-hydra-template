@@ -2,8 +2,8 @@ num_of_gpus: 0
 
 loggers:
     wandb:
-        project: "hackathon_template_test"
-        team: "kino"
+        project: "project_template_test"
+        entity: "kino"
         log_model: True
         offline: False
 
