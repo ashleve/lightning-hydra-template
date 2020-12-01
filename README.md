@@ -1,42 +1,18 @@
-# Deep Learning Project Template
-A convenient starting template for most deep learning projects. Built with <b>PyTorch Lightning</b> and <b>Weights&Biases</b>.
-<br>
+## Deep learning project template
+A convenient starting template for most deep learning projects. Built with <b>PyTorch Lightning</b> and <b>Weights&Biases</b>.<br>
 
-Features:
+
+## Features
 - Predefined folder structure
 - Storing project configuration in a convenient way ([project_config.yaml](project/project_config.yaml))
 - Storing many run configurations in a convenient way ([run_configs.yaml](project/run_configs.yaml))
 - All advanteges of Pytorch Lightning
 - Automates initialization of your model and datamodule
-- Automatically stores code, configurations and model checkpoints in Weights&Biases runs 
+- Automatically stores code, configurations and model checkpoints in Weights&Biases runs
 - Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/utils/execute_sweep.py))
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
 - Example with MNIST digits classfication
-<br>
-
-
-## Setup
-##### Read [SETUP.md](SETUP.md) for more info and explanations or just do the quick setup as below.
-
-Firstly create your github repository from this template using "Use this template" button and then execute those lines:
-```conda
-git clone https://github.com/your_username/your_repo_name
-cd your_repo_name
-conda update conda
-conda env create -f conda_env.yaml -n your_env_name
-conda activate your_env_name
-pip install -r requirements.txt
-```
-Log to your [Weights&Biases](https://wandb.com) account:
-```
-wandb login
-```
-Run training of example model:
-```
-cd project
-python train.py
-```
 <br>
 
 
@@ -145,6 +121,7 @@ MNIST_CLASSIFIER_V1:
         checkpoint_path: "path_to_checkpoint/last.ckpt"     <- path to checkpoint
         wandb_run_id: None                                  <- you can set id of Weights&Biases run that you want to resume but it's optional                        
 ```
+<br>
 
 
 ## Workflow
@@ -169,3 +146,48 @@ MNIST_CLASSIFIER_V1:
     
         main(run_config_name=args.conf_name)
     ```
+
+
+<br><br>
+### DELETE EVERYTHING ABOVE FOR YOUR PROJECT  
+ 
+---
+
+<div align="center">    
+ 
+# Your Project Name     
+
+[![Paper](http://img.shields.io/badge/paper-arxiv.1001.2234-B31B1B.svg)](https://www.nature.com/articles/nature14539)
+
+</div>
+
+## Description   
+What it does   
+
+## How to run
+First, install dependencies
+```bash
+# clone project
+git clone https://github.com/YourGithubName/your-repo-name
+cd your-repo-name
+
+# create conda environment
+conda update conda
+conda env create -f conda_env.yaml -n your_env_name
+conda activate your_env_name
+
+# install requirements
+pip install -r requirements.txt
+```
+Next, log to your Weights&Biases account
+```bash
+wandb login
+```
+Finally, navigate to the main project folder and run training with chosen run configuration
+```bash
+cd project
+python train.py --conf_name MNIST_CLASSIFIER_V1
+```
+<br>
+
+For PyCharm setup read [SETUP.md](SETUP.md).
