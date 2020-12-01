@@ -67,21 +67,10 @@ The directory structure of new project looks like this:
 ```yaml
 num_of_gpus: -1             <- '-1' to use all gpus available, '0' to train on cpu
 
-resume_training:
-    lightning_ckpt:                                  
-        resume_from_ckpt: False     <- set True if you want to resume                    
-        ckpt_path: "epoch=7.ckpt"   <- path to your checkpoint
-    wandb:
-        resume_wandb_run: False     <- set True if you want to resume Weight&Biases run
-        wandb_run_id: "8uuomodb"    <- id of Weight&Biases run you want to resume
-
 loggers:
     wandb:
         project: "project_name"     <- wandb project name
         team: "kino"                <- wandb entity name
-        group: None                 <- wandb group name
-        job_type: "train"           <- wandb job_type name
-        tags: []                    <- wandb tags name
         log_model: True             <- set True if you want to upload ckpts to wandb automatically
         offline: False              <- set True if you want to store all data locally
 
@@ -127,7 +116,13 @@ MNIST_CLASSIFIER_V1:
         batch_size: 256                                     
         train_val_split_ratio: 0.9                          
         num_workers: 1                                      
-        pin_memory: False                                   
+        pin_memory: False
+    wandb:                                              <- this section is optional and can be removed
+        group: None
+        tags: ["v2", "uwu"]
+    resume_training:                                    <- this section is optional and can be removed
+        checkpoint_path: "path_to_checkpoint/last.ckpt"
+        wandb_run_id: "7ab26xrj"                          
 ```
 
 

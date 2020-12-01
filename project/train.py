@@ -22,10 +22,13 @@ def train(project_config, run_config):
 
     # Add custom callbacks from utils/callbacks.py
     callbacks.extend([
-        # MetricsHeatmapLoggerCallback(),
+        MetricsHeatmapLoggerCallback(),
         # UnfreezeModelCallback(wait_epochs=5),
         SaveCodeToWandbCallback(wandb_save_dir=logger.save_dir, lit_model=lit_model, datamodule=datamodule),
     ])
+
+    # Get path to checkpoint you want to resume with if it was set in run config
+    resume_from_checkpoint = run_config.get("resume_training", {}).get("checkpoint_path", None)
 
     # Init PyTorch Lightning trainer ⚡
     trainer = pl.Trainer(
@@ -38,9 +41,12 @@ def train(project_config, run_config):
         # useful callbacks
         callbacks=callbacks,
 
-        # resuming training from checkpoint
-        resume_from_checkpoint=project_config["resume_training"]["lightning_ckpt"]["ckpt_path"]
-        if project_config["resume_training"]["lightning_ckpt"]["resume_from_ckpt"] else None,
+        # resume training from checkpoint if it was set in the run config
+        resume_from_checkpoint=resume_from_checkpoint
+        if resume_from_checkpoint != "None"
+        and resume_from_checkpoint != "False"
+        and resume_from_checkpoint is not False
+        else None,
 
         # print related
         progress_bar_refresh_rate=project_config["printing"]["progress_bar_refresh_rate"],
@@ -53,7 +59,7 @@ def train(project_config, run_config):
         accumulate_grad_batches=run_config["trainer"].get("accumulate_grad_batches", 1),
         gradient_clip_val=run_config["trainer"].get("gradient_clip_val", 0.5),
 
-        # these are mostly for debugging (read TIPS.md for explanation)
+        # these are mostly for debugging
         fast_dev_run=run_config["trainer"].get("fast_dev_run", False),
         limit_train_batches=run_config["trainer"].get("limit_train_batches", 1.0),
         limit_val_batches=run_config["trainer"].get("limit_val_batches", 1.0),

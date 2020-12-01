@@ -30,15 +30,16 @@ class DataModule(pl.LightningDataModule):
         """Load data. Set variables: self.data_train, self.data_val, self.data_test."""
         trainset = MNIST(self.data_dir, train=True, transform=self.transforms)
 
-        train_dataset_length = int(len(trainset) * self.train_val_split_ratio)
-        train_val_split = [train_dataset_length, len(trainset) - train_dataset_length]
+        train_length = int(len(trainset) * self.train_val_split_ratio)
+        val_length = len(trainset) - train_length
+        train_val_split = [train_length, val_length]
 
         self.data_train, self.data_val = random_split(trainset, train_val_split)
         self.data_test = MNIST(self.data_dir, train=False, transform=self.transforms)
 
     def train_dataloader(self):
         return DataLoader(self.data_train, batch_size=self.batch_size, num_workers=self.num_workers,
-                          pin_memory=self.pin_memory)
+                          pin_memory=self.pin_memory, shuffle=True)
 
     def val_dataloader(self):
         return DataLoader(self.data_val, batch_size=self.batch_size, num_workers=self.num_workers,
