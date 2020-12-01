@@ -1,17 +1,18 @@
-from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
+from pytorch_lightning.loggers import WandbLogger
+import pytorch_lightning as pl
 import importlib
 import os
 
 
-def init_lit_model(hparams):
+def init_lit_model(hparams: dict) -> pl.LightningModule:
     """Load LitModel from folder specified in run config."""
     module_path = "models." + hparams["model_folder"] + ".lightning_module"
     lit_model = importlib.import_module(module_path).LitModel(hparams=hparams)
     return lit_model
 
 
-def init_data_module(hparams):
+def init_data_module(hparams: dict) -> pl.LightningDataModule:
     """Load DataModule from folder specified in run config."""
     module_path = "data_modules." + hparams["datamodule_folder"] + ".datamodule"
     datamodule = importlib.import_module(module_path).DataModule(hparams=hparams)
@@ -20,7 +21,7 @@ def init_data_module(hparams):
     return datamodule
 
 
-def init_main_callbacks(project_config):
+def init_main_callbacks(project_config: dict) -> list:
     """Initialize EarlyStopping callback and ModelCheckpoint callback."""
     callbacks = [
         EarlyStopping(
@@ -38,7 +39,10 @@ def init_main_callbacks(project_config):
     return callbacks
 
 
-def init_wandb_logger(config, run_config, lit_model, datamodule):
+def init_wandb_logger(
+        config: dict, run_config: dict,
+        lit_model: pl.LightningModule, datamodule: pl.LightningDataModule
+) -> pl.loggers.WandbLogger:
     """Initialize Weights&Biases logger."""
     resume_from_checkpoint = run_config.get("resume_training", {}).get("resume_from_checkpoint", None)
     wandb_run_id = run_config.get("resume_training", {}).get("wandb_run_id", None)
@@ -81,6 +85,6 @@ def init_wandb_logger(config, run_config, lit_model, datamodule):
     return wandb_logger
 
 
-def init_tensorboard_loggger():
+def init_tensorboard_loggger() -> pl.loggers.TensorBoardLogger:
     """TODO"""
     return None

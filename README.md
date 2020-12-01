@@ -1,18 +1,26 @@
-# Hackathon template
+# Deep learning project template
 A convenient starting template for most deep learning projects. Built with <b>PyTorch Lightning</b> and <b>Weights&Biases</b>.
 <br>
 
 
 ## Setup
-Read [SETUP.md](SETUP.md) for more info and explanations or just do this quick setup:
+##### Read [SETUP.md](SETUP.md) for more info and explanations or just do the quick setup as below.
+
+Firstly create your github repository from this template using "Use this template" button and then execute those lines:
 ```
-git clone https://github.com/kinoai/hackathon-template
-cd hackathon-template
+git clone https://github.com/your_username/your_repo_name
+cd your_repo_name
 conda update conda
-conda env create -f conda_env.yaml -n hack_env
-conda activate hack_env
+conda env create -f conda_env.yaml -n your_env_name
+conda activate your_env_name
 pip install -r requirements.txt
+```
+Log to your wandb account:
+```
 wandb login
+```
+Run training of example model:
+```
 cd project
 python train.py
 ```
