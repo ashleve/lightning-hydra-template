@@ -1,6 +1,6 @@
 ## Deep learning project template
 A convenient starting template for most deep learning projects. Built with <b>PyTorch Lightning</b> and <b>Weights&Biases</b>.<br>
-
+Click on <i>"Use this template"</i> button above to initialize new repository.<br>
 
 ## Features
 - Predefined folder structure
@@ -136,8 +136,8 @@ MNIST_CLASSIFIER_V1:
 4. Run training:<br>
     Either pass run config name as an argument:
     ```
-    python train.py -c MNIST_CLASSIFIER_V1
-    python train.py --conf_name MNIST_CLASSIFIER_V1
+    python train.py -r MNIST_CLASSIFIER_V1
+    python train.py --run_conf_name MNIST_CLASSIFIER_V1
     ```
    Or modify default run config name in [train.py](project/train.py):
     ```python
@@ -210,8 +210,6 @@ wandb login
 cd project
 python train.py --use_wandb=True --run_conf_name MNIST_CLASSIFIER_V1
 ```
-<br>
-
-All run configurations are located in [run_configs.yaml](project/run_configs.yaml).
+All run configurations are located in [run_configs.yaml](project/run_configs.yaml).<br>
 
 For PyCharm setup read [SETUP.md](SETUP.md).
