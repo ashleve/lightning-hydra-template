@@ -48,7 +48,7 @@ def init_wandb_logger(
     wandb_run_id = run_config.get("resume_training", {}).get("wandb_run_id", None)
     wandb_logger = WandbLogger(
         project=config["loggers"]["wandb"]["project"],
-        entity=config["loggers"]["wandb"]["team"],
+        entity=config["loggers"]["wandb"]["entity"],
         log_model=config["loggers"]["wandb"]["log_model"],
         offline=config["loggers"]["wandb"]["offline"],
 

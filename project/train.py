@@ -9,7 +9,7 @@ from utils.init_utils import init_lit_model, init_data_module, init_main_callbac
 from utils.callbacks import *
 
 
-def train(project_config: dict, run_config: dict):
+def train(project_config: dict, run_config: dict, use_wandb: bool):
     # Init PyTorch Lightning model ⚡
     lit_model: pl.LightningModule = init_lit_model(hparams=run_config["model"])
 
@@ -17,17 +17,21 @@ def train(project_config: dict, run_config: dict):
     datamodule: pl.LightningDataModule = init_data_module(hparams=run_config["dataset"])
 
     # Init Weights&Biases logger
-    logger: pl.loggers.WandbLogger = init_wandb_logger(project_config, run_config, lit_model, datamodule)
+    logger: pl.loggers.WandbLogger = init_wandb_logger(project_config, run_config, lit_model, datamodule) \
+        if use_wandb else None
 
     # Init ModelCheckpoint and EarlyStopping callbacks
     callbacks: list = init_main_callbacks(project_config)
 
     # Add custom callbacks from utils/callbacks.py
     callbacks.extend([
-        MetricsHeatmapLoggerCallback(),
+        # MetricsHeatmapLoggerCallback(),
         # UnfreezeModelCallback(wait_epochs=5),
-        SaveCodeToWandbCallback(wandb_save_dir=logger.save_dir, lit_model=lit_model, datamodule=datamodule),
     ])
+    if use_wandb:
+        callbacks.append(
+            SaveCodeToWandbCallback(wandb_save_dir=logger.save_dir, lit_model=lit_model, datamodule=datamodule),
+        )
 
     # Get path to checkpoint you want to resume with if it was set in run config
     resume_from_checkpoint = run_config.get("resume_training", {}).get("checkpoint_path", None)
@@ -89,18 +93,19 @@ def load_config(path):
     return config
 
 
-def main(run_config_name):
+def main(run_config_name: str, use_wandb: bool):
     # Load configs
     project_config: dict = load_config("project_config.yaml")
     run_config: dict = load_config("run_configs.yaml")[run_config_name]
 
     # Train model
-    train(project_config=project_config, run_config=run_config)
+    train(project_config=project_config, run_config=run_config, use_wandb=use_wandb)
 
 
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("-c", "--conf_name", type=str, default="MNIST_CLASSIFIER_V1")
+    parser.add_argument("-u", "--use_wandb", type=bool, default=True)
     args = parser.parse_args()
 
-    main(run_config_name=args.conf_name)
+    main(run_config_name=args.conf_name, use_wandb=args.use_wandb)

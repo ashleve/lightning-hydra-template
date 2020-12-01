@@ -8,6 +8,17 @@ from models.simple_mnist_classifier.models import *
 
 
 class LitModel(pl.LightningModule):
+    """
+        This is example of lightning model for MNIST digits classification.
+        All models should be located in separate folders with file named 'lightning_module.py' containing class which
+        is always called 'LitModel'!
+
+        The folder name of model used during training should be specified in run config and all parameters from
+        'model' section will be passed in 'hparams' dictionary.
+
+        This class enables you to specify what happens during training, validation and test step.
+        You can just remove 'validation_step()' or 'test_step()' methods if you don't want to have them during training.
+    """
 
     def __init__(self, hparams=None):
         super().__init__()

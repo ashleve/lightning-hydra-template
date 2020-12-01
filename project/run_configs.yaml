@@ -33,8 +33,8 @@ MNIST_CLASSIFIER_V2:
         model_folder: "simple_mnist_classifier"
         lr: 0.002
         weight_decay: 0.00001
-        input_size: 784  # img size is 1*28*28
-        output_size: 10  # there are 10 digit classes
+        input_size: 784
+        output_size: 10
         lin1_size: 512
         lin2_size: 256
         lin3_size: 128
