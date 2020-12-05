@@ -60,9 +60,7 @@ def train(project_config: dict, run_config: dict, use_wandb: bool):
 
         # resume training from checkpoint if it was set in the run config
         resume_from_checkpoint=resume_from_checkpoint
-        if resume_from_checkpoint != "None"
-        and resume_from_checkpoint != "False"
-        and resume_from_checkpoint is not False
+        if resume_from_checkpoint != "None" and resume_from_checkpoint is not False
         else None,
 
         # print related
@@ -74,7 +72,7 @@ def train(project_config: dict, run_config: dict, use_wandb: bool):
         num_sanity_val_steps=3,
 
         # default log dir if no logger is found
-        default_root_dir="logs/lightning_logs",
+        default_root_dir=os.path.dirname(__file__) + "logs/lightning_logs",
 
         # insert all other trainer parameters specified in run config
         **run_config["trainer"]
