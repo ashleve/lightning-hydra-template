@@ -1,4 +1,4 @@
-#name: hack_env
+#name: conda_env_name
 channels:
   - pytorch
   - conda-forge
@@ -10,4 +10,3 @@ dependencies:
   - pytorch
   - torchvision
   - torchaudio
-  - jupyter

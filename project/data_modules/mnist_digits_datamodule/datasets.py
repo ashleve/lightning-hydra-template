@@ -6,7 +6,7 @@ import os
 class TestDataset(Dataset):
     """
         Example dataset class for loading images from folder.
-        'Dataset' classes can be used by 'DataModule' classes.
+        'Dataset' classes can be used by 'DataModule' class.
     """
 
     def __init__(self, img_dir, transform):

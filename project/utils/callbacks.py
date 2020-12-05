@@ -26,11 +26,11 @@ class SaveOnnxModelToWandbCallback(pl.Callback):
         Save model in .onnx format and upload to wandb.
         Might crash since not all models are compatible with onnx.
     """
-    def __init__(self, datamodule, save_dir):
+    def __init__(self, datamodule, wandb_save_dir):
         first_batch = next(iter(datamodule.train_dataloader()))
         x, y = first_batch
         self.dummy_input = x
-        self.save_dir = save_dir
+        self.wandb_save_dir = wandb_save_dir
 
     def on_sanity_check_end(self, trainer, pl_module):
         self.save_onnx_model(pl_module)
@@ -39,9 +39,9 @@ class SaveOnnxModelToWandbCallback(pl.Callback):
         self.save_onnx_model(pl_module)
 
     def save_onnx_model(self, pl_module):
-        file_path = os.path.join(self.save_dir, "model.onnx")
+        file_path = os.path.join(self.wandb_save_dir, "model.onnx")
         pl_module.to_onnx(file_path=file_path, input_sample=self.dummy_input.to(pl_module.device))
-        wandb.save(file_path, base_path=self.save_dir)
+        wandb.save(file_path, base_path=self.wandb_save_dir)
 
 
 class ImagePredictionLoggerCallback(pl.Callback):
@@ -131,52 +131,57 @@ class SaveCodeToWandbCallback(pl.Callback):
     """
         Upload specified code files to wandb at the beginning of the run.
     """
-    def __init__(self, wandb_save_dir, lit_model, datamodule):
+    def __init__(self, base_dir, wandb_save_dir, run_config):
+        self.base_dir = base_dir
         self.wandb_save_dir = wandb_save_dir
-        self.additional_files_to_be_saved = [
+        self.model_folder = run_config["model"]["model_folder"]
+        self.datamodule_folder = run_config["dataset"]["datamodule_folder"]
+        self.additional_files_to_be_saved = [  # paths should be relative to base_dir
             "utils/callbacks.py",
             "utils/init_utils.py",
             "train.py",
             "project_config.yaml",
             "run_configs.yaml",
         ]
-        self.model_path = os.path.dirname(inspect.getfile(lit_model.__class__))
-        self.datamodule_path = os.path.dirname(inspect.getfile(datamodule.__class__))
 
     def on_sanity_check_end(self, trainer, pl_module):
         """Upload files when all validation sanity checks end."""
+        # upload additional files
         for file in self.additional_files_to_be_saved:
+            src_path = os.path.join(self.base_dir, file)
             dst_path = os.path.join(self.wandb_save_dir, "code", file)
 
             path, filename = os.path.split(dst_path)
             if not os.path.exists(path):
                 os.makedirs(path)
 
-            copy(file, dst_path)
+            copy(src_path, dst_path)
             wandb.save(dst_path, base_path=self.wandb_save_dir)  # this line is only to make upload immediate
 
-        for filename in os.listdir(self.model_path):
+        # upload model files
+        for filename in os.listdir(os.path.join(self.base_dir, "models", self.model_folder)):
+
             if filename.endswith('.py'):
-                dst_path = os.path.join(self.wandb_save_dir, "code", "models", os.path.basename(self.model_path),
-                                        filename)
+                src_path = os.path.join(self.base_dir, "models", self.model_folder, filename)
+                dst_path = os.path.join(self.wandb_save_dir, "code", "models", self.model_folder, filename)
 
                 path, filename = os.path.split(dst_path)
                 if not os.path.exists(path):
                     os.makedirs(path)
 
-                file_path = os.path.join(self.model_path, filename)
-                copy(file_path, dst_path)
+                copy(src_path, dst_path)
                 wandb.save(dst_path, base_path=self.wandb_save_dir)  # this line is only to make upload immediate
 
-        for filename in os.listdir(self.datamodule_path):
+        # upload datamodule files
+        for filename in os.listdir(os.path.join(self.base_dir, "data_modules", self.datamodule_folder)):
+
             if filename.endswith('.py'):
-                dst_path = os.path.join(self.wandb_save_dir, "code", "data_modules", os.path.basename(
-                    self.datamodule_path), filename)
+                src_path = os.path.join(self.base_dir, "data_modules", self.datamodule_folder, filename)
+                dst_path = os.path.join(self.wandb_save_dir, "code", "data_modules", self.datamodule_folder, filename)
 
                 path, filename = os.path.split(dst_path)
                 if not os.path.exists(path):
                     os.makedirs(path)
 
-                file_path = os.path.join(self.datamodule_path, filename)
-                copy(file_path, dst_path)
+                copy(src_path, dst_path)
                 wandb.save(dst_path, base_path=self.wandb_save_dir)  # this line is only to make upload immediate

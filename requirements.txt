@@ -1,6 +1,7 @@
+torch>=1.7.0
 torchvision>=0.8.1
+torchaudio>=0.7.0
 pytorch-lightning>=1.0.8
-pytorch-lightning-bolts>=0.2.5
-wandb>=0.10.11
+wandb>=0.10.12
 PyYAML>=5.3.1
 scikit-learn>=0.23.2

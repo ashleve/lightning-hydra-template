@@ -1,6 +1,7 @@
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.loggers import WandbLogger
 import pytorch_lightning as pl
+from typing import List
 import importlib
 import os
 
@@ -21,36 +22,39 @@ def init_data_module(hparams: dict) -> pl.LightningDataModule:
     return datamodule
 
 
-def init_main_callbacks(project_config: dict) -> list:
-    """Initialize EarlyStopping callback and ModelCheckpoint callback."""
+def init_main_callbacks(project_config: dict) -> List[pl.Callback]:
+    """Initialize ModelCheckpoint and EarlyStopping callbacks."""
     callbacks = [
-        EarlyStopping(
-            monitor=project_config["callbacks"]["early_stop"]["monitor"],
-            patience=project_config["callbacks"]["early_stop"]["patience"],
-            mode=project_config["callbacks"]["early_stop"]["mode"],
-        ),
         ModelCheckpoint(
             monitor=project_config["callbacks"]["checkpoint"]["monitor"],
             save_top_k=project_config["callbacks"]["checkpoint"]["save_top_k"],
             mode=project_config["callbacks"]["checkpoint"]["mode"],
             save_last=project_config["callbacks"]["checkpoint"]["save_last"],
+        ),
+        EarlyStopping(
+            monitor=project_config["callbacks"]["early_stop"]["monitor"],
+            patience=project_config["callbacks"]["early_stop"]["patience"],
+            mode=project_config["callbacks"]["early_stop"]["mode"],
         )
     ]
     return callbacks
 
 
 def init_wandb_logger(
-        config: dict, run_config: dict,
-        lit_model: pl.LightningModule, datamodule: pl.LightningDataModule
+        project_config: dict,
+        run_config: dict,
+        lit_model: pl.LightningModule,
+        datamodule: pl.LightningDataModule,
+        log_path: str = "logs/"
 ) -> pl.loggers.WandbLogger:
     """Initialize Weights&Biases logger."""
     resume_from_checkpoint = run_config.get("resume_training", {}).get("resume_from_checkpoint", None)
     wandb_run_id = run_config.get("resume_training", {}).get("wandb_run_id", None)
     wandb_logger = WandbLogger(
-        project=config["loggers"]["wandb"]["project"],
-        entity=config["loggers"]["wandb"]["entity"],
-        log_model=config["loggers"]["wandb"]["log_model"],
-        offline=config["loggers"]["wandb"]["offline"],
+        project=project_config["loggers"]["wandb"]["project"],
+        entity=project_config["loggers"]["wandb"]["entity"],
+        log_model=project_config["loggers"]["wandb"]["log_model"],
+        offline=project_config["loggers"]["wandb"]["offline"],
 
         group=run_config.get("wandb", {}).get("group", None),
         job_type=run_config.get("wandb", {}).get("job_type", "train"),
@@ -63,11 +67,11 @@ def init_wandb_logger(
         and resume_from_checkpoint is not False and wandb_run_id is not False
         else None,
 
-        save_dir="logs/",
+        save_dir=log_path,
         save_code=False
     )
-    if not os.path.exists("logs/"):
-        os.mkdir("logs/")
+    if not os.path.exists(log_path):
+        os.makedirs(log_path)
     if hasattr(lit_model, 'model'):
         wandb_logger.watch(lit_model.model, log=None)
     else:
