@@ -99,12 +99,12 @@ You can store many run configurations in this file.<br>
 Example run configuration:
 ```yaml
 MNIST_CLASSIFIER_V1:
-    trainer:                                            <- lightning 'Trainer' parameters (all except 'max_epochs' are optional)
+    trainer:                                            <- parameters passed to lightning 'Trainer'
         max_epochs: 5                                       
         gradient_clip_val: 0.5                              
         accumulate_grad_batches: 3                          
         limit_train_batches: 1.0                            
-    model:                                              <- all of the parameters here will be passed to 'LitModel' in 'hparams' dictionary
+    model:                                              <- parameters passed to 'LitModel' in 'hparams' dictionary
         model_folder: "simple_mnist_classifier"             <- name of folder from which 'lightning_module.py' (with 'LitMdodel' class) will be loaded
         lr: 0.001                                           
         weight_decay: 0.000001                              
@@ -113,7 +113,7 @@ MNIST_CLASSIFIER_V1:
         lin1_size: 256                                      
         lin2_size: 256                                      
         lin3_size: 128                                      
-    dataset:                                            <- all of the parameters here will be passed to 'DataModule' in 'hparams' dictionary
+    dataset:                                            <- parameters passed to 'DataModule' in 'hparams' dictionary
         datamodule_folder: "mnist_digits_datamodule"        <- name of folder from which 'datamodule.py' (with 'DataModule' class) will be loaded
         batch_size: 256                                     
         train_val_split_ratio: 0.9                          
@@ -122,8 +122,8 @@ MNIST_CLASSIFIER_V1:
     wandb:                                              <- this section is optional and can be removed
         group: ""
         tags: ["v1", "uwu"]
-    resume_training:                                    <- this section is optional and can be removed if you don't want to resume training
-        checkpoint_path: "path_to_checkpoint/last.ckpt"     <- path to checkpoint
+    resume_training:                                    <- this section is optional and can be removed
+        checkpoint_path: "path_to_checkpoint/last.ckpt"
         wandb_run_id: None                                  <- you can set id of Weights&Biases run that you want to resume but it's optional                        
 ```
 <br>
