@@ -84,9 +84,12 @@ def init_wandb_logger(project_config: dict, run_config: dict,
     wandb_logger.log_hyperparams({
         "model_name": lit_model.model.__class__.__name__,
         "optimizer": lit_model.configure_optimizers().__class__.__name__,
-        "train_size": len(datamodule.data_train) if datamodule.data_train is not None else 0,
-        "val_size": len(datamodule.data_val) if datamodule.data_val is not None else 0,
-        "test_size": len(datamodule.data_test) if datamodule.data_test is not None else 0,
+        "train_size": len(datamodule.data_train)
+        if hasattr(datamodule, 'data_train') and datamodule.data_train is not None else 0,
+        "val_size": len(datamodule.data_val)
+        if hasattr(datamodule, 'data_val') and datamodule.data_val is not None else 0,
+        "test_size": len(datamodule.data_test)
+        if hasattr(datamodule, 'data_test') and datamodule.data_test is not None else 0,
     })
     wandb_logger.log_hyperparams(run_config["trainer"])
     wandb_logger.log_hyperparams(run_config["model"])
