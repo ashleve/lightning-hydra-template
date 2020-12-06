@@ -173,7 +173,7 @@ conda update conda
 conda env create -f conda_env.yaml -n your_env_name
 conda activate your_env_name
 
-# optionally install project with setup.py
+# optionally install project as package with setup.py
 pip install -e .
 
 # install requirements
@@ -190,7 +190,7 @@ python train.py --use_wandb=False --run_config MNIST_CLASSIFIER_V1
 
 Or you can train model with Weights&Biases logging
 ```yaml
-# set project and enity names in project/project_config.yaml
+# set project and entity names in project/project_config.yaml
 loggers:
     wandb:
         project: "your_project_name"
