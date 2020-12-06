@@ -10,6 +10,7 @@ Click on <b>"Use this template"</b> button above to initialize new repository.<b
 - Automates the whole training process and initialization, you only need to create `model` and `datamodule` and specify them in [run_configs.yaml](project/run_configs.yaml)
 - Automatically stores all relevant code, configs and model checkpoints in Weights&Biases cloud
 - Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/utils/execute_sweep.py))
+- Scheduling execution of many experiments ([execute_all_runs.py](project/utils/execute_all_runs.py))
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
 - Built in package setup ([setup.py](setup.py))
