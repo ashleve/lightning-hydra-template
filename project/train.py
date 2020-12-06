@@ -100,6 +100,14 @@ def main(run_config_name: str, use_wandb: bool):
     project_config: dict = load_config("project_config.yaml")
     run_config: dict = load_config("run_configs.yaml")[run_config_name]
 
+    # Print run config info
+    print("EXECUTING RUN:", run_config_name)
+    print("CONFIG:")
+    for section in run_config:
+        print("  " + section + ":")
+        for key in run_config[section]:
+            print("    " + key + ":", run_config[section][key])
+
     # Train model
     train(project_config=project_config, run_config=run_config, use_wandb=use_wandb)
 
