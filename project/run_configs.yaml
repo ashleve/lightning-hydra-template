@@ -50,5 +50,5 @@ MNIST_CLASSIFIER_V2:
         tags: ["v2", "uwu"]
         notes: "This is example run."
     resume_training:
-        checkpoint_path: "logs/checkpoints/7ab26xr/last.ckpt"
-        wandb_run_id: "7ab26xrj"
+        checkpoint_path: None
+        wandb_run_id: None

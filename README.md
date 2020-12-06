@@ -31,6 +31,7 @@ The directory structure of new project looks like this:
 │   ├── utils                   <- Different utilities
 │   │   ├── callbacks.py            <- Useful training callbacks
 │   │   ├── execute_sweep.py        <- Special file for executing Weights&Biases sweeps
+│   │   ├── execute_all_runs.py     <- Special file for executing all specified runs one after the other
 │   │   ├── init_utils.py           <- Useful initializers
 │   │   └── predict_example.py      <- Example of inference with trained model 
 │   │
