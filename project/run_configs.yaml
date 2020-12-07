@@ -43,7 +43,7 @@ MNIST_CLASSIFIER_V2:
         datamodule_folder: "mnist_digits_datamodule"
         batch_size: 256
         train_val_split_ratio: 0.9
-        num_workers: 4
+        num_workers: 1
         pin_memory: False
     wandb:
         group: None
