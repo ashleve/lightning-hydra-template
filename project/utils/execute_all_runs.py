@@ -26,6 +26,7 @@ def main(project_config_path, run_configs_path):
             for key in run_configs[conf_name][section]:
                 print("    " + key + ":", run_configs[conf_name][section][key])
         print()
+
         train(project_config=project_config, run_config=run_configs[conf_name], use_wandb=True)
         wandb.finish()
 

@@ -18,7 +18,9 @@ class DataModule(pl.LightningDataModule):
     def __init__(self, hparams):
         super().__init__()
 
-        self.data_dir = hparams.get("data_dir") or "data/mnist"
+        # hparams["data_dir"] is always automatically set to "path_to_project/data/"
+        self.data_dir = hparams["data_dir"]
+
         self.batch_size = hparams.get("batch_size") or 64
         self.train_val_split_ratio = hparams.get("train_val_split_ratio") or 0.9
         self.num_workers = hparams.get("num_workers") or 1
