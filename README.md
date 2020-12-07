@@ -58,9 +58,9 @@ The directory structure of new project looks like this:
 ├── .gitignore
 ├── LICENSE
 ├── README.md
-├── setup.py
 ├── conda_env.yaml
-└── requirements.txt
+├── requirements.txt
+└── setup.py
 ```
 <br>
 
@@ -104,7 +104,7 @@ MNIST_CLASSIFIER_V1:
     trainer:                                            <- parameters passed to lightning 'Trainer'
         max_epochs: 5                                       
         gradient_clip_val: 0.5                              
-        accumulate_grad_batches: 3                          
+        accumulate_grad_batches: 1                          
         limit_train_batches: 1.0                            
     model:                                              <- parameters passed to 'LitModel' in 'hparams' dictionary
         model_folder: "simple_mnist_classifier"             <- name of folder from which 'lightning_module.py' (with 'LitMdodel' class) will be loaded
@@ -138,7 +138,7 @@ MNIST_CLASSIFIER_V1:
 3. Configure [project_config.yaml](project/project_config.yaml)
 4. Run training<br>
     ```bash
-    python train.py --use_wandb=True --run_config MNIST_CLASSIFIER_V1
+    python train.py --run_config MNIST_CLASSIFIER_V1
     ```
 <br><br>
 
@@ -173,9 +173,6 @@ conda update conda
 conda env create -f conda_env.yaml -n your_env_name
 conda activate your_env_name
 
-# optionally install project as package with setup.py
-pip install -e .
-
 # install requirements
 pip install -r requirements.txt
 ```
@@ -185,7 +182,7 @@ Next, you can train model without logging
 # train model without Weights&Biases
 # choose run config from project/run_configs.yaml
 cd project
-python train.py --use_wandb=False --run_config MNIST_CLASSIFIER_V1
+python train.py --no_wandb --run_config MNIST_CLASSIFIER_V1
 ```
 
 Or you can train model with Weights&Biases logging
@@ -200,7 +197,12 @@ loggers:
 # train model with Weights&Biases
 # choose run config from project/run_configs.yaml
 cd project
-python train.py --use_wandb=True --run_config MNIST_CLASSIFIER_V1
+python train.py --run_config MNIST_CLASSIFIER_V1
+```
+
+Optionally you can install project as package with [setup.py](setup.py)
+```bash
+pip install -e .
 ```
 <br>
 
