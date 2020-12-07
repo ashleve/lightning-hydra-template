@@ -16,8 +16,7 @@ def init_lit_model(hparams: dict) -> pl.LightningModule:
 def init_data_module(hparams: dict) -> pl.LightningDataModule:
     """Load DataModule from folder specified in run config."""
     module_path = "data_modules." + hparams["datamodule_folder"] + ".datamodule"
-    if "data_dir" not in hparams:
-        hparams["data_dir"] = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+    hparams["data_dir"] = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
     datamodule = importlib.import_module(module_path).DataModule(hparams=hparams)
     datamodule.prepare_data()
     datamodule.setup()
