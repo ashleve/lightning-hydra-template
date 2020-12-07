@@ -39,15 +39,15 @@ The directory structure of new project looks like this:
 │   ├── data_modules            <- All your data modules should be located here!
 │   │   ├── example_datamodule      <- Each datamodule should be located in separate folder!
 │   │   │   ├── datamodule.py           <- Contains 'DataModule' class
-│   │   │   ├── datasets.py             <- Contains pytorch 'Dataset' classes
-│   │   │   └── transforms.py           <- Contains data transformations
+│   │   │   ├── datasets.py             <- Contains pytorch 'Dataset' classes (optional file)
+│   │   │   └── transforms.py           <- Contains data transformations (optional file)
 │   │   ├── ...
 │   │   └── ...
 │   │
 │   ├── models                  <- All your models should be located here!
 │   │   ├── example_model           <- Each model should be located in separate folder!
 │   │   │   ├── lightning_module.py     <- Contains 'LitModel' class with train/val/test step methods
-│   │   │   └── models.py               <- Model architectures used by lightning_module.py
+│   │   │   └── models.py               <- Model architectures used by lightning_module.py (optional file) 
 │   │   ├── ...
 │   │   └── ...
 │   │
