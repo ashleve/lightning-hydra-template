@@ -101,25 +101,25 @@ You can store many run configurations in this file.<br>
 Example run configuration:
 ```yaml
 MNIST_CLASSIFIER_V1:
-    trainer:    <- these parameters will be passed directly to 'Trainer' object                                       
-        max_epochs: 5                                       
-        gradient_clip_val: 0.5                              
-        accumulate_grad_batches: 1                          
-        limit_train_batches: 1.0                            
-    model:  <- these parameters will be passed to 'LightningModule' object in 'hparams' dictionary                                              
+    trainer:    <- these parameters will be passed directly to 'Trainer' object
+        max_epochs: 5
+        gradient_clip_val: 0.5
+        accumulate_grad_batches: 1
+        limit_train_batches: 1.0
+    model:  <- these parameters will be passed to 'LightningModule' object as 'hparams' dictionary
         model_folder: "simple_mnist_classifier"
-        lr: 0.001                                           
-        weight_decay: 0.000001                              
-        input_size: 784                                     
-        output_size: 10                                     
-        lin1_size: 256                                      
-        lin2_size: 256                                      
-        lin3_size: 128                                      
-    dataset:    <- these parameters will be passed to 'LightningDataModule' object in 'hparams' dictionary
+        lr: 0.001
+        weight_decay: 0.000001
+        input_size: 784
+        output_size: 10
+        lin1_size: 256
+        lin2_size: 256
+        lin3_size: 128
+    dataset:    <- these parameters will be passed to 'LightningDataModule' object as 'hparams' dictionary
         datamodule_folder: "mnist_digits_datamodule"
-        batch_size: 256                                     
-        train_val_split_ratio: 0.9                          
-        num_workers: 1                                      
+        batch_size: 256
+        train_val_split_ratio: 0.9
+        num_workers: 1
         pin_memory: False
     callbacks:
         ConfusionMatrixLoggerCallback:
@@ -129,13 +129,15 @@ MNIST_CLASSIFIER_V1:
         tags: ["v1", "uwu"]
     resume_training:
         checkpoint_path: "path_to_checkpoint/last.ckpt"
-        wandb_run_id: None  # optionally set id of Weights&Biases run that you want to resume                         
+        wandb_run_id: None
 ```
 Each run configuration needs to contain sections `trainer`, `model` and `dataset`. Sections `callbacks`, `wandb` and `resume_training` are optional and can be removed.<br>
-`model` section always needs to contain `model_folder` parameter (folder from which lightning_module.py will be loaded, which should contain 'LitModel' class).<br>
-`dataset` section always needs to contain `datamodule_folder` parameter (folder from which datamodule.py will be loaded, which should contain 'DataModule' class).<br>
-Every parameter in `model` section will be passed to your model class and can be retrieved through 'hparams' dictionary (see example with [simple_mnist_classifier](project/models/simple_mnist_classifier/lightning_module.py)).<br>
-Every parameter in `dataset` section will be passed to your datamodule class and can be retrieved through 'hparams' dictionary (see example with [mnist_digits_datamodule](project/data_modules/mnist_digits_datamodule/datamodule.py)).
+
+Section `model` always needs to contain `model_folder` parameter (name of the folder from which `lightning_module.py` will be loaded, which should contain `LitModel` class).<br>
+Section `dataset` always needs to contain `datamodule_folder` parameter (name of the folder from which `datamodule.py` will be loaded, which should contain `DataModule` class).<br>
+
+Every parameter in `model` section will be passed to your model class and can be retrieved through `hparams` dictionary (see example with [simple_mnist_classifier](project/models/simple_mnist_classifier/lightning_module.py)).<br>
+Every parameter in `dataset` section will be passed to your datamodule class and can be retrieved through `hparams` dictionary (see example with [mnist_digits_datamodule](project/data_modules/mnist_digits_datamodule/datamodule.py)).<br>
 <br>
 
 
@@ -144,7 +146,7 @@ Every parameter in `dataset` section will be passed to your datamodule class and
 2. Add your datamodule to `project/data_modules` folder. You need to create folder with `datamodule.py` file containing `DataModule` class
 3. Create new run config in [run_configs.yaml](project/run_configs.yaml) (specify there folders containing your model and datamodule)
 3. Configure [project_config.yaml](project/project_config.yaml)
-4. Run training<br>
+4. Run training with chosen run config<br>
     ```bash
     python train.py --run_config MNIST_CLASSIFIER_V1
     ```
