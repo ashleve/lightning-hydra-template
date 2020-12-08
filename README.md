@@ -101,12 +101,12 @@ You can store many run configurations in this file.<br>
 Example run configuration:
 ```yaml
 MNIST_CLASSIFIER_V1:
-    trainer:    <- these parameters will be passed directly to 'Trainer' object
+    trainer:    # these parameters will be passed directly to PyTorch Lightning 'Trainer' object
         max_epochs: 5
         gradient_clip_val: 0.5
         accumulate_grad_batches: 1
         limit_train_batches: 1.0
-    model:  <- these parameters will be passed to 'LightningModule' object as 'hparams' dictionary
+    model:      # these parameters will be passed to 'LightningModule' object as 'hparams' dictionary
         model_folder: "simple_mnist_classifier"
         lr: 0.001
         weight_decay: 0.000001
@@ -115,7 +115,7 @@ MNIST_CLASSIFIER_V1:
         lin1_size: 256
         lin2_size: 256
         lin3_size: 128
-    dataset:    <- these parameters will be passed to 'LightningDataModule' object as 'hparams' dictionary
+    dataset:    # these parameters will be passed to 'LightningDataModule' object as 'hparams' dictionary
         datamodule_folder: "mnist_digits_datamodule"
         batch_size: 256
         train_val_split_ratio: 0.9
