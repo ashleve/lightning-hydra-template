@@ -1,13 +1,13 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-import pytorch_lightning as pl
+from pytorch_lightning import Callback
+import pytorch_lightning.callbacks
 from shutil import copy
-import inspect
 import torch
 import wandb
 import os
 
 
-class ExampleCallback(pl.Callback):
+class ExampleCallback(Callback):
     def __init__(self):
         pass
 
@@ -21,7 +21,7 @@ class ExampleCallback(pl.Callback):
         print('Do something when training ends.')
 
 
-class SaveOnnxModelToWandbCallback(pl.Callback):
+class SaveOnnxModelToWandbCallback(Callback):
     """
         Save model in .onnx format and upload to wandb.
         Might crash since not all models are compatible with onnx.
@@ -44,7 +44,7 @@ class SaveOnnxModelToWandbCallback(pl.Callback):
         wandb.save(file_path, base_path=self.wandb_save_dir)
 
 
-class ImagePredictionLoggerCallback(pl.Callback):
+class ImagePredictionLoggerCallback(Callback):
     """
         Each epoch upload to wandb a couple of the same images with predicted labels.
     """
@@ -71,7 +71,7 @@ class ImagePredictionLoggerCallback(pl.Callback):
             ]}, commit=False)
 
 
-class UnfreezeModelCallback(pl.Callback):
+class UnfreezeModelCallback(Callback):
     """
         Unfreeze model after a few epochs.
     """
@@ -84,7 +84,7 @@ class UnfreezeModelCallback(pl.Callback):
                 param.requires_grad = True
 
 
-class MetricsHeatmapLoggerCallback(pl.Callback):
+class MetricsHeatmapLoggerCallback(Callback):
     """
         Generate f1, precision and recall heatmap from validation epoch outputs.
         Expects validation step to return predictions and targets.
@@ -128,7 +128,7 @@ class MetricsHeatmapLoggerCallback(pl.Callback):
             self.targets = []
 
 
-class ConfusionMatrixLoggerCallback(pl.Callback):
+class ConfusionMatrixLoggerCallback(Callback):
     """
         Generate Confusion Matrix.
         Expects validation step to return predictions and targets.
@@ -168,7 +168,7 @@ class ConfusionMatrixLoggerCallback(pl.Callback):
             self.targets = []
 
 
-class SaveCodeToWandbCallback(pl.Callback):
+class SaveCodeToWandbCallback(Callback):
     """
         Upload specified code files to wandb at the beginning of the run.
     """
@@ -178,8 +178,8 @@ class SaveCodeToWandbCallback(pl.Callback):
         self.model_folder = run_config["model"]["model_folder"]
         self.datamodule_folder = run_config["dataset"]["datamodule_folder"]
         self.additional_files_to_be_saved = [  # paths should be relative to base_dir
-            "utils/callbacks.py",
-            "utils/init_utils.py",
+            "template_utils/callbacks.py",
+            "template_utils/initializers.py",
             "train.py",
             "project_config.yaml",
             "run_configs.yaml",
@@ -214,11 +214,11 @@ class SaveCodeToWandbCallback(pl.Callback):
                 wandb.save(dst_path, base_path=self.wandb_save_dir)  # this line is only to make upload immediate
 
         # upload datamodule files
-        for filename in os.listdir(os.path.join(self.base_dir, "data_modules", self.datamodule_folder)):
+        for filename in os.listdir(os.path.join(self.base_dir, "datamodules", self.datamodule_folder)):
 
             if filename.endswith('.py'):
-                src_path = os.path.join(self.base_dir, "data_modules", self.datamodule_folder, filename)
-                dst_path = os.path.join(self.wandb_save_dir, "code", "data_modules", self.datamodule_folder, filename)
+                src_path = os.path.join(self.base_dir, "datamodules", self.datamodule_folder, filename)
+                dst_path = os.path.join(self.wandb_save_dir, "code", "datamodules", self.datamodule_folder, filename)
 
                 path, filename = os.path.split(dst_path)
                 if not os.path.exists(path):

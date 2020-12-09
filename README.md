@@ -9,13 +9,13 @@ Click on <b>"Use this template"</b> button above to initialize new repository.<b
 - Storing many run configurations in a convenient way ([run_configs.yaml](project/run_configs.yaml))
 - Automates the whole training process and initialization, you only need to create `model` and `datamodule` and specify them in [run_configs.yaml](project/run_configs.yaml)
 - Automatically stores all relevant code, configs and model checkpoints in Weights&Biases cloud
-- Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/utils/execute_sweep.py))
-- Scheduling execution of many experiments ([execute_all_runs.py](project/utils/execute_all_runs.py))
+- Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))
+- Scheduling execution of many experiments ([execute_all_runs.py](project/template_utils/execute_all_runs.py))
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
 - Built in package setup ([setup.py](setup.py))
 - Example with MNIST digits classification
-- Useful example callbacks ([callbacks.py](project/utils/callbacks.py))
+- Useful example callbacks ([callbacks.py](project/template_utils/callbacks.py))
 <br>
 
 
@@ -116,7 +116,7 @@ MNIST_CLASSIFIER_V1:
         lin2_size: 256
         lin3_size: 128
     dataset:    # these parameters will be passed to 'LightningDataModule' object as 'hparams' dictionary
-        datamodule_folder: "mnist_digits_datamodule"
+        datamodule_folder: "mnist_datamodule"
         batch_size: 256
         train_val_split_ratio: 0.9
         num_workers: 1
@@ -137,7 +137,7 @@ Section `model` always needs to contain `model_folder` parameter (name of the fo
 Section `dataset` always needs to contain `datamodule_folder` parameter (name of the folder from which `datamodule.py` will be loaded, which should contain `DataModule` class).<br>
 
 Every parameter in `model` section will be passed to your model class and can be retrieved through `hparams` dictionary (see example with [simple_mnist_classifier](project/models/simple_mnist_classifier/lightning_module.py)).<br>
-Every parameter in `dataset` section will be passed to your datamodule class and can be retrieved through `hparams` dictionary (see example with [mnist_digits_datamodule](project/data_modules/mnist_digits_datamodule/datamodule.py)).<br>
+Every parameter in `dataset` section will be passed to your datamodule class and can be retrieved through `hparams` dictionary (see example with [mnist_digits_datamodule](project/datamodules/mnist_datamodule/datamodule.py)).<br>
 <br>
 
 

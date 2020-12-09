@@ -1,5 +1,8 @@
+# set -1 to train on all GPUs abailable, set 0 to train on CPU only
 num_of_gpus: 0
 
+
+# Weights&Biases configuration (just remove this section if you don't want tu use Weights&Biases)
 loggers:
     wandb:
         project: "project_template_test"
@@ -7,18 +10,36 @@ loggers:
         log_model: True
         offline: False
 
-callbacks:
-    checkpoint:
-        monitor: "val_acc"
-        save_top_k: 1
-        save_last: True
-        mode: "max"
-    early_stop:
-        monitor: "val_acc"
-        patience: 100
-        mode: "max"
 
+# default callbacks initialised on every run/experiment
+# you can just remove this section or certain callback if you don't want tu use it
+# you can add here any callback class available in pytorch lightning or template_utils/callbacks.py
+default_callbacks:
+    checkpoint:
+        callback_class: "ModelCheckpoint"
+        args:
+            monitor: "val_acc"
+            save_top_k: 1
+            save_last: True
+            mode: "max"
+    early_stop:
+        callback_class: "EarlyStopping"
+        args:
+            monitor: "val_acc"
+            patience: 100
+            mode: "max"
+
+
+# configure things which are printed in terminal
 printing:
-    progress_bar_refresh_rate: 5
-    weights_summary: "top"  # "full"
-    profiler: False
+    progress_bar_refresh_rate: 10   # refresh every 10 batches
+    weights_summary: "top"          # model summary (alternatively "full")
+    profiler: False                 # set True to print execution time profiling after training ends
+
+
+# path to data folder (either absolute or relative to placement of 'train.py' file)
+data_path: "data/"
+
+
+# path to logs folder (either absolute or relative to placement of 'train.py' file)
+logs_path: "logs/"

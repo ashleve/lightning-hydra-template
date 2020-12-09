@@ -1,25 +1,32 @@
-MNIST_CLASSIFIER_V1:
+# make sure parameters from different sections have different names
+# or they will overwrite themselvess in Weights&Biases config
+EXAMPLE_MNIST_RUN_CONFIG:
     trainer:
-        max_epochs: 5
+        max_epochs: 10
         gradient_clip_val: 0.5
     model:
-        model_folder: "simple_mnist_classifier"
-        lr: 0.001
-        weight_decay: 0.000001
-        input_size: 784  # img size is 1*28*28
-        output_size: 10  # there are 10 digit classes
-        lin1_size: 256
-        lin2_size: 256
-        lin3_size: 128
-    dataset:
-        datamodule_folder: "mnist_digits_datamodule"
-        batch_size: 64
-        train_val_split_ratio: 0.9
-        num_workers: 1
-        pin_memory: False
+        load_from:
+            model_path: "models/simple_mnist_classifier/lightning_module.py"
+            model_class: "LitModel"
+        hparams:
+            lr: 0.001
+            weight_decay: 1e-5
+            input_size: 784  # img size is 1*28*28
+            output_size: 10  # there are 10 digit classes
+            lin1_size: 256
+            lin2_size: 256
+            lin3_size: 128
+    datamodule:
+        load_from:
+            datamodule_path: "datamodules/mnist_datamodule/datamodule.py"
+            datamodule_class: "MNISTDataModule"
+        hparams:
+            batch_size: 64
+            train_val_split: [50_000, 10_000]
 
 
-MNIST_CLASSIFIER_V2:
+
+EXAMPLE_MNIST_RUN_CONFIG_ADVANCED:
     trainer:
         min_epochs: 1
         max_epochs: 10
@@ -31,27 +38,36 @@ MNIST_CLASSIFIER_V2:
         limit_test_batches: 1.0
         val_check_interval: 1.0
     model:
-        model_folder: "simple_mnist_classifier"
-        lr: 0.002
-        weight_decay: 0.00001
-        input_size: 784
-        output_size: 10
-        lin1_size: 512
-        lin2_size: 256
-        lin3_size: 128
-    dataset:
-        datamodule_folder: "mnist_digits_datamodule"
-        batch_size: 256
-        train_val_split_ratio: 0.9
-        num_workers: 1
-        pin_memory: False
+        load_from:
+            model_path: "models/simple_mnist_classifier/lightning_module.py"
+            model_class: "LitModel"
+        hparams:
+            lr: 0.001
+            weight_decay: 1e-5
+            input_size: 784
+            output_size: 10
+            lin1_size: 256
+            lin2_size: 256
+            lin3_size: 128
+    datamodule:
+        load_from:
+            datamodule_path: "datamodules/mnist_datamodule/datamodule.py"
+            datamodule_class: "MNISTDataModule"
+        hparams:
+            batch_size: 256
+            train_val_split: [60_000, 10_000]   # use either this or 'train_val_split_ratio'
+            # train_val_split_ratio: 0.9
+            num_workers: 1
+            pin_memory: False
     callbacks:
-        ConfusionMatrixLoggerCallback:
-            class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-        MetricsHeatmapLoggerCallback:
-            class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        early_stop:
+            callback_class: "EarlyStopping"
+            args:
+                monitor: "val_acc"
+                patience: 5
+                mode: "max"
     wandb:
-        group: None
+        group: ""
         tags: ["v2", "uwu"]
         notes: "This is example run."
     resume_training:

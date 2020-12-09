@@ -1,10 +1,10 @@
 from torch.utils.data import DataLoader, random_split
+from pytorch_lightning import LightningDataModule
 from torchvision.transforms import transforms
 from torchvision.datasets import MNIST
-import pytorch_lightning as pl
 
 
-class DataModule(pl.LightningDataModule):
+class MNISTDataModule(LightningDataModule):
     """
         This is example of datamodule for MNIST digits dataset.
         All data modules should be located in separate folders with file named 'datamodule.py' containing class which
@@ -18,11 +18,12 @@ class DataModule(pl.LightningDataModule):
     def __init__(self, hparams):
         super().__init__()
 
-        # hparams["data_dir"] is always automatically set to "path_to_project/data/"
+        # hparams["data_dir"] is always automatically set to 'data_path' from 'project_config.yaml'
         self.data_dir = hparams["data_dir"]
 
         self.batch_size = hparams.get("batch_size") or 64
         self.train_val_split_ratio = hparams.get("train_val_split_ratio") or 0.9
+        self.train_val_split = hparams.get("train_val_split") or None
         self.num_workers = hparams.get("num_workers") or 1
         self.pin_memory = hparams.get("pin_memory") or False
 
@@ -41,11 +42,12 @@ class DataModule(pl.LightningDataModule):
         """Load data. Set variables: self.data_train, self.data_val, self.data_test."""
         trainset = MNIST(self.data_dir, train=True, transform=self.transforms)
 
-        train_length = int(len(trainset) * self.train_val_split_ratio)
-        val_length = len(trainset) - train_length
-        train_val_split = [train_length, val_length]
+        if not self.train_val_split:
+            train_length = int(len(trainset) * self.train_val_split_ratio)
+            val_length = len(trainset) - train_length
+            self.train_val_split = [train_length, val_length]
 
-        self.data_train, self.data_val = random_split(trainset, train_val_split)
+        self.data_train, self.data_val = random_split(trainset, self.train_val_split)
         self.data_test = MNIST(self.data_dir, train=False, transform=self.transforms)
 
     def train_dataloader(self):
