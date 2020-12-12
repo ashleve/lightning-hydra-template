@@ -42,7 +42,7 @@ def init_model(model_config: dict, base_dir: str) -> pl.LightningModule:
     return model
 
 
-def init_datamodule(datamodule_config: dict, data_path: str, base_dir: str) -> pl.LightningDataModule:
+def init_datamodule(datamodule_config: dict, data_dir: str, base_dir: str) -> pl.LightningDataModule:
     """
     Load LightningDataModule from path specified in run config.
     """
@@ -54,10 +54,8 @@ def init_datamodule(datamodule_config: dict, data_path: str, base_dir: str) -> p
         datamodule_path = os.path.join(base_dir, datamodule_path)
     assert os.path.isfile(datamodule_path), f"incorrect model path: {datamodule_path}"
 
-    if not os.path.isabs(data_path):
-        datamodule_config["hparams"]["data_dir"] = os.path.join(base_dir, data_path)
-    else:
-        datamodule_config["hparams"]["data_dir"] = data_path
+    if not os.path.isabs(data_dir):
+        data_dir = os.path.join(base_dir, data_dir)
 
     spec = importlib.util.spec_from_file_location("lightning_model", datamodule_path)
     lightning_module = importlib.util.module_from_spec(spec)
@@ -71,7 +69,7 @@ def init_datamodule(datamodule_config: dict, data_path: str, base_dir: str) -> p
     assert issubclass(DataModule, pl.LightningDataModule), \
         f"specified datamodule class {datamodule_class} is not a LightningDataModule"
 
-    datamodule = DataModule(hparams=datamodule_config["hparams"])
+    datamodule = DataModule(data_dir=data_dir, hparams=datamodule_config["hparams"])
     datamodule.prepare_data()
     datamodule.setup()
 
@@ -81,7 +79,8 @@ def init_datamodule(datamodule_config: dict, data_path: str, base_dir: str) -> p
 def init_trainer(project_config: dict,
                  run_config: dict,
                  callbacks: List[pl.Callback],
-                 loggers: List[pl.loggers.LightningLoggerBase]) -> pl.Trainer:
+                 loggers: List[pl.loggers.LightningLoggerBase],
+                 base_dir: str) -> pl.Trainer:
     """
     Initialize PyTorch Lightning Trainer.
     """
@@ -115,10 +114,10 @@ def init_trainer(project_config: dict,
         num_sanity_val_steps=3,
 
         # default log dir if no logger is found
-        default_root_dir=os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs/lightning_logs"),
+        default_root_dir=os.path.join(project_config["logs_dir"], "lightning_logs"),
 
-        # insert all other trainer parameters specified in run config
-        **run_config["trainer"]
+        # insert all other trainer args specified in run config
+        **run_config["trainer"]["args"]
     )
 
     return trainer
@@ -132,8 +131,10 @@ def init_callbacks(project_config: dict,
     Initialize default callbacks and callbacks specified in run config.
     """
 
-    default_callbacks = project_config["default_callbacks"]
-    run_callbacks = run_config["callbacks"]
+    default_callbacks = project_config.get("default_callbacks", {})
+    run_callbacks = run_config.get("callbacks", {})
+
+    print(default_callbacks)
 
     callbacks = []
 
@@ -159,7 +160,7 @@ def init_callbacks(project_config: dict,
 
 def init_loggers(project_config: dict,
                  run_config: dict,
-                 lit_model: pl.LightningModule,
+                 model: pl.LightningModule,
                  datamodule: pl.LightningDataModule,
                  use_wandb: bool,
                  base_dir: str) -> List[pl.loggers.LightningLoggerBase]:
@@ -212,11 +213,11 @@ def init_wandb_logger(project_config: dict,
 
     if hasattr(lit_model, 'model'):
         wandb_logger.watch(lit_model.model, log=None)
+        wandb_logger.log_hyperparams({"model": lit_model.model.__class__.__name__})
     else:
         wandb_logger.watch(lit_model, log=None)
 
     wandb_logger.log_hyperparams({
-        "model": lit_model.model.__class__.__name__ if hasattr(lit_model, 'model') else None,
         "optimizer": lit_model.configure_optimizers().__class__.__name__,
         "train_size": len(datamodule.data_train)
         if hasattr(datamodule, 'data_train') and datamodule.data_train is not None else 0,

@@ -1,4 +1,5 @@
 # pytorch lightning imports
+import torch
 from pytorch_lightning import Trainer, LightningModule, LightningDataModule, Callback
 from pytorch_lightning.loggers import LightningLoggerBase
 
@@ -18,13 +19,18 @@ from template_utils.initializers import (
 )
 
 
-# Everything will be loaded relatively to placement of this file!
+# Everything will be loaded relatively to placement of 'train.py' file!
 BASE_DIR: str = os.path.dirname(__file__)
 
 
 def train(project_config: dict, run_config: dict, use_wandb: bool):
+
+    # Set global PyTorch seed
+    if "seed" in run_config:
+        torch.manual_seed(run_config["seed"])
+
     # Init PyTorch Lightning model ⚡
-    lit_model: LightningModule = init_model(
+    model: LightningModule = init_model(
         model_config=run_config["model"],
         base_dir=BASE_DIR
     )
@@ -32,7 +38,7 @@ def train(project_config: dict, run_config: dict, use_wandb: bool):
     # Init PyTorch Lightning datamodule ⚡
     datamodule: LightningDataModule = init_datamodule(
         datamodule_config=run_config["datamodule"],
-        data_path=project_config["data_path"],
+        data_dir=project_config["data_dir"],
         base_dir=BASE_DIR
     )
 
@@ -48,7 +54,7 @@ def train(project_config: dict, run_config: dict, use_wandb: bool):
     loggers: List[LightningLoggerBase] = init_loggers(
         project_config=project_config,
         run_config=run_config,
-        lit_model=lit_model,
+        model=model,
         datamodule=datamodule,
         use_wandb=use_wandb,
         base_dir=BASE_DIR
@@ -59,17 +65,18 @@ def train(project_config: dict, run_config: dict, use_wandb: bool):
         project_config=project_config,
         run_config=run_config,
         callbacks=callbacks,
-        loggers=loggers
+        loggers=loggers,
+        base_dir=BASE_DIR
     )
 
     # Evaluate model on test set before training
-    # trainer.test(model=lit_model, datamodule=datamodule)
+    # trainer.test(model=model, datamodule=datamodule)
 
     # Train the model
-    trainer.fit(model=lit_model, datamodule=datamodule)
+    trainer.fit(model=model, datamodule=datamodule)
 
     # Evaluate model on test set after training
-    # trainer.test()
+    trainer.test()
 
 
 def load_config(path):
@@ -90,11 +97,11 @@ def main(project_config_path: str, run_configs_path: str, run_config_name: str, 
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.set_defaults(use_wandb=True)
     parser.add_argument("--project_config_path", type=str, default="project_config.yaml")
     parser.add_argument("--run_configs_path", type=str, default="run_configs.yaml")
-    parser.add_argument("--run_config_name", type=str, default="EXAMPLE_MNIST_RUN_CONFIG")
+    parser.add_argument("--run_config_name", type=str, default="SIMPLE_CONFIG_EXAMPLE_MNIST")
     parser.add_argument("--no_wandb", dest='use_wandb', action='store_false')
+    parser.set_defaults(use_wandb=True)
     args = parser.parse_args()
 
     main(project_config_path=args.project_config_path,

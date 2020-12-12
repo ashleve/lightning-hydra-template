@@ -1,42 +1,10 @@
-# make sure parameters from different sections have different names
-# or they will overwrite themselvess in Weights&Biases config
-EXAMPLE_MNIST_RUN_CONFIG:
+# execute this run like this:
+# python train.py --run_config_name SIMPLE_CONFIG_EXAMPLE_MNIST
+SIMPLE_CONFIG_EXAMPLE_MNIST:
+    seed: 1234
     trainer:
-        max_epochs: 10
-        gradient_clip_val: 0.5
-    model:
-        load_from:
-            model_path: "models/simple_mnist_classifier/lightning_module.py"
-            model_class: "LitModel"
-        hparams:
-            lr: 0.001
-            weight_decay: 1e-5
-            input_size: 784  # img size is 1*28*28
-            output_size: 10  # there are 10 digit classes
-            lin1_size: 256
-            lin2_size: 256
-            lin3_size: 128
-    datamodule:
-        load_from:
-            datamodule_path: "datamodules/mnist_datamodule/datamodule.py"
-            datamodule_class: "MNISTDataModule"
-        hparams:
-            batch_size: 64
-            train_val_split: [50_000, 10_000]
-
-
-
-EXAMPLE_MNIST_RUN_CONFIG_ADVANCED:
-    trainer:
-        min_epochs: 1
-        max_epochs: 10
-        gradient_clip_val: 0.5
-        accumulate_grad_batches: 2
-        fast_dev_run: False
-        limit_train_batches: 1.0
-        limit_val_batches: 1.0
-        limit_test_batches: 1.0
-        val_check_interval: 1.0
+        args:
+            max_epochs: 10
     model:
         load_from:
             model_path: "models/simple_mnist_classifier/lightning_module.py"
@@ -54,22 +22,64 @@ EXAMPLE_MNIST_RUN_CONFIG_ADVANCED:
             datamodule_path: "datamodules/mnist_datamodule/datamodule.py"
             datamodule_class: "MNISTDataModule"
         hparams:
+            batch_size: 64
+            train_val_test_split: [55_000, 5_000, 10_000]
+
+
+# execute this run like this:
+# python train.py --run_config_name ADVANCED_CONFIG_EXAMPLE_MNIST
+ADVANCED_CONFIG_EXAMPLE_MNIST:
+    seed: 1234
+    trainer:
+        args:
+            min_epochs: 1               # train for at least this many epochs (denies early stopping)
+            max_epochs: 10
+            gradient_clip_val: 0.5      # gradient clipping (helps with exploding gradient issues)
+            accumulate_grad_batches: 2  # perform optimization step after accumulating gradient from 2 batches
+            fast_dev_run: False         # execute 1 training, 1 validation and 1 test epoch only
+            limit_train_batches: 0.8    # train only on 80% of training data
+            limit_val_batches: 1.0      # validate on 100% of validation data
+            limit_test_batches: 1.0     # test on 100% of test data
+            val_check_interval: 2       # perform validation every 2 epochs
+    model:
+        load_from:
+            model_path: "models/simple_mnist_classifier/lightning_module.py"
+            model_class: "LitModel"
+        hparams:  # you can add here any parameters you want and then read them in model!
+            lr: 0.001
+            weight_decay: 1e-5
+            input_size: 784  # img size is 1*28*28
+            output_size: 10  # there are 10 digit classes
+            lin1_size: 256
+            lin2_size: 256
+            lin3_size: 128
+    datamodule:
+        load_from:
+            datamodule_path: "datamodules/mnist_datamodule/datamodule.py"
+            datamodule_class: "MNISTDataModule"
+        hparams:  # you can add here any parameters you want and then read them in datamodule!
             batch_size: 256
-            train_val_split: [60_000, 10_000]   # use either this or 'train_val_split_ratio'
-            # train_val_split_ratio: 0.9
-            num_workers: 1
-            pin_memory: False
-    callbacks:
-        early_stop:
-            callback_class: "EarlyStopping"
-            args:
-                monitor: "val_acc"
-                patience: 5
-                mode: "max"
-    wandb:
+            train_val_test_split: [55_000, 5_000, 10_000]
+            num_workers: 1              # num of processes used for loading data in parallel
+            pin_memory: False           # dataloaders will copy tensors into CUDA pinned memory before returning them
+    # the following sections of config are optional and can be removed:
+    wandb:  # Weights&Biases run options
         group: ""
+        job_type: "train"
         tags: ["v2", "uwu"]
         notes: "This is example run."
+    callbacks:  # you can add here any callback class available in PyTorch Lightning or template_utils/callbacks.py
+        EarlyStopping:  # name of PyTorch Lightning class for early stopping callback
+            monitor: "val_acc",
+            patience: 5,
+            mode: "max",
+        ModelCheckpoint:  # name of PyTorch Lightning class for checkpointing callback
+            monitor: "val_acc",
+            save_top_k: 1,
+            save_last: True,
+            mode: "max",
+        ConfusionMatrixLoggerCallback:  # some custom callback class from template_utils/callbacks.py
+            class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
     resume_training:
-        checkpoint_path: None
-        wandb_run_id: None
+        checkpoint_path: None  # path to your checkpoint
+        wandb_run_id: None  # you can add id of wandb run you want to resume but it's optional
