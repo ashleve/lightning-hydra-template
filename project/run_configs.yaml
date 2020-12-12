@@ -1,4 +1,4 @@
-# execute this run like this:
+# to execute this run:
 # python train.py --run_config_name SIMPLE_CONFIG_EXAMPLE_MNIST
 SIMPLE_CONFIG_EXAMPLE_MNIST:
     seed: 1234
@@ -11,7 +11,7 @@ SIMPLE_CONFIG_EXAMPLE_MNIST:
             model_class: "LitModel"
         hparams:
             lr: 0.001
-            weight_decay: 1e-5
+            weight_decay: 0.00001
             input_size: 784
             output_size: 10
             lin1_size: 256
@@ -26,7 +26,7 @@ SIMPLE_CONFIG_EXAMPLE_MNIST:
             train_val_test_split: [55_000, 5_000, 10_000]
 
 
-# execute this run like this:
+# to execute this run:
 # python train.py --run_config_name ADVANCED_CONFIG_EXAMPLE_MNIST
 ADVANCED_CONFIG_EXAMPLE_MNIST:
     seed: 1234
@@ -47,7 +47,7 @@ ADVANCED_CONFIG_EXAMPLE_MNIST:
             model_class: "LitModel"
         hparams:  # you can add here any parameters you want and then read them in model!
             lr: 0.001
-            weight_decay: 1e-5
+            weight_decay: 0.00001
             input_size: 784  # img size is 1*28*28
             output_size: 10  # there are 10 digit classes
             lin1_size: 256
@@ -70,14 +70,14 @@ ADVANCED_CONFIG_EXAMPLE_MNIST:
         notes: "This is example run."
     callbacks:  # you can add here any callback class available in PyTorch Lightning or template_utils/callbacks.py
         EarlyStopping:  # name of PyTorch Lightning class for early stopping callback
-            monitor: "val_acc",
-            patience: 5,
-            mode: "max",
+            monitor: "val_acc"
+            patience: 5
+            mode: "max"
         ModelCheckpoint:  # name of PyTorch Lightning class for checkpointing callback
-            monitor: "val_acc",
-            save_top_k: 1,
-            save_last: True,
-            mode: "max",
+            monitor: "val_acc"
+            save_top_k: 1
+            save_last: True
+            mode: "max"
         ConfusionMatrixLoggerCallback:  # some custom callback class from template_utils/callbacks.py
             class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
     resume_training:

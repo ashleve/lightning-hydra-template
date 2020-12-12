@@ -4,24 +4,46 @@ from pytorch_lightning.profiler import SimpleProfiler
 import pytorch_lightning as pl
 
 # normal imports
-from typing import List
+from typing import List, Tuple
 import importlib.util
 import os
 
 # template utils imports
-import template_utils.callbacks
+from template_utils import callbacks as custom_callbacks
+from template_utils import wandb_callbacks
 
 
-def init_model(model_config: dict, base_dir: str) -> pl.LightningModule:
+def normalize_config_paths(project_config: dict, run_config: dict, base_dir: str) -> Tuple[dict, dict]:
+    """
+    Convert all config paths to absolute paths relatively to base_dir and normalize them.
+    """
+
+    if not os.path.isabs(project_config["data_dir"]):
+        project_config["data_dir"] = \
+            os.path.normpath(os.path.join(base_dir, project_config["data_dir"]))
+
+    if not os.path.isabs(project_config["logs_dir"]):
+        project_config["logs_dir"] =\
+            os.path.normpath(os.path.join(base_dir, project_config["logs_dir"]))
+
+    if not os.path.isabs(run_config["model"]["load_from"]["model_path"]):
+        run_config["model"]["load_from"]["model_path"] = \
+            os.path.normpath(os.path.join(base_dir, run_config["model"]["load_from"]["model_path"]))
+
+    if not os.path.isabs(run_config["datamodule"]["load_from"]["datamodule_path"]):
+        run_config["datamodule"]["load_from"]["datamodule_path"] = \
+            os.path.normpath(os.path.join(base_dir, run_config["datamodule"]["load_from"]["datamodule_path"]))
+
+    return project_config, run_config
+
+
+def init_model(model_config: dict) -> pl.LightningModule:
     """
     Load LightningModule from path specified in run config.
     """
 
     model_path = model_config["load_from"]["model_path"]
     model_class = model_config["load_from"]["model_class"]
-
-    if not os.path.isabs(model_path):
-        model_path = os.path.join(base_dir, model_path)
 
     assert os.path.isfile(model_path), f"incorrect model path: {model_path}"
 
@@ -42,7 +64,7 @@ def init_model(model_config: dict, base_dir: str) -> pl.LightningModule:
     return model
 
 
-def init_datamodule(datamodule_config: dict, data_dir: str, base_dir: str) -> pl.LightningDataModule:
+def init_datamodule(datamodule_config: dict, data_dir: str) -> pl.LightningDataModule:
     """
     Load LightningDataModule from path specified in run config.
     """
@@ -50,12 +72,7 @@ def init_datamodule(datamodule_config: dict, data_dir: str, base_dir: str) -> pl
     datamodule_path = datamodule_config["load_from"]["datamodule_path"]
     datamodule_class = datamodule_config["load_from"]["datamodule_class"]
 
-    if not os.path.isabs(datamodule_path):
-        datamodule_path = os.path.join(base_dir, datamodule_path)
     assert os.path.isfile(datamodule_path), f"incorrect model path: {datamodule_path}"
-
-    if not os.path.isabs(data_dir):
-        data_dir = os.path.join(base_dir, data_dir)
 
     spec = importlib.util.spec_from_file_location("lightning_model", datamodule_path)
     lightning_module = importlib.util.module_from_spec(spec)
@@ -79,8 +96,7 @@ def init_datamodule(datamodule_config: dict, data_dir: str, base_dir: str) -> pl
 def init_trainer(project_config: dict,
                  run_config: dict,
                  callbacks: List[pl.Callback],
-                 loggers: List[pl.loggers.LightningLoggerBase],
-                 base_dir: str) -> pl.Trainer:
+                 loggers: List[pl.loggers.LightningLoggerBase]) -> pl.Trainer:
     """
     Initialize PyTorch Lightning Trainer.
     """
@@ -125,8 +141,7 @@ def init_trainer(project_config: dict,
 
 def init_callbacks(project_config: dict,
                    run_config: dict,
-                   use_wandb: bool,
-                   base_dir: str) -> List[pl.Callback]:
+                   use_wandb: bool) -> List[pl.Callback]:
     """
     Initialize default callbacks and callbacks specified in run config.
     """
@@ -134,26 +149,26 @@ def init_callbacks(project_config: dict,
     default_callbacks = project_config.get("default_callbacks", {})
     run_callbacks = run_config.get("callbacks", {})
 
-    print(default_callbacks)
+    # print(default_callbacks)
 
     callbacks = []
 
-    for callback_config in default_callbacks:
-        callback_class = getattr(pl.callbacks, callback_config["callback_class"])
-        callbacks.append(callback_class(**callback_config["args"]))
-
-    for callback_config in run_callbacks:
-        callback_class = getattr(pl.callbacks, callback_config["callback_class"])
-        callbacks.append(callback_class(**callback_config["args"]))
-
-    if use_wandb:
-        callbacks.append(
-            template_utils.callbacks.SaveCodeToWandbCallback(
-                base_dir=os.path.dirname(os.path.dirname(__file__)),
-                wandb_save_dir=os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs"),
-                run_config=run_config
-            )
-        )
+    # for callback_config in default_callbacks:
+    #     callback_class = getattr(pl.callbacks, callback_config["callback_class"])
+    #     callbacks.append(callback_class(**callback_config["args"]))
+    #
+    # for callback_config in run_callbacks:
+    #     callback_class = getattr(pl.callbacks, callback_config["callback_class"])
+    #     callbacks.append(callback_class(**callback_config["args"]))
+    #
+    # if use_wandb:
+    #     callbacks.append(
+    #         wandb_callbacks.SaveCodeToWandbCallback(
+    #             base_dir=os.path.dirname(os.path.dirname(__file__)),
+    #             wandb_save_dir=project_config["logs_dir"],
+    #             run_config=run_config
+    #         )
+    #     )
 
     return callbacks
 
@@ -162,23 +177,34 @@ def init_loggers(project_config: dict,
                  run_config: dict,
                  model: pl.LightningModule,
                  datamodule: pl.LightningDataModule,
-                 use_wandb: bool,
-                 base_dir: str) -> List[pl.loggers.LightningLoggerBase]:
+                 use_wandb: bool) -> List[pl.loggers.LightningLoggerBase]:
     """
     Initialize loggers.
     """
+    loggers = []
+    if use_wandb:
+        wandb_logger = init_wandb_logger(
+            project_config=project_config,
+            run_config=run_config,
+            model=model,
+            datamodule=datamodule
+        )
+        if wandb_logger:
+            loggers.append(wandb_logger)
 
-    return []
+    return loggers
 
 
 def init_wandb_logger(project_config: dict,
                       run_config: dict,
-                      lit_model: pl.LightningModule,
-                      datamodule: pl.LightningDataModule,
-                      log_path: str = "logs/") -> pl.loggers.WandbLogger:
+                      model: pl.LightningModule,
+                      datamodule: pl.LightningDataModule) -> pl.loggers.WandbLogger:
     """
     Initialize Weights&Biases logger.
     """
+
+    if "loggers" not in project_config or "wandb" not in project_config["loggers"]:
+        return None
 
     # with this line wandb will throw an error if the run to be resumed does not exist yet
     # instead of auto-creating a new run
@@ -204,21 +230,27 @@ def init_wandb_logger(project_config: dict,
         and resume_from_checkpoint is not False and wandb_run_id is not False
         else None,
 
-        save_dir=log_path,
+        save_dir=project_config["logs_dir"],
         save_code=False
     )
 
-    if not os.path.exists(log_path):
-        os.makedirs(log_path)
+    if not os.path.exists(project_config["logs_dir"]):
+        os.makedirs(project_config["logs_dir"])
 
-    if hasattr(lit_model, 'model'):
-        wandb_logger.watch(lit_model.model, log=None)
-        wandb_logger.log_hyperparams({"model": lit_model.model.__class__.__name__})
+    if hasattr(model, 'model'):
+        if project_config["loggers"]["wandb"]["log_gradients"]:
+            wandb_logger.watch(model.model, log='gradients')
+        else:
+            wandb_logger.watch(model.model, log=None)
+        wandb_logger.log_hyperparams({"architecture": model.model.__class__.__name__})
     else:
-        wandb_logger.watch(lit_model, log=None)
+        if project_config["loggers"]["wandb"]["log_gradients"]:
+            wandb_logger.watch(model, log='gradients')
+        else:
+            wandb_logger.watch(model, log=None)
 
     wandb_logger.log_hyperparams({
-        "optimizer": lit_model.configure_optimizers().__class__.__name__,
+        "optimizer": model.configure_optimizers().__class__.__name__,
         "train_size": len(datamodule.data_train)
         if hasattr(datamodule, 'data_train') and datamodule.data_train is not None else 0,
         "val_size": len(datamodule.data_val)
@@ -226,9 +258,12 @@ def init_wandb_logger(project_config: dict,
         "test_size": len(datamodule.data_test)
         if hasattr(datamodule, 'data_test') and datamodule.data_test is not None else 0,
     })
-    wandb_logger.log_hyperparams(run_config["trainer"])
-    wandb_logger.log_hyperparams(run_config["model"])
-    wandb_logger.log_hyperparams(run_config["dataset"])
+    wandb_logger.log_hyperparams(project_config["num_of_gpus"])
+    wandb_logger.log_hyperparams(run_config["trainer"]["args"])
+    wandb_logger.log_hyperparams(run_config["model"]["hparams"])
+    wandb_logger.log_hyperparams(run_config["model"]["load_from"])
+    wandb_logger.log_hyperparams(run_config["datamodule"]["hparams"])
+    wandb_logger.log_hyperparams(run_config["datamodule"]["load_from"])
 
     return wandb_logger
 

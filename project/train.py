@@ -1,16 +1,18 @@
 # pytorch lightning imports
-import torch
 from pytorch_lightning import Trainer, LightningModule, LightningDataModule, Callback
 from pytorch_lightning.loggers import LightningLoggerBase
+import torch
 
 # normal imports
 from argparse import ArgumentParser
 from typing import List
+import pprint
 import yaml
 import os
 
 # template utils imports
 from template_utils.initializers import (
+    normalize_config_paths,
     init_model,
     init_datamodule,
     init_callbacks,
@@ -29,25 +31,29 @@ def train(project_config: dict, run_config: dict, use_wandb: bool):
     if "seed" in run_config:
         torch.manual_seed(run_config["seed"])
 
+    # Covert paths to absolute and normalize them
+    project_config, run_config = normalize_config_paths(
+        project_config=project_config,
+        run_config=run_config,
+        base_dir=BASE_DIR
+    )
+
     # Init PyTorch Lightning model ⚡
     model: LightningModule = init_model(
-        model_config=run_config["model"],
-        base_dir=BASE_DIR
+        model_config=run_config["model"]
     )
 
     # Init PyTorch Lightning datamodule ⚡
     datamodule: LightningDataModule = init_datamodule(
         datamodule_config=run_config["datamodule"],
-        data_dir=project_config["data_dir"],
-        base_dir=BASE_DIR
+        data_dir=project_config["data_dir"]
     )
 
     # Init PyTorch Lightning callbacks ⚡
     callbacks: List[Callback] = init_callbacks(
         project_config=project_config,
         run_config=run_config,
-        use_wandb=use_wandb,
-        base_dir=BASE_DIR
+        use_wandb=use_wandb
     )
 
     # Init PyTorch Lightning loggers ⚡
@@ -56,8 +62,7 @@ def train(project_config: dict, run_config: dict, use_wandb: bool):
         run_config=run_config,
         model=model,
         datamodule=datamodule,
-        use_wandb=use_wandb,
-        base_dir=BASE_DIR
+        use_wandb=use_wandb
     )
 
     # Init PyTorch Lightning trainer ⚡
@@ -65,8 +70,7 @@ def train(project_config: dict, run_config: dict, use_wandb: bool):
         project_config=project_config,
         run_config=run_config,
         callbacks=callbacks,
-        loggers=loggers,
-        base_dir=BASE_DIR
+        loggers=loggers
     )
 
     # Evaluate model on test set before training
@@ -90,6 +94,10 @@ def main(project_config_path: str, run_configs_path: str, run_config_name: str, 
     # Load configs
     project_config: dict = load_config(path=project_config_path)
     run_config: dict = load_config(path=run_configs_path)[run_config_name]
+
+    print("EXECUTING RUN:", run_config_name)
+    pprint.pprint(run_config, sort_dicts=False)
+    print()
 
     # Train model
     train(project_config=project_config, run_config=run_config, use_wandb=use_wandb)
