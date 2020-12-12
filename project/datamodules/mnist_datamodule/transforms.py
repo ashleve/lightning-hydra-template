@@ -1,3 +1,6 @@
+"""
+Example file containing data transformations which can be used by datamodule.
+"""
 from torchvision import transforms
 
 

@@ -9,9 +9,9 @@ class MNISTDataModule(LightningDataModule):
     This is example of datamodule for MNIST dataset.
 
     The path to datamodule should be specified in your run config. (run_configs.yaml)
-    The 'hparams' dict contains your hparams specified in run config! (run_configs.yaml)
-
+    The 'hparams' dict contains your hparams specified in run config. (run_configs.yaml)
     """
+
     def __init__(self, data_dir: str, hparams: dict):
         super().__init__()
 

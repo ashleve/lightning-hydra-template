@@ -5,8 +5,9 @@ import os
 
 class TestDataset(Dataset):
     """
-    Example dataset class for loading images from folder.
-    'Dataset' classes can be used by 'DataModule' class.
+    Example dataset class for loading images from folder and converting them to monochromatic.
+    Can be used to perform inference with trained MNIST model.
+    'Dataset' type classes can also be used to create 'DataLoader' type classes which are used by datamodules.
     """
 
     def __init__(self, img_dir, transform):

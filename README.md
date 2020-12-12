@@ -3,13 +3,14 @@ A convenient starting template for most deep learning projects. Built with <b>Py
 Click on <b>"Use this template"</b> button above to initialize new repository.<br>
 
 ## Features
-- All advantages of PyTorch Lightning
 - Predefined folder structure
 - Storing project configuration in a convenient way ([project_config.yaml](project/project_config.yaml))
 - Storing many run configurations in a convenient way ([run_configs.yaml](project/run_configs.yaml))
+- All advantages of PyTorch Lightning
+- Weights&Biases integration:
+    - Automatically stores all relevant code, configs and model checkpoints in Weights&Biases cloud
+    - Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))
 - Automates the whole training process and initialization, you only need to create `model` and `datamodule` and specify them in [run_configs.yaml](project/run_configs.yaml)
-- Automatically stores all relevant code, configs and model checkpoints in Weights&Biases cloud
-- Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))
 - Scheduling execution of many experiments ([execute_all_runs.py](project/template_utils/execute_all_runs.py))
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
@@ -36,16 +37,16 @@ The directory structure of new project looks like this:
 │   │   ├── init_utils.py           <- Useful initializers
 │   │   └── predict_example.py      <- Example of inference with trained model 
 │   │
-│   ├── data_modules            <- All your data modules should be located here!
-│   │   ├── example_datamodule      <- Each datamodule should be located in separate folder!
+│   ├── datamodules            <- All your datamodules should be located here!
+│   │   ├── example_datamodule      <- It's best to locate each datamodule in separate folder!
 │   │   │   ├── datamodule.py           <- Contains class of type 'LightningDataModule'
-│   │   │   ├── datasets.py             <- Optional file
-│   │   │   └── transforms.py           <- Optional file
+│   │   │   ├── transforms.py           <- Some optional file
+│   │   │   └── ...
 │   │   ├── ...
 │   │   └── ...
 │   │
 │   ├── models                  <- All your models should be located here!
-│   │   ├── example_model           <- Each model should be located in separate folder!
+│   │   ├── example_model           <- It's best to locate each model in separate folder!
 │   │   │   ├── lightning_module.py     <- Contains class of type 'LightningModule'
 │   │   │   └── models.py               <- Model architectures used by 'LightningModule'
 │   │   ├── ...
@@ -93,6 +94,9 @@ printing:
     progress_bar_refresh_rate: 5    <- refresh rate of training bar in terminal
     weights_summary: "top"          <- print summary of model (alternatively "full")
     profiler: False                 <- set True if you want to see execution time profiling
+
+data_dir: "data/"           <-  path to data folder
+logs_dir: "logs/"           <-  path to logs folder
 ```
 <br>
 
@@ -129,20 +133,20 @@ SIMPLE_CONFIG_EXAMPLE_MNIST:
 To start training with this configuration run: `python train.py --run_config_name SIMPLE_CONFIG_EXAMPLE_MNIST`
 
 Each run configuration needs to contain sections `trainer`, `model` and `datamodule`. <br>
-Sections `callbacks`, `wandb` and `resume_training` are optional and can be removed.<br>
+Sections `seed`, `callbacks`, `wandb` and `resume_training` are optional and can be removed (see advanced config example in [run_configs.yaml](project/run_configs.yaml)).<br>
 
 Every parameter specified in model hparams section will be passed to your model class and can be retrieved through `hparams` dictionary (see example with [simple_mnist_classifier](project/models/simple_mnist_classifier/lightning_module.py)).<br>
-Every parameter specified in datamodule hparams section will be passed to your datamodule class and can be retrieved through `hparams` dictionary (see example with [mnist_digits_datamodule](project/datamodules/mnist_datamodule/datamodule.py)).<br>
+Every parameter specified in datamodule hparams section will be passed to your datamodule class and can be retrieved through `hparams` dictionary (see example with [mnist_datamodule](project/datamodules/mnist_datamodule/datamodule.py)).<br>
 <br>
 
 
 ## Workflow
-1. Create model in PyTorch Lightning
-2. Create datamodule in PyTorch Lightning
+1. Create PyTorch Lightning model
+2. Create PyTorch Lightning datamodule
 3. Create new run config in [run_configs.yaml](project/run_configs.yaml)
     - specify path to your model class
     - specify path to your datamodule class
-    - you can add there and hyperparametrs you want!
+    - you can add there and hyperparameters you want!
 3. Configure your project in [project_config.yaml](project/project_config.yaml)
 4. Run training with chosen run config<br>
     ```bash
@@ -166,8 +170,8 @@ Every parameter specified in datamodule hparams section will be passed to your d
 
 </div>
 
-## Description   
-What it does   
+## Description
+What it does
 
 ## How to run
 First, install dependencies
