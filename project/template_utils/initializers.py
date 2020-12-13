@@ -46,19 +46,19 @@ def init_model(model_config: dict) -> pl.LightningModule:
     model_path = model_config["load_from"]["model_path"]
     model_class = model_config["load_from"]["model_class"]
 
-    assert os.path.isfile(model_path), f"incorrect model path: {model_path}"
+    assert os.path.isfile(model_path), f"incorrect model path '{model_path}'"
 
     spec = importlib.util.spec_from_file_location("lightning_model", model_path)
     lightning_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(lightning_module)
 
     assert hasattr(lightning_module, model_class), \
-        f"model class {model_class} doesn't exists in file {model_path}"
+        f"model class '{model_class}' doesn't exist in file '{model_path}'"
 
     LitModel = getattr(lightning_module, model_class)
 
     assert issubclass(LitModel, pl.LightningModule), \
-        f"specified model class {model_class} is not a LightningModule"
+        f"specified model class '{model_class}' is not a 'LightningModule' type"
 
     model = LitModel(hparams=model_config["hparams"])
 
@@ -73,19 +73,19 @@ def init_datamodule(datamodule_config: dict, data_dir: str) -> pl.LightningDataM
     datamodule_path = datamodule_config["load_from"]["datamodule_path"]
     datamodule_class = datamodule_config["load_from"]["datamodule_class"]
 
-    assert os.path.isfile(datamodule_path), f"incorrect model path: {datamodule_path}"
+    assert os.path.isfile(datamodule_path), f"incorrect datamodule path '{datamodule_path}'"
 
-    spec = importlib.util.spec_from_file_location("lightning_model", datamodule_path)
+    spec = importlib.util.spec_from_file_location("lightning_datamodule", datamodule_path)
     lightning_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(lightning_module)
 
     assert hasattr(lightning_module, datamodule_class), \
-        f"datamodule class {datamodule_class} doesn't exists in file {datamodule_path}"
+        f"datamodule class '{datamodule_class}' doesn't exist in file '{datamodule_path}'"
 
     DataModule = getattr(lightning_module, datamodule_class)
 
     assert issubclass(DataModule, pl.LightningDataModule), \
-        f"specified datamodule class {datamodule_class} is not a LightningDataModule"
+        f"specified datamodule class '{datamodule_class}' is not a 'LightningDataModule' type"
 
     datamodule = DataModule(data_dir=data_dir, hparams=datamodule_config["hparams"])
     datamodule.prepare_data()
