@@ -6,7 +6,7 @@ import train
 
 
 # Choose which run config to optimize
-RUN_CONFIG_NAME = "MNIST_CLASSIFIER_V1"
+RUN_CONFIG_NAME = "SIMPLE_CONFIG_EXAMPLE_MNIST"
 
 # Load configs
 project_config = train.load_config("project_config.yaml")
@@ -20,12 +20,12 @@ sweep_hparams = wandb.Config._as_dict(wandb.config)
 for key, value in sweep_hparams.items():
     if key == "_wandb":
         continue
-    elif key in run_config["trainer"].keys():
-        run_config["trainer"][key] = value
-    elif key in run_config["model"].keys():
-        run_config["model"][key] = value
-    elif key in run_config["dataset"].keys():
-        run_config["dataset"][key] = value
+    elif key in run_config["trainer"]["args"]:
+        run_config["trainer"]["args"][key] = value
+    elif key in run_config["model"]["hparams"]:
+        run_config["model"]["hparams"][key] = value
+    elif key in run_config["datamodule"]["hparams"]:
+        run_config["datamodule"]["hparams"][key] = value
 
 # Execute run
 train.train(project_config=project_config, run_config=run_config, use_wandb=True)

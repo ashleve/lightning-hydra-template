@@ -3,19 +3,20 @@ A convenient starting template for most deep learning projects. Built with <b>Py
 Click on <b>"Use this template"</b> button above to initialize new repository.<br>
 
 ## Features
-- All advantages of PyTorch Lightning
 - Predefined folder structure
 - Storing project configuration in a convenient way ([project_config.yaml](project/project_config.yaml))
 - Storing many run configurations in a convenient way ([run_configs.yaml](project/run_configs.yaml))
+- All advantages of PyTorch Lightning
+- Weights&Biases integration:
+    - Automatically stores all relevant code, configs and model checkpoints in Weights&Biases cloud
+    - Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))
 - Automates the whole training process and initialization, you only need to create `model` and `datamodule` and specify them in [run_configs.yaml](project/run_configs.yaml)
-- Automatically stores all relevant code, configs and model checkpoints in Weights&Biases cloud
-- Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/utils/execute_sweep.py))
-- Scheduling execution of many experiments ([execute_all_runs.py](project/utils/execute_all_runs.py))
+- Scheduling execution of many experiments ([execute_all_runs.py](project/template_utils/execute_all_runs.py))
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
 - Built in package setup ([setup.py](setup.py))
 - Example with MNIST digits classification
-- Useful example callbacks ([callbacks.py](project/utils/callbacks.py))
+- Useful example callbacks ([callbacks.py](project/template_utils/callbacks.py))
 <br>
 
 
@@ -29,25 +30,25 @@ The directory structure of new project looks like this:
 │   │
 │   ├── notebooks               <- Jupyter notebooks
 │   │
-│   ├── utils                   <- Different utilities
+│   ├── template_utils          <- Different utilities
 │   │   ├── callbacks.py            <- Useful training callbacks
 │   │   ├── execute_sweep.py        <- Special file for executing Weights&Biases sweeps
 │   │   ├── execute_all_runs.py     <- Special file for executing all specified runs one after the other
-│   │   ├── init_utils.py           <- Useful initializers
+│   │   ├── initializers.py         <- Useful initializers
 │   │   └── predict_example.py      <- Example of inference with trained model 
 │   │
-│   ├── data_modules            <- All your data modules should be located here!
-│   │   ├── example_datamodule      <- Each datamodule should be located in separate folder!
-│   │   │   ├── datamodule.py           <- Contains 'DataModule' class
-│   │   │   ├── datasets.py             <- Contains pytorch 'Dataset' classes (optional file)
-│   │   │   └── transforms.py           <- Contains data transformations (optional file)
+│   ├── datamodules            <- All your datamodules should be located here!
+│   │   ├── example_datamodule      <- It's best to locate each datamodule in separate folder!
+│   │   │   ├── datamodule.py           <- Contains class of type 'LightningDataModule'
+│   │   │   ├── transforms.py           <- Some optional file
+│   │   │   └── ...
 │   │   ├── ...
 │   │   └── ...
 │   │
 │   ├── models                  <- All your models should be located here!
-│   │   ├── example_model           <- Each model should be located in separate folder!
-│   │   │   ├── lightning_module.py     <- Contains 'LitModel' class with train/val/test step methods
-│   │   │   └── models.py               <- Model architectures used by lightning_module.py (optional file) 
+│   │   ├── example_model           <- It's best to locate each model in separate folder!
+│   │   │   ├── lightning_module.py     <- Contains class of type 'LightningModule'
+│   │   │   └── models.py               <- Model architectures used by 'LightningModule'
 │   │   ├── ...
 │   │   └── ...
 │   │
@@ -68,23 +69,24 @@ The directory structure of new project looks like this:
 ## Project config parameters ([project_config.yaml](project/project_config.yaml))
 Example project configuration:
 ```yaml
-num_of_gpus: -1             <- '-1' to use all gpus available, '0' to train on cpu
+num_of_gpus: -1             <- '-1' to train on all GPUs available, '0' to train on CPU
 
 loggers:
     wandb:
         project: "project_name"     <- wandb project name
         entity: "some_name"         <- wandb entity name
         log_model: True             <- set True if you want to upload ckpts to wandb automatically
+        log_gradients: False        <- set True to log gradient histograms
         offline: False              <- set True if you want to store all data locally
 
-callbacks:
-    checkpoint:
-        monitor: "val_acc"      <- name of the logged metric that determines when model is improving
+default_callbacks:
+    ModelCheckpoint:
+        monitor: "val_acc"      <- name of the logged metric which determines when model is improving
         save_top_k: 1           <- save k best models (determined by above metric)
         save_last: True         <- additionaly always save model from last epoch
         mode: "max"             <- can be "max" or "min"
-    early_stop:
-        monitor: "val_acc"      <- name of the logged metric that determines when model is improving
+    EarlyStopping:
+        monitor: "val_acc"      <- name of the logged metric which determines when model is improving
         patience: 5             <- how many epochs of not improving until training stops
         mode: "max"             <- can be "max" or "min"
 
@@ -92,6 +94,9 @@ printing:
     progress_bar_refresh_rate: 5    <- refresh rate of training bar in terminal
     weights_summary: "top"          <- print summary of model (alternatively "full")
     profiler: False                 <- set True if you want to see execution time profiling
+
+data_dir: "data/"           <-  path to data folder
+logs_dir: "logs/"           <-  path to logs folder
 ```
 <br>
 
@@ -100,55 +105,55 @@ printing:
 You can store many run configurations in this file.<br>
 Example run configuration:
 ```yaml
-MNIST_CLASSIFIER_V1:
-    trainer:    # these parameters will be passed directly to PyTorch Lightning 'Trainer' object
-        max_epochs: 5
-        gradient_clip_val: 0.5
-        accumulate_grad_batches: 1
-        limit_train_batches: 1.0
-    model:      # these parameters will be passed to 'LightningModule' object as 'hparams' dictionary
-        model_folder: "simple_mnist_classifier"
-        lr: 0.001
-        weight_decay: 0.000001
-        input_size: 784
-        output_size: 10
-        lin1_size: 256
-        lin2_size: 256
-        lin3_size: 128
-    dataset:    # these parameters will be passed to 'LightningDataModule' object as 'hparams' dictionary
-        datamodule_folder: "mnist_digits_datamodule"
-        batch_size: 256
-        train_val_split_ratio: 0.9
-        num_workers: 1
-        pin_memory: False
-    callbacks:
-        ConfusionMatrixLoggerCallback:
-            class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-    wandb:
-        group: ""
-        tags: ["v1", "uwu"]
-    resume_training:
-        checkpoint_path: "path_to_checkpoint/last.ckpt"
-        wandb_run_id: None
+SIMPLE_CONFIG_EXAMPLE_MNIST:
+    seed: 1234
+    trainer:
+        args:
+            max_epochs: 10
+    model:
+        load_from:
+            model_path: "models/simple_mnist_classifier/lightning_module.py"
+            model_class: "LitModel"
+        hparams:
+            lr: 0.001
+            weight_decay: 0.00001
+            input_size: 784
+            output_size: 10
+            lin1_size: 256
+            lin2_size: 256
+            lin3_size: 128
+    datamodule:
+        load_from:
+            datamodule_path: "datamodules/mnist_datamodule/datamodule.py"
+            datamodule_class: "MNISTDataModule"
+        hparams:
+            batch_size: 64
+            train_val_test_split: [55_000, 5_000, 10_000]
 ```
-Each run configuration needs to contain sections `trainer`, `model` and `dataset`. Sections `callbacks`, `wandb` and `resume_training` are optional and can be removed.<br>
+To start training with this configuration run:<br>
+    `python train.py --run_config_name SIMPLE_CONFIG_EXAMPLE_MNIST`
 
-Section `model` always needs to contain `model_folder` parameter (name of the folder from which `lightning_module.py` will be loaded, which should contain `LitModel` class).<br>
-Section `dataset` always needs to contain `datamodule_folder` parameter (name of the folder from which `datamodule.py` will be loaded, which should contain `DataModule` class).<br>
+Each run configuration needs to contain sections `trainer`, `model` and `datamodule`.<br> 
+EVERY OTHER SECTION IS OPTIONAL!  (see [run_configs.yaml](project/run_configs.yaml) for more advanced config example with optional sections)<br>
 
-Every parameter in `model` section will be passed to your model class and can be retrieved through `hparams` dictionary (see example with [simple_mnist_classifier](project/models/simple_mnist_classifier/lightning_module.py)).<br>
-Every parameter in `dataset` section will be passed to your datamodule class and can be retrieved through `hparams` dictionary (see example with [mnist_digits_datamodule](project/data_modules/mnist_digits_datamodule/datamodule.py)).<br>
+
+Every parameter specified in model hparams section will be passed to your model class and can be retrieved through `hparams` dictionary (see example with [simple_mnist_classifier](project/models/simple_mnist_classifier/lightning_module.py)).<br>
+
+Every parameter specified in datamodule hparams section will be passed to your datamodule class and can be retrieved through `hparams` dictionary (see example with [mnist_datamodule](project/datamodules/mnist_datamodule/datamodule.py)).<br>
 <br>
 
 
 ## Workflow
-1. Add your model to `project/models` folder. You need to create folder with `lightning_module.py` file containing `LitModel` class
-2. Add your datamodule to `project/data_modules` folder. You need to create folder with `datamodule.py` file containing `DataModule` class
-3. Create new run config in [run_configs.yaml](project/run_configs.yaml) (specify there folders containing your model and datamodule)
-3. Configure [project_config.yaml](project/project_config.yaml)
+1. Create PyTorch Lightning model
+2. Create PyTorch Lightning datamodule
+3. Create new run config in [run_configs.yaml](project/run_configs.yaml)
+    - specify path to your model class
+    - specify path to your datamodule class
+    - you can add there any hyperparameters you want!
+3. Configure your project in [project_config.yaml](project/project_config.yaml)
 4. Run training with chosen run config<br>
     ```bash
-    python train.py --run_config MNIST_CLASSIFIER_V1
+    python train.py --run_config SIMPLE_CONFIG_EXAMPLE_MNIST
     ```
 <br><br>
 
@@ -168,8 +173,8 @@ Every parameter in `dataset` section will be passed to your datamodule class and
 
 </div>
 
-## Description   
-What it does   
+## Description
+What it does
 
 ## How to run
 First, install dependencies
@@ -192,7 +197,7 @@ Next, you can train model without logging
 # train model without Weights&Biases
 # choose run config from project/run_configs.yaml
 cd project
-python train.py --no_wandb --run_config MNIST_CLASSIFIER_V1
+python train.py --no_wandb --run_config SIMPLE_CONFIG_EXAMPLE_MNIST
 ```
 
 Or you can train model with Weights&Biases logging
@@ -207,10 +212,10 @@ loggers:
 # train model with Weights&Biases
 # choose run config from project/run_configs.yaml
 cd project
-python train.py --run_config MNIST_CLASSIFIER_V1
+python train.py --run_config SIMPLE_CONFIG_EXAMPLE_MNIST
 ```
 
-Optionally you can install project as package with [setup.py](setup.py)
+Optionally you can install project as a package with [setup.py](setup.py)
 ```bash
 pip install -e .
 ```

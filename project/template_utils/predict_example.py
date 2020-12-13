@@ -1,4 +1,4 @@
-from data_modules.mnist_digits_datamodule import transforms
+from datamodules.mnist_datamodule import transforms
 from PIL import Image
 
 # the LitModel you import should be the same as the one you used for training!

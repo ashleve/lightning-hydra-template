@@ -3,24 +3,22 @@ import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch
 
-# custom models
+# import custom models
 from models.simple_mnist_classifier.models import *
 
 
 class LitModel(pl.LightningModule):
     """
-        This is example of lightning model for MNIST digits classification.
-        All models should be located in separate folders with file named 'lightning_module.py' containing class which
-        is always called 'LitModel'!
+    This is example of lightning model for MNIST digits classification.
 
-        The folder name of model used during training should be specified in run config and all parameters from
-        'model' section will be passed in 'hparams' dictionary.
+    The path to model should be specified in your run config. (run_configs.yaml)
+    The 'hparams' dict contains your hparams specified in your run config. (run_configs.yaml)
 
-        This class enables you to specify what happens during training, validation and test step.
-        You can just remove 'validation_step()' or 'test_step()' methods if you don't want to have them during training.
+    This class enables you to specify what happens during training, validation and test step.
+    You can just remove 'validation_step()' or 'test_step()' methods if you don't want to have them during training.
     """
 
-    def __init__(self, hparams=None):
+    def __init__(self, hparams: dict = None):
         super().__init__()
 
         if hparams:
@@ -78,4 +76,4 @@ class LitModel(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay)
+        return torch.optim.Adam(self.parameters(), lr=self.hparams["lr"], weight_decay=self.hparams["weight_decay"])
