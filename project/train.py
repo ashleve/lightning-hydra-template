@@ -106,10 +106,23 @@ def main(project_config_path: str, run_configs_path: str, run_config_name: str, 
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--project_config_path", type=str, default="project_config.yaml")
-    parser.add_argument("--run_configs_path", type=str, default="run_configs.yaml")
-    parser.add_argument("--run_config_name", type=str, default="SIMPLE_CONFIG_EXAMPLE_MNIST")
-    parser.add_argument("--no_wandb", dest='use_wandb', action='store_false')
+    parser.add_argument("--project_config_path",
+                        type=str,
+                        default="project_config.yaml",
+                        help="Path to file containing your project configuration")
+    parser.add_argument("--run_configs_path",
+                        type=str,
+                        default="run_configs.yaml",
+                        help="Path to file containing your run configurations")
+    parser.add_argument("--run_config_name",
+                        type=str,
+                        default="SIMPLE_CONFIG_EXAMPLE_MNIST",
+                        help="Name of you configuration in run_configs.yaml")
+    parser.add_argument("--no_wandb",
+                        dest='use_wandb',
+                        action='store_false',
+                        help="Whether to use Weights&Biases or not")
+
     parser.set_defaults(use_wandb=True)
     args = parser.parse_args()
 

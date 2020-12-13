@@ -12,7 +12,7 @@ class LitModel(pl.LightningModule):
     This is example of lightning model for MNIST digits classification.
 
     The path to model should be specified in your run config. (run_configs.yaml)
-    The 'hparams' dict contains your hparams specified in run config. (run_configs.yaml)
+    The 'hparams' dict contains your hparams specified in your run config. (run_configs.yaml)
 
     This class enables you to specify what happens during training, validation and test step.
     You can just remove 'validation_step()' or 'test_step()' methods if you don't want to have them during training.

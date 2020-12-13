@@ -78,9 +78,9 @@ ADVANCED_CONFIG_EXAMPLE_MNIST:
             save_top_k: 1
             save_last: True
             mode: "max"
-        ConfusionMatrixLoggerCallback:  # some custom callback class from template_utils/callbacks.py
+        ConfusionMatrixWandbLoggerCallback:  # some custom callback class from template_utils/wandb_callbacks.py
             class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-        MetricsHeatmapLoggerCallback:  # some custom callback class from template_utils/callbacks.py
+        MetricsHeatmapWandbLoggerCallback:  # some custom callback class from template_utils/wandb_callbacks.py
             class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
     resume_training:
         checkpoint_path: None  # path to your checkpoint

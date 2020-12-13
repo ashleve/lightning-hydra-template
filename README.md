@@ -130,12 +130,15 @@ SIMPLE_CONFIG_EXAMPLE_MNIST:
             batch_size: 64
             train_val_test_split: [55_000, 5_000, 10_000]
 ```
-To start training with this configuration run: `python train.py --run_config_name SIMPLE_CONFIG_EXAMPLE_MNIST`
+To start training with this configuration run:<br>
+    `python train.py --run_config_name SIMPLE_CONFIG_EXAMPLE_MNIST`
 
-Each run configuration needs to contain sections `trainer`, `model` and `datamodule`. <br>
-Sections `seed`, `callbacks`, `wandb` and `resume_training` are optional and can be removed (see advanced config example in [run_configs.yaml](project/run_configs.yaml)).<br>
+Each run configuration needs to contain sections `trainer`, `model` and `datamodule`.<br> 
+EVERY OTHER SECTION IS OPTIONAL!  (see [run_configs.yaml](project/run_configs.yaml) for more advanced config example with optional sections)<br>
+
 
 Every parameter specified in model hparams section will be passed to your model class and can be retrieved through `hparams` dictionary (see example with [simple_mnist_classifier](project/models/simple_mnist_classifier/lightning_module.py)).<br>
+
 Every parameter specified in datamodule hparams section will be passed to your datamodule class and can be retrieved through `hparams` dictionary (see example with [mnist_datamodule](project/datamodules/mnist_datamodule/datamodule.py)).<br>
 <br>
 
@@ -146,7 +149,7 @@ Every parameter specified in datamodule hparams section will be passed to your d
 3. Create new run config in [run_configs.yaml](project/run_configs.yaml)
     - specify path to your model class
     - specify path to your datamodule class
-    - you can add there and hyperparameters you want!
+    - you can add there any hyperparameters you want!
 3. Configure your project in [project_config.yaml](project/project_config.yaml)
 4. Run training with chosen run config<br>
     ```bash

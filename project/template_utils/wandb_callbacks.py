@@ -31,7 +31,7 @@ class SaveOnnxModelToWandbCallback(Callback):
         wandb.save(file_path, base_path=self.wandb_save_dir)
 
 
-class ImagePredictionLoggerCallback(Callback):
+class ImagePredictionWandbLoggerCallback(Callback):
     """
         Each epoch upload to wandb a couple of the same images with predicted labels.
     """
@@ -58,7 +58,7 @@ class ImagePredictionLoggerCallback(Callback):
             ]}, commit=False)
 
 
-class MetricsHeatmapLoggerCallback(Callback):
+class MetricsHeatmapWandbLoggerCallback(Callback):
     """
         Generate f1, precision and recall heatmap from validation epoch outputs.
         Expects validation step to return predictions and targets.
@@ -107,7 +107,7 @@ class MetricsHeatmapLoggerCallback(Callback):
             self.targets = []
 
 
-class ConfusionMatrixLoggerCallback(Callback):
+class ConfusionMatrixWandbLoggerCallback(Callback):
     """
         Generate Confusion Matrix.
         Expects validation step to return predictions and targets.

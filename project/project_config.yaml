@@ -1,5 +1,5 @@
 # set -1 to train on all GPUs abailable, set 0 to train on CPU only
-num_of_gpus: 0
+num_of_gpus: -1
 
 
 # Weights&Biases configuration (just remove this section if you don't want tu use Weights&Biases)
@@ -18,15 +18,15 @@ loggers:
 # if you specify the same callback class also in run config then it will overwrite the one set here
 # all of the callback parameters will be passed to it on initialization
 default_callbacks:
-    EarlyStopping:              # name of PyTorch Lightning class for early stopping callback
-        monitor: "val_acc"
-        patience: 5
-        mode: "max"
-    ModelCheckpoint:            # name of PyTorch Lightning class for checkpointing callback
-        monitor: "val_acc"
-        save_top_k: 1
-        save_last: True
-        mode: "max"
+    ModelCheckpoint:        # name of PyTorch Lightning class for checkpointing callback
+        monitor: "val_acc"      # name of the logged metric which determines when model is improving
+        save_top_k: 1           # save k best models (determined by above metric)
+        save_last: True         # additionaly always save model from last epoch
+        mode: "max"             # can be "max" or "min"
+    EarlyStopping:          # name of PyTorch Lightning class for early stopping callback
+        monitor: "val_acc"      # name of the logged metric which determines when model is improving
+        patience: 5             # how many epochs of not improving until training stops
+        mode: "max"             # can be "max" or "min"
 
 
 # configure things which are printed in terminal

@@ -274,7 +274,7 @@ def init_wandb_logger(project_config: dict,
         "test_size": len(datamodule.data_test)
         if hasattr(datamodule, 'data_test') and datamodule.data_test is not None else 0,
     })
-    wandb_logger.log_hyperparams(project_config["num_of_gpus"])
+    wandb_logger.log_hyperparams({"num_of_gpus": project_config["num_of_gpus"]})
     wandb_logger.log_hyperparams(run_config["trainer"]["args"])
     wandb_logger.log_hyperparams(run_config["model"]["hparams"])
     wandb_logger.log_hyperparams(run_config["model"]["load_from"])
