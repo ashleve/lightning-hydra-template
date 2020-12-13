@@ -8,10 +8,10 @@ Click on <b>"Use this template"</b> button above to initialize new repository.<b
 - Storing many run configurations in a convenient way ([run_configs.yaml](project/run_configs.yaml))
 - All advantages of PyTorch Lightning
 - Weights&Biases integration:
-    - Automatically stores all relevant code, configs and model checkpoints in Weights&Biases cloud
+    - ~~Automatically stores all relevant code, configs and model checkpoints in Weights&Biases cloud~~ (TODO)
     - Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))
-- Automates the whole training process and initialization, you only need to create `model` and `datamodule` and specify them in [run_configs.yaml](project/run_configs.yaml)
-- Scheduling execution of many experiments ([execute_all_runs.py](project/template_utils/execute_all_runs.py))
+- Automates the whole training process, you only need to create model and datamodule and specify them in [run_configs.yaml](project/run_configs.yaml)
+- Scheduling execution of many runs/experiments ([execute_all_runs.py](project/template_utils/execute_all_runs.py))
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
 - Built in package setup ([setup.py](setup.py))
@@ -31,10 +31,11 @@ The directory structure of new project looks like this:
 │   ├── notebooks               <- Jupyter notebooks
 │   │
 │   ├── template_utils          <- Different utilities
-│   │   ├── callbacks.py            <- Useful training callbacks
+│   │   ├── callbacks.py            <- Custom callbacks
+│   │   ├── wandb_callbacks.py      <- Custom Weights&Biases related callbacks
 │   │   ├── execute_sweep.py        <- Special file for executing Weights&Biases sweeps
 │   │   ├── execute_all_runs.py     <- Special file for executing all specified runs one after the other
-│   │   ├── initializers.py         <- Useful initializers
+│   │   ├── initializers.py         <- Initializers for different modules
 │   │   └── predict_example.py      <- Example of inference with trained model 
 │   │
 │   ├── datamodules            <- All your datamodules should be located here!
@@ -134,7 +135,7 @@ To start training with this configuration run:<br>
     `python train.py --run_config_name SIMPLE_CONFIG_EXAMPLE_MNIST`
 
 Each run configuration needs to contain sections `trainer`, `model` and `datamodule`.<br> 
-EVERY OTHER SECTION IS OPTIONAL!  (see [run_configs.yaml](project/run_configs.yaml) for more advanced config example with optional sections)<br>
+Every other section is optional! (see [run_configs.yaml](project/run_configs.yaml) for more advanced config example with optional sections)<br>
 
 
 Every parameter specified in model hparams section will be passed to your model class and can be retrieved through `hparams` dictionary (see example with [simple_mnist_classifier](project/models/simple_mnist_classifier/lightning_module.py)).<br>
