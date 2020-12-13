@@ -53,7 +53,8 @@ def train(project_config: dict, run_config: dict, use_wandb: bool):
     callbacks: List[Callback] = init_callbacks(
         project_config=project_config,
         run_config=run_config,
-        use_wandb=use_wandb
+        use_wandb=use_wandb,
+        base_dir=BASE_DIR
     )
 
     # Init PyTorch Lightning loggers ⚡
@@ -96,7 +97,7 @@ def main(project_config_path: str, run_configs_path: str, run_config_name: str, 
     run_config: dict = load_config(path=run_configs_path)[run_config_name]
 
     print("EXECUTING RUN:", run_config_name)
-    pprint.pprint(run_config, sort_dicts=False)
+    # pprint.pprint(run_config, sort_dicts=False)
     print()
 
     # Train model

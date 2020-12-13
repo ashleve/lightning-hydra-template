@@ -9,6 +9,7 @@ import importlib.util
 import os
 
 # template utils imports
+from pytorch_lightning import callbacks as lightning_callbacks
 from template_utils import callbacks as custom_callbacks
 from template_utils import wandb_callbacks
 
@@ -141,7 +142,8 @@ def init_trainer(project_config: dict,
 
 def init_callbacks(project_config: dict,
                    run_config: dict,
-                   use_wandb: bool) -> List[pl.Callback]:
+                   use_wandb: bool,
+                   base_dir: str) -> List[pl.Callback]:
     """
     Initialize default callbacks and callbacks specified in run config.
     """
@@ -149,26 +151,40 @@ def init_callbacks(project_config: dict,
     default_callbacks = project_config.get("default_callbacks", {})
     run_callbacks = run_config.get("callbacks", {})
 
-    # print(default_callbacks)
+    # namespaces in which callbacks will be searched for
+    namespaces = [
+        lightning_callbacks,
+        custom_callbacks,
+        wandb_callbacks,
+    ]
 
     callbacks = []
 
-    # for callback_config in default_callbacks:
-    #     callback_class = getattr(pl.callbacks, callback_config["callback_class"])
-    #     callbacks.append(callback_class(**callback_config["args"]))
-    #
-    # for callback_config in run_callbacks:
-    #     callback_class = getattr(pl.callbacks, callback_config["callback_class"])
-    #     callbacks.append(callback_class(**callback_config["args"]))
-    #
-    # if use_wandb:
-    #     callbacks.append(
-    #         wandb_callbacks.SaveCodeToWandbCallback(
-    #             base_dir=os.path.dirname(os.path.dirname(__file__)),
-    #             wandb_save_dir=project_config["logs_dir"],
-    #             run_config=run_config
-    #         )
-    #     )
+    all_callback_configs = {}
+    for callback_config in default_callbacks:
+        all_callback_configs[callback_config] = default_callbacks[callback_config]
+    for callback_config in run_callbacks:
+        all_callback_configs[callback_config] = run_callbacks[callback_config]
+
+    for callback_config in all_callback_configs:
+        found = False
+        for namespace in namespaces:
+            if hasattr(namespace, callback_config):
+                callback_class = getattr(namespace, callback_config)
+                callbacks.append(callback_class(**all_callback_configs[callback_config]))
+                found = True
+                break
+        if not found:
+            raise ModuleNotFoundError(f"Callback '{callback_config}' not found.")
+
+    if use_wandb:
+        callbacks.append(
+            wandb_callbacks.SaveCodeToWandbCallback(
+                base_dir=base_dir,
+                wandb_save_dir=project_config["logs_dir"],
+                run_config=run_config
+            )
+        )
 
     return callbacks
 

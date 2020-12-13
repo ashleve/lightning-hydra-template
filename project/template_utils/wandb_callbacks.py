@@ -1,4 +1,6 @@
 from sklearn.metrics import precision_score, recall_score, f1_score
+from pytorch_lightning.loggers import WandbLogger
+from wandb.sdk.wandb_run import Run as wandb_run
 from pytorch_lightning import Callback
 from shutil import copy
 import torch
@@ -88,8 +90,13 @@ class MetricsHeatmapLoggerCallback(Callback):
             r = recall_score(self.preds, self.targets, average=None)
             p = precision_score(self.preds, self.targets, average=None)
 
-            trainer.logger.experiment.log({
-                f"f1_p_r_heatmap_{trainer.current_epoch}_{trainer.logger.id}": wandb.plots.HeatMap(
+            logger = None
+            for some_logger in trainer.logger.experiment:
+                if isinstance(some_logger, wandb_run):
+                    logger = some_logger
+
+            logger.log({
+                f"f1_p_r_heatmap_{trainer.current_epoch}_{logger.id}": wandb.plots.HeatMap(
                     x_labels=self.class_names,
                     y_labels=["f1", "precision", "recall"],
                     matrix_values=[f1, p, r],
@@ -129,7 +136,12 @@ class ConfusionMatrixLoggerCallback(Callback):
             self.preds = torch.cat(self.preds).tolist()
             self.targets = torch.cat(self.targets).tolist()
 
-            trainer.logger.experiment.log({
+            logger = None
+            for some_logger in trainer.logger.experiment:
+                if isinstance(some_logger, wandb_run):
+                    logger = some_logger
+
+            logger.log({
                 f"conf_mat{trainer.current_epoch}": wandb.plot.confusion_matrix(
                     self.preds,
                     self.targets,
@@ -147,8 +159,8 @@ class SaveCodeToWandbCallback(Callback):
     def __init__(self, base_dir, wandb_save_dir, run_config):
         self.base_dir = base_dir
         self.wandb_save_dir = wandb_save_dir
-        self.model_folder = run_config["model"]["model_folder"]
-        self.datamodule_folder = run_config["dataset"]["datamodule_folder"]
+        self.model_folder = run_config["model"]["load_from"]["model_path"]
+        self.datamodule_folder = run_config["datamodule"]["load_from"]["datamodule_path"]
         self.additional_files_to_be_saved = [  # paths should be relative to base_dir
             "template_utils/callbacks.py",
             "template_utils/initializers.py",

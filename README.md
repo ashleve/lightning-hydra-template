@@ -30,11 +30,11 @@ The directory structure of new project looks like this:
 │   │
 │   ├── notebooks               <- Jupyter notebooks
 │   │
-│   ├── utils                   <- Different utilities
+│   ├── template_utils          <- Different utilities
 │   │   ├── callbacks.py            <- Useful training callbacks
 │   │   ├── execute_sweep.py        <- Special file for executing Weights&Biases sweeps
 │   │   ├── execute_all_runs.py     <- Special file for executing all specified runs one after the other
-│   │   ├── init_utils.py           <- Useful initializers
+│   │   ├── initializers.py         <- Useful initializers
 │   │   └── predict_example.py      <- Example of inference with trained model 
 │   │
 │   ├── datamodules            <- All your datamodules should be located here!

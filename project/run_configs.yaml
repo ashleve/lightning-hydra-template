@@ -40,7 +40,7 @@ ADVANCED_CONFIG_EXAMPLE_MNIST:
             limit_train_batches: 0.8    # train only on 80% of training data
             limit_val_batches: 1.0      # validate on 100% of validation data
             limit_test_batches: 1.0     # test on 100% of test data
-            val_check_interval: 2       # perform validation every 2 epochs
+            val_check_interval: 0.5     # perform twice per epoch
     model:
         load_from:
             model_path: "models/simple_mnist_classifier/lightning_module.py"
@@ -79,6 +79,8 @@ ADVANCED_CONFIG_EXAMPLE_MNIST:
             save_last: True
             mode: "max"
         ConfusionMatrixLoggerCallback:  # some custom callback class from template_utils/callbacks.py
+            class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        MetricsHeatmapLoggerCallback:  # some custom callback class from template_utils/callbacks.py
             class_names: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
     resume_training:
         checkpoint_path: None  # path to your checkpoint
