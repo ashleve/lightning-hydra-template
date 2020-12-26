@@ -196,9 +196,9 @@ pip install -r requirements.txt
 Next, you can train model without logging
 ```bash
 # train model without Weights&Biases
-# choose run config from project/run_configs.yaml
+# choose run config name from project/run_configs.yaml
 cd project
-python train.py --no_wandb --run_config SIMPLE_CONFIG_EXAMPLE_MNIST
+python train.py --no_wandb --run_config_name SIMPLE_CONFIG_EXAMPLE_MNIST
 ```
 
 Or you can train model with Weights&Biases logging
@@ -211,9 +211,9 @@ loggers:
 ```
 ```bash
 # train model with Weights&Biases
-# choose run config from project/run_configs.yaml
+# choose run config name from project/run_configs.yaml
 cd project
-python train.py --run_config SIMPLE_CONFIG_EXAMPLE_MNIST
+python train.py --run_config_name SIMPLE_CONFIG_EXAMPLE_MNIST
 ```
 
 Optionally you can install project as a package with [setup.py](setup.py)
