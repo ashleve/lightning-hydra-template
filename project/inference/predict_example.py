@@ -1,8 +1,8 @@
-from datamodules.mnist_datamodule import transforms
+from pytorch_modules.lightning_datamodules.mnist_datamodule import transforms
 from PIL import Image
 
 # the LitModel you import should be the same as the one you used for training!
-from models.simple_mnist_classifier.lightning_module import LitModel
+from pytorch_modules.lightning_models.simple_mnist_classifier import LitModel
 
 
 def predict():
@@ -10,7 +10,7 @@ def predict():
         This method is example of inference with a trained model.
         It Loads trained image classification model from checkpoint.
         Then it loads example image and predicts its label.
-        Model used in lightning_module.py should be the same as during training!!!
+        Model used in simple_mnist_classifier.py should be the same as during training!!!
     """
 
     CKPT_PATH = "epoch=0.ckpt"

@@ -11,7 +11,7 @@ import os
 class SaveOnnxModelToWandbCallback(Callback):
     """
         Save model in .onnx format and upload to wandb.
-        Might crash since not all models are compatible with onnx.
+        Might crash since not all lightning_models are compatible with onnx.
     """
     def __init__(self, datamodule, wandb_save_dir):
         first_batch = next(iter(datamodule.train_dataloader()))
@@ -162,7 +162,7 @@ class SaveCodeToWandbCallback(Callback):
         self.model_folder = run_config["model"]["load_from"]["model_path"]
         self.datamodule_folder = run_config["datamodule"]["load_from"]["datamodule_path"]
         self.additional_files_to_be_saved = [  # paths should be relative to base_dir
-            "template_utils/callbacks.py",
+            "template_utils/custom_callbacks.py",
             "template_utils/initializers.py",
             "train.py",
             "project_config.yaml",

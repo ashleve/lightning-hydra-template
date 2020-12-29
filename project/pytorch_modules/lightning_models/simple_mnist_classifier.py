@@ -3,8 +3,8 @@ import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch
 
-# import custom models
-from models.simple_mnist_classifier.models import *
+# import custom lightning_models
+from pytorch_modules.lightning_models.simple_mnist_classifier.models import *
 
 
 class LitModel(pl.LightningModule):

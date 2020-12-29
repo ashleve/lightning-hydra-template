@@ -1,5 +1,5 @@
 # pytorch lightning imports
-from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger
+from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.profiler import SimpleProfiler
 import pytorch_lightning as pl
 
@@ -10,8 +10,7 @@ import os
 
 # template utils imports
 from pytorch_lightning import callbacks as lightning_callbacks
-from template_utils import callbacks as custom_callbacks
-from template_utils import wandb_callbacks
+from pytorch_modules.lightning_callbacks import wandb_callbacks, custom_callbacks as custom_callbacks
 
 
 def normalize_config_paths(project_config: dict, run_config: dict, base_dir: str) -> Tuple[dict, dict]:
@@ -24,7 +23,7 @@ def normalize_config_paths(project_config: dict, run_config: dict, base_dir: str
             os.path.normpath(os.path.join(base_dir, project_config["data_dir"]))
 
     if not os.path.isabs(project_config["logs_dir"]):
-        project_config["logs_dir"] =\
+        project_config["logs_dir"] = \
             os.path.normpath(os.path.join(base_dir, project_config["logs_dir"]))
 
     if not os.path.isabs(run_config["model"]["load_from"]["model_path"]):
@@ -112,7 +111,7 @@ def init_trainer(project_config: dict,
         # experiment logging
         logger=loggers,
 
-        # useful callbacks
+        # useful lightning_callbacks
         callbacks=callbacks,
 
         # resume training from checkpoint if it was set in the run config
@@ -145,13 +144,13 @@ def init_callbacks(project_config: dict,
                    use_wandb: bool,
                    base_dir: str) -> List[pl.Callback]:
     """
-    Initialize default callbacks and callbacks specified in run config.
+    Initialize default lightning_callbacks and lightning_callbacks specified in run config.
     """
 
     default_callbacks = project_config.get("default_callbacks", {})
-    run_callbacks = run_config.get("callbacks", {})
+    run_callbacks = run_config.get("lightning_callbacks", {})
 
-    # namespaces in which callbacks will be searched for
+    # namespaces in which lightning_callbacks will be searched for
     namespaces = [
         lightning_callbacks,
         custom_callbacks,

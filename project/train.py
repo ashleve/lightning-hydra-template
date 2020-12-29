@@ -49,7 +49,7 @@ def train(project_config: dict, run_config: dict, use_wandb: bool):
         data_dir=project_config["data_dir"]
     )
 
-    # Init PyTorch Lightning callbacks ⚡
+    # Init PyTorch Lightning lightning_callbacks ⚡
     callbacks: List[Callback] = init_callbacks(
         project_config=project_config,
         run_config=run_config,
