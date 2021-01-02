@@ -3,8 +3,8 @@ import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch
 
-# import custom lightning_models
-from pytorch_modules.lightning_models.simple_mnist_classifier.models import *
+# import custom architectures
+from pytorch_modules.architectures.simple_mnist import SimpleMNISTClassifier
 
 
 class LitModel(pl.LightningModule):
@@ -16,6 +16,9 @@ class LitModel(pl.LightningModule):
 
     This class enables you to specify what happens during training, validation and test step.
     You can just remove 'validation_step()' or 'test_step()' methods if you don't want to have them during training.
+
+    To learn how to create lightning models visit:
+        https://pytorch-lightning.readthedocs.io/en/latest/lightning_module.html
     """
 
     def __init__(self, hparams: dict = None):

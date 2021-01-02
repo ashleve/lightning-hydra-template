@@ -10,6 +10,9 @@ class MNISTDataModule(LightningDataModule):
 
     The path to datamodule should be specified in your run config. (run_configs.yaml)
     The 'hparams' dict contains your hparams specified in run config. (run_configs.yaml)
+
+    To learn how to create datamodules visit:
+        https://pytorch-lightning.readthedocs.io/en/latest/datamodules.html
     """
 
     def __init__(self, data_dir: str, hparams: dict):

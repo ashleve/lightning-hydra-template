@@ -1,0 +1,14 @@
+defaults:
+    - project_config/trainer: default_trainer
+#    - model: simple_mnist_classifier
+#    - datamodule: mnist_datamodule
+#    - logger: comet
+#    - callbacks: mnist_callbacks
+
+
+# path to data folder (either absolute or relative to placement of 'train.py' file)
+data_dir: "data/"
+
+
+# path to logs folder (either absolute or relative to placement of 'train.py' file)
+logs_dir: "logs/"

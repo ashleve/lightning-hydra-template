@@ -1,0 +1,13 @@
+# @package _group_
+
+# args passed to Lightning Trainer on every experiment
+# they will be combined with trainer args specified in experiment config
+# (if the argument repeats in experiment config, then it will override the one set here)
+args:
+    num_of_gpus: -1                 # set -1 to train on all GPUs abailable, set 0 to train on CPU only
+    auto_select_gpus: True
+    num_sanity_val_steps: 3
+    progress_bar_refresh_rate: 10
+    weights_summary: "top"
+    max_epochs: 100
+    profiler: "simple"              # use profiler to print execution time profiling after training ends

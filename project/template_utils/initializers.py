@@ -1,5 +1,5 @@
 # pytorch lightning imports
-from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.loggers import WandbLogger, CometLogger
 from pytorch_lightning.profiler import SimpleProfiler
 import pytorch_lightning as pl
 
@@ -287,3 +287,11 @@ def init_tensorboard_logger() -> pl.loggers.TensorBoardLogger:
     """Initialize tensorboard logger"""
     # TODO
     return None
+
+
+def init_comet_logger(project_config: dict,
+                      run_config: dict,
+                      model: pl.LightningModule,
+                      datamodule: pl.LightningDataModule) -> pl.loggers.CometLogger:
+
+    comet_logger = CometLogger()

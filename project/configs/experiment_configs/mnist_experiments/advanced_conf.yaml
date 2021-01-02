@@ -1,10 +1,17 @@
 # to execute this experiment run:
-# python train.py --exp_conf configs/experiment_configs/mnist_experiments/mnist_classifier_advanced_conf.yaml
+# python train.py --exp_conf configs/experiment/mnist_experiments/advanced_conf.yaml
+
+
+# (optional section)
+# pytorch seed for this experiment
+# it also affects random_split() method used in mnist_datamodule.py
+# overwrites default pytorch seed set in project_config.yaml
+seed: 1234
 
 # (required section)
 trainer_args:
     min_epochs: 1               # train for at least this many epochs (denies early stopping)
-    max_epochs: 10
+    max_epochs: 10              # train for maximum this many epochs
     gradient_clip_val: 0.5      # gradient clipping (helps with exploding gradient issues)
     accumulate_grad_batches: 2  # perform optimization step after accumulating gradient from 2 batches
     fast_dev_run: False         # execute 1 training, 1 validation and 1 test epoch only
@@ -38,13 +45,6 @@ datamodule:
         num_workers: 1              # num of processes used for loading data in parallel
         pin_memory: False           # dataloaders will copy tensors into CUDA pinned memory before returning them
 
-# (optional section)
-# pytorch seed for this experiment
-# it also affects random_split() method used in mnist_datamodule.py
-# overwrites default pytorch seed set in project_config.yaml
-pytorch_seed:
-    use_seed: True
-    pytorch_seed: 1234
 
 # (optional section)
 # Weights&Biases logger args
@@ -55,10 +55,6 @@ wandb_args:
     tags: ["v2", "uwu"]
     notes: "This is example run."
 
-# (optional section)
-# path to .yaml file containing configurations of all callbacks which will be used for this experiment
-# this will be combained with default callbacks set in project_config.yaml (overwrites repeating callbacks)
-callbacks_configs_path: "configs/callbacks_configs/mnist_callabcks.yaml"
 
 # (optional section)
 # use this if you want to resume training from checkpoint

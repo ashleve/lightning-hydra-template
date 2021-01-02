@@ -1,0 +1,54 @@
+# default args passed to Lightning Trainer on every run/experiment
+# they will be combined with trainer args specified in experiment config
+default_args:
+    num_of_gpus: -1                 # set -1 to train on all GPUs abailable, set 0 to train on CPU only
+    auto_select_gpus: True
+    num_sanity_val_steps: 3
+    progress_bar_refresh_rate: 10   # refresh terminal every 10 batches
+    weights_summary: "top"          # print model summary before training starts (alternatively "full")
+
+
+# use profiler to print execution time profiling after training ends
+profiler:
+    use_profiler: True
+    class: "pytorch_lightning.profiler.SimpleProfiler"
+    args: {}
+
+
+loggers:
+
+    # Comet logger config
+    comet:
+        use_comet: True
+        default_args:
+            api_key: "sadfhgadfhsdfhadgkajdgsdg"
+            project_name: "project_template_test"
+        extra_options:
+            log_optimizer_name: True
+            log_train_val_test_sizes: True
+
+    # Weights&Biases logger config
+    wandb:
+        use_wandb: False
+        default_args:
+            project: "project_template_test"
+            entity: ""              # change to your username or name of your team on wandb
+            log_model: True         # set True to automatically upload model checkpoint to wandb cloud after training
+            offline: False          # set True to store all logs only locally
+        extra_options:
+            log_gradients: False    # set True to log gradient histograms (avoid this for very big lightning_models)
+            log_optimizer_name: True
+            log_train_val_test_sizes: True
+
+    # Tensorboard logger config
+    tensorboard:
+        use_tensorboard: False
+        default_args: {}
+
+
+# path to data folder (either absolute or relative to placement of 'train.py' file)
+data_dir: "data/"
+
+
+# path to logs folder (either absolute or relative to placement of 'train.py' file)
+logs_dir: "logs/"

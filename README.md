@@ -4,7 +4,7 @@ Click on <b>"Use this template"</b> button above to initialize new repository.<b
 
 ## Features
 - Predefined folder structure
-- Storing project configuration in a convenient way ([project_config.yaml](project/project_config.yaml))
+- Storing project configuration in a convenient way ([project_config.yaml](project_config.yaml))
 - Storing many run configurations in a convenient way ([run_configs.yaml](project/run_configs.yaml))
 - All advantages of PyTorch Lightning
 - Weights&Biases integration:
@@ -67,7 +67,7 @@ The directory structure of new project looks like this:
 <br>
 
 
-## Project config parameters ([project_config.yaml](project/project_config.yaml))
+## Project config parameters ([project_config.yaml](project_config.yaml))
 Example project configuration:
 ```yaml
 num_of_gpus: -1             <- '-1' to train on all GPUs available, '0' to train on CPU
@@ -151,7 +151,7 @@ Every parameter specified in datamodule hparams section will be passed to your d
     - specify path to your model class
     - specify path to your datamodule class
     - you can add there any hyperparameters you want!
-3. Configure your project in [project_config.yaml](project/project_config.yaml)
+3. Configure your project in [project_config.yaml](project_config.yaml)
 4. Run training with chosen run config<br>
     ```bash
     python train.py --run_config SIMPLE_CONFIG_EXAMPLE_MNIST
