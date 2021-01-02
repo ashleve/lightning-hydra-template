@@ -9,5 +9,5 @@ args:
     num_sanity_val_steps: 3
     progress_bar_refresh_rate: 10
     weights_summary: "top"
-    max_epochs: 100
     profiler: "simple"              # use profiler to print execution time profiling after training ends
+    max_epochs: 100

@@ -1,14 +1,21 @@
+# @package _global_
+
 defaults:
-    - project_config/trainer: default_trainer
-#    - model: simple_mnist_classifier
-#    - datamodule: mnist_datamodule
-#    - logger: comet
-#    - callbacks: mnist_callbacks
+    - trainer: default_trainer.yaml
+    - model: default_model.yaml
+    - datamodule: default_datamodule.yaml
+    - callbacks: default_callbacks.yaml
+    - logger: comet.yaml
 
 
-# path to data folder (either absolute or relative to placement of 'train.py' file)
-data_dir: "data/"
+paths:
+    data_dir: "data/"   # path to data folder (either absolute or relative to placement of 'train.py' file)
+    logs_dir: "logs/"   # path to logs folder (either absolute or relative to placement of 'train.py' file)
 
 
-# path to logs folder (either absolute or relative to placement of 'train.py' file)
-logs_dir: "logs/"
+hydra:
+    run:
+        dir: ${paths.logs_dir}/hydra_logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    sweep:
+        dir: ${paths.logs_dir}/hydra_logs/sweeps/${now:%Y-%m-%d_%H-%M-%S}
+        subdir: ${hydra.job.num}
