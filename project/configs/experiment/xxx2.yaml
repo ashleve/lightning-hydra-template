@@ -1,13 +1,13 @@
 # @package _global_
+
 # to execute this experiment run:
 # python train.py +experiment=xxx2
 
 defaults:
     - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder
-    - override /model: default_model.yaml               # choose model from 'configs/model/' folder
-    - override /datamodule: default_datamodule.yaml     # choose datamodule from 'configs/datamodule/' folder
+    - override /model: null                             # choose model from 'configs/model/' folder
+    - override /datamodule: null                        # choose datamodule from 'configs/datamodule/' folder
     - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/' folder
-    - override /logger: comet.yaml                      # choose logger from 'configs/logger/' folder
 
 pytorch_seed: 12345                                     # pytorch seed for this experiment (also affects lightning random_split() method)
 
@@ -24,8 +24,8 @@ trainer:
         val_check_interval: 0.5                         # perform validation twice per epoch
 
 model:
-    class: "pytorch_modules.lightning_models.simple_mnist_classifier.LitModel"
-    hparams:                                            # you can add here any params you want and then access them in lightning model
+    class: pytorch_modules.lightning_models.simple_mnist_classifier.LitModel
+    args:                                            # you can add here any params you want and then access them in lightning model
         lr: 0.001
         weight_decay: 0.00001
         input_size: 784                                 # img size is 1*28*28
@@ -35,18 +35,21 @@ model:
         lin3_size: 128
 
 datamodule:
-    class: "pytorch_modules.lightning_datamodules.mnist_datamodule.MNISTDataModule"
-    hparams:                                            # you can add here any params you want and then access them in lightning datamodule
+    class: pytorch_modules.lightning_datamodules.mnist_datamodule.MNISTDataModule
+    args:                                               # you can add here any params you want and then access them in lightning datamodule
         batch_size: 64
-        train_val_test_split: [55_000, 5_000, 10_000]
+        train_val_test_split: (55_000, 5_000, 10_000)
         num_workers: 1                                  # num of processes used for loading data in parallel
         pin_memory: False                               # dataloaders will copy tensors into CUDA pinned memory before returning them
 
-logger:
-    args:                                               # you can add here additional logger arguments specific for this experiment
-        tags: ["uwu", "best_model"]
+loggers:
+    wandb:
+        args:                                           # you can add here additional loggers arguments specific for this experiment
+            tags: ["uwu", "best_model"]
+    comet:
+        args:
+            tags: ["uwu", "best_model"]
 
 resume_training:                                        # use this if you want to resume training from checkpoint
     checkpoint_path: False                              # path to your checkpoint
-    wandb_run_id: False                                 # you can add id of wandb run you want to resume but it's optional
-    comet_run_id: False                                 # you can add id of comet run you want to resume but it's optional
+    logger_run_id: False                                # loggers experiment id that you want to resume (optional)

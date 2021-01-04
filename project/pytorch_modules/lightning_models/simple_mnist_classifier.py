@@ -21,11 +21,9 @@ class LitModel(pl.LightningModule):
         https://pytorch-lightning.readthedocs.io/en/latest/lightning_module.html
     """
 
-    def __init__(self, hparams: dict = None):
+    def __init__(self, **kwargs):
         super().__init__()
-
-        if hparams:
-            self.save_hyperparameters(hparams)
+        self.save_hyperparameters(kwargs)
 
         self.model = SimpleMNISTClassifier(hparams=self.hparams)
 

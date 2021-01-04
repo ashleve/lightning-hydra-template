@@ -1,12 +1,13 @@
 # @package _global_
+
 # to execute this experiment run:
 # python train.py +experiment=xxx
 
 defaults:
     - override /trainer: default_trainer.yaml
-    - override /model: default_classifier.yaml
-    - override /datamodule: default_datamodule.yaml
-    - override /logger: comet.yaml
+    - override /model: null
+    - override /datamodule: null
+    - override /callbacks: default_callbacks.yaml
 
 pytorch_seed: 12345
 
@@ -15,8 +16,8 @@ trainer:
         max_epochs: 10
 
 model:
-    class: "pytorch_modules.lightning_models.simple_mnist_classifier.LitModel"
-    hparams:
+    class: pytorch_modules.lightning_models.simple_mnist_classifier.LitModel
+    args:
         lr: 0.001
         weight_decay: 0.00001
         input_size: 784
@@ -26,7 +27,7 @@ model:
         lin3_size: 128
 
 datamodule:
-    class: "pytorch_modules.lightning_datamodules.mnist_datamodule.MNISTDataModule"
-    hparams:
+    class: pytorch_modules.lightning_datamodules.mnist_datamodule.MNISTDataModule
+    args:
         batch_size: 32
-        train_val_test_split: [55_000, 5_000, 10_000]
+        train_val_test_split: (55_000, 5_000, 10_000)

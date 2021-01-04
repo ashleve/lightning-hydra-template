@@ -1,6 +1,0 @@
-# @package _group_
-# Tensorboard logger config
-
-args: {}
-
-extra_options: {}

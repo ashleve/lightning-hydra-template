@@ -1,6 +1,4 @@
 # pytorch lightning imports
-from pytorch_lightning.loggers import WandbLogger, CometLogger
-from pytorch_lightning.profiler import SimpleProfiler
 import pytorch_lightning as pl
 
 # normal imports
@@ -11,82 +9,59 @@ import os
 # template utils imports
 from pytorch_lightning import callbacks as lightning_callbacks
 from pytorch_modules.lightning_callbacks import wandb_callbacks, custom_callbacks as custom_callbacks
+from pytorch_lightning.loggers import CSVLogger
 
 
-def normalize_config_paths(project_config: dict, run_config: dict, base_dir: str) -> Tuple[dict, dict]:
-    """
-    Convert all config paths to absolute paths relatively to base_dir and normalize them.
-    """
+def format_path(path: str, base_dir: str):
+    """Convert path to absolute relatively to base_dir and normalize it."""
+    if not os.path.isabs(path):
+        path = os.path.join(base_dir, path)
+    return os.path.normpath(path)
 
-    if not os.path.isabs(project_config["data_dir"]):
-        project_config["data_dir"] = \
-            os.path.normpath(os.path.join(base_dir, project_config["data_dir"]))
 
-    if not os.path.isabs(project_config["logs_dir"]):
-        project_config["logs_dir"] = \
-            os.path.normpath(os.path.join(base_dir, project_config["logs_dir"]))
+def format_config_paths(config: dict, base_dir: str) -> dict:
+    config["paths"]["data_dir"] = format_path(config["paths"]["data_dir"], base_dir)
+    config["paths"]["logs_dir"] = format_path(config["paths"]["logs_dir"], base_dir)
+    return config
 
-    if not os.path.isabs(run_config["model"]["load_from"]["model_path"]):
-        run_config["model"]["load_from"]["model_path"] = \
-            os.path.normpath(os.path.join(base_dir, run_config["model"]["load_from"]["model_path"]))
 
-    if not os.path.isabs(run_config["datamodule"]["load_from"]["datamodule_path"]):
-        run_config["datamodule"]["load_from"]["datamodule_path"] = \
-            os.path.normpath(os.path.join(base_dir, run_config["datamodule"]["load_from"]["datamodule_path"]))
+def load_object(obj_path):
+    obj_path, obj_name = obj_path.rsplit('.', 1)
+    module = importlib.import_module(obj_path)
 
-    return project_config, run_config
+    assert hasattr(module, obj_name), \
+        f'Object `{obj_name}` cannot be loaded from `{obj_path}`.'
+
+    return getattr(module, obj_name)
 
 
 def init_model(model_config: dict) -> pl.LightningModule:
     """
     Load LightningModule from path specified in run config.
     """
+    model_class = model_config["class"]
+    model_hparams = model_config["hparams"]
 
-    model_path = model_config["load_from"]["model_path"]
-    model_class = model_config["load_from"]["model_class"]
-
-    assert os.path.isfile(model_path), f"incorrect model path '{model_path}'"
-
-    spec = importlib.util.spec_from_file_location("lightning_model", model_path)
-    lightning_module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(lightning_module)
-
-    assert hasattr(lightning_module, model_class), \
-        f"model class '{model_class}' doesn't exist in file '{model_path}'"
-
-    LitModel = getattr(lightning_module, model_class)
-
+    LitModel = load_object(model_class)
     assert issubclass(LitModel, pl.LightningModule), \
-        f"specified model class '{model_class}' is not a 'LightningModule' type"
+        f"Specified model class `{model_class}` is not a subclass of `LightningModule`."
 
-    model = LitModel(hparams=model_config["hparams"])
-
-    return model
+    return LitModel(hparams=model_hparams)
 
 
 def init_datamodule(datamodule_config: dict, data_dir: str) -> pl.LightningDataModule:
     """
     Load LightningDataModule from path specified in run config.
     """
+    datamodule_class = datamodule_config["class"]
+    datamodule_hparams = datamodule_config["hparams"]
 
-    datamodule_path = datamodule_config["load_from"]["datamodule_path"]
-    datamodule_class = datamodule_config["load_from"]["datamodule_class"]
-
-    assert os.path.isfile(datamodule_path), f"incorrect datamodule path '{datamodule_path}'"
-
-    spec = importlib.util.spec_from_file_location("lightning_datamodule", datamodule_path)
-    lightning_module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(lightning_module)
-
-    assert hasattr(lightning_module, datamodule_class), \
-        f"datamodule class '{datamodule_class}' doesn't exist in file '{datamodule_path}'"
-
-    DataModule = getattr(lightning_module, datamodule_class)
+    DataModule = load_object(datamodule_class)
 
     assert issubclass(DataModule, pl.LightningDataModule), \
-        f"specified datamodule class '{datamodule_class}' is not a 'LightningDataModule' type"
+        f"Specified datamodule class `{datamodule_class}` is not a subclass of `LightningDataModule`"
 
-    datamodule = DataModule(data_dir=data_dir, hparams=datamodule_config["hparams"])
+    datamodule = DataModule(data_dir=data_dir, hparams=datamodule_hparams)
     datamodule.prepare_data()
     datamodule.setup()
 
@@ -129,7 +104,7 @@ def init_trainer(project_config: dict,
         # number of validation sanity checks
         num_sanity_val_steps=3,
 
-        # default log dir if no logger is found
+        # default log dir if no loggers is found
         default_root_dir=os.path.join(project_config["logs_dir"], "lightning_logs"),
 
         # insert all other trainer args specified in run config
@@ -215,7 +190,7 @@ def init_wandb_logger(project_config: dict,
                       model: pl.LightningModule,
                       datamodule: pl.LightningDataModule) -> pl.loggers.WandbLogger:
     """
-    Initialize Weights&Biases logger.
+    Initialize Weights&Biases loggers.
     """
 
     if "loggers" not in project_config or "wandb" not in project_config["loggers"]:
@@ -284,7 +259,7 @@ def init_wandb_logger(project_config: dict,
 
 
 def init_tensorboard_logger() -> pl.loggers.TensorBoardLogger:
-    """Initialize tensorboard logger"""
+    """Initialize tensorboard loggers"""
     # TODO
     return None
 

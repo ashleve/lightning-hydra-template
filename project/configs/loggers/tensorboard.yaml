@@ -1,0 +1,9 @@
+# @package _group_
+
+# Tensorboard loggers config
+tensorboard:
+    class: pytorch_lightning.loggers.TensorboardLogger
+
+    args: {}
+
+    extra_options: {}

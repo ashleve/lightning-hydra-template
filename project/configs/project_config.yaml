@@ -2,10 +2,10 @@
 
 defaults:
     - trainer: default_trainer.yaml
-    - model: default_model.yaml
-    - datamodule: default_datamodule.yaml
+    - model: simple_mnist_classifier.yaml
+    - datamodule: mnist_datamodule.yaml
     - callbacks: default_callbacks.yaml
-    - logger: comet.yaml
+    - loggers: null
 
 
 paths:

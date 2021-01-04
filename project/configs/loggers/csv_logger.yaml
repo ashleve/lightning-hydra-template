@@ -1,0 +1,9 @@
+# @package _group_
+
+# default loggers is just lightning CSVLogger which doesn't require any additional dependencies
+csv_logger:
+    class: pytorch_lightning.loggers.CSVLogger
+
+    args: {}
+
+    extra_options: {}

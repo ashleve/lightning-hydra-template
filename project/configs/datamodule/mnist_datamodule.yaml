@@ -1,0 +1,7 @@
+# @package _group_
+
+class: "pytorch_modules.lightning_datamodules.mnist_datamodule.MNISTDataModule"
+
+hparams:
+    batch_size: 64
+    train_val_test_split: (55_000, 5_000, 10_000)

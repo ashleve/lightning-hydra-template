@@ -1,0 +1,6 @@
+# @package _group_
+
+class: "pytorch_modules.lightning_models.simple_mnist_classifier.LitModel"
+
+hparams:
+    YYYYYYY: XXXXXXXXXXXXXXXXXXX

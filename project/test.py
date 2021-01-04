@@ -1,5 +1,7 @@
 from omegaconf import DictConfig, OmegaConf
 import hydra.conf.hydra.output
+from hydra.experimental import initialize, compose
+import comet_ml
 
 
 @hydra.main(config_path="configs/", config_name="project_config.yaml")

@@ -9,6 +9,6 @@ setup(
     author='',
     author_email='',
     url='https://github.com/kinoai/deep-learning-project-template',  # REPLACE WITH YOUR OWN GITHUB PROJECT LINK
-    install_requires=['pytorch-lightning', 'PyYAML'],
+    install_requires=['pytorch-lightning'],
     packages=find_packages(),
 )
