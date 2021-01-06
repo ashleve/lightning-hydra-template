@@ -1,13 +1,8 @@
 # @package _group_
 
-# Comet loggers config
+# Comet logger config
 comet:
     class: pytorch_lightning.loggers.CometLogger
-
     args:
         api_key: ???
         project_name: "project_template_test"
-
-    extra_options:
-        log_optimizer_name: True
-        log_train_val_test_sizes: True

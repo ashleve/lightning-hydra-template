@@ -2,6 +2,7 @@ from sklearn.metrics import accuracy_score
 import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch
+from template_utils.initializers import init_optimizer
 
 # import custom architectures
 from pytorch_modules.architectures.simple_mnist import SimpleMNISTClassifier
@@ -9,10 +10,10 @@ from pytorch_modules.architectures.simple_mnist import SimpleMNISTClassifier
 
 class LitModel(pl.LightningModule):
     """
-    This is example of lightning model for MNIST digits classification.
+    This is example of lightning model for MNIST classification.
 
     The path to model should be specified in your run config. (run_configs.yaml)
-    The 'hparams' dict contains your hparams specified in run config. (run_configs.yaml)
+    The 'hparams' dict contains model args specified in config. (run_configs.yaml)
 
     This class enables you to specify what happens during training, validation and test step.
     You can just remove 'validation_step()' or 'test_step()' methods if you don't want to have them during training.
@@ -21,11 +22,12 @@ class LitModel(pl.LightningModule):
         https://pytorch-lightning.readthedocs.io/en/latest/lightning_module.html
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, optimizer_config, **hparams):
         super().__init__()
-        self.save_hyperparameters(kwargs)
+        self.optimizer_config = optimizer_config
+        self.save_hyperparameters(hparams)
 
-        self.model = SimpleMNISTClassifier(hparams=self.hparams)
+        self.model = SimpleMNISTClassifier(hparams=hparams)
 
     def forward(self, x):
         return self.model(x)
@@ -77,4 +79,4 @@ class LitModel(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.hparams["lr"], weight_decay=self.hparams["weight_decay"])
+        return init_optimizer(optimizer_config=self.optimizer_config, model=self)

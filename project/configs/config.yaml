@@ -4,14 +4,16 @@ defaults:
     - trainer: default_trainer.yaml
     - model: simple_mnist_classifier.yaml
     - datamodule: mnist_datamodule.yaml
+    - optimizer: adam.yaml
     - callbacks: default_callbacks.yaml
     - loggers: null
 
+seeds:
+    pytorch_seed: 12345
 
 paths:
-    data_dir: "data/"   # path to data folder (either absolute or relative to placement of 'train.py' file)
-    logs_dir: "logs/"   # path to logs folder (either absolute or relative to placement of 'train.py' file)
-
+    data_dir: "data"   # path to data folder (either absolute or relative to placement of 'train.py' file)
+    logs_dir: "logs"   # path to logs folder (either absolute or relative to placement of 'train.py' file)
 
 hydra:
     run:

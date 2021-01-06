@@ -1,8 +1,7 @@
 # @package _group_
 
 class: "pytorch_modules.lightning_models.simple_mnist_classifier.LitModel"
-
-hparams:
+args:
     lr: 0.001
     weight_decay: 0.00001
     input_size: 784

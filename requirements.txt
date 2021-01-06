@@ -4,6 +4,5 @@ torchaudio>=0.7.0
 pytorch-lightning>=1.0.8
 hydra-core
 wandb>=0.10.12
-PyYAML>=5.3.1
 scikit-learn>=0.23.2
 pandas>=1.1.5

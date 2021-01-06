@@ -1,15 +1,17 @@
 # @package _global_
 
 # to execute this experiment run:
-# python train.py +experiment=xxx2
+# python train.py +experiment=exp_example_advanced
 
 defaults:
     - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder
-    - override /model: null                             # choose model from 'configs/model/' folder
-    - override /datamodule: null                        # choose datamodule from 'configs/datamodule/' folder
+    - override /model: simple_mnist_classifier.yaml     # choose model from 'configs/model/' folder
+    - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/' folder
+    - override /optimizer: adam.yaml                    # choose datamodule from 'configs/datamodule/' folder
     - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/' folder
 
-pytorch_seed: 12345                                     # pytorch seed for this experiment (also affects lightning random_split() method)
+seeds:
+    pytorch_seed: 12345                                 # pytorch seed for this experiment (affects torch.utils.data.random_split() method used in mnist_datamodule)
 
 trainer:
     args:
@@ -18,16 +20,14 @@ trainer:
         gradient_clip_val: 0.5                          # gradient clipping (helps with exploding gradient issues)
         accumulate_grad_batches: 2                      # perform optimization step after accumulating gradient from 2 batches
         fast_dev_run: False                             # execute 1 training, 1 validation and 1 test epoch only
-        limit_train_batches: 0.8                        # train only on 80% of training data
-        limit_val_batches: 1.0                          # validate on 100% of validation data
+        limit_train_batches: 0.6                        # train on 60% of training data
+        limit_val_batches: 0.9                          # validate on 90% of validation data
         limit_test_batches: 1.0                         # test on 100% of test data
         val_check_interval: 0.5                         # perform validation twice per epoch
+#        resume_from_checkpoint: "last.ckpt"            # use this to resume training from checkpoint
 
 model:
-    class: pytorch_modules.lightning_models.simple_mnist_classifier.LitModel
-    args:                                            # you can add here any params you want and then access them in lightning model
-        lr: 0.001
-        weight_decay: 0.00001
+    args:                                               # you can add here any params you want and then access them in lightning model
         input_size: 784                                 # img size is 1*28*28
         output_size: 10                                 # there are 10 digit classes
         lin1_size: 256
@@ -35,21 +35,23 @@ model:
         lin3_size: 128
 
 datamodule:
-    class: pytorch_modules.lightning_datamodules.mnist_datamodule.MNISTDataModule
     args:                                               # you can add here any params you want and then access them in lightning datamodule
         batch_size: 64
         train_val_test_split: (55_000, 5_000, 10_000)
         num_workers: 1                                  # num of processes used for loading data in parallel
         pin_memory: False                               # dataloaders will copy tensors into CUDA pinned memory before returning them
 
+optimizer:
+    args:
+        lr: 0.001
+        weight_decay: 0.00001
+
 loggers:
     wandb:
         args:                                           # you can add here additional loggers arguments specific for this experiment
             tags: ["uwu", "best_model"]
+            notes: ""
+            group: ""
     comet:
         args:
             tags: ["uwu", "best_model"]
-
-resume_training:                                        # use this if you want to resume training from checkpoint
-    checkpoint_path: False                              # path to your checkpoint
-    logger_run_id: False                                # loggers experiment id that you want to resume (optional)

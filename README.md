@@ -203,7 +203,7 @@ python train.py --no_wandb --run_config_name SIMPLE_CONFIG_EXAMPLE_MNIST
 
 Or you can train model with Weights&Biases logging
 ```yaml
-# set project and entity names in project/project_config.yaml
+# set project and entity names in project/config.yaml
 loggers:
     wandb:
         project: "your_project_name"

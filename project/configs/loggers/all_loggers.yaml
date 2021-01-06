@@ -1,9 +1,8 @@
 # @package _group_
 
-# train with all loggers at once
+# Train with all loggers at once
 defaults:
     - comet
     - csv_logger
-    - neptune
     - tensorboard
     - wandb

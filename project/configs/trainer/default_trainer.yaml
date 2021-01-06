@@ -4,10 +4,9 @@
 # they will be combined with trainer args specified in experiment config
 # (if the argument repeats in experiment config, then it will override the one set here)
 args:
-    num_of_gpus: -1                 # set -1 to train on all GPUs abailable, set 0 to train on CPU only
+    gpus: -1    # set -1 to train on all GPUs available, set 0 to train on CPU only
     auto_select_gpus: True
     num_sanity_val_steps: 3
-    progress_bar_refresh_rate: 10
     weights_summary: "top"
-    profiler: "simple"              # use profiler to print execution time profiling after training ends
-    max_epochs: 100
+    progress_bar_refresh_rate: 10
+    default_root_dir: ${paths.logs_dir}/lightning_logs

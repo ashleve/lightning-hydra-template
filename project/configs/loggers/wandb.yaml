@@ -1,16 +1,27 @@
 # @package _group_
 
-# Weights&Biases loggers config
+# Weights&Biases logger config
 wandb:
     class: pytorch_lightning.loggers.WandbLogger
-
     args:
         project: "project_template_test"
-        entity: ""              # change to your username or name of your team on wandb
-        log_model: True         # set True to automatically upload model checkpoint to wandb cloud after training
-        offline: False          # set True to store all logs only locally
+        entity: ""  # change to your username or name of your team on wandb
+        offline: False  # set True to store all logs only locally
+        job_type: "train"
+        save_dir: ${paths.logs_dir}
 
-    extra_options:
-        log_gradients: False    # set True to log gradient histograms (avoid this for very big models)
-        log_optimizer_name: True
-        log_train_val_test_sizes: True
+    # some extra things which will be logged by the environment
+    extra_logs:
+        watch_model: True   # make wandb watch model
+        log_gradients: False    # log gradient histograms (avoid this for very big models)
+
+        log_train_val_test_sizes: True  # log sizes of train dataset, val dataset and test dataset
+
+        log_model_args: True  # log
+        log_datamodule_args: True  # log
+        log_optimizer_args: True  # log
+        log_trainer_args: False  # log
+
+        log_model_class_name: True
+        log_datamodule_class_name: True
+        log_optimizer_class_name: True

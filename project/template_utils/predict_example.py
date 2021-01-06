@@ -4,6 +4,8 @@ from PIL import Image
 # the LitModel you import should be the same as the one you used for training!
 from pytorch_modules.lightning_models.simple_mnist_classifier import LitModel
 
+# ckpt can be a url!
+
 
 def predict():
     """

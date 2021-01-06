@@ -165,7 +165,7 @@ class SaveCodeToWandbCallback(Callback):
             "template_utils/custom_callbacks.py",
             "template_utils/initializers.py",
             "train.py",
-            "project_config.yaml",
+            "config.yaml",
             "run_configs.yaml",
         ]
 
