@@ -2,7 +2,7 @@
 
 # Comet logger config
 comet:
-    class: pytorch_lightning.loggers.CometLogger
+    class: pytorch_lightning.logger.CometLogger
     args:
         api_key: ???
         project_name: "project_template_test"

@@ -28,7 +28,7 @@ model:
 datamodule:
     args:
         batch_size: 32
-        train_val_test_split: (55_000, 5_000, 10_000)
+        train_val_test_split: [55_000, 5_000, 10_000]
 
 optimizer:
     args:

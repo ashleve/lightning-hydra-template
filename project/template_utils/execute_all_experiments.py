@@ -25,7 +25,7 @@ def main(project_config_path, run_configs_path):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("-p", "--project_config_path", type=str,
-                        default=os.path.join(train.BASE_DIR, "project_config.yaml"))
+                        default=os.path.join(train.BASE_DIR, "config.yaml"))
     parser.add_argument("-r", "--run_configs_path", type=str,
                         default=os.path.join(train.BASE_DIR, "run_configs.yaml"))
     args = parser.parse_args()

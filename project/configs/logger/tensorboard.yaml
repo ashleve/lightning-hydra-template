@@ -2,5 +2,5 @@
 
 # Tensorboard logger config
 tensorboard:
-    class: pytorch_lightning.loggers.TensorboardLogger
+    class: pytorch_lightning.logger.TensorboardLogger
     args: {}

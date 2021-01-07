@@ -2,13 +2,13 @@
 
 # Weights&Biases logger config
 wandb:
-    class: pytorch_lightning.loggers.WandbLogger
+    class: pytorch_lightning.logger.WandbLogger
     args:
         project: "project_template_test"
-        entity: ""  # change to your username or name of your team on wandb
+#        entity: "your_team_name"  # set to name of your team on wandb
         offline: False  # set True to store all logs only locally
         job_type: "train"
-        save_dir: ${paths.logs_dir}
+        save_dir: "./"
 
     # some extra things which will be logged by the environment
     extra_logs:
@@ -17,10 +17,10 @@ wandb:
 
         log_train_val_test_sizes: True  # log sizes of train dataset, val dataset and test dataset
 
-        log_model_args: True  # log
-        log_datamodule_args: True  # log
-        log_optimizer_args: True  # log
-        log_trainer_args: False  # log
+        log_model_args: True
+        log_datamodule_args: True
+        log_optimizer_args: True
+        log_trainer_args: False
 
         log_model_class_name: True
         log_datamodule_class_name: True

@@ -37,7 +37,7 @@ model:
 datamodule:
     args:                                               # you can add here any params you want and then access them in lightning datamodule
         batch_size: 64
-        train_val_test_split: (55_000, 5_000, 10_000)
+        train_val_test_split: [55_000, 5_000, 10_000]
         num_workers: 1                                  # num of processes used for loading data in parallel
         pin_memory: False                               # dataloaders will copy tensors into CUDA pinned memory before returning them
 
@@ -48,7 +48,7 @@ optimizer:
 
 loggers:
     wandb:
-        args:                                           # you can add here additional loggers arguments specific for this experiment
+        args:                                           # you can add here additional logger arguments specific for this experiment
             tags: ["uwu", "best_model"]
             notes: ""
             group: ""

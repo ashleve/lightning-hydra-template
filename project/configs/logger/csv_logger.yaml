@@ -2,5 +2,5 @@
 
 # Csv logger config
 csv_logger:
-    class: pytorch_lightning.loggers.CSVLogger
+    class: pytorch_lightning.logger.CSVLogger
     args: {}

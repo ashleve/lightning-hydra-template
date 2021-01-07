@@ -9,7 +9,7 @@ import train
 RUN_CONFIG_NAME = "SIMPLE_CONFIG_EXAMPLE_MNIST"
 
 # Load configs
-project_config = train.load_config("project_config.yaml")
+project_config = train.load_config("config.yaml")
 run_config = train.load_config("run_configs.yaml")[RUN_CONFIG_NAME]
 
 # Initialize wandb

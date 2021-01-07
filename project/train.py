@@ -6,15 +6,15 @@ import torch
 # hydra imports
 from omegaconf import DictConfig, OmegaConf
 import hydra.conf.hydra.output
+import hydra
 
 # normal imports
 from typing import List
 import logging
-import os
 
 # template utils imports
 from template_utils.initializers import (
-    format_config_paths,
+    validate_config,
     init_model,
     init_datamodule,
     init_callbacks,
@@ -22,18 +22,15 @@ from template_utils.initializers import (
     init_trainer
 )
 
-BASE_DIR: str = os.path.dirname(__file__)
-LOG = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 def train(config):
+    validate_config(config)
 
     # Set global PyTorch seed
     if "seeds" in config and "pytorch_seed" in config["seeds"]:
         torch.manual_seed(config["seeds"]["pytorch_seed"])
-
-    # Covert paths to absolute and normalize them
-    config = format_config_paths(config=config, base_dir=BASE_DIR)
 
     # Init PyTorch Lightning model ⚡
     model: pl.LightningModule = init_model(
@@ -44,18 +41,37 @@ def train(config):
     # Init PyTorch Lightning datamodule ⚡
     datamodule: pl.LightningDataModule = init_datamodule(
         datamodule_config=config["datamodule"],
-        data_dir=config["paths"]["data_dir"]
+        data_dir=config["data_dir"]
     )
 
     # Init PyTorch Lightning callbacks ⚡
     callbacks: List[pl.Callback] = init_callbacks(config=config)
 
-    # Init PyTorch Lightning loggers ⚡
+    # Init PyTorch Lightning logger ⚡
     loggers: List[pl.loggers.LightningLoggerBase] = init_loggers(
         config=config,
         model=model,
         datamodule=datamodule
     )
+
+    message = "Model initialised:" + "\n" + model.__module__ + "." + model.__class__.__name__ + "\n"
+    log.info(message)
+
+    message = "Datamodule initialised:" + "\n" + datamodule.__module__ + "." + datamodule.__class__.__name__ + "\n"
+    log.info(message)
+
+    message = "Callbacks initialised:" + "\n"
+    for cb in callbacks:
+        message += cb.__module__ + "." + cb.__class__.__name__ + "\n"
+    log.info(message)
+
+    message = "Loggers initialised:" + "\n"
+    for logger in loggers:
+        message += logger.__module__ + "." + logger.__class__.__name__ + "\n"
+    log.info(message)
+
+    if "seeds" in config and "pytorch_seed" in config["seeds"]:
+        log.info(f"Using pytorch seed: {config['seeds']['pytorch_seed']}\n")
 
     # Init PyTorch Lightning trainer ⚡
     trainer: pl.Trainer = init_trainer(
@@ -76,7 +92,7 @@ def train(config):
 
 @hydra.main(config_path="configs/", config_name="config.yaml")
 def main(config: DictConfig) -> None:
-    LOG.info(OmegaConf.to_yaml(config, resolve=True))  # print content of config
+    log.info(f"\n{OmegaConf.to_yaml(config, resolve=True)}")  # print content of config
     train(config)
 
 

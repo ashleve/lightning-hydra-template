@@ -2,7 +2,7 @@
 
 # trainer args for debugging model
 args:
-    gpus: -1                      # set -1 to train on all GPUs abailable, set 0 to train on CPU only
+    gpus: -1                        # set -1 to train on all GPUs abailable, set 0 to train on CPU only
     auto_select_gpus: True
 
     fast_dev_run: True
@@ -13,5 +13,5 @@ args:
     profiler: "simple"              # use profiler to print execution time profiling after training ends
 
     progress_bar_refresh_rate: 10
-    weights_summary: "top"
-    default_root_dir: ${paths.logs_dir}/lightning_logs
+    weights_summary: "full"
+    default_root_dir: "lightning_logs/"

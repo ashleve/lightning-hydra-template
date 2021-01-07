@@ -18,7 +18,7 @@ class MNISTDataModule(LightningDataModule):
     def __init__(self, data_dir, **args):
         super().__init__()
 
-        self.data_dir = data_dir + "/MNIST"  # data_dir is specified in config.yaml
+        self.data_dir = data_dir  # data_dir is specified in config.yaml
 
         self.batch_size = args.get("batch_size") or 64
         self.train_val_test_split = args.get("train_val_test_split") or [55_000, 5_000, 10_000]
