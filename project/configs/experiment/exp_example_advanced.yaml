@@ -49,9 +49,9 @@ optimizer:
 loggers:
     wandb:
         args:                                           # you can add here additional logger arguments specific for this experiment
-            tags: ["uwu", "best_model"]
+            tags: [best_model"]
             notes: ""
             group: ""
     comet:
         args:
-            tags: ["uwu", "best_model"]
+            tags: [best_model", "uwu"]

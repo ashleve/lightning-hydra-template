@@ -4,24 +4,8 @@
 wandb:
     class: pytorch_lightning.logger.WandbLogger
     args:
-        project: "project_template_test"
-#        entity: "your_team_name"  # set to name of your team on wandb
+        project: "env_tests"
+        entity: "lodz"  # set to name of your wandb team or just remove
         offline: False  # set True to store all logs only locally
         job_type: "train"
-        save_dir: "./"
-
-    # some extra things which will be logged by the environment
-    extra_logs:
-        watch_model: True   # make wandb watch model
-        log_gradients: False    # log gradient histograms (avoid this for very big models)
-
-        log_train_val_test_sizes: True  # log sizes of train dataset, val dataset and test dataset
-
-        log_model_args: True
-        log_datamodule_args: True
-        log_optimizer_args: True
-        log_trainer_args: False
-
-        log_model_class_name: True
-        log_datamodule_class_name: True
-        log_optimizer_class_name: True
+        save_dir: "."

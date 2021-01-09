@@ -173,3 +173,63 @@ class SaveCodeToWandbCallback(Callback):
         """Upload files when all validation sanity checks end."""
         # upload additional files
         pass
+
+
+class SaveBestMetricScores(Callback):
+    def __init__(self):
+        self.train_loss_list = []
+        self.train_acc_list = []
+        self.train_loss_best = None
+        self.train_acc_best = None
+
+        self.val_loss_list = []
+        self.val_acc_list = []
+        self.val_loss_best = None
+        self.val_acc_best = None
+
+        self.ready = False
+
+    def clear_lists(self):
+        self.train_loss_list.clear()
+        self.train_acc_list.clear()
+        self.val_loss_list.clear()
+        self.val_acc_list.clear()
+
+    def on_sanity_check_end(self, trainer, pl_module):
+        """Start executing this callback only after all validation sanity checks end."""
+        self.ready = True
+
+    def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+        """Gather data from single batch."""
+        if self.ready:
+            loss, acc, preds, targets = outputs
+            self.val_loss_list.append(loss)
+            self.val_acc_list.append(acc)
+
+    def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+        """Gather data from single batch."""
+        if self.ready:
+            loss, acc, preds, targets = outputs
+            self.train_loss_list.append(loss)
+            self.train_acc_list.append(acc)
+
+    def on_epoch_end(self, trainer, pl_module):
+        if self.ready:
+            for logger in trainer.logger.experiment:
+                # currently works only for wandb
+                if isinstance(logger, wandb_run):
+                    loss = sum(self.train_loss_list) / len(self.train_loss_list)
+                    acc = sum(self.train_acc_list) / len(self.train_acc_list)
+                    self.train_loss_best = loss if self.train_loss_best is None or loss < self.train_loss_best else self.train_loss_best
+                    self.train_acc_best = acc if self.train_acc_best is None or acc > self.train_acc_best else self.train_acc_best
+                    logger.log({"train_loss_best": self.train_loss_best}, commit=False)
+                    logger.log({"train_acc_best": self.train_acc_best}, commit=False)
+
+                    loss = sum(self.val_loss_list) / len(self.val_loss_list)
+                    acc = sum(self.val_acc_list) / len(self.val_acc_list)
+                    self.val_loss_best = loss if self.val_loss_best is None or loss < self.val_loss_best else self.val_loss_best
+                    self.val_acc_best = acc if self.val_acc_best is None or acc > self.val_acc_best else self.val_acc_best
+                    logger.log({"val_loss_best": self.val_loss_best}, commit=False)
+                    logger.log({"val_acc_best": self.val_acc_best}, commit=False)
+
+        self.clear_lists()

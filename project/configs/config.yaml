@@ -22,3 +22,14 @@ hydra:
     sweep:
         dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
         subdir: ${hydra.job.num}
+
+# extra things that are logged by all loggers as hyperparameters, before training starts
+extra_logs:
+    log_train_val_test_sizes: True,
+    log_trainer_args: False,
+    log_model_args: True,
+    log_datamodule_args: True,
+    log_optimizer_args: True,
+    log_model_class_name: True,
+    log_datamodule_class_name: True,
+    log_optimizer_class_name: True

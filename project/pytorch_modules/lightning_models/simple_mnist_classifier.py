@@ -40,12 +40,12 @@ class LitModel(pl.LightningModule):
 
         # training metrics
         preds = torch.argmax(logits, dim=1)
-        preds, y = preds.cpu(), y.cpu()
-        acc = accuracy_score(preds, y)
+        acc = accuracy_score(preds.cpu(), y.cpu())
         self.log('train_loss', loss, on_step=False, on_epoch=True, logger=True, prog_bar=True)
         self.log('train_acc', acc, on_step=False, on_epoch=True, logger=True, prog_bar=True)
 
-        return loss
+        # we can return here anything and then read it in some callback
+        return loss, acc, preds, y
 
     # logic for a single validation step
     def validation_step(self, batch, batch_idx):
@@ -55,13 +55,11 @@ class LitModel(pl.LightningModule):
 
         # validation metrics
         preds = torch.argmax(logits, dim=1)
-        preds, y = preds.cpu(), y.cpu()
-        acc = accuracy_score(preds, y)
+        acc = accuracy_score(preds.cpu(), y.cpu())
         self.log('val_loss', loss, on_step=False, on_epoch=True, logger=True, prog_bar=True)
         self.log('val_acc', acc, on_step=False, on_epoch=True, logger=True, prog_bar=True)
 
-        # we can return here anything and then read it in some callback
-        return preds, y
+        return loss, acc, preds, y
 
     # logic for a single testing step
     def test_step(self, batch, batch_idx):
@@ -71,8 +69,7 @@ class LitModel(pl.LightningModule):
 
         # test metrics
         preds = torch.argmax(logits, dim=1)
-        preds, y = preds.cpu(), y.cpu()
-        acc = accuracy_score(preds, y)
+        acc = accuracy_score(preds.cpu(), y.cpu())
         self.log('test_loss', loss, on_step=False, on_epoch=True, logger=True, prog_bar=True)
         self.log('test_acc', acc, on_step=False, on_epoch=True, logger=True, prog_bar=True)
 

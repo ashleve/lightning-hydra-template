@@ -1,6 +1,7 @@
 # pytorch lightning imports
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import CSVLogger, WandbLogger, CometLogger, TestTubeLogger, TensorBoardLogger
+from pytorch_lightning.callbacks.lr_monitor import LearningRateMonitor
 import torch
 
 # normal imports
@@ -126,14 +127,14 @@ def init_wandb(config: dict,
     """
     # with this line wandb will throw an error if the run to be resumed does not exist yet
     # instead of auto-creating a new run
-    os.environ["WANDB_RESUME"] = "must"
+    # os.environ["WANDB_RESUME"] = "must"
 
     wandb_config = config["logger"]["wandb"]
     wandb_logger = WandbLogger(**wandb_config["args"])
 
     # make save dir path if it doesn't exists to prevent throwing errors by wandb
-    if "save_dir" in wandb_config["args"] and not os.path.exists(wandb_config["args"]["save_dir"]):
-        os.makedirs(wandb_config["args"]["save_dir"])
+    # if "save_dir" in wandb_config["args"] and not os.path.exists(wandb_config["args"]["save_dir"]):
+    #     os.makedirs(wandb_config["args"]["save_dir"])
 
     if hasattr(model, 'model'):
         if wandb_config["extra_logs"]["log_gradients"]:
@@ -174,6 +175,14 @@ def init_wandb(config: dict,
         wandb_logger.log_hyperparams({"optimizer_class": config["optimizer"]["class"]})
 
     return wandb_logger
+
+
+def log_extra_hparams(config: dict,
+                      model: pl.LightningModule,
+                      datamodule: pl.LightningDataModule,
+                      loggers: List[pl.loggers.LightningLoggerBase],
+                      callbacks: List[pl.callbacks.Callback]):
+    pass
 
 
 def validate_config(config: dict):
