@@ -7,8 +7,10 @@ defaults:
     - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder
     - override /model: simple_mnist_classifier.yaml     # choose model from 'configs/model/' folder
     - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/' folder
-    - override /optimizer: adam.yaml                    # choose datamodule from 'configs/datamodule/' folder
+    - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/' folder
+    - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/' folder
     - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/' folder
+    - override /logger: null                            # choose logger from 'configs/logger/' folder
 
 seeds:
     pytorch_seed: 12345

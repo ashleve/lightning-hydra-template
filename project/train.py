@@ -4,7 +4,7 @@ import pytorch_lightning as pl
 import torch
 
 # hydra imports
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
 import hydra
 
 # normal imports

@@ -7,8 +7,10 @@ defaults:
     - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder
     - override /model: simple_mnist_classifier.yaml     # choose model from 'configs/model/' folder
     - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/' folder
-    - override /optimizer: adam.yaml                    # choose datamodule from 'configs/datamodule/' folder
+    - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/' folder
+    - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/' folder
     - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/' folder
+    - override /logger: null                            # choose logger from 'configs/logger/' folder
 
 seeds:
     pytorch_seed: 12345                                 # pytorch seed for this experiment (affects torch.utils.data.random_split() method used in mnist_datamodule)
@@ -24,7 +26,7 @@ trainer:
         limit_val_batches: 0.9                          # validate on 90% of validation data
         limit_test_batches: 1.0                         # test on 100% of test data
         val_check_interval: 0.5                         # perform validation twice per epoch
-#        resume_from_checkpoint: "last.ckpt"            # use this to resume training from checkpoint
+        # resume_from_checkpoint: ${work_dir}/last.ckpt  # use this to resume training from checkpoint
 
 model:
     args:                                               # you can add here any params you want and then access them in lightning model
@@ -46,12 +48,12 @@ optimizer:
         lr: 0.001
         weight_decay: 0.00001
 
-loggers:
+logger:
     wandb:
         args:                                           # you can add here additional logger arguments specific for this experiment
-            tags: [best_model"]
-            notes: ""
+            tags: ["best_model", "uwu"]
+            notes: "Description of this model."
             group: ""
     comet:
         args:
-            tags: [best_model", "uwu"]
+            tags: ["best_model"]

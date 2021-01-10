@@ -9,5 +9,5 @@ mnist_train_transforms = transforms.Compose([
 ])
 
 mnist_test_transforms = transforms.Compose([
-    transforms.ToTensor()
+    transforms.ToTensor(),
 ])

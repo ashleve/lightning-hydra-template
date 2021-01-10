@@ -2,7 +2,6 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 from pytorch_lightning.loggers import WandbLogger
 from wandb.sdk.wandb_run import Run as wandb_run
 from pytorch_lightning import Callback
-import random
 import torch
 import wandb
 import glob
@@ -24,31 +23,22 @@ class SaveCodeToWandb(Callback):
         wandb.run.use_artifact(code)
 
 
-# class SaveImagePredictionsToWandb(Callback):
-#     """
-#     Each epoch upload to wandb a couple of the same images with predicted labels.
-#     """
-#     def __init__(self, datamodule, num_samples=8):
-#         first_batch = next(iter(datamodule.train_dataloader()))
-#         self.imgs, self.labels = first_batch
-#         self.imgs, self.labels = self.imgs[:num_samples], self.labels[:num_samples]
-#         self.ready = True
-#
-#     def on_sanity_check_end(self, trainer, pl_module):
-#         """Start executing this callback only after all validation sanity checks end."""
-#         self.ready = True
-#
-#     def on_validation_epoch_end(self, trainer, pl_module):
-#         if self.ready:
-#             imgs = self.imgs.to(device=pl_module.device)
-#             logits = pl_module(imgs)
-#             preds = torch.argmax(logits, -1)
-#             trainer.logger.experiment.log({f"img_examples": [
-#                 wandb.Image(
-#                     x,
-#                     caption=f"Epoch: {trainer.current_epoch} Pred:{pred}, Label:{y}"
-#                 ) for x, pred, y in zip(imgs, preds, self.labels)
-#             ]}, commit=False)
+class UploadAllCheckpointsToWandb(Callback):
+    def __init__(self, ckpt_dir: str = "checkpoints/", upload_best_only: bool = False):
+        self.ckpt_dir = ckpt_dir
+        self.upload_best_only = upload_best_only
+
+    def on_train_end(self, trainer, pl_module):
+        """Upload ckpts when training ends."""
+        ckpts = wandb.Artifact('experiment-ckpts', type='checkpoints')
+
+        if self.upload_best_only:
+            ckpts.add_file(trainer.checkpoint_callback.best_model_path)
+        else:
+            for path in glob.glob(os.path.join(self.ckpt_dir, '**/*.ckpt'), recursive=True):
+                ckpts.add_file(path)
+
+        wandb.run.use_artifact(ckpts)
 
 
 class SaveMetricsHeatmapToWandb(Callback):
@@ -77,8 +67,8 @@ class SaveMetricsHeatmapToWandb(Callback):
     def on_validation_epoch_end(self, trainer, pl_module):
         """Generate f1, precision and recall heatmap."""
         if self.ready:
-            self.preds = torch.cat(self.preds)
-            self.targets = torch.cat(self.targets)
+            self.preds = torch.cat(self.preds).cpu()
+            self.targets = torch.cat(self.targets).cpu()
             f1 = f1_score(self.preds, self.targets, average=None)
             r = recall_score(self.preds, self.targets, average=None)
             p = precision_score(self.preds, self.targets, average=None)
@@ -202,3 +192,30 @@ class SaveBestMetricScoresToWandb(Callback):
                     logger.log({"val_acc_best": self.val_acc_best}, commit=False)
 
         self.clear_lists()
+
+
+# class SaveImagePredictionsToWandb(Callback):
+#     """
+#     Each epoch upload to wandb a couple of the same images with predicted labels.
+#     """
+#     def __init__(self, datamodule, num_samples=8):
+#         first_batch = next(iter(datamodule.train_dataloader()))
+#         self.imgs, self.labels = first_batch
+#         self.imgs, self.labels = self.imgs[:num_samples], self.labels[:num_samples]
+#         self.ready = True
+#
+#     def on_sanity_check_end(self, trainer, pl_module):
+#         """Start executing this callback only after all validation sanity checks end."""
+#         self.ready = True
+#
+#     def on_validation_epoch_end(self, trainer, pl_module):
+#         if self.ready:
+#             imgs = self.imgs.to(device=pl_module.device)
+#             logits = pl_module(imgs)
+#             preds = torch.argmax(logits, -1)
+#             trainer.logger.experiment.log({f"img_examples": [
+#                 wandb.Image(
+#                     x,
+#                     caption=f"Epoch: {trainer.current_epoch} Pred:{pred}, Label:{y}"
+#                 ) for x, pred, y in zip(imgs, preds, self.labels)
+#             ]}, commit=False)

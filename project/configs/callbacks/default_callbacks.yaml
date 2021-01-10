@@ -1,7 +1,7 @@
 # @package _group_
 
 model_checkpoint:
-    class: "pytorch_lightning.callbacks.ModelCheckpoint"
+    class: pytorch_lightning.callbacks.ModelCheckpoint
     args:
         monitor: "val_acc"      # name of the logged metric which determines when model is improving
         save_top_k: 1           # save k best lightning_models (determined by above metric)
@@ -11,7 +11,7 @@ model_checkpoint:
 
 
 early_stopping:
-    class: "pytorch_lightning.callbacks.EarlyStopping"
+    class: pytorch_lightning.callbacks.EarlyStopping
     args:
         monitor: "val_acc"      # name of the logged metric which determines when model is improving
         patience: 100           # how many epochs of not improving until training stops
