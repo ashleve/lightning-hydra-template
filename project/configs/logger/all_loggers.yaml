@@ -2,7 +2,7 @@
 
 # Train with all logger at once
 defaults:
-    - comet.yaml
     - csv_logger.yaml
-    - tensorboard.yaml
     - wandb.yaml
+    #    - comet.yaml
+#    - tensorboard.yaml

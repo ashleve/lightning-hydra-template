@@ -40,7 +40,8 @@ class LitModel(pl.LightningModule):
         self.log('train_loss', loss, on_step=False, on_epoch=True)
         self.log('train_acc', acc, on_step=False, on_epoch=True, prog_bar=True)
 
-        return loss
+        # we can return here anything and then read it in some callback
+        return {"loss": loss, "acc": acc, "preds": preds, "y": y}
 
     # logic for a single validation step
     def validation_step(self, batch, batch_idx):
@@ -54,8 +55,7 @@ class LitModel(pl.LightningModule):
         self.log('val_loss', loss, on_step=False, on_epoch=True)
         self.log('val_acc', acc, on_step=False, on_epoch=True, prog_bar=True)
 
-        # we can return here anything and then read it in some callback
-        return loss, {"preds": preds, "acc": acc, "y": y}
+        return {"loss": loss, "acc": acc, "preds": preds, "y": y}
 
     # logic for a single testing step
     def test_step(self, batch, batch_idx):
@@ -69,7 +69,7 @@ class LitModel(pl.LightningModule):
         self.log('test_loss', loss, on_step=False, on_epoch=True)
         self.log('test_acc', acc, on_step=False, on_epoch=True)
 
-        return loss
+        return {"loss": loss}
 
     def configure_optimizers(self):
         Optimizer = load_class(self.optimizer_config["class"])

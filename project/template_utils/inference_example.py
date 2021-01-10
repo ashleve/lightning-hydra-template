@@ -1,4 +1,4 @@
-from pytorch_modules.lightning_datamodules.mnist_datamodule import transforms
+from pytorch_modules.transforms import mnist_transforms
 from PIL import Image
 
 # the LitModel you import should be the same as the one you used for training!
@@ -29,7 +29,7 @@ def predict():
     # img = Image.open("data/example_img.png").convert("RGB")  # for RGB conversion
 
     # preprocess
-    img = transforms.mnist_test_transforms(img)
+    img = mnist_transforms.mnist_test_transforms(img)
     img = img.reshape((1, *img.size()))  # reshape to form batch of size 1
 
     # inference

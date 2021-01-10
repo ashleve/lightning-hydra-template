@@ -3,3 +3,22 @@
 defaults:
     - default_callbacks.yaml
 
+
+save_best_metric_scores_to_wandb:
+    class: "pytorch_modules.lightning_callbacks.wandb_callbacks.SaveBestMetricScoresToWandb"
+    args: {}
+
+save_code_to_wandb_as_artifact:
+    class: "pytorch_modules.lightning_callbacks.wandb_callbacks.SaveCodeToWandb"
+    args:
+        code_dir: ${work_dir}/
+
+save_confusion_matrix_to_wandb:
+    class: "pytorch_modules.lightning_callbacks.wandb_callbacks.SaveConfusionMatrixToWandb"
+    args:
+        class_names: ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+
+save_f1_heatmap_to_wandb:
+    class: "pytorch_modules.lightning_callbacks.wandb_callbacks.SaveMetricsHeatmapToWandb"
+    args:
+        class_names: ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')

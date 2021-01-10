@@ -9,6 +9,7 @@ import hydra
 
 # normal imports
 from typing import List
+import wandb
 
 # template utils imports
 import template_utils.initializers as utils
@@ -75,6 +76,7 @@ def train(config):
 def main(config: DictConfig) -> None:
     utils.show_config(config)  # print content of config
     train(config)
+    wandb.finish()
 
 
 if __name__ == "__main__":
