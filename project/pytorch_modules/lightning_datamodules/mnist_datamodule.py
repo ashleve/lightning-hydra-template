@@ -7,10 +7,6 @@ from torchvision.datasets import MNIST
 class MNISTDataModule(LightningDataModule):
     """
     This is example of datamodule for MNIST dataset.
-
-    The path to datamodule should be specified in your run config.
-    The 'args' dict contains datamodule args specified in config.
-
     To learn how to create datamodules visit:
         https://pytorch-lightning.readthedocs.io/en/latest/datamodules.html
     """
@@ -20,10 +16,10 @@ class MNISTDataModule(LightningDataModule):
 
         self.data_dir = data_dir  # data_dir is specified in config.yaml
 
-        self.batch_size = args.get("batch_size") or 64
-        self.train_val_test_split = args.get("train_val_test_split") or [55_000, 5_000, 10_000]
-        self.num_workers = args.get("num_workers") or 1
-        self.pin_memory = args.get("pin_memory") or False
+        self.batch_size = args["batch_size"]
+        self.train_val_test_split = args["train_val_test_split"]
+        self.num_workers = args["num_workers"]
+        self.pin_memory = args["pin_memory"]
 
         self.transforms = transforms.ToTensor()
 

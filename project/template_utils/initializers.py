@@ -1,13 +1,16 @@
 # pytorch lightning imports
+from pytorch_lightning.loggers.wandb import WandbLogger
 import pytorch_lightning as pl
-from pytorch_lightning.loggers import CSVLogger, WandbLogger, CometLogger, TestTubeLogger, TensorBoardLogger
-from pytorch_lightning.callbacks.lr_monitor import LearningRateMonitor
-import torch
+
+# hydra imports
+from omegaconf import DictConfig, OmegaConf
 
 # normal imports
-from typing import List, Tuple
+from typing import List
 import importlib
-import os
+import logging
+
+log = logging.getLogger(__name__)
 
 
 def load_class(class_path) -> type:
@@ -27,11 +30,10 @@ def init_model(model_config: dict, optimizer_config: dict) -> pl.LightningModule
     Load LightningModule from path specified in config.
     """
     model_class = model_config["class"]
-    model_args = model_config["args"]
     LitModel = load_class(model_class)
     assert issubclass(LitModel, pl.LightningModule), \
         f"Specified model class `{model_class}` is not a subclass of `LightningModule`."
-    return LitModel(optimizer_config, **model_args)
+    return LitModel(model_config=model_config, optimizer_config=optimizer_config)
 
 
 def init_datamodule(datamodule_config: dict, data_dir: str) -> pl.LightningDataModule:
@@ -49,15 +51,6 @@ def init_datamodule(datamodule_config: dict, data_dir: str) -> pl.LightningDataM
     return datamodule
 
 
-def init_optimizer(optimizer_config, model):
-    optimizer_class = optimizer_config["class"]
-    optimizer_args = optimizer_config["args"]
-    Optim = load_class(optimizer_class)
-    assert issubclass(Optim, torch.optim.Optimizer), \
-        f"Specified optimizer class `{optimizer_class}` is not subclass of `torch.optim.Optimizer`."
-    return Optim(model.parameters(), **optimizer_args)
-
-
 def init_trainer(trainer_config: dict,
                  callbacks: List[pl.Callback],
                  loggers: List[pl.loggers.LightningLoggerBase]) -> pl.Trainer:
@@ -72,16 +65,11 @@ def init_trainer(trainer_config: dict,
     return trainer
 
 
-def init_callbacks(config: dict) -> List[pl.Callback]:
+def init_callbacks(callbacks_config: dict) -> List[pl.Callback]:
     """
     Initialize callbacks specified in config.
     """
-    callbacks_config = config.get("callbacks", None)
     callbacks = []
-
-    if not callbacks_config:
-        return callbacks
-
     for callback_name, callback_conf in callbacks_config.items():
         class_path = callback_conf.get("class", None)
         if class_path:
@@ -89,100 +77,108 @@ def init_callbacks(config: dict) -> List[pl.Callback]:
             assert issubclass(callback_obj.__class__, pl.Callback), \
                 f"Specified callback class `{class_path}` is not a subclass of `pl.Callback`."
             callbacks.append(callback_obj)
-
     return callbacks
 
 
-def init_loggers(config: dict,
-                 model: pl.LightningModule,
-                 datamodule: pl.LightningDataModule) -> List[pl.loggers.LightningLoggerBase]:
+def init_loggers(loggers_config: dict) -> List[pl.loggers.LightningLoggerBase]:
     """
-    Initialize logger specified in config.
+    Initialize loggers specified in config.
     """
-    loggers_config = config.get("logger", None)
     loggers = []
-
-    if not loggers_config:
-        return loggers
-
     for logger_name, logger_conf in loggers_config.items():
         class_path = logger_conf.get("class", None)
         if class_path:
-            if class_path == "pytorch_lightning.logger.WandbLogger":
-                logger_obj = init_wandb(config, model, datamodule)
-            else:
-                logger_obj = init_object(class_path=class_path, args=logger_conf.get("args", {}))
+            logger_obj = init_object(class_path=class_path, args=logger_conf.get("args", {}))
             assert issubclass(logger_obj.__class__, pl.loggers.LightningLoggerBase), \
                 f"Specified logger class `{class_path}` is not a subclass of `pl.loggers.LightningLoggerBase`."
             loggers.append(logger_obj)
-
     return loggers
 
 
-def init_wandb(config: dict,
-               model: pl.LightningModule,
-               datamodule: pl.LightningDataModule) -> pl.loggers.WandbLogger:
-    """
-    Initialize Weights&Biases logger.
-    """
-    # with this line wandb will throw an error if the run to be resumed does not exist yet
-    # instead of auto-creating a new run
-    # os.environ["WANDB_RESUME"] = "must"
+def get_wandb_logger(loggers: List[pl.loggers.LightningLoggerBase]) -> WandbLogger:
+    for logger in loggers:
+        if isinstance(logger, WandbLogger):
+            return logger
 
-    wandb_config = config["logger"]["wandb"]
-    wandb_logger = WandbLogger(**wandb_config["args"])
 
-    # make save dir path if it doesn't exists to prevent throwing errors by wandb
-    # if "save_dir" in wandb_config["args"] and not os.path.exists(wandb_config["args"]["save_dir"]):
-    #     os.makedirs(wandb_config["args"]["save_dir"])
-
-    if hasattr(model, 'model'):
-        if wandb_config["extra_logs"]["log_gradients"]:
-            wandb_logger.watch(model.model, log='gradients')
-        else:
+def make_wandb_watch_model(loggers: List[pl.loggers.LightningLoggerBase], model: pl.LightningModule):
+    wandb_logger = get_wandb_logger(loggers)
+    if wandb_logger:
+        if hasattr(model, 'model'):
             wandb_logger.watch(model.model, log=None)
-        wandb_logger.log_hyperparams({"architecture": model.model.__class__.__name__})
-    else:
-        if wandb_config["extra_logs"]["log_gradients"]:
-            wandb_logger.watch(model, log='gradients')
         else:
             wandb_logger.watch(model, log=None)
 
-    if wandb_config["extra_logs"]["log_train_val_test_sizes"]:
-        wandb_logger.log_hyperparams({
-            "train_size": len(datamodule.data_train)
-            if hasattr(datamodule, 'data_train') and datamodule.data_train is not None else 0,
-            "val_size": len(datamodule.data_val)
-            if hasattr(datamodule, 'data_val') and datamodule.data_val is not None else 0,
-            "test_size": len(datamodule.data_test)
-            if hasattr(datamodule, 'data_test') and datamodule.data_test is not None else 0,
-        })
 
-    if wandb_config["extra_logs"]["log_model_args"]:
-        wandb_logger.log_hyperparams(config["model"]["args"])
-    if wandb_config["extra_logs"]["log_datamodule_args"]:
-        wandb_logger.log_hyperparams(config["datamodule"]["args"])
-    if wandb_config["extra_logs"]["log_optimizer_args"]:
-        wandb_logger.log_hyperparams(config["optimizer"]["args"])
-    if wandb_config["extra_logs"]["log_trainer_args"]:
-        wandb_logger.log_hyperparams(config["trainer"]["args"])
-
-    if wandb_config["extra_logs"]["log_model_class_name"]:
-        wandb_logger.log_hyperparams({"model_class": config["model"]["class"]})
-    if wandb_config["extra_logs"]["log_datamodule_class_name"]:
-        wandb_logger.log_hyperparams({"datamodule_class": config["datamodule"]["class"]})
-    if wandb_config["extra_logs"]["log_optimizer_class_name"]:
-        wandb_logger.log_hyperparams({"optimizer_class": config["optimizer"]["class"]})
-
-    return wandb_logger
+def log_hparams(loggers: List[pl.loggers.LightningLoggerBase], hparams: dict):
+    for logger in loggers:
+        logger.log_hyperparams(hparams)
 
 
-def log_extra_hparams(config: dict,
+def log_extra_hparams(loggers: List[pl.loggers.LightningLoggerBase],
+                      config: dict,
                       model: pl.LightningModule,
                       datamodule: pl.LightningDataModule,
-                      loggers: List[pl.loggers.LightningLoggerBase],
                       callbacks: List[pl.callbacks.Callback]):
-    pass
+    if "extra_logs" not in config:
+        return
+
+    extra_logs = config["extra_logs"]
+
+    if "log_seeds" in extra_logs and extra_logs["log_seeds"] and "seeds" in config:
+        log_hparams(loggers, config["seeds"])
+
+    if "log_trainer_args" in extra_logs and extra_logs["log_trainer_args"]:
+        log_hparams(loggers, config["trainer"]["args"])
+    if "log_model_args" in extra_logs and extra_logs["log_model_args"]:
+        log_hparams(loggers, config["model"]["args"])
+    if "log_optimizer_args" in extra_logs and extra_logs["log_optimizer_args"]:
+        log_hparams(loggers, config["optimizer"]["args"])
+    if "log_datamodule_args" in extra_logs and extra_logs["log_datamodule_args"]:
+        log_hparams(loggers, config["datamodule"]["args"])
+
+    if "log_model_class" in extra_logs and extra_logs["log_model_class"]:
+        log_hparams(loggers, {"model_class": config["model"]["class"]})
+    if "log_optimizer_class" in extra_logs and extra_logs["log_optimizer_class"]:
+        log_hparams(loggers, {"optimizer_class": config["optimizer"]["class"]})
+    if "log_datamodule_class" in extra_logs and extra_logs["log_datamodule_class"]:
+        log_hparams(loggers, {"datamodule_class": config["datamodule"]["class"]})
+
+    if "log_train_val_test_sizes" in extra_logs and extra_logs["log_train_val_test_sizes"]:
+        hparams = {}
+        if hasattr(datamodule, 'data_train') and datamodule.data_train is not None:
+            hparams["train_size"] = len(datamodule.data_train)
+        if hasattr(datamodule, 'data_val') and datamodule.data_val is not None:
+            hparams["val_size"] = len(datamodule.data_val)
+        if hasattr(datamodule, 'data_test') and datamodule.data_test is not None:
+            hparams["test_size"] = len(datamodule.data_test)
+        log_hparams(loggers, hparams)
+
+    if "log_model_architecture_class_name" in extra_logs and extra_logs["log_model_architecture_class_name"]:
+        if hasattr(model, "model"):
+            log_hparams(loggers, {"model_architecture_class_name": model.model.__class__.__name__})
+
+
+def show_init_info(model, datamodule, callbacks, loggers):
+    message = "Model initialised:" + "\n" + model.__module__ + "." + model.__class__.__name__ + "\n"
+    log.info(message)
+
+    message = "Datamodule initialised:" + "\n" + datamodule.__module__ + "." + datamodule.__class__.__name__ + "\n"
+    log.info(message)
+
+    message = "Callbacks initialised:" + "\n"
+    for cb in callbacks:
+        message += cb.__module__ + "." + cb.__class__.__name__ + "\n"
+    log.info(message)
+
+    message = "Loggers initialised:" + "\n"
+    for logger in loggers:
+        message += logger.__module__ + "." + logger.__class__.__name__ + "\n"
+    log.info(message)
+
+
+def show_config(config: DictConfig):
+    log.info(f"\n{OmegaConf.to_yaml(config, resolve=True)}")
 
 
 def validate_config(config: dict):
