@@ -4,17 +4,17 @@ Click on <b>"Use this template"</b> button above to initialize new repository.<b
 
 ## Features
 - Predefined folder structure
-- Automates loading of PyTorch Lightning modules - you only need to create model and datamodule and specify them in configuration files
+- Automates training with PyTorch Lightning - you only need to create model and datamodule and specify them in configuration files
 - All advantages of Hydra:
-    - Main config file contains default configuration used when executing command `python train.py` ([config.yaml](project/configs/config.yaml))
-    - Storing many experiment configurations in a convenient way - experiments override chosen parameters from default configuration ([configs/experiment](project/configs/experiment))
+    - Main config file contains default training configuration ([config.yaml](project/configs/config.yaml))
+    - Storing many experiment configurations in a convenient way - experiments override chosen parameters from default training configuration ([configs/experiment](project/configs/experiment))
     - Composing configuration files out of other configuration files
     - Scheduling execution of many experiments
     - Overriding any config parameter from command line
     - Command line tab completion
     - Logging history of all executed runs
 - Weights&Biases integration:
-    - Automatically stores all relevant code, configs and model checkpoints in Weights&Biases cloud
+    - Automatically stores all code files, configs and model checkpoints in Weights&Biases cloud
     - Useful callbacks ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
     - ~~Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))~~ (TODO)
 - Built in requirements ([requirements.txt](requirements.txt))
@@ -120,13 +120,13 @@ You can store many experiment configurations in this folder.<br>
 Example experiment configuration:
 ```yaml
 defaults:
-    - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder
-    - override /model: simple_mnist_classifier.yaml     # choose model from 'configs/model/' folder
-    - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/' folder
-    - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/' folder
-    - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/' folder
-    - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/' folder
-    - override /logger: null                            # choose logger from 'configs/logger/' folder
+    - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/'
+    - override /model: simple_mnist_classifier.yaml     # choose model from 'configs/model/'
+    - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/'
+    - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/'
+    - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/'
+    - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/'
+    - override /logger: null                            # choose logger from 'configs/logger/'
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
