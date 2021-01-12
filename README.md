@@ -46,11 +46,6 @@ The directory structure of new project looks like this:
 │   │
 │   ├── notebooks               <- Jupyter notebooks
 │   │
-│   ├── template_utils          <- Different project utilities
-│   │   ├── execute_sweep.py        <- Special file for executing Weights&Biases sweeps
-│   │   ├── inference_example.py    <- Example of inference with trained model 
-│   │   └── initializers.py         <- Initializers for different modules
-│   │
 │   ├── src
 │   │   ├── architectures           <- PyTorch model architectures
 │   │   ├── callbacks               <- PyTorch Lightning callbacks
@@ -59,6 +54,8 @@ The directory structure of new project looks like this:
 │   │   ├── models                  <- PyTorch Lightning models
 │   │   ├── transforms              <- Data transformations
 │   │   └── utils                   <- Utility scripts
+│   │       ├── inference_example.py    <- Example of inference with trained model 
+│   │       └── initializers.py         <- Initializers for different modules
 │   │
 │   └── train.py                <- Train model with chosen run configuration
 │

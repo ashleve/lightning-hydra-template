@@ -1,5 +1,5 @@
 from pytorch_lightning.metrics.classification import Accuracy
-from template_utils.initializers import load_class
+from src.utils.initializers import load_class
 import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch
