@@ -12,7 +12,7 @@ from typing import List
 import wandb
 
 # template utils imports
-import template_utils.initializers as utils
+import src.utils.initializers as utils
 
 
 def train(config):
