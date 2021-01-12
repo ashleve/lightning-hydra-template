@@ -16,6 +16,7 @@ import template_utils.initializers as utils
 
 
 def train(config):
+    # Validate the correctness of loaded config
     utils.validate_config(config=config)
 
     # Set global PyTorch seed
@@ -56,6 +57,7 @@ def train(config):
         callbacks=callbacks
     )
 
+    # Log info in terminal about all initialized objects
     utils.show_init_info(model, datamodule, callbacks, loggers)
 
     # Init PyTorch Lightning trainer ⚡
@@ -64,6 +66,10 @@ def train(config):
         callbacks=callbacks,
         loggers=loggers
     )
+
+    # Automatically find learning rate if specified in config
+    if "auto_lr_find" in config["trainer"]["args"] and config["trainer"]["args"]["auto_lr_find"]:
+        utils.auto_find_lr(trainer, model, datamodule, loggers)
 
     # Train the model
     trainer.fit(model=model, datamodule=datamodule)

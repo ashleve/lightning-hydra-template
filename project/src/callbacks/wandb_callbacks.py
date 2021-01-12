@@ -47,7 +47,7 @@ class SaveMetricsHeatmapToWandb(Callback):
     Expects validation step to return predictions and targets.
     Works only for single label classification!
     """
-    def __init__(self, class_names):
+    def __init__(self, class_names=None):
         self.class_names = class_names
         self.preds = []
         self.targets = []
@@ -60,7 +60,7 @@ class SaveMetricsHeatmapToWandb(Callback):
     def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
         """Gather data from single batch."""
         if self.ready:
-            preds, targets = outputs["preds"], outputs["y"]
+            preds, targets = outputs["batch_val_preds"], outputs["batch_val_y"]
             self.preds.append(preds)
             self.targets.append(targets)
 
@@ -96,7 +96,7 @@ class SaveConfusionMatrixToWandb(Callback):
     Expects validation step to return predictions and targets.
     Works only for single label classification!
     """
-    def __init__(self, class_names):
+    def __init__(self, class_names=None):
         self.class_names = class_names
         self.preds = []
         self.targets = []
@@ -109,7 +109,7 @@ class SaveConfusionMatrixToWandb(Callback):
     def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
         """Gather data from single batch."""
         if self.ready:
-            preds, targets = outputs["preds"], outputs["y"]
+            preds, targets = outputs["batch_val_preds"], outputs["batch_val_y"]
             self.preds.append(preds)
             self.targets.append(targets)
 
@@ -119,17 +119,14 @@ class SaveConfusionMatrixToWandb(Callback):
             self.preds = torch.cat(self.preds).tolist()
             self.targets = torch.cat(self.targets).tolist()
 
-            logger = None
-            for some_logger in trainer.logger.experiment:
-                if isinstance(some_logger, wandb_run):
-                    logger = some_logger
-
-            logger.log({
-                f"conf_mat_{trainer.current_epoch}_{logger.id}": wandb.plot.confusion_matrix(
-                    self.preds,
-                    self.targets,
-                    class_names=self.class_names)
-            }, commit=False)
+            for logger in trainer.logger.experiment:
+                if isinstance(logger, wandb_run):
+                    logger.log({
+                        f"conf_mat_{trainer.current_epoch}_{logger.id}": wandb.plot.confusion_matrix(
+                            preds=self.preds,
+                            y_true=self.targets,
+                            class_names=self.class_names)
+                    }, commit=False)
 
             self.preds = []
             self.targets = []
@@ -137,61 +134,33 @@ class SaveConfusionMatrixToWandb(Callback):
 
 class SaveBestMetricScoresToWandb(Callback):
     def __init__(self):
-        self.train_loss_list = []
-        self.train_acc_list = []
         self.train_loss_best = None
         self.train_acc_best = None
-
-        self.val_loss_list = []
-        self.val_acc_list = []
         self.val_loss_best = None
         self.val_acc_best = None
-
         self.ready = False
-
-    def clear_lists(self):
-        self.train_loss_list.clear()
-        self.train_acc_list.clear()
-        self.val_loss_list.clear()
-        self.val_acc_list.clear()
 
     def on_sanity_check_end(self, trainer, pl_module):
         """Start executing this callback only after all validation sanity checks end."""
         self.ready = True
 
-    def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
-        """Gather data from single batch."""
-        # This is bugged :/ - lets wait for lightning 1.2 update
-        # if self.ready:
-        #     self.train_loss_list.append(outputs["loss"])
-        #     self.train_acc_list.append(outputs["acc"])
-        pass
-
-    def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
-        """Gather data from single batch."""
-        if self.ready:
-            self.val_loss_list.append(outputs["loss"])
-            self.val_acc_list.append(outputs["acc"])
-
     def on_epoch_end(self, trainer, pl_module):
         if self.ready:
             for logger in trainer.logger.experiment:
+                metrics = trainer.callback_metrics
                 if isinstance(logger, wandb_run):
-                    # loss = sum(self.train_loss_list) / len(self.train_loss_list)
-                    # acc = sum(self.train_acc_list) / len(self.train_acc_list)
-                    # self.train_loss_best = loss if self.train_loss_best is None or loss < self.train_loss_best else self.train_loss_best
-                    # self.train_acc_best = acc if self.train_acc_best is None or acc > self.train_acc_best else self.train_acc_best
-                    # logger.log({"train_loss_best": self.train_loss_best}, commit=False)
-                    # logger.log({"train_acc_best": self.train_acc_best}, commit=False)
-
-                    loss = sum(self.val_loss_list) / len(self.val_loss_list)
-                    acc = sum(self.val_acc_list) / len(self.val_acc_list)
-                    self.val_loss_best = loss if self.val_loss_best is None or loss < self.val_loss_best else self.val_loss_best
-                    self.val_acc_best = acc if self.val_acc_best is None or acc > self.val_acc_best else self.val_acc_best
+                    if self.train_loss_best is None or metrics["train_loss"] < self.train_loss_best:
+                        self.train_loss_best = metrics["train_loss"]
+                    if self.train_acc_best is None or metrics["train_acc"] > self.train_acc_best:
+                        self.train_acc_best = metrics["train_acc"]
+                    if self.val_loss_best is None or metrics["val_loss"] < self.val_loss_best:
+                        self.val_loss_best = metrics["val_loss"]
+                    if self.val_acc_best is None or metrics["val_acc"] > self.val_acc_best:
+                        self.val_acc_best = metrics["val_acc"]
+                    logger.log({"train_loss_best": self.train_loss_best}, commit=False)
+                    logger.log({"train_acc_best": self.train_acc_best}, commit=False)
                     logger.log({"val_loss_best": self.val_loss_best}, commit=False)
                     logger.log({"val_acc_best": self.val_acc_best}, commit=False)
-
-        self.clear_lists()
 
 
 # class SaveImagePredictionsToWandb(Callback):

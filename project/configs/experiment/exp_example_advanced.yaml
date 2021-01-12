@@ -26,7 +26,7 @@ trainer:
         limit_val_batches: 0.9                          # validate on 90% of validation data
         limit_test_batches: 1.0                         # test on 100% of test data
         val_check_interval: 0.5                         # perform validation twice per epoch
-        # resume_from_checkpoint: ${work_dir}/last.ckpt  # use this to resume training from checkpoint
+        # resume_from_checkpoint: ${work_dir}/last.ckpt  # path to checkpoint (this can be also url for download)
 
 model:
     args:                                               # you can add here any params you want and then access them in lightning model

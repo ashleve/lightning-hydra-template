@@ -21,13 +21,18 @@ def my_app(cfg: DictConfig) -> None:
 def test_logger():
     logger = WandbLogger()
     print(logger)
+    print(logger.__class__)
+    print(logger.__class__.__name__)
+    print(logger.__module__)
+    print(logger.__module__ + "." + logger.__class__.__name__)
 
 
 if __name__ == "__main__":
     my_app()
 
+
     # with open("epoch=0.ckpt", "rb") as file:
     #     data = torch.load(file)
     #     print(data)
 
-    # test_logger()
+    test_logger()

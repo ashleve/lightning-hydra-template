@@ -16,7 +16,7 @@ Click on <b>"Use this template"</b> button above to initialize new repository.<b
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
 - Built in package setup ([setup.py](setup.py))
 - Example with MNIST digits classification
-- Useful example callbacks ([callbacks.py](project/pytorch_modules/lightning_callbacks/custom_callbacks.py))
+- Useful example callbacks ([callbacks.py](project/src/callbacks/custom_callbacks.py))
 <br>
 
 
@@ -83,7 +83,7 @@ loggers:
 default_callbacks:
     ModelCheckpoint:
         monitor: "val_acc"      <- name of the logged metric which determines when model is improving
-        save_top_k: 1           <- save k best lightning_models (determined by above metric)
+        save_top_k: 1           <- save k best models (determined by above metric)
         save_last: True         <- additionaly always save model from last epoch
         mode: "max"             <- can be "max" or "min"
     EarlyStopping:
@@ -113,7 +113,7 @@ SIMPLE_CONFIG_EXAMPLE_MNIST:
             max_epochs: 10
     model:
         load_from:
-            model_path: "lightning_models/simple_mnist_classifier/simple_mnist_classifier.py"
+            model_path: "models/simple_mnist_classifier/simple_mnist_classifier.py"
             model_class: "LitModel"
         hparams:
             lr: 0.001
@@ -125,7 +125,7 @@ SIMPLE_CONFIG_EXAMPLE_MNIST:
             lin3_size: 128
     datamodule:
         load_from:
-            datamodule_path: "lightning_datamodules/mnist_datamodule/mnist_datamodule.py"
+            datamodule_path: "datamodules/mnist_datamodule/mnist_datamodule.py"
             datamodule_class: "MNISTDataModule"
         hparams:
             batch_size: 64
@@ -138,9 +138,9 @@ Each run configuration needs to contain sections `trainer`, `model` and `datamod
 Every other section is optional! (see [run_configs.yaml](project/run_configs.yaml) for more advanced config example with optional sections)<br>
 
 
-Every parameter specified in model hparams section will be passed to your model class and can be retrieved through `hparams` dictionary (see example with [simple_mnist_classifier](project/pytorch_modules/lightning_models/simple_mnist_classifier.py)).<br>
+Every parameter specified in model hparams section will be passed to your model class and can be retrieved through `hparams` dictionary (see example with [simple_mnist_classifier](project/src/models/simple_mnist_classifier.py)).<br>
 
-Every parameter specified in datamodule hparams section will be passed to your datamodule class and can be retrieved through `hparams` dictionary (see example with [mnist_datamodule](project/pytorch_modules/lightning_datamodules/mnist_datamodule.py)).<br>
+Every parameter specified in datamodule hparams section will be passed to your datamodule class and can be retrieved through `hparams` dictionary (see example with [mnist_datamodule](project/src/datamodules/mnist_datamodule.py)).<br>
 <br>
 
 

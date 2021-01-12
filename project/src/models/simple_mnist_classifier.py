@@ -1,11 +1,11 @@
-from sklearn.metrics import accuracy_score
+from pytorch_lightning.metrics.classification import Accuracy
+from template_utils.initializers import load_class
 import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch
-from template_utils.initializers import load_class
 
 # import custom architectures
-from pytorch_modules.architectures.simple_mnist import SimpleMNISTClassifier
+from src.architectures.simple_mnist import SimpleMNISTClassifier
 
 
 class LitModel(pl.LightningModule):
@@ -25,6 +25,8 @@ class LitModel(pl.LightningModule):
 
         self.model = SimpleMNISTClassifier(hparams=self.hparams)
 
+        self.accuracy = Accuracy()
+
     def forward(self, x):
         return self.model(x)
 
@@ -36,12 +38,11 @@ class LitModel(pl.LightningModule):
 
         # training metrics
         preds = torch.argmax(logits, dim=1)
-        acc = accuracy_score(preds.cpu(), y.cpu())
+        acc = self.accuracy(preds, y)
         self.log('train_loss', loss, on_step=False, on_epoch=True)
         self.log('train_acc', acc, on_step=False, on_epoch=True, prog_bar=True)
 
-        # we can return here anything and then read it in some callback
-        return {"loss": loss, "acc": acc, "preds": preds, "y": y}
+        return loss
 
     # logic for a single validation step
     def validation_step(self, batch, batch_idx):
@@ -51,11 +52,12 @@ class LitModel(pl.LightningModule):
 
         # validation metrics
         preds = torch.argmax(logits, dim=1)
-        acc = accuracy_score(preds.cpu(), y.cpu())
+        acc = self.accuracy(preds, y)
         self.log('val_loss', loss, on_step=False, on_epoch=True)
         self.log('val_acc', acc, on_step=False, on_epoch=True, prog_bar=True)
 
-        return {"loss": loss, "acc": acc, "preds": preds, "y": y}
+        # we can return here anything and then read it in some callback
+        return {"batch_val_loss": loss, "batch_val_acc": acc, "batch_val_preds": preds, "batch_val_y": y}
 
     # logic for a single testing step
     def test_step(self, batch, batch_idx):
@@ -65,11 +67,11 @@ class LitModel(pl.LightningModule):
 
         # test metrics
         preds = torch.argmax(logits, dim=1)
-        acc = accuracy_score(preds.cpu(), y.cpu())
+        acc = self.accuracy(preds, y)
         self.log('test_loss', loss, on_step=False, on_epoch=True)
         self.log('test_acc', acc, on_step=False, on_epoch=True)
 
-        return {"loss": loss}
+        return loss
 
     def configure_optimizers(self):
         Optimizer = load_class(self.optimizer_config["class"])

@@ -138,11 +138,11 @@ def log_extra_hparams(loggers: List[pl.loggers.LightningLoggerBase],
         log_hparams(loggers, config["datamodule"]["args"])
 
     if "log_model_class" in extra_logs and extra_logs["log_model_class"]:
-        log_hparams(loggers, {"model_class": config["model"]["class"]})
+        log_hparams(loggers, {"_class_model": config["model"]["class"]})
     if "log_optimizer_class" in extra_logs and extra_logs["log_optimizer_class"]:
-        log_hparams(loggers, {"optimizer_class": config["optimizer"]["class"]})
+        log_hparams(loggers, {"_class_optimizer": config["optimizer"]["class"]})
     if "log_datamodule_class" in extra_logs and extra_logs["log_datamodule_class"]:
-        log_hparams(loggers, {"datamodule_class": config["datamodule"]["class"]})
+        log_hparams(loggers, {"_class_datamodule": config["datamodule"]["class"]})
 
     if "log_train_val_test_sizes" in extra_logs and extra_logs["log_train_val_test_sizes"]:
         hparams = {}
@@ -154,9 +154,10 @@ def log_extra_hparams(loggers: List[pl.loggers.LightningLoggerBase],
             hparams["test_size"] = len(datamodule.data_test)
         log_hparams(loggers, hparams)
 
-    if "log_model_architecture_class_name" in extra_logs and extra_logs["log_model_architecture_class_name"]:
+    if "log_model_architecture_class" in extra_logs and extra_logs["log_model_architecture_class"]:
         if hasattr(model, "model"):
-            log_hparams(loggers, {"model_architecture_class_name": model.model.__class__.__name__})
+            obj = model.model
+            log_hparams(loggers, {"_class_model_architecture": obj.__module__ + "." + obj.__class__.__name__})
 
 
 def show_init_info(model, datamodule, callbacks, loggers):
@@ -175,6 +176,19 @@ def show_init_info(model, datamodule, callbacks, loggers):
     for logger in loggers:
         message += logger.__module__ + "." + logger.__class__.__name__ + "\n"
     log.info(message)
+
+
+def auto_find_lr(trainer, model, datamodule, loggers):
+    lr_finder = trainer.tuner.lr_find(model=model, datamodule=datamodule)
+    new_lr = lr_finder.suggestion()
+
+    # Save lr plot
+    fig = lr_finder.plot(suggest=True)
+    fig.savefig("lr_loss_curve.jpg")
+
+    # Set new lr
+    model.hparams.lr = new_lr
+    log_hparams(loggers, {"lr": new_lr})
 
 
 def show_config(config: DictConfig):
