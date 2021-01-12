@@ -16,8 +16,6 @@ import template_utils.initializers as utils
 
 
 def train(config):
-    # Validate the correctness of loaded config
-    utils.validate_config(config=config)
 
     # Set global PyTorch seed
     if "seeds" in config and "pytorch_seed" in config["seeds"]:
