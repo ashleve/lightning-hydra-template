@@ -10,7 +10,7 @@ import os
 
 class SaveCodeToWandb(Callback):
     """
-    Upload all *.py files to wandb at the beginning of the run.
+    Upload all *.py files to wandb as an artifact at the beginning of the run.
     """
     def __init__(self, code_dir: str):
         self.code_dir = code_dir
@@ -24,6 +24,9 @@ class SaveCodeToWandb(Callback):
 
 
 class UploadAllCheckpointsToWandb(Callback):
+    """
+    Upload experiment checkpoints to wandb as an artifact at the end of training.
+    """
     def __init__(self, ckpt_dir: str = "checkpoints/", upload_best_only: bool = False):
         self.ckpt_dir = ckpt_dir
         self.upload_best_only = upload_best_only
@@ -43,7 +46,7 @@ class UploadAllCheckpointsToWandb(Callback):
 
 class SaveMetricsHeatmapToWandb(Callback):
     """
-    Generate f1, precision and recall heatmap from validation epoch outputs.
+    Generate f1, precision and recall heatmap from validation step outputs.
     Expects validation step to return predictions and targets.
     Works only for single label classification!
     """
@@ -133,6 +136,14 @@ class SaveConfusionMatrixToWandb(Callback):
 
 
 class SaveBestMetricScoresToWandb(Callback):
+    """
+    Store in wandb:
+        - max train acc
+        - min train loss
+        - max val acc
+        - min val loss
+    Useful for comparing runs in table views, as wandb doesn't currently supports column aggregation.
+    """
     def __init__(self):
         self.train_loss_best = None
         self.train_acc_best = None

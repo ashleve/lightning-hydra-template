@@ -6,8 +6,11 @@ defaults:
     - datamodule: mnist_datamodule.yaml
     - optimizer: adam.yaml
     - seeds: default_seeds.yaml  # set this to null if you don't want to use seeds
-    - callbacks: default_callbacks.yaml # set this to null if you don't want to use callbacks
+    - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
+
+    - override hydra/job_logging: colorlog
+    - override hydra/hydra_logging: colorlog
 
 # path to working directory (the directory that `train.py` was executed from in command line)
 work_dir: ${hydra:runtime.cwd}

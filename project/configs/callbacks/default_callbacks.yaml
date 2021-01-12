@@ -4,7 +4,7 @@ model_checkpoint:
     class: pytorch_lightning.callbacks.ModelCheckpoint
     args:
         monitor: "val_acc"      # name of the logged metric which determines when model is improving
-        save_top_k: 1           # save k best models (determined by above metric)
+        save_top_k: 2           # save k best models (determined by above metric)
         save_last: True         # additionaly always save model from last epoch
         mode: "max"             # can be "max" or "min"
         filepath: "checkpoints/{epoch}"
