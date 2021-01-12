@@ -1,0 +1,8 @@
+# @package _group_
+
+# Comet logger config
+comet:
+    class: pytorch_lightning.logger.CometLogger
+    args:
+        api_key: ???
+        project_name: "project_template_test"

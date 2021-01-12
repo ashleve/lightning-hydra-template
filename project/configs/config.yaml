@@ -1,0 +1,41 @@
+# @package _global_
+
+defaults:
+    - trainer: default_trainer.yaml
+    - model: simple_mnist_classifier.yaml
+    - datamodule: mnist_datamodule.yaml
+    - optimizer: adam.yaml
+    - seeds: default_seeds.yaml  # set this to null if you don't want to use seeds
+    - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
+    - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
+
+    - override hydra/job_logging: colorlog
+    - override hydra/hydra_logging: colorlog
+
+# path to working directory (the directory that `train.py` was executed from in command line)
+work_dir: ${hydra:runtime.cwd}
+
+# path to folder with data
+data_dir: ${work_dir}/data/
+
+# hydra output paths
+hydra:
+    run:
+        dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    sweep:
+        dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
+        subdir: ${hydra.job.num}
+
+# extra things that are logged by all loggers as hyperparameters
+extra_logs:
+    log_seeds: True
+
+    log_trainer_args: False
+    log_datamodule_args: True
+
+    log_model_class: True
+    log_optimizer_class: True
+    log_datamodule_class: True
+    log_model_architecture_class: True
+
+    log_train_val_test_sizes: False
