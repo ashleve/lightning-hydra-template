@@ -1,6 +1,12 @@
 ## Deep learning project template
-This is my starting template and pipeline for most deep learning projects.<br>
+This is my starting template and pipeline for most deep learning projects 🔥<br>
 Built with <b>PyTorch Lightning</b>, <b>Hydra</b> and <b>Weights&Biases</b>.<br>
+It's supposed to be enchancement/expansion on original [deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template) repository.<br>
+The goal is to:
+- structure ML code the same so that work can easily be extended and replicated
+- allow for quick and efficient experimentation process thanks to automating pipeline with config files
+- extend functionality of popular experiment loggers like Weights&Biases
+
 Click on <b>`Use this template`</b> button above to initialize new repository.<br>
 
 ## Features
@@ -16,14 +22,14 @@ Click on <b>`Use this template`</b> button above to initialize new repository.<b
     - Command line tab completion
     - Logging history of all executed runs/experiments
 - Weights&Biases integration
-    - Available callbacks that store all code files, and model checkpoints as artifacts in Weights&Biases cloud ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
+    - Available callbacks that store all code files and model checkpoints as artifacts in Weights&Biases cloud ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
     - Other examples of useful wandb callbacks ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
     - Configuring which hyperparameters are saved by loggers through main config file ([config.yaml](project/configs/config.yaml))
     - ~~Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))~~ (TODO)
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
 - Built in python package setup ([setup.py](setup.py))
-- Example with MNIST digits classification ([mnist_model](project/src/models/simple_mnist_classifier.py), [mnist_datamodule](project/src/datamodules/mnist_datamodule.py))
+- Example with MNIST digits classification ([mnist_model](project/src/models/mnist_model.py), [mnist_datamodule](project/src/datamodules/mnist_datamodule.py))
 <br>
 
 
@@ -77,7 +83,7 @@ The directory structure of new project looks like this:
 # specify here default training configuration
 defaults:
     - trainer: default_trainer.yaml         # choose trainer from 'configs/trainer/' folder
-    - model: simple_mnist_classifier.yaml   # choose model from 'configs/model/' folder
+    - model: mnist_model.yaml   # choose model from 'configs/model/' folder
     - datamodule: mnist_datamodule.yaml     # choose datamodule from 'configs/datamodule/' folder
     - optimizer: adam.yaml                  # choose optimizer from 'configs/optimizer/' folder
     - seeds: default_seeds.yaml             # set this to null if you don't want to use seeds
@@ -121,7 +127,7 @@ Example experiment configuration:
 ```yaml
 defaults:
     - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/'
-    - override /model: simple_mnist_classifier.yaml     # choose model from 'configs/model/'
+    - override /model: mnist_model.yaml     # choose model from 'configs/model/'
     - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/'
     - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/'
     - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/'

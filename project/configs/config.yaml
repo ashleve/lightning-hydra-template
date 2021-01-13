@@ -2,7 +2,7 @@
 
 defaults:
     - trainer: default_trainer.yaml
-    - model: simple_mnist_classifier.yaml
+    - model: mnist_model.yaml
     - datamodule: mnist_datamodule.yaml
     - optimizer: adam.yaml
     - seeds: default_seeds.yaml  # set this to null if you don't want to use seeds
