@@ -1,26 +1,36 @@
 ## Deep learning project template
-A convenient starting template and pipeline for deep learning projects. Built with <b>PyTorch Lightning</b>, <b>Hydra</b> and <b>Weights&Biases</b>.<br>
-Click on <b>"Use this template"</b> button above to initialize new repository.<br>
+This is my starting template and pipeline for most deep learning projects.<br>
+Built with <b>PyTorch Lightning</b>, <b>Hydra</b> and <b>Weights&Biases</b>.<br>
+It's supposed to be enchancement/expansion on original [deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template) repository.<br>
+
+The goal is to:
+- structure ML code the same so that work can easily be extended and replicated
+- allow for quick and efficient experimentation process thanks to automating pipeline with config files
+- extend functionality of popular experiment loggers like Weights&Biases
+
+Click on <b>`Use this template`</b> button above to initialize new repository.<br>
 
 ## Features
 - Predefined folder structure
-- Automates training with PyTorch Lightning - you only need to create model and datamodule and specify them in configuration files
-- All advantages of Hydra:
+- Automates training with PyTorch Lightning
+    - You only need to create model and datamodule and specify them in configuration files
+- All advantages of Hydra
     - Main config file contains default training configuration ([config.yaml](project/configs/config.yaml))
-    - Storing many experiment configurations in a convenient way - experiments override chosen parameters from default training configuration ([configs/experiment](project/configs/experiment))
+    - Storing many experiment configurations in a convenient way ([configs/experiment](project/configs/experiment))
     - Composing configuration files out of other configuration files
     - Scheduling execution of many experiments
     - Overriding any config parameter from command line
     - Command line tab completion
-    - Logging history of all executed runs
-- Weights&Biases integration:
-    - Automatically stores all code files, configs and model checkpoints in Weights&Biases cloud
-    - Useful callbacks ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
+    - Logging history of all executed runs/experiments
+- Weights&Biases integration
+    - Available callbacks that store all code files and model checkpoints as artifacts in Weights&Biases cloud ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
+    - Other examples of useful wandb callbacks ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
+    - Configuring which hyperparameters are saved by loggers through main config file ([config.yaml](project/configs/config.yaml))
     - ~~Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))~~ (TODO)
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
-- Built in package setup ([setup.py](setup.py))
-- Example with MNIST digits classification
+- Built in python package setup ([setup.py](setup.py))
+- Example with MNIST digits classification ([mnist_model](project/src/models/mnist_model.py), [mnist_datamodule](project/src/datamodules/mnist_datamodule.py))
 <br>
 
 
@@ -57,13 +67,13 @@ The directory structure of new project looks like this:
 │   │       ├── inference_example.py    <- Example of inference with trained model 
 │   │       └── initializers.py         <- Initializers for different modules
 │   │
-│   └── train.py                <- Train model with chosen run configuration
+│   └── train.py                <- Train model with chosen experiment configuration
 │
 ├── .gitignore              <- Ignored files
 ├── LICENSE                 <- Project license
 ├── README.md               <- Readme
 ├── conda_env.yaml          <- File for installing conda environment
-├── requirements.txt        <- List of python dependencies
+├── requirements.txt        <- File for installing python dependencies
 └── setup.py                <- File for installing project as a package
 ```
 <br>
@@ -74,7 +84,7 @@ The directory structure of new project looks like this:
 # specify here default training configuration
 defaults:
     - trainer: default_trainer.yaml         # choose trainer from 'configs/trainer/' folder
-    - model: simple_mnist_classifier.yaml   # choose model from 'configs/model/' folder
+    - model: mnist_model.yaml               # choose model from 'configs/model/' folder
     - datamodule: mnist_datamodule.yaml     # choose datamodule from 'configs/datamodule/' folder
     - optimizer: adam.yaml                  # choose optimizer from 'configs/optimizer/' folder
     - seeds: default_seeds.yaml             # set this to null if you don't want to use seeds
@@ -118,7 +128,7 @@ Example experiment configuration:
 ```yaml
 defaults:
     - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/'
-    - override /model: simple_mnist_classifier.yaml     # choose model from 'configs/model/'
+    - override /model: mnist_model.yaml                 # choose model from 'configs/model/'
     - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/'
     - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/'
     - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/'
@@ -177,7 +187,7 @@ Logs are created automatically with the following structure:
 │   │   └── ...
 │   │
 │   ├── multiruns               # Folder for logs generated from sweeps
-│   │   ├── 2021-02-15_16-50-49     # Date and hour of executing run
+│   │   ├── 2021-02-15_16-50-49     # Date and hour of executing sweep
 │   │   │   ├── 0                       # Job number
 │   │   │   │   ├── .hydra                  # Hydra logs
 │   │   │   │   ├── wandb                   # Weights&Biases logs
@@ -195,8 +205,8 @@ Logs are created automatically with the following structure:
 ## Workflow
 1. Create PyTorch Lightning model
 2. Create PyTorch Lightning datamodule
-3. Create new experiment config in [configs/experiment](project/configs/experiment)
-4. Run training with chosen run config<br>
+3. Create new experiment config in [configs/experiment](project/configs/experiment) folder
+4. Run training with chosen experiment config<br>
     ```bash
     python train.py +experiment=experiment_name.yaml
     ```

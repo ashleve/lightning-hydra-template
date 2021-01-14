@@ -2,8 +2,10 @@
 
 # trainer args for debugging model
 args:
-    gpus: -1                        # set -1 to train on all GPUs abailable, set 0 to train on CPU only
-    auto_select_gpus: True
+    gpus: 0                        # set -1 to train on all GPUs abailable, set 0 to train on CPU only
+#    auto_select_gpus: True
+
+    gradient_clip_val: 0.5
 
 #    fast_dev_run: True  # bugged :(
     limit_train_batches: 1.0

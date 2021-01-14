@@ -5,7 +5,7 @@
 
 defaults:
     - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder
-    - override /model: simple_mnist_classifier.yaml     # choose model from 'configs/model/' folder
+    - override /model: mnist_model.yaml                 # choose model from 'configs/model/' folder
     - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/' folder
     - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/' folder
     - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/' folder

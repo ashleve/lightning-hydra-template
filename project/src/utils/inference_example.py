@@ -2,7 +2,7 @@ from src.transforms import mnist_transforms
 from PIL import Image
 
 # the LitModel you import should be the same as the one you used for training!
-from src.models.simple_mnist_classifier import LitModel
+from src.models.mnist_model import LitModel
 
 # ckpt can be a url!
 
@@ -12,7 +12,7 @@ def predict():
         This method is example of inference with a trained model.
         It Loads trained image classification model from checkpoint.
         Then it loads example image and predicts its label.
-        Model used in simple_mnist_classifier.py should be the same as during training!!!
+        Model used in mnist_model.py should be the same as during training!!!
     """
 
     CKPT_PATH = "epoch=0.ckpt"

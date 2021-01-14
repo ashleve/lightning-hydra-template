@@ -16,7 +16,6 @@ import src.utils.initializers as utils
 
 
 def train(config):
-
     # Set global PyTorch seed
     if "seeds" in config and "pytorch_seed" in config["seeds"]:
         torch.manual_seed(seed=config["seeds"]["pytorch_seed"])
