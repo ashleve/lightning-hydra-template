@@ -2,10 +2,24 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 from pytorch_lightning.loggers import WandbLogger
 from wandb.sdk.wandb_run import Run as wandb_run
 from pytorch_lightning import Callback
+import pytorch_lightning as pl
 import torch
 import wandb
 import glob
 import os
+
+
+def get_wandb_logger(trainer: pl.Trainer) -> wandb_run:
+    logger = None
+    for some_logger in trainer.logger.experiment:
+        if isinstance(some_logger, wandb_run):
+            logger = some_logger
+
+    if not logger:
+        raise Exception("You're using wandb related callback, "
+                        "but wandb logger was not initialized for some reason...")
+
+    return logger
 
 
 class SaveCodeToWandb(Callback):
@@ -17,6 +31,8 @@ class SaveCodeToWandb(Callback):
 
     def on_sanity_check_end(self, trainer, pl_module):
         """Upload files when all validation sanity checks end."""
+        logger = get_wandb_logger(trainer=trainer)
+
         code = wandb.Artifact('project-source', type='code')
         for path in glob.glob(os.path.join(self.code_dir, '**/*.py'), recursive=True):
             code.add_file(path)
@@ -33,14 +49,14 @@ class UploadAllCheckpointsToWandb(Callback):
 
     def on_train_end(self, trainer, pl_module):
         """Upload ckpts when training ends."""
-        ckpts = wandb.Artifact('experiment-ckpts', type='checkpoints')
+        logger = get_wandb_logger(trainer=trainer)
 
+        ckpts = wandb.Artifact('experiment-ckpts', type='checkpoints')
         if self.upload_best_only:
             ckpts.add_file(trainer.checkpoint_callback.best_model_path)
         else:
             for path in glob.glob(os.path.join(self.ckpt_dir, '**/*.ckpt'), recursive=True):
                 ckpts.add_file(path)
-
         wandb.run.use_artifact(ckpts)
 
 
@@ -70,16 +86,13 @@ class SaveMetricsHeatmapToWandb(Callback):
     def on_validation_epoch_end(self, trainer, pl_module):
         """Generate f1, precision and recall heatmap."""
         if self.ready:
+            logger = get_wandb_logger(trainer=trainer)
+
             self.preds = torch.cat(self.preds).cpu()
             self.targets = torch.cat(self.targets).cpu()
             f1 = f1_score(self.preds, self.targets, average=None)
             r = recall_score(self.preds, self.targets, average=None)
             p = precision_score(self.preds, self.targets, average=None)
-
-            logger = None
-            for some_logger in trainer.logger.experiment:
-                if isinstance(some_logger, wandb_run):
-                    logger = some_logger
 
             logger.log({
                 f"f1_p_r_heatmap_{trainer.current_epoch}_{logger.id}": wandb.plots.HeatMap(
@@ -119,17 +132,17 @@ class SaveConfusionMatrixToWandb(Callback):
     def on_validation_epoch_end(self, trainer, pl_module):
         """Generate f1, precision and recall heatmap."""
         if self.ready:
+            logger = get_wandb_logger(trainer=trainer)
+
             self.preds = torch.cat(self.preds).tolist()
             self.targets = torch.cat(self.targets).tolist()
 
-            for logger in trainer.logger.experiment:
-                if isinstance(logger, wandb_run):
-                    logger.log({
-                        f"conf_mat_{trainer.current_epoch}_{logger.id}": wandb.plot.confusion_matrix(
-                            preds=self.preds,
-                            y_true=self.targets,
-                            class_names=self.class_names)
-                    }, commit=False)
+            logger.log({
+                f"conf_mat_{trainer.current_epoch}_{logger.id}": wandb.plot.confusion_matrix(
+                    preds=self.preds,
+                    y_true=self.targets,
+                    class_names=self.class_names)
+            }, commit=False)
 
             self.preds = []
             self.targets = []
@@ -157,21 +170,22 @@ class SaveBestMetricScoresToWandb(Callback):
 
     def on_epoch_end(self, trainer, pl_module):
         if self.ready:
-            for logger in trainer.logger.experiment:
-                metrics = trainer.callback_metrics
-                if isinstance(logger, wandb_run):
-                    if self.train_loss_best is None or metrics["train_loss"] < self.train_loss_best:
-                        self.train_loss_best = metrics["train_loss"]
-                    if self.train_acc_best is None or metrics["train_acc"] > self.train_acc_best:
-                        self.train_acc_best = metrics["train_acc"]
-                    if self.val_loss_best is None or metrics["val_loss"] < self.val_loss_best:
-                        self.val_loss_best = metrics["val_loss"]
-                    if self.val_acc_best is None or metrics["val_acc"] > self.val_acc_best:
-                        self.val_acc_best = metrics["val_acc"]
-                    logger.log({"train_loss_best": self.train_loss_best}, commit=False)
-                    logger.log({"train_acc_best": self.train_acc_best}, commit=False)
-                    logger.log({"val_loss_best": self.val_loss_best}, commit=False)
-                    logger.log({"val_acc_best": self.val_acc_best}, commit=False)
+            logger = get_wandb_logger(trainer=trainer)
+
+            metrics = trainer.callback_metrics
+            if self.train_loss_best is None or metrics["train_loss"] < self.train_loss_best:
+                self.train_loss_best = metrics["train_loss"]
+            if self.train_acc_best is None or metrics["train_acc"] > self.train_acc_best:
+                self.train_acc_best = metrics["train_acc"]
+            if self.val_loss_best is None or metrics["val_loss"] < self.val_loss_best:
+                self.val_loss_best = metrics["val_loss"]
+            if self.val_acc_best is None or metrics["val_acc"] > self.val_acc_best:
+                self.val_acc_best = metrics["val_acc"]
+
+            logger.log({"train_loss_best": self.train_loss_best}, commit=False)
+            logger.log({"train_acc_best": self.train_acc_best}, commit=False)
+            logger.log({"val_loss_best": self.val_loss_best}, commit=False)
+            logger.log({"val_acc_best": self.val_acc_best}, commit=False)
 
 
 # class SaveImagePredictionsToWandb(Callback):

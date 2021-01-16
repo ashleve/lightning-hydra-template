@@ -23,17 +23,17 @@ class LitModel(pl.LightningModule):
         self.save_hyperparameters(hparams)
         self.optimizer_config = optimizer_config
 
-        self.model = SimpleMNISTClassifier(hparams=self.hparams)
+        self.architecture = SimpleMNISTClassifier(hparams=self.hparams)
 
         self.accuracy = Accuracy()
 
     def forward(self, x):
-        return self.model(x)
+        return self.architecture(x)
 
     # logic for a single training step
     def training_step(self, batch, batch_idx):
         x, y = batch
-        logits = self.model(x)
+        logits = self.architecture(x)
         loss = F.nll_loss(logits, y)
 
         # training metrics
@@ -47,7 +47,7 @@ class LitModel(pl.LightningModule):
     # logic for a single validation step
     def validation_step(self, batch, batch_idx):
         x, y = batch
-        logits = self.model(x)
+        logits = self.architecture(x)
         loss = F.nll_loss(logits, y)
 
         # validation metrics
@@ -62,7 +62,7 @@ class LitModel(pl.LightningModule):
     # logic for a single testing step
     def test_step(self, batch, batch_idx):
         x, y = batch
-        logits = self.model(x)
+        logits = self.architecture(x)
         loss = F.nll_loss(logits, y)
 
         # test metrics

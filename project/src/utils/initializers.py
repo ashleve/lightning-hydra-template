@@ -155,8 +155,8 @@ def log_extra_hparams(loggers: List[pl.loggers.LightningLoggerBase],
         log_hparams(loggers, hparams)
 
     if "log_model_architecture_class" in extra_logs and extra_logs["log_model_architecture_class"]:
-        if hasattr(model, "model"):
-            obj = model.model
+        if hasattr(model, "architecture"):
+            obj = model.architecture
             log_hparams(loggers, {"_class_model_architecture": obj.__module__ + "." + obj.__class__.__name__})
 
 
@@ -193,13 +193,3 @@ def auto_find_lr(trainer, model, datamodule, loggers):
 
 def show_config(config: DictConfig):
     log.info(f"\n{OmegaConf.to_yaml(config, resolve=True)}")
-
-
-def validate_config(config: dict):
-    # TODO
-    pass
-
-
-def validate_obj_config(obj_config: dict):
-    # TODO
-    pass

@@ -1,5 +1,3 @@
-# @package _group_
-
 class: src.models.simple_mnist_classifier.LitModel
 args:
     input_size: 784

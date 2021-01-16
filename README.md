@@ -10,6 +10,9 @@ The goal is to:
 
 Click on <b>`Use this template`</b> button above to initialize new repository.<br>
 
+*warning: this template currently uses development version of hydra which might be unstable (we wait until version 1.1 is released)
+
+
 ## Features
 - Predefined folder structure
 - Automates training with PyTorch Lightning
@@ -83,13 +86,13 @@ The directory structure of new project looks like this:
 ```yaml
 # specify here default training configuration
 defaults:
-    - trainer: default_trainer.yaml         # choose trainer from 'configs/trainer/' folder
-    - model: mnist_model.yaml               # choose model from 'configs/model/' folder
-    - datamodule: mnist_datamodule.yaml     # choose datamodule from 'configs/datamodule/' folder
-    - optimizer: adam.yaml                  # choose optimizer from 'configs/optimizer/' folder
-    - seeds: default_seeds.yaml             # set this to null if you don't want to use seeds
-    - callbacks: default_callbacks.yaml     # set this to null if you don't want to use callbacks
-    - logger: null                          # set this to null if you don't want to use loggers
+    - trainer: default_trainer.yaml
+    - model: mnist_model.yaml
+    - datamodule: mnist_datamodule.yaml
+    - optimizer: adam.yaml
+    - seeds: default_seeds.yaml  # set this to null if you don't want to use seeds
+    - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
+    - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
 
 # path to working directory (the directory that `train.py` was executed from in command line)
 work_dir: ${hydra:runtime.cwd}
@@ -108,15 +111,12 @@ hydra:
 # extra things that are logged by all loggers as hyperparameters
 extra_logs:
     log_seeds: True
-
     log_trainer_args: False
     log_datamodule_args: True
-
     log_model_class: True
     log_optimizer_class: True
     log_datamodule_class: True
     log_model_architecture_class: True
-
     log_train_val_test_sizes: False
 ```
 <br>
@@ -180,7 +180,6 @@ Logs are created automatically with the following structure:
 │   │   │   │   ├── .hydra                  # Hydra logs
 │   │   │   │   ├── wandb                   # Weights&Biases logs
 │   │   │   │   └── checkpoints             # Training checkpoints
-│   │   │   │   
 │   │   │   ├── ...
 │   │   │   └── ...
 │   │   ├── ...
@@ -232,7 +231,7 @@ Logs are created automatically with the following structure:
 What it does
 
 ## How to run
-First, install dependencies
+First, install dependencies:
 ```bash
 # clone project
 git clone https://github.com/YourGithubName/your-repo-name
@@ -249,13 +248,13 @@ pip install -r requirements.txt
 pip install hydra-core --upgrade --pre
 ```
 
-Next, you can train model with default configuration without logging
+Next, you can train model with default configuration without logging:
 ```bash
 cd project
 python train.py
 ```
 
-Or you can train model with chosen logger like Weights&Biases
+Or you can train model with chosen logger like Weights&Biases:
 ```yaml
 # set project and entity names in project/configs/logger/wandb.yaml
 wandb:
@@ -265,32 +264,30 @@ wandb:
 ```
 ```bash
 # train model with Weights&Biases
-python train.py logger=wandb.yaml
+python train.py logger=wandb
 ```
 
-Or you can train model with chosen experiment config
+Or you can train model with chosen experiment config:
 ```bash
-python train.py +experiment=exp_example_simple.yaml
+python train.py +experiment=exp_example_simple
 ```
 
-Optionally you can install project as a package with [setup.py](setup.py)
+To execute all experiments from folder run:
+```bash
+python train.py --multirun '+experiment=glob(*)'
+```
+
+You can override any parameter from command line like this:
+```bash
+python train.py trainer.args.max_epochs=20 optimizer.args.lr=0.0005
+```
+
+Combaining it all:
+```bash
+python train.py --multirun '+experiment=glob(*)' trainer.args.max_epochs=20 logger=wandb
+```
+
+Optionally you can install project as a package with [setup.py](setup.py):
 ```bash
 pip install -e .
 ```
-<br>
-
-
-#### PyCharm setup
-- open this repository as PyCharm project
-- set project interpreter:<br> 
-`Ctrl + Shift + A -> type "Project Interpreter"`
-- mark folder "project" as sources root:<br>
-`right click on directory -> "Mark Directory as" -> "Sources Root"`
-- set terminal emulation:<br> 
-`Ctrl + Shift + A -> type "Edit Configurations..." -> select "Emulate terminal in output console"`
-- run training:<br>
-`right click on train.py file -> "Run 'train'"`
-
-
-#### VS Code setup
-- TODO

@@ -6,7 +6,6 @@ class SimpleMNISTClassifier(nn.Module):
     def __init__(self, hparams):
         super().__init__()
 
-        # mnist images are (1, 28, 28) (channels, width, height)
         self.model = nn.Sequential(
             nn.Linear(hparams["input_size"], hparams["lin1_size"]),
             nn.BatchNorm1d(hparams["lin1_size"]),
@@ -27,6 +26,8 @@ class SimpleMNISTClassifier(nn.Module):
     def forward(self, x):
         batch_size, channels, width, height = x.size()
 
+        # mnist images are (1, 28, 28) (channels, width, height)
         # (b, 1, 28, 28) -> (b, 1*28*28)
         x = x.view(batch_size, -1)
+
         return self.model(x)

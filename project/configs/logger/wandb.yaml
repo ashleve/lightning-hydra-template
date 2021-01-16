@@ -1,5 +1,3 @@
-# @package _group_
-
 # Weights&Biases logger config
 wandb:
     class: pytorch_lightning.loggers.wandb.WandbLogger

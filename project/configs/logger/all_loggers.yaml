@@ -1,8 +1,7 @@
-# @package _group_
-
 # Train with many loggers at once
 defaults:
     - csv_logger.yaml
     - wandb.yaml
     # - comet.yaml
+    # - neptune.yaml
     # - tensorboard.yaml

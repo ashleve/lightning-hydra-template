@@ -1,5 +1,3 @@
-# @package _group_
-
 class: torch.optim.Adam
 args:
     lr: 0.001

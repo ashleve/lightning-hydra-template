@@ -1,5 +1,3 @@
-# @package _group_
-
 model_checkpoint:
     class: pytorch_lightning.callbacks.ModelCheckpoint
     args:
