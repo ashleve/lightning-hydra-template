@@ -64,10 +64,6 @@ def train(config):
         loggers=loggers
     )
 
-    # Automatically find learning rate if specified in config
-    if "auto_lr_find" in config["trainer"]["args"] and config["trainer"]["args"]["auto_lr_find"]:
-        utils.auto_find_lr(trainer, model, datamodule, loggers)
-
     # Train the model
     trainer.fit(model=model, datamodule=datamodule)
 

@@ -178,17 +178,19 @@ def show_init_info(model, datamodule, callbacks, loggers):
     log.info(message)
 
 
-def auto_find_lr(trainer, model, datamodule, loggers):
-    lr_finder = trainer.tuner.lr_find(model=model, datamodule=datamodule)
-    new_lr = lr_finder.suggestion()
-
-    # Save lr plot
-    fig = lr_finder.plot(suggest=True)
-    fig.savefig("lr_loss_curve.jpg")
-
-    # Set new lr
-    model.hparams.lr = new_lr
-    log_hparams(loggers, {"lr": new_lr})
+# for some reason auto_lr_find crashes training
+# also there's no good way to update lr in wandb config after they it was set
+# def auto_find_lr(trainer, model, datamodule, loggers):
+#     lr_finder = trainer.tuner.lr_find(model=model, datamodule=datamodule)
+#     new_lr = lr_finder.suggestion()
+#
+#     # Save lr plot
+#     fig = lr_finder.plot(suggest=True)
+#     fig.savefig("lr_loss_curve.jpg")
+#
+#     # Set new lr
+#     model.hparams.lr = new_lr
+#     log_hparams(loggers, {"lr": new_lr})
 
 
 def show_config(config: DictConfig):
