@@ -6,20 +6,19 @@ from torchvision.datasets import MNIST
 
 class MNISTDataModule(LightningDataModule):
     """
-    This is example of datamodule for MNIST dataset.
+    This is example of lightning datamodule for MNIST dataset.
     To learn how to create datamodules visit:
         https://pytorch-lightning.readthedocs.io/en/latest/datamodules.html
     """
 
-    def __init__(self, data_dir, **args):
+    def __init__(self, *args, **kwargs):
         super().__init__()
 
-        self.data_dir = data_dir  # data_dir is specified in config.yaml
-
-        self.batch_size = args["batch_size"]
-        self.train_val_test_split = args["train_val_test_split"]
-        self.num_workers = args["num_workers"]
-        self.pin_memory = args["pin_memory"]
+        self.data_dir = kwargs["data_dir"]
+        self.batch_size = kwargs["batch_size"]
+        self.train_val_test_split = kwargs["train_val_test_split"]
+        self.num_workers = kwargs["num_workers"]
+        self.pin_memory = kwargs["pin_memory"]
 
         self.transforms = transforms.ToTensor()
 
@@ -37,7 +36,6 @@ class MNISTDataModule(LightningDataModule):
         trainset = MNIST(self.data_dir, train=True, transform=self.transforms)
         testset = MNIST(self.data_dir, train=False, transform=self.transforms)
         dataset = ConcatDataset(datasets=[trainset, testset])
-
         self.data_train, self.data_val, self.data_test = random_split(dataset, self.train_val_test_split)
 
     def train_dataloader(self):

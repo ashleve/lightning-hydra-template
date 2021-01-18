@@ -32,7 +32,7 @@
 #     wandb.init()
 #
 #     sweep_hparams = wandb.Config._as_dict(wandb.config)
-#     utils.show_config(config)  # print content of config
+#     utils.print_config(config)  # print content of config
 #
 #     train(config)
 #     wandb.finish()

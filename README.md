@@ -94,30 +94,39 @@ defaults:
     - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
 
-# path to working directory (the directory that `train.py` was executed from in command line)
-work_dir: ${hydra:runtime.cwd}
+
+# path to original working directory (the directory that `train.py` was executed from in command line)
+# hydra hijacks working directory by changing it to the current log directory,
+# so it's useful to have path to original working directory as a special variable
+# read more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
+original_work_dir: ${hydra:runtime.cwd}
+
 
 # path to folder with data
-data_dir: ${work_dir}/data/
+data_dir: ${original_work_dir}/data/
 
-# hydra output paths
+
+# define which things will be saved as hyperparameters by lightning loggers
+extra_logs:
+    save_model_class_path: True
+    save_optimizer_class_path: True
+    save_datamodule_class_path: True
+    save_model_architecture_class_path: True
+    save_model_args: True
+    save_datamodule_args: True
+    save_optimizer_args: True
+    save_trainer_args: False
+    save_seeds: True
+    save_data_train_val_test_sizes: False
+
+
+# output paths for hydra logs
 hydra:
     run:
         dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
     sweep:
         dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
         subdir: ${hydra.job.num}
-
-# extra things that are logged by all loggers as hyperparameters
-extra_logs:
-    log_seeds: True
-    log_trainer_args: False
-    log_datamodule_args: True
-    log_model_class: True
-    log_optimizer_class: True
-    log_datamodule_class: True
-    log_model_architecture_class: True
-    log_train_val_test_sizes: False
 ```
 <br>
 
@@ -244,8 +253,6 @@ conda activate your_env_name
 
 # install requirements
 pip install -r requirements.txt
-
-pip install hydra-core --upgrade --pre
 ```
 
 Next, you can train model with default configuration without logging:
