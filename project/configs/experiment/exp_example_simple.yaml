@@ -1,16 +1,18 @@
-# @package _global_
-
 # to execute this experiment run:
 # python train.py +experiment=exp_example_simple
 
 defaults:
-    - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder
-    - override /model: mnist_model.yaml                 # choose model from 'configs/model/' folder
-    - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/' folder
-    - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/' folder
-    - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/' folder
-    - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/' folder
-    - override /logger: null                            # choose logger from 'configs/logger/' folder
+    - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder or set to null
+    - override /model: mnist_model.yaml                 # choose model from 'configs/model/' folder or set to null
+    - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/' folder or set to null
+    - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/' folder or set to null
+    - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/' folder or set to null
+    - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/' folder or set to null
+    - override /logger: null                            # choose logger from 'configs/logger/' folder or set it from console when running experiment:
+                                                        # `python train.py +experiment=exp_example_with_paths logger=wandb`
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
 
 seeds:
     pytorch_seed: 12345
@@ -21,15 +23,13 @@ trainer:
 
 model:
     args:
-        input_size: 784
-        output_size: 10
-        lin1_size: 256
+        lin1_size: 128
         lin2_size: 256
-        lin3_size: 128
+        lin3_size: 64
 
 datamodule:
     args:
-        batch_size: 32
+        batch_size: 64
         train_val_test_split: [55_000, 5_000, 10_000]
 
 optimizer:

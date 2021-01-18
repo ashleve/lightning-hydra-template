@@ -1,0 +1,4 @@
+# Neptune logger config
+comet:
+    class: pytorch_lightning.logger.NeptuneLogger
+    args: {}

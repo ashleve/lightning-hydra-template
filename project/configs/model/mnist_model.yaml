@@ -1,9 +1,12 @@
-# @package _group_
-
-class: src.models.simple_mnist_classifier.LitModel
+class: src.models.mnist_model.LitModelMNIST
 args:
+    optimizer_config: ${optimizer}
+    architecture: SimpleDenseNet
     input_size: 784
-    output_size: 10
     lin1_size: 256
+    dropout1: 0.30
     lin2_size: 256
+    dropout2: 0.25
     lin3_size: 128
+    dropout3: 0.20
+    output_size: 10

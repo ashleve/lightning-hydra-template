@@ -1,5 +1,3 @@
-# @package _global_
-
 # to execute this experiment run:
 # python train.py +experiment=exp_example_advanced
 
@@ -10,7 +8,11 @@ defaults:
     - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/' folder
     - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/' folder
     - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/' folder
-    - override /logger: null                            # choose logger from 'configs/logger/' folder
+    - override /logger: null                            # choose logger from 'configs/logger/' folder or set it from console when running experiment:
+                                                        # `python train.py +experiment=exp_example_advanced logger=wandb`
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
 
 seeds:
     pytorch_seed: 12345                                 # pytorch seed for this experiment (affects torch.utils.data.random_split() method used in mnist_datamodule)
@@ -49,11 +51,15 @@ optimizer:
         weight_decay: 0.00001
 
 logger:
+    # you can add here additional logger arguments specific for this experiment
     wandb:
-        args:                                           # you can add here additional logger arguments specific for this experiment
+        args:
             tags: ["best_model", "uwu"]
             notes: "Description of this model."
-            group: ""
+            group: "mnist"
     comet:
         args:
             tags: ["best_model"]
+    csv_logger:
+        args:
+            save_dir: "."

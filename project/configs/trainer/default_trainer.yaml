@@ -1,5 +1,3 @@
-# @package _group_
-
 # default args passed to Lightning Trainer on every experiment
 # they can be combined or overwritten with args set in experiment config
 args:
@@ -12,4 +10,3 @@ args:
     progress_bar_refresh_rate: 10
     weights_summary: null  # null in yaml represents python None value
     default_root_dir: "lightning_logs/"
-    auto_lr_find: False  # "https://pytorch-lightning.readthedocs.io/en/stable/lr_finder.html"

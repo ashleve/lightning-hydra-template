@@ -5,35 +5,34 @@ import torch.nn.functional as F
 import torch
 
 # import custom architectures
-from src.architectures.simple_mnist import SimpleMNISTClassifier
+from src.architectures.simple_dense_net import SimpleDenseNet
 
 
-class LitModel(pl.LightningModule):
+class LitModelMNIST(pl.LightningModule):
     """
     This is example of lightning model for MNIST classification.
-    This class enables you to specify what happens during training, validation and test step.
-    You can just remove 'validation_step()' or 'test_step()' methods if you don't want to have them during training.
     To learn how to create lightning models visit:
         https://pytorch-lightning.readthedocs.io/en/latest/lightning_module.html
     """
 
-    def __init__(self, model_config, optimizer_config):
+    def __init__(self, *args, **kwargs):
         super().__init__()
-        hparams = {**model_config["args"], **optimizer_config["args"]}
-        self.save_hyperparameters(hparams)
-        self.optimizer_config = optimizer_config
-
-        self.model = SimpleMNISTClassifier(hparams=self.hparams)
-
+        self.save_hyperparameters()
         self.accuracy = Accuracy()
 
+        # Initialize model architecture
+        if self.hparams["architecture"] == "SimpleDenseNet":
+            self.architecture = SimpleDenseNet(hparams=self.hparams)
+        else:
+            raise Exception("Invalid architecture name")
+
     def forward(self, x):
-        return self.model(x)
+        return self.architecture(x)
 
     # logic for a single training step
     def training_step(self, batch, batch_idx):
         x, y = batch
-        logits = self.model(x)
+        logits = self.architecture(x)
         loss = F.nll_loss(logits, y)
 
         # training metrics
@@ -47,7 +46,7 @@ class LitModel(pl.LightningModule):
     # logic for a single validation step
     def validation_step(self, batch, batch_idx):
         x, y = batch
-        logits = self.model(x)
+        logits = self.architecture(x)
         loss = F.nll_loss(logits, y)
 
         # validation metrics
@@ -62,7 +61,7 @@ class LitModel(pl.LightningModule):
     # logic for a single testing step
     def test_step(self, batch, batch_idx):
         x, y = batch
-        logits = self.model(x)
+        logits = self.architecture(x)
         loss = F.nll_loss(logits, y)
 
         # test metrics
@@ -74,5 +73,6 @@ class LitModel(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        Optimizer = load_class(self.optimizer_config["class"])
-        return Optimizer(self.parameters(), **self.optimizer_config["args"])
+        Optimizer = load_class(self.hparams["optimizer_config"]["class"])
+        return Optimizer(self.parameters(), **self.hparams["optimizer_config"]["args"])
+
