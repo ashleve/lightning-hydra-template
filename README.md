@@ -1,16 +1,19 @@
 ## Deep learning project template
 This is my starting template and pipeline for most deep learning projects.<br>
-I'm trying to make this as generic as possible.<br>
 Built with <b>PyTorch Lightning</b> and <b>Hydra</b>.<br>
 Also contains special <b>Weights&Biases</b> integration, but can be used with any other logger.<br>
 It's supposed to be enchancement/expansion on original [deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template) repository.<br>
+I'm trying to make this as generic as possible - you should be able to easily modify behavior in [train.py](project/train.py) file in case you need some unconventional configuration wiring.<br>
 
 The goal is to:
 - structure ML code the same so that work can easily be extended and replicated
 - allow for quick and efficient experimentation process thanks to automating pipeline with config files
+- create a way for convenient storing of curated experiment configurations
 - extend functionality of popular experiment loggers like Weights&Biases, mostly with dedicated callbacks
 
 Click on <b>`Use this template`</b> button above to initialize new repository.<br>
+
+
 
 *warning: this template currently uses development version of hydra which might be unstable (we wait until version 1.1 is released)
 
@@ -139,14 +142,12 @@ Example experiment configuration:
 # python train.py +experiment=exp_example_simple
 
 defaults:
-    - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder or set to null
-    - override /model: mnist_model.yaml                 # choose model from 'configs/model/' folder or set to null
-    - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/' folder or set to null
-    - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/' folder or set to null
-    - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/' folder or set to null
-    - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/' folder or set to null
-    - override /logger: null                            # choose logger from 'configs/logger/' folder or set it from console when running experiment:
-                                                        # `python train.py +experiment=exp_example_simple logger=wandb`
+    - override /trainer: default_trainer.yaml
+    - override /model: mnist_model.yaml
+    - override /datamodule: mnist_datamodule.yaml
+    - override /seeds: default_seeds.yaml
+    - override /callbacks: default_callbacks.yaml
+    - override /logger: null
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
@@ -169,6 +170,55 @@ datamodule:
     train_val_test_split: [55_000, 5_000, 10_000]
 ```
 <br>
+
+More advanced experiment configuration:
+```yaml
+# to execute this experiment run:
+# python train.py +experiment=exp_example_with_paths
+
+defaults:
+    - override /trainer: null
+    - override /model: null
+    - override /datamodule: null 
+    - override /seeds: null
+    - override /callbacks: default_callbacks.yaml
+    - override /logger: null
+
+# we override default configurations with nulls to prevent them from loading at all - instead we define all modules
+# and their paths directly in this config, so everything is stored in one place for more readibility
+
+seeds:
+    pytorch_seed: 12345
+
+trainer:
+    _target_: pytorch_lightning.Trainer
+    min_epochs: 1
+    max_epochs: 10
+    gradient_clip_val: 0.5
+
+model:
+    _target_: src.models.mnist_model.LitModelMNIST
+    optimizer: adam
+    lr: 0.001
+    weight_decay: 0.000001
+    architecture: SimpleDenseNet
+    input_size: 784
+    lin1_size: 256
+    dropout1: 0.30
+    lin2_size: 256
+    dropout2: 0.25
+    lin3_size: 128
+    dropout3: 0.20
+    output_size: 10
+
+datamodule:
+    _target_: src.datamodules.mnist_datamodule.MNISTDataModule
+    data_dir: ${data_dir}
+    batch_size: 64
+    train_val_test_split: [55_000, 5_000, 10_000]
+    num_workers: 1
+    pin_memory: False
+```
 
 
 ## Logs
@@ -255,7 +305,7 @@ python train.py
 
 Or you can train model with chosen logger like Weights&Biases:
 ```yaml
-# set project and entity names in project/configs/logger/wandb.yaml
+# set project and entity names in 'project/configs/logger/wandb.yaml'
 wandb:
     project: "your_project_name"
     entity: "your_wandb_team_name"
@@ -267,6 +317,7 @@ python train.py logger=wandb
 
 Or you can train model with chosen experiment config:
 ```bash
+# experiment configurations are placed in 'project/configs/experiment/' folder
 python train.py +experiment=exp_example_simple
 ```
 
@@ -282,7 +333,8 @@ python train.py trainer.max_epochs=20 model.lr=0.0005
 
 Attach some callback set to run:
 ```bash
-python train.py callbacks=wandb_callbacks
+# callback sets configurations are placed in 'project/configs/callbacks/' folder
+python train.py callbacks=default_callbacks
 ```
 
 Combaining it all:
@@ -296,12 +348,24 @@ To create a sweep over some hyperparameters run:
 python train.py --multirun datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
 
+## Import
 Optionally you can install project as a package with [setup.py](setup.py):
 ```bash
 pip install -e .
 ```
-
-To update the conda environment run:
-```bash
-conda env update --file conda_env.yml
+So you can easily import any file into any other file like so:
+```python
+from project.src.datasets.img_test_dataset import TestDataset
+from project.src.models.mnist_model import LitModelMNIST
+from project.src.datamodules.mnist_datamodule import MNISTDataModule
 ```
+
+## Citation   
+```
+@article{YourName,
+  title={Your Title},
+  author={Your team},
+  journal={Location},
+  year={Year}
+}
+```   

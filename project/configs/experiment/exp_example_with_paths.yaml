@@ -28,13 +28,13 @@ trainer:
 
 model:
     _target_: src.models.mnist_model.LitModelMNIST
-    optimizer_config: adam
+    optimizer: adam
     lr: 0.001
-    weight_decay: 0.00001
+    weight_decay: 0.000001
     architecture: SimpleDenseNet
     input_size: 784
     lin1_size: 256
-    dropout1: 0.25
+    dropout1: 0.30
     lin2_size: 256
     dropout2: 0.25
     lin3_size: 128
