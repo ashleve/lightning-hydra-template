@@ -1,4 +1,0 @@
-class: torch.optim.Adam
-args:
-    lr: 0.001
-    weight_decay: 0.000001

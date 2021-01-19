@@ -1,12 +1,14 @@
 ## Deep learning project template
 This is my starting template and pipeline for most deep learning projects.<br>
-Built with <b>PyTorch Lightning</b>, <b>Hydra</b> and <b>Weights&Biases</b>.<br>
+I'm trying to make this as generic as possible.<br>
+Built with <b>PyTorch Lightning</b> and <b>Hydra</b>.<br>
+Also contains special <b>Weights&Biases</b> integration, but can be used with any other logger.<br>
 It's supposed to be enchancement/expansion on original [deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template) repository.<br>
 
 The goal is to:
 - structure ML code the same so that work can easily be extended and replicated
 - allow for quick and efficient experimentation process thanks to automating pipeline with config files
-- extend functionality of popular experiment loggers like Weights&Biases
+- extend functionality of popular experiment loggers like Weights&Biases, mostly with dedicated callbacks
 
 Click on <b>`Use this template`</b> button above to initialize new repository.<br>
 
@@ -22,14 +24,18 @@ Click on <b>`Use this template`</b> button above to initialize new repository.<b
     - Storing many experiment configurations in a convenient way ([configs/experiment](project/configs/experiment))
     - Composing configuration files out of other configuration files
     - Scheduling execution of many experiments
+    - Searching over hyperparameters from command line
     - Overriding any config parameter from command line
     - Command line tab completion
     - Logging history of all executed runs/experiments
+    - ~~Automatically validate config structure with config schemas~~ (TODO) 
 - Weights&Biases integration
     - Available callbacks that store all code files and model checkpoints as artifacts in Weights&Biases cloud ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
     - Other examples of useful wandb callbacks ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
-    - Configuring which hyperparameters are saved by loggers through main config file ([config.yaml](project/configs/config.yaml))
+    - Automatically watch the model
     - ~~Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))~~ (TODO)
+- Automatically logs config parts to all initialized lightning loggers 
+- Example of inference with trained model  ([inference_example.py](project/src/utils/inference_example.py))
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
 - Built in python package setup ([setup.py](setup.py))
@@ -47,7 +53,6 @@ The directory structure of new project looks like this:
 │   │   ├── datamodule              <- Configurations of lightning datamodules
 │   │   ├── callbacks               <- Configurations of lightning callbacks
 │   │   ├── logger                  <- Configurations of lightning loggers
-│   │   ├── optimizer               <- Configurations of optimizers
 │   │   ├── seeds                   <- Configurations of seeds
 │   │   ├── experiment              <- Configurations of experiments
 │   │   │         
@@ -68,13 +73,13 @@ The directory structure of new project looks like this:
 │   │   ├── transforms              <- Data transformations
 │   │   └── utils                   <- Utility scripts
 │   │       ├── inference_example.py    <- Example of inference with trained model 
-│   │       └── initializers.py         <- Initializers for different modules
+│   │       └── template_utils.py       <- Some extra template utilities
 │   │
 │   └── train.py                <- Train model with chosen experiment configuration
 │
-├── .gitignore              <- Ignored files
-├── LICENSE                 <- Project license
-├── README.md               <- Readme
+├── .gitignore
+├── LICENSE
+├── README.md
 ├── conda_env.yaml          <- File for installing conda environment
 ├── requirements.txt        <- File for installing python dependencies
 └── setup.py                <- File for installing project as a package
@@ -83,16 +88,25 @@ The directory structure of new project looks like this:
 
 
 ## Main project configuration file ([config.yaml](project/configs/config.yaml))
+Main config contains default training configuration.<br>
+It determines how config is composed when simply executing command: `python train.py`
 ```yaml
+# to execute run with default training configuration simply run: 
+# `python train.py`
+
+
 # specify here default training configuration
 defaults:
     - trainer: default_trainer.yaml
     - model: mnist_model.yaml
     - datamodule: mnist_datamodule.yaml
-    - optimizer: adam.yaml
     - seeds: default_seeds.yaml  # set this to null if you don't want to use seeds
     - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
+
+    # we add this just to enable color logging
+    - hydra/job_logging: colorlog
+    - hydra/hydra_logging: colorlog
 
 
 # path to original working directory (the directory that `train.py` was executed from in command line)
@@ -104,20 +118,6 @@ original_work_dir: ${hydra:runtime.cwd}
 
 # path to folder with data
 data_dir: ${original_work_dir}/data/
-
-
-# define which things will be saved as hyperparameters by lightning loggers
-extra_logs:
-    save_model_class_path: True
-    save_optimizer_class_path: True
-    save_datamodule_class_path: True
-    save_model_architecture_class_path: True
-    save_model_args: True
-    save_datamodule_args: True
-    save_optimizer_args: True
-    save_trainer_args: False
-    save_seeds: True
-    save_data_train_val_test_sizes: False
 
 
 # output paths for hydra logs
@@ -135,14 +135,18 @@ hydra:
 You can store many experiment configurations in this folder.<br>
 Example experiment configuration:
 ```yaml
+# to execute this experiment run:
+# python train.py +experiment=exp_example_simple
+
 defaults:
-    - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/'
-    - override /model: mnist_model.yaml                 # choose model from 'configs/model/'
-    - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/'
-    - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/'
-    - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/'
-    - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/'
-    - override /logger: null                            # choose logger from 'configs/logger/'
+    - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder or set to null
+    - override /model: mnist_model.yaml                 # choose model from 'configs/model/' folder or set to null
+    - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/' folder or set to null
+    - override /optimizer: adam.yaml                    # choose optimizer from 'configs/optimizer/' folder or set to null
+    - override /seeds: default_seeds.yaml               # choose seeds from 'configs/seeds/' folder or set to null
+    - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/' folder or set to null
+    - override /logger: null                            # choose logger from 'configs/logger/' folder or set it from console when running experiment:
+                                                        # `python train.py +experiment=exp_example_simple logger=wandb`
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
@@ -151,30 +155,18 @@ seeds:
     pytorch_seed: 12345
 
 trainer:
-    args:
-        max_epochs: 10
+    max_epochs: 10
+    gradient_clip_val: 0.5
 
 model:
-    args:
-        input_size: 784
-        output_size: 10
-        lin1_size: 256
-        lin2_size: 256
-        lin3_size: 128
+    lr: 0.001
+    lin1_size: 128
+    lin2_size: 256
+    lin3_size: 64
 
 datamodule:
-    args:
-        batch_size: 32
-        train_val_test_split: [55_000, 5_000, 10_000]
-
-optimizer:
-    args:
-        lr: 0.001
-        weight_decay: 0.00001
-```
-To execute this experiment run:
-```bash
-python train.py +experiment=exp_example_simple
+    batch_size: 64
+    train_val_test_split: [55_000, 5_000, 10_000]
 ```
 <br>
 
@@ -265,9 +257,8 @@ Or you can train model with chosen logger like Weights&Biases:
 ```yaml
 # set project and entity names in project/configs/logger/wandb.yaml
 wandb:
-    args:
-        project: "your_project_name"
-        entity: "your_wandb_team_name"
+    project: "your_project_name"
+    entity: "your_wandb_team_name"
 ```
 ```bash
 # train model with Weights&Biases
@@ -286,15 +277,31 @@ python train.py --multirun '+experiment=glob(*)'
 
 You can override any parameter from command line like this:
 ```bash
-python train.py trainer.args.max_epochs=20 optimizer.args.lr=0.0005
+python train.py trainer.max_epochs=20 model.lr=0.0005
+```
+
+Attach some callback set to run:
+```bash
+python train.py callbacks=wandb_callbacks
 ```
 
 Combaining it all:
 ```bash
-python train.py --multirun '+experiment=glob(*)' trainer.args.max_epochs=20 logger=wandb
+python train.py --multirun '+experiment=glob(*)' trainer.max_epochs=20 logger=wandb callbacks=wandb_callbacks
+```
+
+To create a sweep over some hyperparameters run:
+```bash
+# this will run 6 experiments one after the other, each with different combination of batch_size and learning rate
+python train.py --multirun datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
 
 Optionally you can install project as a package with [setup.py](setup.py):
 ```bash
 pip install -e .
+```
+
+To update the conda environment run:
+```bash
+conda env update --file conda_env.yml
 ```

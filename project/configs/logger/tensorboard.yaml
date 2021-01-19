@@ -1,4 +1,3 @@
 # Tensorboard logger config
 tensorboard:
-    class: pytorch_lightning.logger.TensorboardLogger
-    args: {}
+    _target_: pytorch_lightning.logger.TensorboardLogger

@@ -5,10 +5,13 @@ defaults:
     - trainer: default_trainer.yaml
     - model: mnist_model.yaml
     - datamodule: mnist_datamodule.yaml
-    - optimizer: adam.yaml
     - seeds: default_seeds.yaml  # set this to null if you don't want to use seeds
     - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
+
+    # we add this just to enable color logging
+    # - hydra/hydra_logging: colorlog
+    # - hydra/job_logging: colorlog
 
 
 # path to original working directory (the directory that `train.py` was executed from in command line)
@@ -20,20 +23,6 @@ original_work_dir: ${hydra:runtime.cwd}
 
 # path to folder with data
 data_dir: ${original_work_dir}/data/
-
-
-# define which things will be saved as hyperparameters by lightning loggers
-extra_logs:
-    save_model_class_path: True
-    save_optimizer_class_path: True
-    save_datamodule_class_path: True
-    save_model_architecture_class_path: True
-    save_model_args: True
-    save_datamodule_args: True
-    save_optimizer_args: True
-    save_trainer_args: False
-    save_seeds: True
-    save_data_train_val_test_sizes: False
 
 
 # output paths for hydra logs

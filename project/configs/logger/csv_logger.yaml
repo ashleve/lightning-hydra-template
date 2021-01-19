@@ -1,6 +1,5 @@
 # Csv logger config
 csv_logger:
-    class: pytorch_lightning.loggers.CSVLogger
-    args: 
-        save_dir: "."
-        name: "csv_logger/"
+    _target_: pytorch_lightning.loggers.CSVLogger
+    save_dir: "."
+    name: "csv_logger/"

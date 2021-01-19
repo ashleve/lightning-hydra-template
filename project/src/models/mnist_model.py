@@ -1,5 +1,4 @@
 from pytorch_lightning.metrics.classification import Accuracy
-from src.utils.initializers import load_class
 import pytorch_lightning as pl
 import torch.nn.functional as F
 import torch
@@ -21,7 +20,7 @@ class LitModelMNIST(pl.LightningModule):
         self.accuracy = Accuracy()
 
         # Initialize model architecture
-        if self.hparams["architecture"] == "SimpleDenseNet":
+        if self.hparams.architecture == "SimpleDenseNet":
             self.architecture = SimpleDenseNet(hparams=self.hparams)
         else:
             raise Exception("Invalid architecture name")
@@ -73,6 +72,4 @@ class LitModelMNIST(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        Optimizer = load_class(self.hparams["optimizer_config"]["class"])
-        return Optimizer(self.parameters(), **self.hparams["optimizer_config"]["args"])
-
+        return torch.optim.Adam(self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay)

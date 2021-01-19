@@ -4,12 +4,10 @@ defaults:
 
 
 save_confusion_matrix_to_wandb:
-    class: src.callbacks.wandb_callbacks.SaveConfusionMatrixToWandb
-    args:
-        class_names: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    _target_: src.callbacks.wandb_callbacks.SaveConfusionMatrixToWandb
+    class_names: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 
 save_f1_precision_recall_heatmap_to_wandb:
-    class: src.callbacks.wandb_callbacks.SaveMetricsHeatmapToWandb
-    args:
-        class_names: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    _target_: src.callbacks.wandb_callbacks.SaveMetricsHeatmapToWandb
+    class_names: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
