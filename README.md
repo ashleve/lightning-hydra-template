@@ -8,7 +8,6 @@ I'm trying to make this as generic as possible - you should be able to easily mo
 The goal is to:
 - structure ML code the same so that work can easily be extended and replicated
 - allow for quick and efficient experimentation process thanks to automating pipeline with config files
-- create a way for convenient storing of curated experiment configurations
 - extend functionality of popular experiment loggers like Weights&Biases, mostly with dedicated callbacks
 
 Click on <b>`Use this template`</b> button above to initialize new repository.<br>
@@ -24,7 +23,7 @@ Click on <b>`Use this template`</b> button above to initialize new repository.<b
     - You only need to create model and datamodule and specify them in configuration files
 - All advantages of Hydra
     - Main config file contains default training configuration ([config.yaml](project/configs/config.yaml))
-    - Storing many experiment configurations in a convenient way ([configs/experiment](project/configs/experiment))
+    - Storing many experiment configurations in a convenient way ([project/configs/experiment](project/configs/experiment))
     - Composing configuration files out of other configuration files
     - Scheduling execution of many experiments
     - Searching over hyperparameters from command line
@@ -134,7 +133,7 @@ hydra:
 <br>
 
 
-## Experiment configuration ([configs/experiment](project/configs/experiment))
+## Experiment configuration ([project/configs/experiment](project/configs/experiment))
 You can store many experiment configurations in this folder.<br>
 Example experiment configuration:
 ```yaml
@@ -184,8 +183,9 @@ defaults:
     - override /callbacks: default_callbacks.yaml
     - override /logger: null
 
-# we override default configurations with nulls to prevent them from loading at all - instead we define all modules
-# and their paths directly in this config, so everything is stored in one place for more readibility
+# we override default configurations with nulls to prevent them from loading at all
+# instead we define all modules and their paths directly in this config, 
+# so everything is stored in one place for more readibility
 
 seeds:
     pytorch_seed: 12345
@@ -255,7 +255,7 @@ Logs are created automatically with the following structure:
 ## Workflow
 1. Create PyTorch Lightning model
 2. Create PyTorch Lightning datamodule
-3. Create new experiment config in [configs/experiment](project/configs/experiment) folder
+3. Create new experiment config in [project/configs/experiment](project/configs/experiment) folder
 4. Run training with chosen experiment config<br>
     ```bash
     python train.py +experiment=experiment_name.yaml
@@ -317,7 +317,7 @@ python train.py logger=wandb
 
 Or you can train model with chosen experiment config:
 ```bash
-# experiment configurations are placed in 'project/configs/experiment/' folder
+# experiment configurations are placed in 'project/configs/experiment' folder
 python train.py +experiment=exp_example_simple
 ```
 
@@ -333,7 +333,7 @@ python train.py trainer.max_epochs=20 model.lr=0.0005
 
 Attach some callback set to run:
 ```bash
-# callback sets configurations are placed in 'project/configs/callbacks/' folder
+# callback sets configurations are placed in 'project/configs/callbacks' folder
 python train.py callbacks=default_callbacks
 ```
 
