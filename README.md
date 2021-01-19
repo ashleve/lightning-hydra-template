@@ -2,6 +2,7 @@
 This is my starting template and pipeline for most deep learning projects.<br>
 Built with <b>PyTorch Lightning</b> and <b>Hydra</b>.<br>
 Also contains special <b>Weights&Biases</b> integration, but can be used with any other logger.<br>
+
 It's supposed to be enchancement/expansion on original [deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template) repository.<br>
 I'm trying to make this as generic as possible - you should be able to easily modify behavior in [train.py](project/train.py) file in case you need some unconventional configuration wiring.<br>
 
@@ -25,18 +26,16 @@ Click on <b>`Use this template`</b> button above to initialize new repository.<b
     - Main config file contains default training configuration ([config.yaml](project/configs/config.yaml))
     - Storing many experiment configurations in a convenient way ([project/configs/experiment](project/configs/experiment))
     - Composing configuration files out of other configuration files
-    - Scheduling execution of many experiments
-    - Searching over hyperparameters from command line
+    - Scheduling execution of many experiments from command line
     - Overriding any config parameter from command line
     - Command line tab completion
     - Logging history of all executed runs/experiments
     - ~~Automatically validate config structure with config schemas~~ (TODO) 
 - Weights&Biases integration
     - Available callbacks that store all code files and model checkpoints as artifacts in Weights&Biases cloud ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
-    - Other examples of useful wandb callbacks ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
-    - Automatically watch the model
+    - Example wandb callbacks for generating confusion matrices and f1/precision/recall heatmaps ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
+    - Automatically watches the model
     - ~~Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))~~ (TODO)
-- Automatically logs config parts to all initialized lightning loggers 
 - Example of inference with trained model  ([inference_example.py](project/src/utils/inference_example.py))
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
@@ -94,7 +93,7 @@ Main config contains default training configuration.<br>
 It determines how config is composed when simply executing command: `python train.py`
 ```yaml
 # to execute run with default training configuration simply run: 
-# `python train.py`
+# python train.py
 
 
 # specify here default training configuration
@@ -105,10 +104,6 @@ defaults:
     - seeds: default_seeds.yaml  # set this to null if you don't want to use seeds
     - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
-
-    # we add this just to enable color logging
-    - hydra/job_logging: colorlog
-    - hydra/hydra_logging: colorlog
 
 
 # path to original working directory (the directory that `train.py` was executed from in command line)
@@ -323,6 +318,7 @@ python train.py +experiment=exp_example_simple
 
 To execute all experiments from folder run:
 ```bash
+# execute all experiments from folder `project/configs/experiment`
 python train.py --multirun '+experiment=glob(*)'
 ```
 
