@@ -331,6 +331,11 @@ You can override any parameter from command line like this:
 python train.py trainer.max_epochs=20 model.lr=0.0005
 ```
 
+To train on GPU:
+```bash
+python train.py trainer.gpus=1
+```
+
 Attach some callback set to run:
 ```bash
 # callback sets configurations are placed in 'project/configs/callbacks' folder
@@ -339,12 +344,13 @@ python train.py callbacks=default_callbacks
 
 Combaining it all:
 ```bash
-python train.py --multirun '+experiment=glob(*)' trainer.max_epochs=20 logger=wandb callbacks=wandb_callbacks
+python train.py --multirun '+experiment=glob(*)' trainer.max_epochs=10 logger=wandb
 ```
 
 To create a sweep over some hyperparameters run:
 ```bash
-# this will run 6 experiments one after the other, each with different combination of batch_size and learning rate
+# this will run 6 experiments one after the other, 
+# each with different combination of batch_size and learning rate
 python train.py --multirun datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
 
