@@ -7,4 +7,4 @@ hydra-core>=1.1.0.dev2
 wandb>=0.10.14
 scikit-learn>=0.24.0
 pandas>=1.2.0
-# hydra_colorlog>=1.0.0
+hydra_colorlog>=1.0.0

@@ -2,7 +2,7 @@ from src.transforms import mnist_transforms
 from PIL import Image
 
 # the LitModel you import should be the same as the one you used for training!
-from src.models.mnist_model import LitModel
+from src.models.mnist_model import LitModelMNIST
 
 # ckpt can be a url!
 
@@ -18,7 +18,7 @@ def predict():
     CKPT_PATH = "epoch=0.ckpt"
 
     # load model from checkpoint
-    trained_model = LitModel.load_from_checkpoint(checkpoint_path=CKPT_PATH)
+    trained_model = LitModelMNIST.load_from_checkpoint(checkpoint_path=CKPT_PATH)
 
     # switch to evaluation mode
     trained_model.eval()

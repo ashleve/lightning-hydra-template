@@ -1,12 +1,8 @@
-# default args passed to Lightning Trainer on every experiment
-# they can be combined or overwritten with args set in experiment config
-args:
-    gpus: 0  # set -1 to train on all GPUs available, set 0 to train on CPU only
-#    auto_select_gpus: True
-
-    max_epochs: 10
-    gradient_clip_val: 0.5
-    num_sanity_val_steps: 3
-    progress_bar_refresh_rate: 10
-    weights_summary: null  # null in yaml represents python None value
-    default_root_dir: "lightning_logs/"
+_target_: pytorch_lightning.Trainer
+gpus: 0  # set -1 to train on all GPUs available, set 0 to train on CPU only
+max_epochs: 10
+gradient_clip_val: 0.5
+num_sanity_val_steps: 3
+progress_bar_refresh_rate: 10
+weights_summary: null  # null in yaml represents python None value
+default_root_dir: "lightning_logs/"
