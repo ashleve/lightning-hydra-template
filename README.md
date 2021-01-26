@@ -1,4 +1,4 @@
-## Deep learning project template
+## Lightning + Hydra template for Deep Learning projects
 This is my starting template and pipeline for most deep learning projects.<br>
 Built with <b>PyTorch Lightning</b> and <b>Hydra</b>.<br>
 Also contains special <b>Weights&Biases</b> integration, but can be used with any other logger.<br>
@@ -278,7 +278,7 @@ What it does
 
 ## How to run
 First, install dependencies:
-```bash
+```yaml
 # clone project
 git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
@@ -293,7 +293,7 @@ pip install -r requirements.txt
 ```
 
 Next, you can train model with default configuration without logging:
-```bash
+```yaml
 cd project
 python train.py
 ```
@@ -305,46 +305,47 @@ wandb:
     project: "your_project_name"
     entity: "your_wandb_team_name"
 ```
-```bash
+
+```yaml
 # train model with Weights&Biases
 python train.py logger=wandb
 ```
 
 Or you can train model with chosen experiment config:
-```bash
+```yaml
 # experiment configurations are placed in 'project/configs/experiment' folder
 python train.py +experiment=exp_example_simple
 ```
 
 To execute all experiments from folder run:
-```bash
+```yaml
 # execute all experiments from folder `project/configs/experiment`
 python train.py --multirun '+experiment=glob(*)'
 ```
 
 You can override any parameter from command line like this:
-```bash
+```yaml
 python train.py trainer.max_epochs=20 model.lr=0.0005
 ```
 
 To train on GPU:
-```bash
+```yaml
 python train.py trainer.gpus=1
 ```
 
 Attach some callback set to run:
-```bash
+```yaml
 # callback sets configurations are placed in 'project/configs/callbacks' folder
 python train.py callbacks=default_callbacks
 ```
 
 Combaining it all:
-```bash
+```yaml
 python train.py --multirun '+experiment=glob(*)' trainer.max_epochs=10 logger=wandb
 ```
 
 To create a sweep over some hyperparameters run:
-```bash
+```yaml
 # this will run 6 experiments one after the other, 
 # each with different combination of batch_size and learning rate
 python train.py --multirun datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
@@ -352,7 +353,7 @@ python train.py --multirun datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 
 ## Import
 Optionally you can install project as a package with [setup.py](setup.py):
-```bash
+```yaml
 pip install -e .
 ```
 So you can easily import any file into any other file like so:
