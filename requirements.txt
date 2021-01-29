@@ -1,10 +1,11 @@
 torch>=1.7.1
 torchvision>=0.8.2
 torchaudio>=0.7.2
-pytorch-lightning>=1.1.4
+pytorch-lightning>=1.1.6
 # hydra-core>=1.0.5
 hydra-core>=1.1.0.dev2
-wandb>=0.10.14
+wandb>=0.10.15
+neptune-client>=0.5.0
 scikit-learn>=0.24.0
 pandas>=1.2.0
 hydra_colorlog>=1.0.0

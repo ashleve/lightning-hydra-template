@@ -1,6 +1,6 @@
 # pytorch lightning imports
-import wandb
 from pytorch_lightning.loggers.wandb import WandbLogger
+from pytorch_lightning.loggers.neptune import NeptuneLogger
 import pytorch_lightning as pl
 
 # hydra imports
@@ -9,6 +9,8 @@ from omegaconf import DictConfig, OmegaConf
 # normal imports
 from typing import List
 import logging
+import neptune
+import wandb
 
 log = logging.getLogger(__name__)
 
@@ -42,9 +44,9 @@ def make_wandb_watch_model(loggers: List[pl.loggers.LightningLoggerBase], model:
     for logger in loggers:
         if isinstance(logger, WandbLogger):
             if hasattr(model, 'architecture'):
-                logger.watch(model.architecture, log=None)
+                logger.watch(model.architecture)
             else:
-                logger.watch(model, log=None)
+                logger.watch(model)
 
 
 def send_hparams_to_loggers(loggers: List[pl.loggers.LightningLoggerBase], hparams: dict):
@@ -91,3 +93,4 @@ def extras(config, model, datamodule, callbacks, loggers, trainer):
 
 def finish():
     wandb.finish()
+    neptune.stop()
