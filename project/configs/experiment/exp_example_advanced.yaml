@@ -50,7 +50,7 @@ logger:                                         # you can add here additional lo
         tags: ["best_model", "uwu"]
         notes: "Description of this model."
         group: "mnist"
-    comet:
+    neptune:
         tags: ["best_model"]
     csv_logger:
         save_dir: "."

@@ -1,9 +1,11 @@
-## Lightning + Hydra template for Deep Learning projects
-This is my starting template and pipeline for most deep learning projects.<br>
-Built with <b>PyTorch Lightning</b> and <b>Hydra</b>.<br>
-Also contains special <b>Weights&Biases</b> integration, but can be used with any other logger.<br>
+## PyTorch Lightning + Hydra template
+A clean and simple template and pipeline to kickstart your deep learning project! 🚀⚡🔥<br>
 
-It's supposed to be enchancement/expansion on original [deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template) repository.<br>
+<b>PyTorch Lightning</b> provides great abstractions for well structured code and advanced features like checkpointing or gradient accumulation.<br>
+<b>Hydra</b> provides convenient way to manage experiment configurations (see examples below).<br>
+Also contains additional <b>Weights&Biases</b> utilites, but can be used with any other logger.<br>
+
+It's supposed to be extended version of [deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template) repository.<br>
 I'm trying to make this as generic as possible - you should be able to easily modify behavior in [train.py](project/train.py) file in case you need some unconventional configuration wiring.<br>
 
 The goal is to:
@@ -34,7 +36,6 @@ Click on <b>`Use this template`</b> button above to initialize new repository.<b
 - Weights&Biases integration
     - Available callbacks that store all code files and model checkpoints as artifacts in Weights&Biases cloud ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
     - Example wandb callbacks for generating confusion matrices and f1/precision/recall heatmaps ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
-    - Automatically watches the model
     - ~~Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))~~ (TODO)
 - Example of inference with trained model  ([inference_example.py](project/src/utils/inference_example.py))
 - Built in requirements ([requirements.txt](requirements.txt))
@@ -362,13 +363,3 @@ from project.src.datasets.img_test_dataset import TestDataset
 from project.src.models.mnist_model import LitModelMNIST
 from project.src.datamodules.mnist_datamodule import MNISTDataModule
 ```
-
-## Citation   
-```
-@article{YourName,
-  title={Your Title},
-  author={Your team},
-  journal={Location},
-  year={Year}
-}
-```   

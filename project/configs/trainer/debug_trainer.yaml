@@ -1,4 +1,5 @@
 # trainer args for debugging model
+_target_: pytorch_lightning.Trainer
 gpus: 0  # set -1 to train on all GPUs abailable, set 0 to train on CPU only
 # auto_select_gpus: True
 
