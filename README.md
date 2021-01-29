@@ -1,12 +1,12 @@
 ## PyTorch Lightning + Hydra template 🚀⚡🔥
 A clean and simple template and pipeline to kickstart your deep learning project!<br>
 
-It's supposed to be extended version of [deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template) repository.<br>
-I'm trying to make this as generic as possible - you should be able to easily modify behavior in [train.py](project/train.py) file in case you need some unconventional configuration wiring.<br>
-
-<b>[PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning)</b> provides great abstractions for well structured code and advanced features like checkpointing and gradient accumulation.<br>
+<b>[PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning)</b> provides great abstractions for well structured ML code and advanced features like checkpointing and gradient accumulation.<br>
 <b>[Hydra](https://github.com/facebookresearch/hydra)</b> provides convenient way to manage experiment configurations (see examples below).<br>
 Also available extra <b>[Weights&Biases](https://www.wandb.com/)</b> utilites, but template can be used with any other logger.<br>
+
+It's supposed to be extended version of [deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template) repository.<br>
+I'm trying to make this as generic as possible - you should be able to easily modify behavior in [train.py](project/train.py) file in case you need some unconventional configuration wiring.<br>
 
 The goal is to:
 - structure ML code the same so that work can easily be extended and replicated
