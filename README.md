@@ -1,48 +1,51 @@
-## PyTorch Lightning + Hydra template 🚀⚡🔥
-A clean and simple template and pipeline to kickstart your deep learning project!<br>
+## PyTorch Lightning + Hydra template 
+### A clean and simple template to kickstart your deep learning project 🚀⚡🔥<br>
+- structures ML code the same so that work can easily be extended and replicated
+- allows for rapid experimentation by automating pipeline with config files
+- extends functionality of popular experiment loggers like Weights&Biases (mostly with dedicated callbacks)
 
-<b>[PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning)</b> provides great abstractions for well structured ML code and advanced features like checkpointing and gradient accumulation.<br>
-<b>[Hydra](https://github.com/facebookresearch/hydra)</b> provides convenient way to manage experiment configurations (see examples below).<br>
-Also available extra <b>[Weights&Biases](https://www.wandb.com/)</b> utilites, but template can be used with any other logger.<br>
-
-It's supposed to be extended version of [deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template) repository.<br>
-I'm trying to make this as generic as possible - you should be able to easily modify behavior in [train.py](project/train.py) file in case you need some unconventional configuration wiring.<br>
-
-The goal is to:
-- structure ML code the same so that work can easily be extended and replicated
-- allow for quick and efficient experimentation process thanks to automating pipeline with config files
-- extend functionality of popular experiment loggers like Weights&Biases, mostly with dedicated callbacks
+This template tries to be as generic as possible - you should be able to easily modify behavior in [train.py](project/train.py) in case you need some unconventional configuration wiring.<br>
 
 Click on <b>`Use this template`</b> button above to initialize new repository.<br>
 
 
 
-*warning: this template currently uses development version of hydra which might be unstable (we wait until version 1.1 is released)
+
+### Why Lightning + Hydra?
+- <b>[PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning)</b> provides great abstractions for well structured ML code and advanced features like checkpointing, gradient accumulation, distributed training, etc.<br>
+- <b>[Hydra](https://github.com/facebookresearch/hydra)</b> provides convenient way to manage experiment configurations and advanced features like overriding any config parameter from command line, scheduling execution of many runs, etc.<br>
+
+
+
+### Some Notes
+***\*warning: this template currently uses development version of hydra which might be unstable (we wait until version 1.1 is released)*** <br>
+*\*based on [deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template) by PyTorchLightning organization.*<br>
+*\*Suggestions are always welcome!*
 
 
 ## Features
 - Predefined folder structure
 - Modularity: all abstractions are splitted into different submodules
-- Automates training with PyTorch Lightning
-    - You only need to create model and datamodule and specify them in config and you can already run training
+- Automates PyTorch Lightning training pipeline with little boilerplate, so it can be easily modified (see [train.py](project/train.py))
 - All advantages of Hydra
-    - Main config file contains default training configuration ([config.yaml](project/configs/config.yaml))
-    - Storing many experiment configurations in a convenient way ([project/configs/experiment](project/configs/experiment))
-    - Overriding any config parameter from command line
-    - Scheduling execution of many experiments from command line
-    - Sweeping over hyperparameters from command line 
-    - Command line tab completion
-    - Logging history of all executed runs/experiments
-    - ~~Automatically validate config structure with config schemas~~ (TODO) 
-- optional Weights&Biases utilities for experiment tracking
-    - Available callbacks that store all code files and model checkpoints as artifacts in Weights&Biases cloud ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
-    - Example wandb callbacks for generating confusion matrices and f1/precision/recall heatmaps ([wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
+    - Main config file contains default training configuration (see [config.yaml](project/configs/config.yaml))
+    - Storing many experiment configurations in a convenient way (see [project/configs/experiment](project/configs/experiment))
+    - Command line features (see [#How to run](README.md#How-to-run) for examples)
+        - Override any config parameter from command line
+        - Schedule execution of many experiments from command line
+        - Sweep over hyperparameters from command line
+    - Convenient logging of run history, ckpts, etc. (see [#Logs](README.md#Logs))
+    - ~~Validating correctness of config with schemas~~ (TODO) 
+- Optional Weights&Biases utilities for experiment tracking
+    - Callbacks (see [wandb_callbacks.py](project/src/callbacks/wandb_callbacks.py))
+        - Automatically store all code files and model checkpoints as artifacts in W&B cloud
+        - Generate confusion matrices and f1/precision/recall heatmaps
     - ~~Hyperparameter search with Weights&Biases sweeps ([execute_sweep.py](project/template_utils/execute_sweep.py))~~ (TODO)
 - Example of inference with trained model  ([inference_example.py](project/src/utils/inference_example.py))
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env.yaml](conda_env.yaml))
 - Built in python package setup ([setup.py](setup.py))
-- Example with MNIST digits classification ([mnist_model](project/src/models/mnist_model.py), [mnist_datamodule](project/src/datamodules/mnist_datamodule.py))
+- Example with MNIST digits classification ([mnist_model.py](project/src/models/mnist_model.py), [mnist_datamodule.py](project/src/datamodules/mnist_datamodule.py))
 <br>
 
 
@@ -87,6 +90,17 @@ The directory structure of new project looks like this:
 ├── requirements.txt        <- File for installing python dependencies
 └── setup.py                <- File for installing project as a package
 ```
+<br>
+
+
+## Workflow
+1. Write your PyTorch Lightning model (see [mnist_model.py](project/src/models/mnist_model.py) for example)
+2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](project/src/datamodules/mnist_datamodule.py) for example)
+3. Write your experiment config, containing paths to your model and datamodule (see [project/configs/experiment](project/configs/experiment) for examples)
+4. Run training with chosen experiment config:<br>
+    ```bash
+    python train.py +experiment=experiment_name.yaml
+    ```
 <br>
 
 
@@ -216,10 +230,11 @@ datamodule:
     num_workers: 1
     pin_memory: False
 ```
+<br>
 
 
 ## Logs
-Logs are created automatically with the following structure:
+By default, logs have the following structure:
 ```
 ├── logs
 │   ├── runs                     # Folder for logs generated from single runs
@@ -227,7 +242,8 @@ Logs are created automatically with the following structure:
 │   │   │   ├── 16-50-49                # Hour of executing run
 │   │   │   │   ├── .hydra                  # Hydra logs
 │   │   │   │   ├── wandb                   # Weights&Biases logs
-│   │   │   │   └── checkpoints             # Training checkpoints
+│   │   │   │   ├── checkpoints             # Training checkpoints
+│   │   │   │   └── ...                     # Any other thing saved during training
 │   │   │   ├── ...
 │   │   │   └── ...
 │   │   ├── ...
@@ -238,7 +254,8 @@ Logs are created automatically with the following structure:
 │   │   │   ├── 0                       # Job number
 │   │   │   │   ├── .hydra                  # Hydra logs
 │   │   │   │   ├── wandb                   # Weights&Biases logs
-│   │   │   │   └── checkpoints             # Training checkpoints
+│   │   │   │   ├── checkpoints             # Training checkpoints
+│   │   │   │   └── ...                     # Any other thing saved during training
 │   │   │   ├── 1
 │   │   │   ├── 2
 │   │   │   └── ...
@@ -246,17 +263,6 @@ Logs are created automatically with the following structure:
 │   │   └── ...
 │   │
 ```
-<br>
-
-
-## Workflow
-1. Create PyTorch Lightning model
-2. Create PyTorch Lightning datamodule
-3. Create new experiment config in [project/configs/experiment](project/configs/experiment) folder
-4. Run training with chosen experiment config<br>
-    ```bash
-    python train.py +experiment=experiment_name.yaml
-    ```
 <br><br>
 
 
