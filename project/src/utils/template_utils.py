@@ -93,4 +93,4 @@ def extras(config, model, datamodule, callbacks, loggers, trainer):
 
 def finish():
     wandb.finish()
-    neptune.stop()
+    # neptune.stop()
