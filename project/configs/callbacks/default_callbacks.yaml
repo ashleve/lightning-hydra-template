@@ -4,7 +4,8 @@ model_checkpoint:
     save_top_k: 2           # save k best models (determined by above metric)
     save_last: True         # additionaly always save model from last epoch
     mode: "max"             # can be "max" or "min"
-    filepath: "checkpoints/{epoch}"
+    dirpath: 'checkpoints/'
+    filename: 'sample-mnist-{epoch:02d}'
 
 
 early_stopping:
