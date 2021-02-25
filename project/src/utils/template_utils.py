@@ -20,23 +20,23 @@ def print_config(config: DictConfig):
 
 
 def print_module_init_info(model, datamodule, callbacks, loggers, trainer):
-    message = "Model initialised:" + "\n" + model.__module__ + "." + model.__class__.__name__ + "\n"
+    message = "Model initialized:" + "\n" + model.__module__ + "." + model.__class__.__name__ + "\n"
     log.info(message)
 
-    message = "Datamodule initialised:" + "\n" + datamodule.__module__ + "." + datamodule.__class__.__name__ + "\n"
+    message = "Datamodule initialized:" + "\n" + datamodule.__module__ + "." + datamodule.__class__.__name__ + "\n"
     log.info(message)
 
-    message = "Callbacks initialised:" + "\n"
+    message = "Callbacks initialized:" + "\n"
     for cb in callbacks:
         message += cb.__module__ + "." + cb.__class__.__name__ + "\n"
     log.info(message)
 
-    message = "Loggers initialised:" + "\n"
+    message = "Loggers initialized:" + "\n"
     for logger in loggers:
         message += logger.__module__ + "." + logger.__class__.__name__ + "\n"
     log.info(message)
 
-    message = "Trainer initialised:" + "\n" + trainer.__module__ + "." + trainer.__class__.__name__ + "\n"
+    message = "Trainer initialized:" + "\n" + trainer.__module__ + "." + trainer.__class__.__name__ + "\n"
     log.info(message)
 
 
