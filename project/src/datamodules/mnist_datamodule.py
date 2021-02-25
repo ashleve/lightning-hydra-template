@@ -20,14 +20,21 @@ class MNISTDataModule(LightningDataModule):
         self.num_workers = kwargs["num_workers"]
         self.pin_memory = kwargs["pin_memory"]
 
-        self.transforms = transforms.ToTensor()
+        self.transforms = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.1307,), (0.3081,))
+        ])
+
+        # self.dims is returned when you call datamodule.size()
+        self.dims = (1, 28, 28)
 
         self.data_train = None
         self.data_val = None
         self.data_test = None
 
     def prepare_data(self):
-        """Download data if needed."""
+        """Download data if needed. This method is called only from a single GPU.
+        Do not use it to assign state (self.x = y)."""
         MNIST(self.data_dir, train=True, download=True)
         MNIST(self.data_dir, train=False, download=True)
 
@@ -44,8 +51,8 @@ class MNISTDataModule(LightningDataModule):
 
     def val_dataloader(self):
         return DataLoader(dataset=self.data_val, batch_size=self.batch_size, num_workers=self.num_workers,
-                          pin_memory=self.pin_memory)
+                          pin_memory=self.pin_memory, shuffle=False)
 
     def test_dataloader(self):
         return DataLoader(dataset=self.data_test, batch_size=self.batch_size, num_workers=self.num_workers,
-                          pin_memory=self.pin_memory)
+                          pin_memory=self.pin_memory, shuffle=False)

@@ -24,6 +24,8 @@ def train(config):
 
     # Init PyTorch Lightning datamodule ⚡
     datamodule: LightningDataModule = hydra.utils.instantiate(config["datamodule"])
+    datamodule.prepare_data()
+    datamodule.setup()
 
     # Init PyTorch Lightning callbacks ⚡
     callbacks: List[Callback] = [
