@@ -9,6 +9,6 @@ setup(
     author="",
     author_email="",
     url="https://github.com/hobogalaxy/lightning-hydra-template",  # REPLACE WITH YOUR OWN GITHUB PROJECT LINK
-    install_requires=["pytorch-lightning", "hydra-core"],
+    install_requires=["pytorch-lightning>=1.2.1", "hydra-core>=1.0.6"],
     packages=find_packages(),
 )
