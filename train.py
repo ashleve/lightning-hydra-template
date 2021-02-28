@@ -51,23 +51,23 @@ def train(config):
         else []
     )
 
+    # Init PyTorch Lightning trainer ⚡
+    trainer: Trainer = hydra.utils.instantiate(
+        config["trainer"], callbacks=callbacks, logger=logger
+    )
+
     # Send Hydra config parameters to all lightning loggers
     utils.log_hparams(
         config=config,
         model=model,
         datamodule=datamodule,
-        trainer=train,
+        trainer=trainer,
         callbacks=callbacks,
         logger=logger,
     )
 
     # If WandbLogger was initialized then make it watch the model
     utils.make_wandb_watch_model(logger=logger, model=model)
-
-    # Init PyTorch Lightning trainer ⚡
-    trainer: Trainer = hydra.utils.instantiate(
-        config["trainer"], callbacks=callbacks, logger=logger
-    )
 
     # Train the model
     trainer.fit(model=model, datamodule=datamodule)
@@ -80,7 +80,7 @@ def train(config):
         config=config,
         model=model,
         datamodule=datamodule,
-        trainer=train,
+        trainer=trainer,
         callbacks=callbacks,
         logger=logger,
     )

@@ -1,5 +1,7 @@
-# THESE ARE JUST A COUPLE OF QUICK RUN EXAMPLES 
-# TO TEST IF YOUR MODEL WORKS UNDER DIFFERENT CONDITIONS
+# THESE ARE JUST A COUPLE OF QUICK EXPERIMENTS TO TEST IF YOUR MODEL DOESN'T CRASH UNDER DIFFERENT CONDITIONS
+# TO EXECUTE:
+# bash tests/quick_tests.sh
+
 
 # Test for CPU and GPU
 python train.py trainer.gpus=0 trainer.max_epochs=1 
@@ -18,6 +20,6 @@ python train.py trainer=debug_trainer
 # Overfit to 10 bathes
 python train.py trainer.min_epochs=20 trainer.max_epochs=20 +trainer.overfit_batches=10
 
-# Test default hydra sweep over hyperparameters (runs 4 different combinations)
+# Test default hydra sweep over hyperparameters (runs 4 different combinations for 1 epoch)
 python train.py --multirun datamodule.batch_size=32,64 model.lr=0.001,0.003 \
 trainer.gpus=1 trainer.max_epochs=1

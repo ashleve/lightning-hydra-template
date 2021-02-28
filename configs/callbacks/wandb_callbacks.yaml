@@ -2,16 +2,26 @@ defaults:
     - default_callbacks.yaml
 
 
-save_best_metric_scores_to_wandb:
-    _target_: src.callbacks.wandb_callbacks.SaveBestMetricScoresToWandb
-
-
 upload_code_to_wandb_as_artifact:
     _target_: src.callbacks.wandb_callbacks.SaveCodeToWandb
-    code_dir: ${original_work_dir}/
+    code_dir: ${original_work_dir}
 
 
 upload_ckpts_to_wandb_as_artifact:
     _target_: src.callbacks.wandb_callbacks.UploadAllCheckpointsToWandb
     ckpt_dir: "checkpoints/"
     upload_best_only: False
+
+
+# save_best_metric_scores_to_wandb:
+#     _target_: src.callbacks.wandb_callbacks.SaveBestMetricScoresToWandb
+
+
+# save_confusion_matrix_to_wandb:
+#     _target_: src.callbacks.wandb_callbacks.SaveConfusionMatrixToWandb
+#     class_names: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+
+# save_f1_precision_recall_heatmap_to_wandb:
+#     _target_: src.callbacks.wandb_callbacks.SaveMetricsHeatmapToWandb
+#     class_names: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
