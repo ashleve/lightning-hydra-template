@@ -1,19 +1,17 @@
 # pytorch lightning imports
 import pytorch_lightning as pl
 
+# hydra imports
+from omegaconf import DictConfig, OmegaConf
+from hydra.utils import get_original_cwd, to_absolute_path
+
 # loggers
 import wandb
-import neptune
-import comet_ml
 from pytorch_lightning.loggers.wandb import WandbLogger
 from pytorch_lightning.loggers.neptune import NeptuneLogger
 from pytorch_lightning.loggers.comet import CometLogger
 from pytorch_lightning.loggers.mlflow import MLFlowLogger
 from pytorch_lightning.loggers.tensorboard import TensorBoardLogger
-
-# hydra imports
-from omegaconf import DictConfig, OmegaConf
-from hydra.utils import get_original_cwd, to_absolute_path
 
 # rich imports
 from rich import print
@@ -81,7 +79,7 @@ def print_config(config: DictConfig):
 def make_wandb_watch_model(
     logger: List[pl.loggers.LightningLoggerBase], model: pl.LightningModule
 ):
-    """If WandbLogger was inititialized, it makes it watch the model.
+    """If WandbLogger was inititialized, make it watch the model.
 
     Args:
         logger (List[pl.loggers.LightningLoggerBase]): [description]
@@ -170,7 +168,3 @@ def finish(
     for lg in logger:
         if issubclass(lg, WandbLogger):
             wandb.finish()
-        if issubclass(lg, NeptuneLogger):
-            neptune.stop()
-        if issubclass(lg, CometLogger):
-            comet_ml.Experiment.end()

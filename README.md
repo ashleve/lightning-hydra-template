@@ -21,6 +21,7 @@ This template tries to be as generic as possible. You should be able to easily m
   - [Main Project Configuration](#main-project-configuration)
   - [Experiment Configuration](#experiment-configuration)
   - [Logs](#logs)
+  - [Tricks](#tricks)
     - [DELETE EVERYTHING ABOVE FOR YOUR PROJECT](#delete-everything-above-for-your-project)
 - [Your Project Name](#your-project-name)
   - [Description](#description)
@@ -30,11 +31,11 @@ This template tries to be as generic as possible. You should be able to easily m
 
 
 ## Main Ideas
-- Structure: clean and scalable so that work can easily be extended and replicated (see [#Project structure](#project-structure))
+- Structure: clean and scalable so that work can easily be extended and replicated (see [#Project Structure](#project-structure))
 - Modularity: all abstractions are splitted into different submodules
 - Rapid Experimentation: thanks to automating pipeline with configs and hydra command line superpowers
-- Little Boilerplate: so pipeline can be easily modified (see [train.py](project/train.py))
-- Project Configuration: contains default training configuration (see [#Main Project Configuration](#main-project-configuration))
+- Little Boilerplate: so pipeline can be easily modified (see [train.py](train.py))
+- Main Configuration: main config file specifies default training configuration (see [#Main Project Configuration](#main-project-configuration))
 - Experiment Configurations: stored in a separate folder, they can be composed out of smaller configs, override chosen parameters or define everything from scratch (see [#Experiment Configuration](#experiment-configuration))
 - Experiment Tracking: most logging frameworks can be easily integrated!
 - Tests: simple bash scripts to check if your model doesn't crash under different training conditions (see [tests/](tests/))
@@ -53,6 +54,7 @@ This template tries to be as generic as possible. You should be able to easily m
 [lightning-hydra-seed](https://github.com/tchaton/lightning-hydra-seed),
 [pytorch_tempest](https://github.com/Erlemar/pytorch_tempest),
 [pytorch-project-template](https://github.com/ryul99/pytorch-project-template).*<br>
+- *To learn how to configure PyTorch with Hydra take a look at [this detailed MNIST tutorial](https://github.com/pytorch/hydra-torch/blob/master/examples/mnist_00.md).*
 - *Suggestions are always welcome!*
 <br>
 
@@ -64,22 +66,24 @@ This template tries to be as generic as possible. You should be able to easily m
 
 
 ## Features
-- All advantages of PyTorch Lightning
-- All advantages of Hydra
+- Hydra superpowers
     - Override any config parameter from command line
     - Easily switch between different loggers, callbacks sets, optimizers, etc. from command line
     - Sweep over hyperparameters from command line
-    - Convenient logging of run history, ckpts, etc.
-    - Sweeper integrations for Optuna, Ray, etc.
-    - ~~Validating correctness of config with schemas~~ (TODO) 
+    - Automatic logging of run history
+    - Sweeper integrations for Optuna, Ray and others
 - Optional callbacks for Weigths&Biases ([wandb_callbacks.py](src/callbacks/wandb_callbacks.py))
   - To support reproducibility:
-    - upload_code_to_wandb_as_artifact
-    - upload_ckpts_to_wandb_as_artifact
+    - UploadCodeToWandbAsArtifact
+    - UploadCheckpointsToWandbAsArtifact
+    - WatchModelWithWandb
   - To provide examples of logging custom visualisations and metrics with callbacks:
-    - save_best_metric_scores_to_wandb
-    - save_confusion_matrix_to_wandb
-    - save_f1_precision_recall_heatmap_to_wandb
+    - LogBestMetricScoresToWandb
+    - LogF1PrecisionRecallHeatmapToWandb
+    - LogConfusionMatrixToWandb
+- ~~Validating correctness of config with Hydra schemas~~ (TODO) 
+- Pretty printing of configuration composed by Hydra at the beginning of the run using [Rich](https://github.com/willmcgugan/rich/) library ([template_utils.py](src/utils/template_utils.py))
+- Logging chosen parts of hydra config to all loggers ([template_utils.py](src/utils/template_utils.py))
 - Example of hyperparameter search with Optuna sweeps ([config_optuna.yaml](configs/config_optuna.yaml))
 - ~~Example of hyperparameter search with Weights&Biases sweeps~~ (TODO)
 - Examples of simple bash scripts to check if your model doesn't crash under different training conditions ([tests/](tests/))
@@ -87,7 +91,7 @@ This template tries to be as generic as possible. You should be able to easily m
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env_gpu.yaml](conda_env_gpu.yaml), [conda_env_cpu.yaml](conda_env_cpu.yaml))
 - Built in python package setup ([setup.py](setup.py))
-- Example with MNIST classification([mnist_model.py](src/models/mnist_model.py), [mnist_datamodule.py](src/datamodules/mnist_datamodule.py))
+- Example with MNIST classification ([mnist_model.py](src/models/mnist_model.py), [mnist_datamodule.py](src/datamodules/mnist_datamodule.py))
 <br>
 
 
@@ -169,7 +173,7 @@ defaults:
     - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
 
 
-# path to original working directory (the directory that `train.py` was executed from in command line)
+# path to original working directory (that `train.py` was executed from in command line)
 # hydra hijacks working directory by changing it to the current log directory,
 # so it's useful to have path to original working directory as a special variable
 # read more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
@@ -203,15 +207,13 @@ defaults:
     - override /trainer: default_trainer.yaml
     - override /model: mnist_model.yaml
     - override /datamodule: mnist_datamodule.yaml
-    - override /seeds: default_seeds.yaml
     - override /callbacks: default_callbacks.yaml
     - override /logger: null
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-seeds:
-    pytorch_seed: 12345
+seed: 12345 
 
 trainer:
     max_epochs: 10
@@ -232,25 +234,24 @@ datamodule:
 More advanced experiment configuration:
 ```yaml
 # to execute this experiment run:
-# python train.py +experiment=exp_example_with_paths
+# python train.py +experiment=exp_example_full
 
 defaults:
     - override /trainer: null
     - override /model: null
     - override /datamodule: null 
-    - override /seeds: null
-    - override /callbacks: default_callbacks.yaml
+    - override /callbacks: null
     - override /logger: null
 
 # we override default configurations with nulls to prevent them from loading at all
 # instead we define all modules and their paths directly in this config, 
 # so everything is stored in one place for more readibility
 
-seeds:
-    pytorch_seed: 12345
+seed: 12345
 
 trainer:
     _target_: pytorch_lightning.Trainer
+    gpus: 0
     min_epochs: 1
     max_epochs: 10
     gradient_clip_val: 0.5
@@ -259,7 +260,7 @@ model:
     _target_: src.models.mnist_model.LitModelMNIST
     optimizer: adam
     lr: 0.001
-    weight_decay: 0.000001
+    weight_decay: 0.00005
     architecture: SimpleDenseNet
     input_size: 784
     lin1_size: 256
@@ -275,8 +276,13 @@ datamodule:
     data_dir: ${data_dir}
     batch_size: 64
     train_val_test_split: [55_000, 5_000, 10_000]
-    num_workers: 1
+    num_workers: 0
     pin_memory: False
+
+logger:
+    wandb:
+        tags: ["best_model", "uwu"]
+        notes: "Description of this model."
 ```
 <br>
 
@@ -287,7 +293,7 @@ By default, logs have the following structure:
 ```
 │
 ├── logs
-│   ├── runs                     # Folder for logs generated from single runs
+│   ├── runs                    # Folder for logs generated from single runs
 │   │   ├── 2021-02-15              # Date of executing run
 │   │   │   ├── 16-50-49                # Hour of executing run
 │   │   │   │   ├── .hydra                  # Hydra logs
@@ -313,7 +319,12 @@ By default, logs have the following structure:
 │       └── ...
 │    
 ```
-You can change this structure by modifying paths in [config.yaml](configs/config.yaml)
+You can change this structure by modifying paths in [config.yaml](configs/config.yaml).
+<br>
+
+
+## Tricks
+(TODO)
 <br><br>
 
 
@@ -348,7 +359,6 @@ pip install -r requirements.txt
 
 Next, you can train model with default configuration without logging:
 ```yaml
-cd project
 python train.py
 ```
 
@@ -404,6 +414,16 @@ To create a sweep over some hyperparameters run:
 # each with different combination of batch_size and learning rate
 python train.py --multirun datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
+
+Resume from checkpoint:
+```yaml
+# checkpoint can be either path or URL
+# path should be either absolute or prefixed with "${original_work_dir}/"
+# use quotes '' around argument or otherwise $ symbol breaks it
+python train.py \
+'+trainer.resume_from_checkpoint=${original_work_dir}/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt'
+```
+
 
 ## Installing project as a package
 Optionally you can install project as a package with [setup.py](setup.py):

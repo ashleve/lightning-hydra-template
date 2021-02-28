@@ -1,17 +1,18 @@
 # @package _global_
 
 # to execute this experiment run:
-# python train.py +experiment=exp_example_with_paths
+# python train.py +experiment=exp_example_full
 
 defaults:
-    - override /trainer: null                           # override trainer to null so it's not loaded from main config defaults
-    - override /model: null                             # override model to null so it's not loaded from main config defaults
-    - override /datamodule: null                        # override datamodel to null so it's not loaded from main config defaults
-    - override /callbacks: null                         # override callbacks to null so it's not loaded from main config defaults
-    - override /logger: null                            # override logger to null so it's not loaded from main config defaults
+    - override /trainer: null  # override trainer to null so it's not loaded from main config defaults...
+    - override /model: null
+    - override /datamodule: null
+    - override /callbacks: null
+    - override /logger: null
 
-# we override default configurations with nulls to prevent them from loading at all - instead we define all modules
-# and their paths directly in this config so everything is stored in one place and we have more readibility
+# we override default configurations with nulls to prevent them from loading at all
+# instead we define all modules and their paths directly in this config, 
+# so everything is stored in one place for more readibility
 
 seed: 12345
 
@@ -27,7 +28,7 @@ model:
     _target_: src.models.mnist_model.LitModelMNIST
     optimizer: adam
     lr: 0.001
-    weight_decay: 0.000001
+    weight_decay: 0.00005
     architecture: SimpleDenseNet
     input_size: 784
     lin1_size: 256
@@ -60,3 +61,10 @@ callbacks:
         monitor: "val_acc"
         patience: 100
         mode: "max"
+
+logger:
+    wandb:
+        tags: ["best_model", "uwu"]
+        notes: "Description of this model."
+    csv_logger:
+        save_dir: "."

@@ -17,6 +17,7 @@ seed: 12345
 
 trainer:
     max_epochs: 10
+    gradient_clip_val: 0.5
 
 model:
     lr: 0.001

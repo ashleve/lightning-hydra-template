@@ -18,13 +18,13 @@ def get_wandb_logger(trainer: pl.Trainer) -> wandb_run:
     if not logger:
         raise Exception(
             "You're using wandb related callback, "
-            "but wandb logger was not initialized for some reason..."
+            "but WandbLogger was not initialized for some reason..."
         )
 
     return logger
 
 
-class SaveCodeToWandb(Callback):
+class UploadCodeToWandbAsArtifact(Callback):
     """
     Upload all *.py files to wandb as an artifact at the beginning of the run.
     """
@@ -42,7 +42,7 @@ class SaveCodeToWandb(Callback):
         wandb.run.use_artifact(code)
 
 
-class UploadAllCheckpointsToWandb(Callback):
+class UploadCheckpointsToWandbAsArtifact(Callback):
     """
     Upload experiment checkpoints to wandb as an artifact at the end of training.
     """
@@ -66,7 +66,54 @@ class UploadAllCheckpointsToWandb(Callback):
         wandb.run.use_artifact(ckpts)
 
 
-class SaveMetricsHeatmapToWandb(Callback):
+class LogBestMetricScoresToWandb(Callback):
+    """
+    Store in wandb:
+        - max train acc
+        - min train loss
+        - max val acc
+        - min val loss
+    Useful for comparing runs in table views, as wandb doesn't currently supports column aggregation.
+    """
+
+    def __init__(self):
+        self.train_loss_best = None
+        self.train_acc_best = None
+        self.val_loss_best = None
+        self.val_acc_best = None
+        self.ready = False
+
+    def on_sanity_check_end(self, trainer, pl_module):
+        """Start executing this callback only after all validation sanity checks end."""
+        self.ready = True
+
+    def on_epoch_end(self, trainer, pl_module):
+        if self.ready:
+            logger = get_wandb_logger(trainer=trainer)
+
+            metrics = trainer.callback_metrics
+            if (
+                self.train_loss_best is None
+                or metrics["train_loss"] < self.train_loss_best
+            ):
+                self.train_loss_best = metrics["train_loss"]
+            if (
+                self.train_acc_best is None
+                or metrics["train_acc"] > self.train_acc_best
+            ):
+                self.train_acc_best = metrics["train_acc"]
+            if self.val_loss_best is None or metrics["val_loss"] < self.val_loss_best:
+                self.val_loss_best = metrics["val_loss"]
+            if self.val_acc_best is None or metrics["val_acc"] > self.val_acc_best:
+                self.val_acc_best = metrics["val_acc"]
+
+            logger.log({"train_loss_best": self.train_loss_best}, commit=False)
+            logger.log({"train_acc_best": self.train_acc_best}, commit=False)
+            logger.log({"val_loss_best": self.val_loss_best}, commit=False)
+            logger.log({"val_acc_best": self.val_acc_best}, commit=False)
+
+
+class LogF1PrecisionRecallHeatmapToWandb(Callback):
     """
     Generate f1, precision and recall heatmap from validation step outputs.
     Expects validation step to return predictions and targets.
@@ -119,7 +166,7 @@ class SaveMetricsHeatmapToWandb(Callback):
             self.targets = []
 
 
-class SaveConfusionMatrixToWandb(Callback):
+class LogConfusionMatrixToWandb(Callback):
     """
     Generate Confusion Matrix.
     Expects validation step to return predictions and targets.
@@ -168,53 +215,7 @@ class SaveConfusionMatrixToWandb(Callback):
             self.targets = []
 
 
-class SaveBestMetricScoresToWandb(Callback):
-    """
-    Store in wandb:
-        - max train acc
-        - min train loss
-        - max val acc
-        - min val loss
-    Useful for comparing runs in table views, as wandb doesn't currently supports column aggregation.
-    """
-
-    def __init__(self):
-        self.train_loss_best = None
-        self.train_acc_best = None
-        self.val_loss_best = None
-        self.val_acc_best = None
-        self.ready = False
-
-    def on_sanity_check_end(self, trainer, pl_module):
-        """Start executing this callback only after all validation sanity checks end."""
-        self.ready = True
-
-    def on_epoch_end(self, trainer, pl_module):
-        if self.ready:
-            logger = get_wandb_logger(trainer=trainer)
-
-            metrics = trainer.callback_metrics
-            if (
-                self.train_loss_best is None
-                or metrics["train_loss"] < self.train_loss_best
-            ):
-                self.train_loss_best = metrics["train_loss"]
-            if (
-                self.train_acc_best is None
-                or metrics["train_acc"] > self.train_acc_best
-            ):
-                self.train_acc_best = metrics["train_acc"]
-            if self.val_loss_best is None or metrics["val_loss"] < self.val_loss_best:
-                self.val_loss_best = metrics["val_loss"]
-            if self.val_acc_best is None or metrics["val_acc"] > self.val_acc_best:
-                self.val_acc_best = metrics["val_acc"]
-
-            logger.log({"train_loss_best": self.train_loss_best}, commit=False)
-            logger.log({"train_acc_best": self.train_acc_best}, commit=False)
-            logger.log({"val_loss_best": self.val_loss_best}, commit=False)
-            logger.log({"val_acc_best": self.val_acc_best}, commit=False)
-
-
+# TODO
 # class SaveImagePredictionsToWandb(Callback):
 #     """
 #     Each epoch upload to wandb a couple of the same images with predicted labels.
