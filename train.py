@@ -14,7 +14,11 @@ from typing import List
 from src.utils import template_utils as utils
 
 
-def train(config):
+def train(config: DictConfig):
+
+    # Pretty print config using Rich library
+    if config["print_config"]:
+        utils.print_config(config)
 
     # Set seed for random number generators in pytorch, numpy and python.random
     if "seed" in config:
@@ -29,35 +33,26 @@ def train(config):
     datamodule.setup()
 
     # Init PyTorch Lightning callbacks ⚡
-    callbacks: List[Callback] = (
-        [
-            hydra.utils.instantiate(callback_conf)
-            for callback_name, callback_conf in config["callbacks"].items()
-            if "_target_"
-            in callback_conf  # ignore callback if _target_ is not specified
-        ]
-        if "callbacks" in config
-        else []
-    )
+    callbacks: List[Callback] = []
+    if "callbacks" in config:
+        for _, callback_conf in config["callbacks"].items():
+            if "_target_" in callback_conf:
+                callbacks.append(hydra.utils.instantiate(callback_conf))
 
     # Init PyTorch Lightning loggers ⚡
-    logger: List[LightningLoggerBase] = (
-        [
-            hydra.utils.instantiate(logger_conf)
-            for logger_name, logger_conf in config["logger"].items()
-            if "_target_" in logger_conf  # ignore logger if _target_ is not specified
-        ]
-        if "logger" in config
-        else []
-    )
+    logger: List[LightningLoggerBase] = []
+    if "logger" in config:
+        for _, logger_conf in config["logger"].items():
+            if "_target_" in logger_conf:
+                logger.append(hydra.utils.instantiate(logger_conf))
 
     # Init PyTorch Lightning trainer ⚡
     trainer: Trainer = hydra.utils.instantiate(
         config["trainer"], callbacks=callbacks, logger=logger
     )
 
-    # Send Hydra config parameters to all lightning loggers
-    utils.log_hparams(
+    # Send some hyperparameters to all lightning loggers
+    utils.log_hparams_to_all_loggers(
         config=config,
         model=model,
         datamodule=datamodule,
@@ -65,9 +60,6 @@ def train(config):
         callbacks=callbacks,
         logger=logger,
     )
-
-    # If WandbLogger was initialized then make it watch the model
-    utils.make_wandb_watch_model(logger=logger, model=model)
 
     # Train the model
     trainer.fit(model=model, datamodule=datamodule)
@@ -76,14 +68,14 @@ def train(config):
     trainer.test()
 
     # Make sure everything closed properly.
-    utils.finish(
-        config=config,
-        model=model,
-        datamodule=datamodule,
-        trainer=trainer,
-        callbacks=callbacks,
-        logger=logger,
-    )
+    # utils.finish(
+    #     config=config,
+    #     model=model,
+    #     datamodule=datamodule,
+    #     trainer=trainer,
+    #     callbacks=callbacks,
+    #     logger=logger,
+    # )
 
     # Return best achieved metric score for optuna
     optimized_metric = config.get("optimized_metric", None)
@@ -93,7 +85,6 @@ def train(config):
 
 @hydra.main(config_path="configs/", config_name="config.yaml")
 def main(config: DictConfig):
-    utils.print_config(config)
     return train(config)
 
 

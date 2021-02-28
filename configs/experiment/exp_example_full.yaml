@@ -18,11 +18,13 @@ seed: 12345
 
 trainer:
     _target_: pytorch_lightning.Trainer
+    gpus: 0
     min_epochs: 1
     max_epochs: 10
     gradient_clip_val: 0.5
+    accumulate_grad_batches: 2
     weights_summary: null
-    gpus: 0
+    # resume_from_checkpoint: ${original_work_dir}/last.ckpt
 
 model:
     _target_: src.models.mnist_model.LitModelMNIST
@@ -50,7 +52,7 @@ datamodule:
 callbacks:
     model_checkpoint:
         _target_: pytorch_lightning.callbacks.ModelCheckpoint
-        monitor: "val_acc"
+        monitor: "val/acc"
         save_top_k: 2
         save_last: True
         mode: "max"
@@ -58,7 +60,7 @@ callbacks:
         filename: 'sample-mnist-{epoch:02d}'
     early_stopping:
         _target_: pytorch_lightning.callbacks.EarlyStopping
-        monitor: "val_acc"
+        monitor: "val/acc"
         patience: 100
         mode: "max"
 
@@ -66,5 +68,7 @@ logger:
     wandb:
         tags: ["best_model", "uwu"]
         notes: "Description of this model."
+    neptune:
+        tags: ["best_model"]
     csv_logger:
         save_dir: "."

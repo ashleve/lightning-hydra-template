@@ -16,6 +16,7 @@ defaults:
 seed: 12345 
 
 trainer:
+    min_epochs: 1
     max_epochs: 10
     gradient_clip_val: 0.5
 

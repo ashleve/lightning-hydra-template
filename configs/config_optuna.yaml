@@ -12,7 +12,7 @@ defaults:
 
 
 # choose metric which will be optimized by optuna
-optimized_metric: "val_acc_best"
+optimized_metric: "val/acc_best"
 
 
 hydra:
@@ -32,7 +32,7 @@ hydra:
             # number of experiments that will be executed
             n_trials: 30
 
-            # choose optuna hyperparameter sampler ('tpe', 'random', 'cmaes' or 'nsgaii', 'motpes')
+            # choose optuna hyperparameter sampler ('tpe', 'random', 'cmaes' or 'nsgaii', 'motpe')
             # learn more here: https://optuna.readthedocs.io/en/stable/reference/samplers.html
             sampler: tpe
 

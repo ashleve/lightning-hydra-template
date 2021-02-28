@@ -21,6 +21,7 @@ This template tries to be as generic as possible. You should be able to easily m
   - [Main Project Configuration](#main-project-configuration)
   - [Experiment Configuration](#experiment-configuration)
   - [Logs](#logs)
+  - [Experiment Tracking](#experiment-tracking)
   - [Tricks](#tricks)
     - [DELETE EVERYTHING ABOVE FOR YOUR PROJECT](#delete-everything-above-for-your-project)
 - [Your Project Name](#your-project-name)
@@ -31,15 +32,15 @@ This template tries to be as generic as possible. You should be able to easily m
 
 
 ## Main Ideas
-- Structure: clean and scalable so that work can easily be extended and replicated (see [#Project Structure](#project-structure))
+- Predefined Structure: clean and scalable so that work can easily be extended and replicated (see [#Project Structure](#project-structure))
 - Modularity: all abstractions are splitted into different submodules
-- Rapid Experimentation: thanks to automating pipeline with configs and hydra command line superpowers
+- Rapid Experimentation: thanks to automating pipeline with config files and hydra command line superpowers
 - Little Boilerplate: so pipeline can be easily modified (see [train.py](train.py))
 - Main Configuration: main config file specifies default training configuration (see [#Main Project Configuration](#main-project-configuration))
 - Experiment Configurations: stored in a separate folder, they can be composed out of smaller configs, override chosen parameters or define everything from scratch (see [#Experiment Configuration](#experiment-configuration))
-- Experiment Tracking: most logging frameworks can be easily integrated!
+- Experiment Tracking: most logging frameworks can be easily integrated! (see [Experiment Tracking](#experiment-tracking))
 - Tests: simple bash scripts to check if your model doesn't crash under different training conditions (see [tests/](tests/))
-- Logs: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient structure imposed by Hydra (see [#Logs](#logs))
+- Logs: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
 - Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
 
@@ -82,8 +83,8 @@ This template tries to be as generic as possible. You should be able to easily m
     - LogF1PrecisionRecallHeatmapToWandb
     - LogConfusionMatrixToWandb
 - ~~Validating correctness of config with Hydra schemas~~ (TODO) 
-- Pretty printing of configuration composed by Hydra at the beginning of the run using [Rich](https://github.com/willmcgugan/rich/) library ([template_utils.py](src/utils/template_utils.py))
-- Logging chosen parts of hydra config to all loggers ([template_utils.py](src/utils/template_utils.py))
+- Method to pretty print configuration composed by Hydra at the start of the run, using [Rich](https://github.com/willmcgugan/rich/) library ([template_utils.py](src/utils/template_utils.py))
+- Method to log chosen parts of Hydra config to all loggers ([template_utils.py](src/utils/template_utils.py))
 - Example of hyperparameter search with Optuna sweeps ([config_optuna.yaml](configs/config_optuna.yaml))
 - ~~Example of hyperparameter search with Weights&Biases sweeps~~ (TODO)
 - Examples of simple bash scripts to check if your model doesn't crash under different training conditions ([tests/](tests/))
@@ -182,6 +183,10 @@ original_work_dir: ${hydra:runtime.cwd}
 
 # path to folder with data
 data_dir: ${original_work_dir}/data/
+
+
+# pretty print config at the start of the run using Rich library
+print_config: True
 
 
 # output paths for hydra logs
@@ -320,11 +325,19 @@ By default, logs have the following structure:
 │    
 ```
 You can change this structure by modifying paths in [config.yaml](configs/config.yaml).
-<br>
+<br><br>
+
+
+## Experiment Tracking
+PyTorch Lightning provides built in loggers for Weights&Biases, Neptune, Comet, MLFlow, Tensorboard, TestTube and CSV. <br>
+To use one of them, simply add its configuration to [configs/logger/](configs/logger/) and run `python train.py logger=logger_config_name.yaml`. <br>
+You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).
+<br><br>
 
 
 ## Tricks
 (TODO)
+<!-- installing miniconda, PrettyErrors and Rich exception handling, VSCode setup, k-fold cross validation, linter, faster tab completion import trick, -->
 <br><br>
 
 
@@ -415,13 +428,18 @@ To create a sweep over some hyperparameters run:
 python train.py --multirun datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
 
+To sweep with Optuna:
+```yaml
+# this will run hyperparameter search defined in 'configs/config_optuna.yaml`
+python train.py --multirun datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
+```
+
 Resume from checkpoint:
 ```yaml
 # checkpoint can be either path or URL
 # path should be either absolute or prefixed with "${original_work_dir}/"
 # use quotes '' around argument or otherwise $ symbol breaks it
-python train.py \
-'+trainer.resume_from_checkpoint=${original_work_dir}/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt'
+python train.py '+trainer.resume_from_checkpoint=${original_work_dir}/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt'
 ```
 
 

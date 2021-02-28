@@ -1,8 +1,9 @@
 _target_: pytorch_lightning.Trainer
 gpus: 0  # set -1 to train on all GPUs available, set 0 to train on CPU only
+min_epochs: 1
 max_epochs: 10
 gradient_clip_val: 0.5
 num_sanity_val_steps: 3
-progress_bar_refresh_rate: 10
-weights_summary: null  # null in yaml represents python None value
+progress_bar_refresh_rate: 20
+weights_summary: null
 default_root_dir: "lightning_logs/"

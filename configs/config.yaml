@@ -24,6 +24,10 @@ original_work_dir: ${hydra:runtime.cwd}
 data_dir: ${original_work_dir}/data/
 
 
+# pretty print config at the start of the run using Rich library
+print_config: True
+
+
 # output paths for hydra logs
 hydra:
     run:

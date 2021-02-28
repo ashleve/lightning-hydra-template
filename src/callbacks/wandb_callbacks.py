@@ -1,61 +1,64 @@
-from sklearn.metrics import precision_score, recall_score, f1_score
+# wandb
 from pytorch_lightning.loggers import WandbLogger
-from wandb.sdk.wandb_run import Run as wandb_run
+import wandb
+
+# pytorch
 from pytorch_lightning import Callback
 import pytorch_lightning as pl
 import torch
-import wandb
+
+# others
+from sklearn.metrics import precision_score, recall_score, f1_score
+from typing import List
 import glob
 import os
 
 
-def get_wandb_logger(trainer: pl.Trainer) -> wandb_run:
+def get_wandb_logger(trainer: pl.Trainer) -> WandbLogger:
     logger = None
-    for some_logger in trainer.logger.experiment:
-        if isinstance(some_logger, wandb_run):
-            logger = some_logger
+    for lg in trainer.logger:
+        if isinstance(lg, WandbLogger):
+            logger = lg
 
     if not logger:
         raise Exception(
             "You're using wandb related callback, "
-            "but WandbLogger was not initialized for some reason..."
+            "but WandbLogger was not found for some reason..."
         )
 
     return logger
 
 
 class UploadCodeToWandbAsArtifact(Callback):
-    """
-    Upload all *.py files to wandb as an artifact at the beginning of the run.
-    """
+    """Upload all *.py files to wandb as an artifact at the beginning of the run."""
 
     def __init__(self, code_dir: str):
         self.code_dir = code_dir
 
-    def on_sanity_check_end(self, trainer, pl_module):
-        """Upload files when all validation sanity checks end."""
+    def on_train_start(self, trainer, pl_module):
         logger = get_wandb_logger(trainer=trainer)
+        experiment = logger.experiment
 
         code = wandb.Artifact("project-source", type="code")
         for path in glob.glob(os.path.join(self.code_dir, "**/*.py"), recursive=True):
             code.add_file(path)
-        wandb.run.use_artifact(code)
+
+        experiment.use_artifact(code)
 
 
 class UploadCheckpointsToWandbAsArtifact(Callback):
-    """
-    Upload experiment checkpoints to wandb as an artifact at the end of training.
-    """
+    """Upload experiment checkpoints to wandb as an artifact at the end of training."""
 
     def __init__(self, ckpt_dir: str = "checkpoints/", upload_best_only: bool = False):
         self.ckpt_dir = ckpt_dir
         self.upload_best_only = upload_best_only
 
     def on_train_end(self, trainer, pl_module):
-        """Upload ckpts when training ends."""
         logger = get_wandb_logger(trainer=trainer)
+        experiment = logger.experiment
 
         ckpts = wandb.Artifact("experiment-ckpts", type="checkpoints")
+
         if self.upload_best_only:
             ckpts.add_file(trainer.checkpoint_callback.best_model_path)
         else:
@@ -63,54 +66,20 @@ class UploadCheckpointsToWandbAsArtifact(Callback):
                 os.path.join(self.ckpt_dir, "**/*.ckpt"), recursive=True
             ):
                 ckpts.add_file(path)
-        wandb.run.use_artifact(ckpts)
+
+        experiment.use_artifact(ckpts)
 
 
-class LogBestMetricScoresToWandb(Callback):
-    """
-    Store in wandb:
-        - max train acc
-        - min train loss
-        - max val acc
-        - min val loss
-    Useful for comparing runs in table views, as wandb doesn't currently supports column aggregation.
-    """
+class WatchModelWithWandb(Callback):
+    """Make WandbLogger watch model at the beginning of the run."""
 
-    def __init__(self):
-        self.train_loss_best = None
-        self.train_acc_best = None
-        self.val_loss_best = None
-        self.val_acc_best = None
-        self.ready = False
+    def __init__(self, log: str = "gradients", log_freq: int = 100):
+        self.log = log
+        self.log_freq = log_freq
 
-    def on_sanity_check_end(self, trainer, pl_module):
-        """Start executing this callback only after all validation sanity checks end."""
-        self.ready = True
-
-    def on_epoch_end(self, trainer, pl_module):
-        if self.ready:
-            logger = get_wandb_logger(trainer=trainer)
-
-            metrics = trainer.callback_metrics
-            if (
-                self.train_loss_best is None
-                or metrics["train_loss"] < self.train_loss_best
-            ):
-                self.train_loss_best = metrics["train_loss"]
-            if (
-                self.train_acc_best is None
-                or metrics["train_acc"] > self.train_acc_best
-            ):
-                self.train_acc_best = metrics["train_acc"]
-            if self.val_loss_best is None or metrics["val_loss"] < self.val_loss_best:
-                self.val_loss_best = metrics["val_loss"]
-            if self.val_acc_best is None or metrics["val_acc"] > self.val_acc_best:
-                self.val_acc_best = metrics["val_acc"]
-
-            logger.log({"train_loss_best": self.train_loss_best}, commit=False)
-            logger.log({"train_acc_best": self.train_acc_best}, commit=False)
-            logger.log({"val_loss_best": self.val_loss_best}, commit=False)
-            logger.log({"val_acc_best": self.val_acc_best}, commit=False)
+    def on_train_start(self, trainer, pl_module):
+        logger = get_wandb_logger(trainer=trainer)
+        logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq)
 
 
 class LogF1PrecisionRecallHeatmapToWandb(Callback):
@@ -120,7 +89,7 @@ class LogF1PrecisionRecallHeatmapToWandb(Callback):
     Works only for single label classification!
     """
 
-    def __init__(self, class_names=None):
+    def __init__(self, class_names: List[str] = None):
         self.class_names = class_names
         self.preds = []
         self.targets = []
@@ -135,7 +104,7 @@ class LogF1PrecisionRecallHeatmapToWandb(Callback):
     ):
         """Gather data from single batch."""
         if self.ready:
-            preds, targets = outputs["batch_val_preds"], outputs["batch_val_y"]
+            preds, targets = outputs["preds"], outputs["targets"]
             self.preds.append(preds)
             self.targets.append(targets)
 
@@ -143,6 +112,7 @@ class LogF1PrecisionRecallHeatmapToWandb(Callback):
         """Generate f1, precision and recall heatmap."""
         if self.ready:
             logger = get_wandb_logger(trainer=trainer)
+            experiment = logger.experiment
 
             self.preds = torch.cat(self.preds).cpu()
             self.targets = torch.cat(self.targets).cpu()
@@ -150,9 +120,9 @@ class LogF1PrecisionRecallHeatmapToWandb(Callback):
             r = recall_score(self.preds, self.targets, average=None)
             p = precision_score(self.preds, self.targets, average=None)
 
-            logger.log(
+            experiment.log(
                 {
-                    f"f1_p_r_heatmap_{trainer.current_epoch}_{logger.id}": wandb.plots.HeatMap(
+                    f"f1_p_r_heatmap/{trainer.current_epoch}_{experiment.id}": wandb.plots.HeatMap(
                         x_labels=self.class_names,
                         y_labels=["f1", "precision", "recall"],
                         matrix_values=[f1, p, r],
@@ -173,7 +143,7 @@ class LogConfusionMatrixToWandb(Callback):
     Works only for single label classification!
     """
 
-    def __init__(self, class_names=None):
+    def __init__(self, class_names: List[str] = None):
         self.class_names = class_names
         self.preds = []
         self.targets = []
@@ -188,21 +158,22 @@ class LogConfusionMatrixToWandb(Callback):
     ):
         """Gather data from single batch."""
         if self.ready:
-            preds, targets = outputs["batch_val_preds"], outputs["batch_val_y"]
+            preds, targets = outputs["preds"], outputs["targets"]
             self.preds.append(preds)
             self.targets.append(targets)
 
     def on_validation_epoch_end(self, trainer, pl_module):
-        """Generate f1, precision and recall heatmap."""
+        """Generate confusion matrix."""
         if self.ready:
             logger = get_wandb_logger(trainer=trainer)
+            experiment = logger.experiment
 
             self.preds = torch.cat(self.preds).tolist()
             self.targets = torch.cat(self.targets).tolist()
 
-            logger.log(
+            experiment.log(
                 {
-                    f"conf_mat_{trainer.current_epoch}_{logger.id}": wandb.plot.confusion_matrix(
+                    f"confusion_matrix/{trainer.current_epoch}_{experiment.id}": wandb.plot.confusion_matrix(
                         preds=self.preds,
                         y_true=self.targets,
                         class_names=self.class_names,
@@ -215,29 +186,49 @@ class LogConfusionMatrixToWandb(Callback):
             self.targets = []
 
 
-# TODO
-# class SaveImagePredictionsToWandb(Callback):
-#     """
-#     Each epoch upload to wandb a couple of the same images with predicted labels.
-#     """
-#     def __init__(self, datamodule, num_samples=8):
-#         first_batch = next(iter(datamodule.train_dataloader()))
-#         self.imgs, self.labels = first_batch
-#         self.imgs, self.labels = self.imgs[:num_samples], self.labels[:num_samples]
-#         self.ready = True
-#
-#     def on_sanity_check_end(self, trainer, pl_module):
-#         """Start executing this callback only after all validation sanity checks end."""
-#         self.ready = True
-#
-#     def on_validation_epoch_end(self, trainer, pl_module):
-#         if self.ready:
-#             imgs = self.imgs.to(device=pl_module.device)
-#             logits = pl_module(imgs)
-#             preds = torch.argmax(logits, -1)
-#             trainer.logger.experiment.log({f"img_examples": [
-#                 wandb.Image(
-#                     x,
-#                     caption=f"Epoch: {trainer.current_epoch} Pred:{pred}, Label:{y}"
-#                 ) for x, pred, y in zip(imgs, preds, self.labels)
-#             ]}, commit=False)
+''' BUGGED :(
+class LogBestMetricScoresToWandb(Callback):
+    """
+    Store in wandb:
+        - max train acc
+        - min train loss
+        - max val acc
+        - min val loss
+    Useful for comparing runs in table views, as wandb doesn't currently support column aggregation.
+    """
+
+    def __init__(self):
+        self.train_loss_best = None
+        self.train_acc_best = None
+        self.val_loss_best = None
+        self.val_acc_best = None
+        self.ready = False
+
+    def on_sanity_check_end(self, trainer, pl_module):
+        """Start executing this callback only after all validation sanity checks end."""
+        self.ready = True
+
+    def on_epoch_end(self, trainer, pl_module):
+        if self.ready:
+            logger = get_wandb_logger(trainer=trainer)
+            experiment = logger.experiment
+
+            metrics = trainer.callback_metrics
+
+            if not self.train_loss_best or metrics["train/loss"] < self.train_loss_best:
+                self.train_loss_best = metrics["train_loss"]
+
+            if not self.train_acc_best or metrics["train/acc"] > self.train_acc_best:
+                self.train_acc_best = metrics["train/acc"]
+
+            if not self.val_loss_best or metrics["val/loss"] < self.val_loss_best:
+                self.val_loss_best = metrics["val/loss"]
+
+            if not self.val_acc_best or metrics["val/acc"] > self.val_acc_best:
+                self.val_acc_best = metrics["val/acc"]
+
+            experiment.log({"train/loss_best": self.train_loss_best}, commit=False)
+            experiment.log({"train/acc_best": self.train_acc_best}, commit=False)
+            experiment.log({"val/loss_best": self.val_loss_best}, commit=False)
+            experiment.log({"val/acc_best": self.val_acc_best}, commit=False)
+'''

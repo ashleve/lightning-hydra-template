@@ -3,10 +3,13 @@
 # bash tests/logger_tests.sh
 
 # Test CSV logger
-python train.py logger=csv_logger trainer.min_epochs=3 trainer.max_epochs=3
+echo TEST 1
+python train.py logger=csv_logger trainer.min_epochs=3 trainer.max_epochs=3 trainer.gpus=1
 
 # Test Weights&Biases logger
-python train.py logger=wandb logger.wandb.project_name="env_tests" trainer.min_epochs=10 trainer.max_epochs=10
+echo TEST 2
+python train.py logger=wandb logger.wandb.project="env_tests" trainer.min_epochs=10 trainer.max_epochs=10 trainer.gpus=1
 
 # Test TensorBoard logger
-python train.py logger=tensorboard trainer.min_epochs=10 trainer.max_epochs=10
+echo TEST 3
+python train.py logger=tensorboard trainer.min_epochs=10 trainer.max_epochs=10 trainer.gpus=1

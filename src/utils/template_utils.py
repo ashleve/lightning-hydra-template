@@ -20,9 +20,6 @@ from rich.tree import Tree
 
 # normal imports
 from typing import List
-import logging
-
-log = logging.getLogger(__name__)
 
 
 def print_config(config: DictConfig):
@@ -62,13 +59,17 @@ def print_config(config: DictConfig):
     callbacks_branch = tree.add("Callbacks", style=style, guide_style=style)
     for cb in callbacks:
         callbacks_branch.add(Syntax(cb, "yaml"))
+    if not callbacks:
+        callbacks_branch.add("None")
 
     logger_branch = tree.add("Logger", style=style, guide_style=style)
     for lg in logger:
         logger_branch.add(Syntax(lg, "yaml"))
+    if not logger:
+        logger_branch.add("None")
 
     seed = config.get("seed", "None")
-    datamodule_branch = tree.add(f"Seed: {seed}", guide_style=style)
+    datamodule_branch = tree.add(f"Seed: {seed}\n", guide_style=style)
 
     directory = to_absolute_path("configs/config.yaml")
     print(f"MAIN CONFIG: [link file://{directory}]{directory}")
@@ -76,21 +77,7 @@ def print_config(config: DictConfig):
     print(tree)
 
 
-def make_wandb_watch_model(
-    logger: List[pl.loggers.LightningLoggerBase], model: pl.LightningModule
-):
-    """If WandbLogger was inititialized, make it watch the model.
-
-    Args:
-        logger (List[pl.loggers.LightningLoggerBase]): [description]
-        model (pl.LightningModule): [description]
-    """
-    for lg in logger:
-        if isinstance(logger, WandbLogger):
-            lg.watch(model, log="all")
-
-
-def log_hparams(
+def log_hparams_to_all_loggers(
     config: DictConfig,
     model: pl.LightningModule,
     datamodule: pl.LightningDataModule,
@@ -166,5 +153,5 @@ def finish(
     """
 
     for lg in logger:
-        if issubclass(lg, WandbLogger):
+        if isinstance(lg, WandbLogger):
             wandb.finish()
