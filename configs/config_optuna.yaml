@@ -3,7 +3,6 @@
 # example hyperparameter optimization of some experiment with optuna:
 # python train.py +experiment=exp_example_simple logger=wandb --config-name config_optuna.yaml --multirun
 
-# specify here default training configuration
 defaults:
   # load everything from main config file
   - config.yaml

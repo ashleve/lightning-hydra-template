@@ -6,4 +6,5 @@ wandb:
     # entity: ""  # set to name of your wandb team or just remove it
     # offline: False  # set True to store all logs only locally
     job_type: "train"
+    group: ""
     save_dir: "."

@@ -1,18 +1,40 @@
-# trainer args for debugging model
+# Trainer args for debugging model
 
 _target_: pytorch_lightning.Trainer
-gpus: 0  # set -1 to train on all GPUs abailable, set 0 to train on CPU only
+
+# set -1 to train on all GPUs available, set 0 to train on CPU only
+gpus: 0  
 # auto_select_gpus: True
 
-gradient_clip_val: 0.5
+min_epochs: 3
+max_epochs: 3
 
-# fast_dev_run: True
-limit_train_batches: 1.0
-limit_val_batches: 1.0
-limit_test_batches: 1.0
-val_check_interval: 1.0
-profiler: "simple"  # use profiler to print execution time profiling after training ends
+# overfit on 10 of the same batches
+overfit_batches: 10
 
-progress_bar_refresh_rate: 10
+#check validation set 2 times during a training epoch
+val_check_interval: 0.5
+
+# check validation set every 100 training batches
+#val_check_interval: 100
+
+# run for 1 train, 1 val and 1 test batch
+fast_dev_run: True
+
+# use only 10% of the data
+limit_train_batches: 0.1
+limit_val_batches: 0.1
+limit_test_batches: 0.1
+
+# number of sanity validation steps
+num_sanity_val_steps: 3
+
+# print execution time profiling after training end
+profiler: "simple"
+
+# print full weight summary of all modules and submodules
 weights_summary: "full"
-default_root_dir: "lightning_logs/"
+#weights_summary: "top"
+
+# use gradient clipping because why not
+gradient_clip_val: 0.5

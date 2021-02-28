@@ -1,10 +1,10 @@
 # pytorch lightning imports
-import comet_ml
 import pytorch_lightning as pl
 
 # loggers
 import wandb
 import neptune
+import comet_ml
 from pytorch_lightning.loggers.wandb import WandbLogger
 from pytorch_lightning.loggers.neptune import NeptuneLogger
 from pytorch_lightning.loggers.comet import CometLogger
@@ -68,6 +68,9 @@ def print_config(config: DictConfig):
     logger_branch = tree.add("Logger", style=style, guide_style=style)
     for lg in logger:
         logger_branch.add(Syntax(lg, "yaml"))
+
+    seed = config.get("seed", "None")
+    datamodule_branch = tree.add(f"Seed: {seed}", guide_style=style)
 
     directory = to_absolute_path("configs/config.yaml")
     print(f"MAIN CONFIG: [link file://{directory}]{directory}")
