@@ -22,8 +22,9 @@ This template tries to be as generic as possible. You should be able to easily m
   - [Experiment Configuration](#experiment-configuration)
   - [Logs](#logs)
   - [Experiment Tracking](#experiment-tracking)
+  - [Distributed Training](#distributed-training)
   - [Tricks](#tricks)
-    - [DELETE EVERYTHING ABOVE FOR YOUR PROJECT](#delete-everything-above-for-your-project)
+
 - [Your Project Name](#your-project-name)
   - [Description](#description)
   - [How to run](#how-to-run)
@@ -336,17 +337,20 @@ You can use many of them at once (see [configs/logger/many_loggers.yaml](configs
 <br><br>
 
 
+## Distributed Training
+(TODO)
+<br><br>
+
+
 ## Tricks
 (TODO)
 <!-- installing miniconda, PrettyErrors and Rich exception handling, VSCode setup, 
 k-fold cross validation, linter, faster tab completion import trick, 
 choosing metric names with '/' for wandb -->
+<br><br>
 
 
 
-
-
-<br>
 <br>
 <br>
 <br>
@@ -456,7 +460,11 @@ python train.py '+trainer.resume_from_checkpoint=${work_dir}/logs/runs/2021-02-2
 ## Installing project as a package
 Optionally you can install project as a package with [setup.py](setup.py):
 ```yaml
+# install from local files
 pip install -e .
+
+# or install from git repo
+pip install git+git://github.com/YourGithubName/your-repo-name.git --upgrade
 ```
 So you can easily import any file into any other file like so:
 ```python
