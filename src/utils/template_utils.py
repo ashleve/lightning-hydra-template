@@ -8,10 +8,11 @@ from hydra.utils import get_original_cwd, to_absolute_path
 # loggers
 import wandb
 from pytorch_lightning.loggers.wandb import WandbLogger
-from pytorch_lightning.loggers.neptune import NeptuneLogger
-from pytorch_lightning.loggers.comet import CometLogger
-from pytorch_lightning.loggers.mlflow import MLFlowLogger
-from pytorch_lightning.loggers.tensorboard import TensorBoardLogger
+
+# from pytorch_lightning.loggers.neptune import NeptuneLogger
+# from pytorch_lightning.loggers.comet import CometLogger
+# from pytorch_lightning.loggers.mlflow import MLFlowLogger
+# from pytorch_lightning.loggers.tensorboard import TensorBoardLogger
 
 # rich imports
 from rich import print
@@ -71,9 +72,10 @@ def print_config(config: DictConfig):
     seed = config.get("seed", "None")
     datamodule_branch = tree.add(f"Seed: {seed}\n", guide_style=style)
 
-    directory = to_absolute_path("configs/config.yaml")
-    print(f"MAIN CONFIG: [link file://{directory}]{directory}")
-    # print(f"EXPERIMENT CONFIG: [link file://{directory}]{directory}")
+    # TODO print main config and experiment config path
+    # directory = to_absolute_path("configs/config.yaml")
+    # print(f"Main config path: [link file://{directory}]{directory}")
+
     print(tree)
 
 
@@ -105,18 +107,18 @@ def log_hparams_to_all_loggers(
     hparams.pop("_target_")
 
     # save seed
-    hparams["seed"] = config.get("seed", None)
+    hparams["seed"] = config.get("seed", "None")
 
     # save targets
     hparams["_class_model"] = config["model"]["_target_"]
     hparams["_class_datamodule"] = config["datamodule"]["_target_"]
 
     # save sizes of each dataset
-    if hasattr(datamodule, "data_train") and datamodule.data_train is not None:
+    if hasattr(datamodule, "data_train") and datamodule.data_train:
         hparams["train_size"] = len(datamodule.data_train)
-    if hasattr(datamodule, "data_val") and datamodule.data_val is not None:
+    if hasattr(datamodule, "data_val") and datamodule.data_val:
         hparams["val_size"] = len(datamodule.data_val)
-    if hasattr(datamodule, "data_test") and datamodule.data_test is not None:
+    if hasattr(datamodule, "data_test") and datamodule.data_test:
         hparams["test_size"] = len(datamodule.data_test)
 
     # save number of model parameters
@@ -152,6 +154,7 @@ def finish(
         logger (List[pl.loggers.LightningLoggerBase]): [description]
     """
 
+    # without this sweeps with wandb are bugged!
     for lg in logger:
         if isinstance(lg, WandbLogger):
             wandb.finish()

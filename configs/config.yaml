@@ -8,20 +8,20 @@ defaults:
     - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
 
-    # add this to enable color logging
+    # enable color logging
     # - override hydra/hydra_logging: colorlog
     # - override hydra/job_logging: colorlog
 
 
-# path to original working directory (the directory that `train.py` was executed from in command line)
+# path to original working directory (that `train.py` was executed from in command line)
 # hydra hijacks working directory by changing it to the current log directory,
 # so it's useful to have path to original working directory as a special variable
 # read more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
-original_work_dir: ${hydra:runtime.cwd}
+work_dir: ${hydra:runtime.cwd}
 
 
 # path to folder with data
-data_dir: ${original_work_dir}/data/
+data_dir: ${work_dir}/data/
 
 
 # pretty print config at the start of the run using Rich library

@@ -38,7 +38,7 @@ This template tries to be as generic as possible. You should be able to easily m
 - Little Boilerplate: so pipeline can be easily modified (see [train.py](train.py))
 - Main Configuration: main config file specifies default training configuration (see [#Main Project Configuration](#main-project-configuration))
 - Experiment Configurations: stored in a separate folder, they can be composed out of smaller configs, override chosen parameters or define everything from scratch (see [#Experiment Configuration](#experiment-configuration))
-- Experiment Tracking: most logging frameworks can be easily integrated! (see [Experiment Tracking](#experiment-tracking))
+- Experiment Tracking: most logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
 - Tests: simple bash scripts to check if your model doesn't crash under different training conditions (see [tests/](tests/))
 - Logs: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
 - Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
@@ -178,11 +178,11 @@ defaults:
 # hydra hijacks working directory by changing it to the current log directory,
 # so it's useful to have path to original working directory as a special variable
 # read more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
-original_work_dir: ${hydra:runtime.cwd}
+work_dir: ${hydra:runtime.cwd}
 
 
 # path to folder with data
-data_dir: ${original_work_dir}/data/
+data_dir: ${work_dir}/data/
 
 
 # pretty print config at the start of the run using Rich library
@@ -329,18 +329,26 @@ You can change this structure by modifying paths in [config.yaml](configs/config
 
 
 ## Experiment Tracking
-PyTorch Lightning provides built in loggers for Weights&Biases, Neptune, Comet, MLFlow, Tensorboard, TestTube and CSV. <br>
-To use one of them, simply add its configuration to [configs/logger/](configs/logger/) and run `python train.py logger=logger_config_name.yaml`. <br>
+PyTorch Lightning provides built in loggers for Weights&Biases, Neptune, Comet, MLFlow, Tensorboard, TestTube and CSV. To use one of them, simply add its configuration to [configs/logger/](configs/logger/) and run:<br>
+ `python train.py logger=logger_config.yaml` <br>
 You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).
 <br><br>
 
 
 ## Tricks
 (TODO)
-<!-- installing miniconda, PrettyErrors and Rich exception handling, VSCode setup, k-fold cross validation, linter, faster tab completion import trick, -->
-<br><br>
+<!-- installing miniconda, PrettyErrors and Rich exception handling, VSCode setup, 
+k-fold cross validation, linter, faster tab completion import trick, 
+choosing metric names with '/' for wandb -->
 
 
+
+
+
+<br>
+<br>
+<br>
+<br>
 ### DELETE EVERYTHING ABOVE FOR YOUR PROJECT  
  
 ---
@@ -377,7 +385,7 @@ python train.py
 
 Or you can train model with chosen logger like Weights&Biases:
 ```yaml
-# set project and entity names in 'project/configs/logger/wandb.yaml'
+# set project and entity names in `project/configs/logger/wandb.yaml`
 wandb:
     project: "your_project_name"
     entity: "your_wandb_team_name"
@@ -390,14 +398,14 @@ python train.py logger=wandb
 
 Or you can train model with chosen experiment config:
 ```yaml
-# experiment configurations are placed in 'configs/experiment/'
+# experiment configurations are placed in folder `configs/experiment/`
 python train.py +experiment=exp_example_simple
 ```
 
 To execute all experiments from folder run:
 ```yaml
 # execute all experiments from folder `configs/experiment/`
-python train.py --multirun '+experiment=glob(*)'
+python train.py -m '+experiment=glob(*)'
 ```
 
 You can override any parameter from command line like this:
@@ -412,34 +420,34 @@ python train.py trainer.gpus=1
 
 Attach some callback set to run:
 ```yaml
-# callback sets configurations are placed in 'configs/callbacks/'
+# callback sets configurations are placed in `configs/callbacks/`
 python train.py callbacks=default_callbacks
 ```
 
 Combaining it all:
 ```yaml
-python train.py --multirun '+experiment=glob(*)' trainer.max_epochs=10 logger=wandb
+python train.py -m '+experiment=glob(*)' trainer.max_epochs=10 logger=wandb
 ```
 
 To create a sweep over some hyperparameters run:
 ```yaml
 # this will run 6 experiments one after the other, 
 # each with different combination of batch_size and learning rate
-python train.py --multirun datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
+python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
 
 To sweep with Optuna:
 ```yaml
-# this will run hyperparameter search defined in 'configs/config_optuna.yaml`
-python train.py --multirun datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
+# this will run hyperparameter search defined in `configs/config_optuna.yaml`
+python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
 ```
 
 Resume from checkpoint:
 ```yaml
 # checkpoint can be either path or URL
-# path should be either absolute or prefixed with "${original_work_dir}/"
+# path should be either absolute or prefixed with `${work_dir}/`
 # use quotes '' around argument or otherwise $ symbol breaks it
-python train.py '+trainer.resume_from_checkpoint=${original_work_dir}/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt'
+python train.py '+trainer.resume_from_checkpoint=${work_dir}/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt'
 ```
 
 

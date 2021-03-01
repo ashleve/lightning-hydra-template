@@ -24,7 +24,7 @@ trainer:
     gradient_clip_val: 0.5
     accumulate_grad_batches: 2
     weights_summary: null
-    # resume_from_checkpoint: ${original_work_dir}/last.ckpt
+    # resume_from_checkpoint: ${work_dir}/last.ckpt
 
 model:
     _target_: src.models.mnist_model.LitModelMNIST

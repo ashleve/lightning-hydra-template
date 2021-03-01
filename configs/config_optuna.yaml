@@ -1,7 +1,7 @@
 # @package _global_
 
 # example hyperparameter optimization of some experiment with optuna:
-# python train.py --multirun --config-name config_optuna.yaml +experiment=exp_example_simple logger=wandb 
+# python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple logger=wandb 
 
 defaults:
   # load everything from main config file

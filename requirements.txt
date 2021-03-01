@@ -5,12 +5,12 @@ torchaudio>=0.7.2
 pytorch-lightning>=1.2.1
 
 # --------- hydra --------- #
-hydra-core==1.1.0.dev4
+hydra-core==1.1.0.dev3
 hydra_colorlog>=1.0.0
 hydra-optuna-sweeper>=0.9.0rc2
 
 # --------- loggers --------- #
-wandb>=0.10.15
+wandb>=0.10.20
 # neptune-client
 # comet_ml
 # mlflow
@@ -23,6 +23,6 @@ wandb>=0.10.15
 # isort>=5.7.0
 
 # --------- others --------- #
-rich>=9.12.2
-scikit-learn>=0.24.0
-pandas>=1.2.0
+rich>=9.12.3
+scikit-learn>=0.24.1
+pandas>=1.2.2

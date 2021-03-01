@@ -4,7 +4,7 @@ defaults:
 
 upload_code_to_wandb_as_artifact:
     _target_: src.callbacks.wandb_callbacks.UploadCodeToWandbAsArtifact
-    code_dir: ${original_work_dir}
+    code_dir: ${work_dir}
 
 
 upload_ckpts_to_wandb_as_artifact:

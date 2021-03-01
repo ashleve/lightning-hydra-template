@@ -35,23 +35,23 @@ def train(config: DictConfig):
     # Init PyTorch Lightning callbacks ⚡
     callbacks: List[Callback] = []
     if "callbacks" in config:
-        for _, callback_conf in config["callbacks"].items():
-            if "_target_" in callback_conf:
-                callbacks.append(hydra.utils.instantiate(callback_conf))
+        for _, cb_conf in config["callbacks"].items():
+            if "_target_" in cb_conf:
+                callbacks.append(hydra.utils.instantiate(cb_conf))
 
     # Init PyTorch Lightning loggers ⚡
     logger: List[LightningLoggerBase] = []
     if "logger" in config:
-        for _, logger_conf in config["logger"].items():
-            if "_target_" in logger_conf:
-                logger.append(hydra.utils.instantiate(logger_conf))
+        for _, lg_conf in config["logger"].items():
+            if "_target_" in lg_conf:
+                logger.append(hydra.utils.instantiate(lg_conf))
 
     # Init PyTorch Lightning trainer ⚡
     trainer: Trainer = hydra.utils.instantiate(
         config["trainer"], callbacks=callbacks, logger=logger
     )
 
-    # Send some hyperparameters to all lightning loggers
+    # Send some parameters from config to all lightning loggers
     utils.log_hparams_to_all_loggers(
         config=config,
         model=model,
@@ -67,15 +67,15 @@ def train(config: DictConfig):
     # Evaluate model on test set after training
     trainer.test()
 
-    # Make sure everything closed properly.
-    # utils.finish(
-    #     config=config,
-    #     model=model,
-    #     datamodule=datamodule,
-    #     trainer=trainer,
-    #     callbacks=callbacks,
-    #     logger=logger,
-    # )
+    # Make sure everything closed properly
+    utils.finish(
+        config=config,
+        model=model,
+        datamodule=datamodule,
+        trainer=trainer,
+        callbacks=callbacks,
+        logger=logger,
+    )
 
     # Return best achieved metric score for optuna
     optimized_metric = config.get("optimized_metric", None)

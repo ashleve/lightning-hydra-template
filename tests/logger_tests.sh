@@ -2,6 +2,8 @@
 # TO EXECUTE:
 # bash tests/logger_tests.sh
 
+# conda activate testenv
+
 # Test CSV logger
 echo TEST 1
 python train.py logger=csv_logger trainer.min_epochs=3 trainer.max_epochs=3 trainer.gpus=1
