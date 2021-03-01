@@ -68,7 +68,7 @@ def print_config(config: DictConfig):
 
     seed = config.get("seed", "None")
     seed_branch = tree.add(f"Seed", style=style, guide_style=style)
-    seed_branch.add(seed, style=style, guide_style=style)
+    seed_branch.add(str(seed) + "\n")
 
     print(tree)
 
