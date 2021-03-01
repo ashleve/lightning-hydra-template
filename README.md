@@ -41,6 +41,7 @@ This template tries to be as generic as possible. You should be able to easily m
 - Experiment Tracking: most logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
 - Tests: simple bash scripts to check if your model doesn't crash under different training conditions (see [tests/](tests/))
 - Logs: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
+- Hyperparameter Search: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
 
@@ -349,6 +350,7 @@ choosing metric names with '/' for wandb -->
 <br>
 <br>
 <br>
+
 ### DELETE EVERYTHING ABOVE FOR YOUR PROJECT  
  
 ---
