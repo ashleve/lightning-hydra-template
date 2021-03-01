@@ -1,0 +1,62 @@
+# Trainer args for debugging model
+
+_target_: pytorch_lightning.Trainer
+
+# set -1 to train on all GPUs available, set 0 to train on CPU only
+gpus: 0  
+# auto_select_gpus: True
+
+min_epochs: 3
+max_epochs: 3
+
+# overfit on 10 of the same training set batches
+# overfit_batches: 10
+
+# overfit on 5% of the training data
+# overfit_batches: 0.05 
+
+# run validation loop every 5 training epochs
+# check_val_every_n_epoch: 5
+
+# run validation loop 2 times during a training epoch
+val_check_interval: 0.5
+
+# run validation loop every 100 training batches
+# val_check_interval: 100
+
+# run for 1 train, 1 val and 1 test batch
+# fast_dev_run: True
+
+# use only 20% of the data
+limit_train_batches: 0.2
+limit_val_batches: 0.2
+limit_test_batches: 0.2
+
+# number of sanity validation steps
+num_sanity_val_steps: 3
+
+# print execution time profiling after training end
+# profiler: "simple"
+
+# print full weight summary of all modules and submodules
+# weights_summary: "full"
+# weights_summary: "top"
+
+# use gradient clipping because why not
+gradient_clip_val: 0.5
+
+# perform optimisation after accumulating gradient from 5 batches
+accumulate_grad_batches: 5
+
+# no accumulation for epochs 1-4. accumulate 3 for epochs 5-10. accumulate 20 after that
+# accumulate_grad_batches: {5: 3, 10: 20}
+
+# automatically find the largest batch size that fits into memory and is power of 2 
+# (requires calling trainer.tune(model=model, datamodule=datamodule))
+# auto_scale_batch_size:'power'
+
+# set tensor precision to 16 (default is 32 bits)
+# precision: 16
+
+# apex backend for mixed precision training https://github.com/NVIDIA/apex
+# amp_backend: 'apex'

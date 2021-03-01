@@ -1,0 +1,65 @@
+# @package _global_
+
+# example hyperparameter optimization of some experiment with optuna:
+# python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple logger=wandb 
+
+defaults:
+  # load everything from main config file
+  - config.yaml
+
+  # override sweeper to optuna!
+  - override hydra/sweeper: optuna
+
+
+# choose metric which will be optimized by optuna
+optimized_metric: "val/acc_best"
+
+
+hydra:
+    # here we define optuna objective
+    # it optimizes for value returned from function with @hydra.main decorator
+    # learn more here: https://hydra.cc/docs/next/plugins/optuna_sweeper
+    sweeper:
+        optuna_config:
+            study_name: null
+            storage: null
+            n_jobs: 1
+            seed: 12345
+
+            # 'minimize' or 'maximize' the objective
+            direction: maximize
+
+            # number of experiments that will be executed
+            n_trials: 30
+
+            # choose optuna hyperparameter sampler ('tpe', 'random', 'cmaes' or 'nsgaii', 'motpe')
+            # learn more here: https://optuna.readthedocs.io/en/stable/reference/samplers.html
+            sampler: tpe
+
+        # define range of hyperparameters
+        search_space:
+            datamodule.batch_size:
+                type: categorical
+                choices: [32, 64, 128]
+            model.lr:
+                type: float
+                low: 0.0001
+                high: 0.2
+            model.lin1_size:
+                type: categorical
+                choices: [64, 128, 256, 512]
+            model.dropout1:
+                type: categorical
+                choices: [0.05, 0.1, 0.25, 0.5]
+            model.lin2_size:
+                type: categorical
+                choices: [64, 128, 256, 512]
+            model.dropout2:
+                type: categorical
+                choices: [0.05, 0.1, 0.25, 0.5]
+            model.lin3_size:
+                type: categorical
+                choices: [32, 64, 128, 256]
+            model.dropout3:
+                type: categorical
+                choices: [0.05, 0.1, 0.25, 0.5]

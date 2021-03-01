@@ -1,0 +1,7 @@
+# https://www.comet.ml
+
+comet:
+    _target_: pytorch_lightning.loggers.comet.CometLogger
+    api_key: ???
+    project_name: "project_template_test"
+    experiment_name: null

@@ -78,6 +78,7 @@ fabric.properties
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+**/.vscode
 
 ### Python template
 # Byte-compiled / optimized / DLL files
@@ -225,7 +226,5 @@ ipython_config.py
 #   git rm -r .ipynb_checkpoints/
 
 .idea/
-project/data/
-project/lightning_logs/
-project/wandb/
-project/logs/
+data/
+logs/
