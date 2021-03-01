@@ -1,7 +1,7 @@
 # train with many loggers at once
 
 defaults:
-    - csv_logger.yaml
+    - csv.yaml
     - wandb.yaml
     # - neptune.yaml
     # - comet.yaml
