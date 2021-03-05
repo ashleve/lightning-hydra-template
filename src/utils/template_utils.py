@@ -125,8 +125,7 @@ def log_hparams_to_all_loggers(
     )
 
     # send hparams to all loggers
-    for lg in logger:
-        lg.log_hyperparams(hparams)
+    trainer.logger.log_hyperparams(hparams)
 
 
 def finish(
