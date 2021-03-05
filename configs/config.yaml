@@ -35,3 +35,13 @@ hydra:
     sweep:
         dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
         subdir: ${hydra.job.num}
+
+    job:
+        env_set:
+            # currently there are some issues with running sweeps alongside wandb 
+            # https://github.com/wandb/client/issues/1314
+            # this env variable fixes that
+            WANDB_START_METHOD: thread
+
+            # ignore python warnings
+            # PYTHONWARNINGS: ignore
