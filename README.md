@@ -6,59 +6,28 @@ Click on <b>`Use this template`</b> button above to initialize new repository.
 
 This template tries to be as generic as possible. You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
 
+*This is work in progress. I'm currently figuring out the best workflow for scalable experimentation process. Suggestions are always welcome!*
+
 </div>
 <br>
 
 ## Contents
 - [PyTorch Lightning + Hydra Template](#pytorch-lightning--hydra-template)
-  - [Contents](#contents)
+  - [Why Lightning + Hydra?](#why-lightning--hydra)
   - [Main Ideas](#main-ideas)
   - [Some Notes](#some-notes)
-  - [Why Lightning + Hydra?](#why-lightning--hydra)
-  - [Features](#features)
   - [Project Structure](#project-structure)
-  - [Workflow](#workflow)
+  - [Features](#features)
   - [Main Project Configuration](#main-project-configuration)
   - [Experiment Configuration](#experiment-configuration)
+  - [Workflow](#workflow)
   - [Logs](#logs)
   - [Experiment Tracking](#experiment-tracking)
+  - [Tests](#tests)
   - [Distributed Training](#distributed-training)
   - [Tricks](#tricks)
-
-- [Your Project Name](#your-project-name)
-  - [Description](#description)
   - [How to run](#how-to-run)
   - [Installing project as a package](#installing-project-as-a-package)
-<br>
-
-
-## Main Ideas
-- Predefined Structure: clean and scalable so that work can easily be extended and replicated (see [#Project Structure](#project-structure))
-- Modularity: all abstractions are splitted into different submodules
-- Rapid Experimentation: thanks to automating pipeline with config files and hydra command line superpowers
-- Little Boilerplate: so pipeline can be easily modified (see [train.py](train.py))
-- Main Configuration: main config file specifies default training configuration (see [#Main Project Configuration](#main-project-configuration))
-- Experiment Configurations: stored in a separate folder, they can be composed out of smaller configs, override chosen parameters or define everything from scratch (see [#Experiment Configuration](#experiment-configuration))
-- Experiment Tracking: most logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
-- Tests: simple bash scripts to check if your model doesn't crash under different training conditions (see [tests/](tests/))
-- Logs: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
-- Hyperparameter Search: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
-- Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
-<br>
-
-
-## Some Notes
-- ***Warning: this template currently uses development version of hydra which might be unstable (we wait until Hydra 1.1 is released).*** <br>
-- *Based on: 
-[deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template), 
-[cookiecutter-data-science](https://github.com/drivendata/cookiecutter-data-science),
-[hydra-torch](https://github.com/pytorch/hydra-torch),
-[hydra-lightning](https://github.com/romesco/hydra-lightning),
-[lightning-hydra-seed](https://github.com/tchaton/lightning-hydra-seed),
-[pytorch_tempest](https://github.com/Erlemar/pytorch_tempest),
-[pytorch-project-template](https://github.com/ryul99/pytorch-project-template).*<br>
-- *To learn how to configure PyTorch with Hydra take a look at [this detailed MNIST tutorial](https://github.com/pytorch/hydra-torch/blob/master/examples/mnist_00.md).*
-- *Suggestions are always welcome!*
 <br>
 
 
@@ -68,33 +37,33 @@ This template tries to be as generic as possible. You should be able to easily m
 <br>
 
 
-## Features
-- Hydra superpowers
-    - Override any config parameter from command line
-    - Easily switch between different loggers, callbacks sets, optimizers, etc. from command line
-    - Sweep over hyperparameters from command line
-    - Automatic logging of run history
-    - Sweeper integrations for Optuna, Ray and others
-- Optional callbacks for Weigths&Biases ([wandb_callbacks.py](src/callbacks/wandb_callbacks.py))
-  - To support reproducibility:
-    - UploadCodeToWandbAsArtifact
-    - UploadCheckpointsToWandbAsArtifact
-    - WatchModelWithWandb
-  - To provide examples of logging custom visualisations and metrics with callbacks:
-    - LogBestMetricScoresToWandb
-    - LogF1PrecisionRecallHeatmapToWandb
-    - LogConfusionMatrixToWandb
-- ~~Validating correctness of config with Hydra schemas~~ (TODO) 
-- Method to pretty print configuration composed by Hydra at the start of the run, using [Rich](https://github.com/willmcgugan/rich/) library ([template_utils.py](src/utils/template_utils.py))
-- Method to log chosen parts of Hydra config to all loggers ([template_utils.py](src/utils/template_utils.py))
-- Example of hyperparameter search with Optuna sweeps ([config_optuna.yaml](configs/config_optuna.yaml))
-- ~~Example of hyperparameter search with Weights&Biases sweeps~~ (TODO)
-- Examples of simple bash scripts to check if your model doesn't crash under different training conditions ([tests/](tests/))
-- Example of inference with trained model  ([inference_example.py](src/utils/inference_example.py))
-- Built in requirements ([requirements.txt](requirements.txt))
-- Built in conda environment initialization ([conda_env_gpu.yaml](conda_env_gpu.yaml), [conda_env_cpu.yaml](conda_env_cpu.yaml))
-- Built in python package setup ([setup.py](setup.py))
-- Example with MNIST classification ([mnist_model.py](src/models/mnist_model.py), [mnist_datamodule.py](src/datamodules/mnist_datamodule.py))
+## Main Ideas
+- Predefined Structure: clean and scalable so that work can easily be extended and replicated (see [#Project Structure](#project-structure))
+- Rapid Experimentation: thanks to automating pipeline with config files and hydra command line superpowers
+- Little Boilerplate: so pipeline can be easily modified (see [train.py](train.py))
+- Main Configuration: main config file specifies default training configuration (see [#Main Project Configuration](#main-project-configuration))
+- Experiment Configurations: stored in a separate folder, they can be composed out of smaller configs, override chosen parameters or define everything from scratch (see [#Experiment Configuration](#experiment-configuration))
+- Experiment Tracking: many logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
+- Logs: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
+- Smoke Tests: simple bash scripts running 1-2 epoch experiments to check if your model doesn't crash under different conditions (see [tests](tests/))
+- Hyperparameter Search: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
+- Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
+<br>
+
+
+## Some Notes
+- ***Warning: this template currently uses development version of hydra which might be unstable (we wait until Hydra 1.1 is released).*** <br>
+- *Inspired by: 
+[PyTorchLightning/deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template), 
+[drivendata/cookiecutter-data-science](https://github.com/drivendata/cookiecutter-data-science),
+[tchaton/lightning-hydra-seed](https://github.com/tchaton/lightning-hydra-seed),
+[Erlemar/pytorch_tempest](https://github.com/Erlemar/pytorch_tempest),
+[ryul99/pytorch-project-template](https://github.com/ryul99/pytorch-project-template).*
+- *To learn how to configure PyTorch with Hydra take a look at [this detailed MNIST tutorial](https://github.com/pytorch/hydra-torch/blob/master/examples/mnist_00.md).*
+- *Repositories useful for configuring PyTorch and PyTorch Lightning classes with Hydra:
+[romesco/hydra-lightning](https://github.com/romesco/hydra-lightning),
+[pytorch/hydra-torch](https://github.com/pytorch/hydra-torch).*
+- *Suggestions are always welcome!*
 <br>
 
 
@@ -147,14 +116,33 @@ The directory structure of new project looks like this:
 <br>
 
 
-## Workflow
-1. Write your PyTorch Lightning model (see [mnist_model.py](project/src/models/mnist_model.py) for example)
-2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](project/src/datamodules/mnist_datamodule.py) for example)
-3. Write your experiment config, containing paths to your model and datamodule (see [project/configs/experiment](project/configs/experiment) for examples)
-4. Run training with chosen experiment config:<br>
-    ```bash
-    python train.py +experiment=experiment_name.yaml
-    ```
+## Features
+- Hydra superpowers
+    - Override any config parameter from command line
+    - Easily switch between different loggers, callbacks sets, optimizers, etc. from command line
+    - Sweep over hyperparameters from command line
+    - Automatic logging of run history
+    - Sweeper integrations for Optuna, Ray and others
+- Optional callbacks for Weigths&Biases ([wandb_callbacks.py](src/callbacks/wandb_callbacks.py))
+  - To support reproducibility:
+    - UploadCodeToWandbAsArtifact
+    - UploadCheckpointsToWandbAsArtifact
+    - WatchModelWithWandb
+  - To provide examples of logging custom visualisations and metrics with callbacks:
+    - LogBestMetricScoresToWandb
+    - LogF1PrecisionRecallHeatmapToWandb
+    - LogConfusionMatrixToWandb
+- ~~Validating correctness of config with Hydra schemas~~ (TODO) 
+- Method to pretty print configuration composed by Hydra at the start of the run, using [Rich](https://github.com/willmcgugan/rich/) library ([template_utils.py](src/utils/template_utils.py))
+- Method to log chosen parts of Hydra config to all loggers ([template_utils.py](src/utils/template_utils.py))
+- Example of hyperparameter search with Optuna sweeps ([config_optuna.yaml](configs/config_optuna.yaml))
+- ~~Example of hyperparameter search with Weights&Biases sweeps~~ (TODO)
+- Examples of simple bash scripts to check if your model doesn't crash under different training conditions ([tests/](tests/))
+- Example of inference with trained model  ([inference_example.py](src/utils/inference_example.py))
+- Built in requirements ([requirements.txt](requirements.txt))
+- Built in conda environment initialization ([conda_env_gpu.yaml](conda_env_gpu.yaml), [conda_env_cpu.yaml](conda_env_cpu.yaml))
+- Built in python package setup ([setup.py](setup.py))
+- Example with MNIST classification ([mnist_model.py](src/models/mnist_model.py), [mnist_datamodule.py](src/datamodules/mnist_datamodule.py))
 <br>
 
 
@@ -294,6 +282,17 @@ logger:
 <br>
 
 
+## Workflow
+1. Write your PyTorch Lightning model (see [mnist_model.py](project/src/models/mnist_model.py) for example)
+2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](project/src/datamodules/mnist_datamodule.py) for example)
+3. Write your experiment config, containing paths to your model and datamodule (see [project/configs/experiment](project/configs/experiment) for examples)
+4. Run training with chosen experiment config:<br>
+    ```bash
+    python train.py +experiment=experiment_name.yaml
+    ```
+<br>
+
+
 ## Logs
 Hydra creates new working directory for every executed run. <br>
 By default, logs have the following structure:
@@ -331,9 +330,16 @@ You can change this structure by modifying paths in [config.yaml](configs/config
 
 
 ## Experiment Tracking
-PyTorch Lightning provides built in loggers for Weights&Biases, Neptune, Comet, MLFlow, Tensorboard, TestTube and CSV. To use one of them, simply add its configuration to [configs/logger/](configs/logger/) and run:<br>
- `python train.py logger=logger_config.yaml` <br>
+PyTorch Lightning provides built in loggers for Weights&Biases, Neptune, Comet, MLFlow, Tensorboard and CSV. To use one of them, simply add its config to [configs/logger](configs/logger) and run:
+ ```
+ python train.py logger=logger_config.yaml
+ ```
 You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).
+<br><br>
+
+
+## Tests
+(TODO)
 <br><br>
 
 
@@ -455,6 +461,7 @@ Resume from checkpoint:
 # use quotes '' around argument or otherwise $ symbol breaks it
 python train.py '+trainer.resume_from_checkpoint=${work_dir}/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt'
 ```
+<br>
 
 
 ## Installing project as a package
