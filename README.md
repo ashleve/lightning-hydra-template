@@ -12,8 +12,7 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 
 This template tries to be as generic as possible. You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
 
-*This is work in progress. I'm currently figuring out the best workflow for scalable experimentation process.*
-
+*This is work in progress. I'm currently figuring out the best workflow for scalable experimentation process.* <br>
 *Suggestions are always welcome!*
 
 </div>
