@@ -22,7 +22,7 @@ You should be able to easily modify behavior in [train.py](train.py) in case you
 
 
 If you use this template please add <br>
-[![](https://shields.io/badge/-lightning--hydra--template-056B2F?style=flat&logo=github&labelColor=black)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
+[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=black)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
 to you `README.md`.
 <br>
 
@@ -386,10 +386,10 @@ choosing metric names with '/' for wandb -->
 
 # Your Project Name
 
-[![](https://shields.io/badge/-lightning--hydra--template-056B2F?style=flat&logo=github&labelColor=black)](https://github.com/hobogalaxy/lightning-hydra-template) 
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-orange?logo=pytorch"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-blueviolet"></a>
-<a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/config-Hydra-blue"></a>
+<a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-blue"></a>
+[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=black)](https://github.com/hobogalaxy/lightning-hydra-template) 
 
 </div>
 
