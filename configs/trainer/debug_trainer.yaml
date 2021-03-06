@@ -3,7 +3,7 @@
 _target_: pytorch_lightning.Trainer
 
 # set -1 to train on all GPUs available, set 0 to train on CPU only
-gpus: 0  
+gpus: 0
 # auto_select_gpus: True
 
 min_epochs: 3
@@ -13,7 +13,7 @@ max_epochs: 3
 # overfit_batches: 10
 
 # overfit on 5% of the training data
-# overfit_batches: 0.05 
+# overfit_batches: 0.05
 
 # run validation loop every 5 training epochs
 # check_val_every_n_epoch: 5
@@ -51,7 +51,7 @@ accumulate_grad_batches: 5
 # no accumulation for epochs 1-4. accumulate 3 for epochs 5-10. accumulate 20 after that
 # accumulate_grad_batches: {5: 3, 10: 20}
 
-# automatically find the largest batch size that fits into memory and is power of 2 
+# automatically find the largest batch size that fits into memory and is power of 2
 # (requires calling trainer.tune(model=model, datamodule=datamodule))
 # auto_scale_batch_size:'power'
 

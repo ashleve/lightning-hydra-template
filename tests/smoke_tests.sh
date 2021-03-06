@@ -63,7 +63,7 @@ print_config=false
 echo "TEST 9"
 python train.py trainer.gpus=1 trainer.max_epochs=2 \
 datamodule.num_workers=4 datamodule.pin_memory=True \
-print_config=false 
+print_config=false
 
 # Test 16 bit precision
 echo "TEST 10"
