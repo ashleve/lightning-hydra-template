@@ -17,7 +17,7 @@ This template tries to be as generic as possible. You should be able to easily m
 </div>
 <br>
 
-## Contents
+**Contents**
 - [PyTorch Lightning + Hydra Template](#pytorch-lightning--hydra-template)
   - [Why Lightning + Hydra?](#why-lightning--hydra)
   - [Main Ideas](#main-ideas)
