@@ -1,0 +1,45 @@
+default_language_version:
+    python: python3.8
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    # supported hooks: https://pre-commit.com/hooks.html
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: double-quote-string-fixer
+      - id: debug-statements
+      - id: detect-private-key
+      - id: check-yaml
+      - id: check-added-large-files
+      # - id: check-merge-conflict
+
+  # - repo: https://github.com/psf/black
+  #   rev: 20.8b1
+  #   hooks:
+  #     - id: black
+
+#   - repo: https://github.com/PyCQA/isort
+#     rev: 5.7.0
+#     hooks:
+#       - id: isort
+#         # profiles: https://pycqa.github.io/isort/docs/configuration/profiles/
+#         # other flags: https://pycqa.github.io/isort/docs/configuration/options/
+#         args: [--profile, black]
+
+#   - repo: https://github.com/pre-commit/mirrors-yapf
+#     rev: v0.30.0
+#     hooks:
+#       - id: yapf
+#         args: [--parallel, --in-place]
+
+#   - repo: https://gitlab.com/pycqa/flake8
+#     rev: 3.7.9
+#     hooks:
+#       - id: flake8
+
+#   - repo: https://github.com/pre-commit/mirrors-mypy
+#     rev: v0.790
+#     hooks:
+#       - id: mypy
