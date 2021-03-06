@@ -2,11 +2,10 @@
 
 # PyTorch Lightning + Hydra Template
 
-<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-orange?logo=pytorch"></a>
-<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-blueviolet"></a>
-<a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-blue"></a>
-<a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-200000.svg"></a>
-
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-orange?logo=pytorch?style=for-the-badge"></a>
+<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-blueviolet?style=for-the-badge"></a>
+<a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-blue?style=for-the-badge"></a>
+<a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-200000.svg?style=for-the-badge"></a>
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) button to initialize new repository.
 
@@ -65,6 +64,7 @@ This template tries to be as generic as possible. You should be able to easily m
 [tchaton/lightning-hydra-seed](https://github.com/tchaton/lightning-hydra-seed),
 [Erlemar/pytorch_tempest](https://github.com/Erlemar/pytorch_tempest),
 [ryul99/pytorch-project-template](https://github.com/ryul99/pytorch-project-template).*
+- *Check out [lucmos/nn-template](https://github.com/lucmos/nn-template) for easier-to-start but less scalable version of this template.*
 - *To learn how to configure PyTorch with Hydra take a look at [this detailed MNIST tutorial](https://github.com/pytorch/hydra-torch/blob/master/examples/mnist_00.md).*
 - *Repositories useful for configuring PyTorch and PyTorch Lightning classes with Hydra:
 [romesco/hydra-lightning](https://github.com/romesco/hydra-lightning),
