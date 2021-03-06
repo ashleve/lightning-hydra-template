@@ -13,12 +13,12 @@ repos:
       - id: detect-private-key
       - id: check-yaml
       - id: check-added-large-files
-      - id: check-merge-conflict
+      # - id: check-merge-conflict
 
-  - repo: https://github.com/psf/black
-    rev: 20.8b1
-    hooks:
-      - id: black
+  # - repo: https://github.com/psf/black
+  #   rev: 20.8b1
+  #   hooks:
+  #     - id: black
 
 #   - repo: https://github.com/PyCQA/isort
 #     rev: 5.7.0

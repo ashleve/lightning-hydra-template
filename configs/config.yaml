@@ -15,7 +15,7 @@ defaults:
 
 # path to original working directory (that `train.py` was executed from in command line)
 # hydra hijacks working directory by changing it to the current log directory,
-# so it's useful to have path to original working directory as a special variable
+# so it's useful to have path to original work dir as a special variable
 # read more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 work_dir: ${hydra:runtime.cwd}
 
@@ -28,6 +28,14 @@ data_dir: ${work_dir}/data/
 print_config: True
 
 
+# disable python warnings if they annoy you
+disable_warnings: True
+
+
+# disable lightning logs if they annoy you
+disable_lightning_logs: False
+
+
 # output paths for hydra logs
 hydra:
     run:
@@ -38,10 +46,7 @@ hydra:
 
     job:
         env_set:
-            # currently there are some issues with running sweeps alongside wandb 
+            # currently there are some issues with running sweeps alongside wandb
             # https://github.com/wandb/client/issues/1314
             # this env variable fixes that
             WANDB_START_METHOD: thread
-
-            # ignore python warnings
-            # PYTHONWARNINGS: ignore
