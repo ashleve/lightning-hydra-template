@@ -9,8 +9,8 @@ from src.architectures.rnn_model import RNN
 
 class LitModeIMDB(pl.LightningModule):
     """
-    This is example of LightningModule for MNIST classification.
-        https://pytorch-lightning.readthedocs.io/en/latest/lightning_module.html
+    This is example of LightningModule for IMDB text classification.
+        Based on https://github.com/bentrevett/pytorch-sentiment-analysis
     """
 
     def __init__(self, *args, **kwargs):
@@ -25,7 +25,7 @@ class LitModeIMDB(pl.LightningModule):
     def step(self, batch, stage='train'):
         text, text_lengths = batch.text
         logits = self.forward(text, text_lengths).squeeze(1)
-        loss = F.binary_cross_entropy_with_logits(batch.label, logits)
+        loss = F.binary_cross_entropy_with_logits(logits, batch.label)
 
         # metrics
         preds = torch.round(torch.sigmoid(logits))
