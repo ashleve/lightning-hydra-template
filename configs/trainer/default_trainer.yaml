@@ -7,3 +7,4 @@ num_sanity_val_steps: 2
 progress_bar_refresh_rate: 20
 weights_summary: null
 default_root_dir: "lightning_logs/"
+fast_dev_run: False

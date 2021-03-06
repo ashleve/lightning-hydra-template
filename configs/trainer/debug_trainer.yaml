@@ -25,7 +25,7 @@ val_check_interval: 0.5
 # val_check_interval: 100
 
 # run for 1 train, 1 val and 1 test batch
-# fast_dev_run: True
+fast_dev_run: False
 
 # use only 20% of the data
 limit_train_batches: 0.2

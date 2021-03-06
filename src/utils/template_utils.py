@@ -21,6 +21,7 @@ from rich import print
 
 # normal imports
 from typing import List
+from copy import deepcopy
 
 
 def print_config(config: DictConfig):
@@ -36,7 +37,7 @@ def print_config(config: DictConfig):
 
     style = "dim"
 
-    tree = Tree(f":gear: HYDRA CONFIG", style=style, guide_style=style)
+    tree = Tree(f":gear: TRAINING CONFIG", style=style, guide_style=style)
 
     trainer = OmegaConf.to_yaml(config["trainer"], resolve=True)
     trainer_branch = tree.add("Trainer", style=style, guide_style=style)
@@ -71,6 +72,28 @@ def print_config(config: DictConfig):
     seed_branch.add(str(seed) + "\n")
 
     print(tree)
+
+
+def convert_config_to_debug_fiendly(config: DictConfig) -> DictConfig:
+    """Modify Hydra config to make it debug friendly for 'fast_dev_run=True' flag.
+    Debuggers don't like GPUs or multiprocessing.
+    Disable model checkpointing since it crashes with 'fast_dev_run=True'.
+
+    Args:
+        config (DictConfig): [description]
+
+    Returns:
+        DictConfig: [description]
+    """
+    config = deepcopy(config)
+    if config.trainer.get("gpus"):
+        config.trainer.gpus = 0
+    if config.datamodule.get("num_workers"):
+        config.datamodule.num_workers = 0
+    if config.get("callbacks") and config.callbacks.get("model_checkpoint"):
+        OmegaConf.set_struct(config, False)  # enable 'pop' for hydra config
+        config.callbacks.pop("model_checkpoint")
+    return config
 
 
 def log_hparams_to_all_loggers(
