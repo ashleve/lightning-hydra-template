@@ -18,10 +18,9 @@ wandb>=0.10.20
 # tensorboard
 
 # --------- linters --------- #
-# black>=20.8b1
-# flake8>=3.8.4
-# pylint>=2.7.1
-# isort>=5.7.0
+pre-commit
+# isort
+# black
 
 # --------- others --------- #
 rich>=9.12.3

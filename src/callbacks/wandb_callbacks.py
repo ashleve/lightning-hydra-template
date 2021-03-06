@@ -22,7 +22,7 @@ def get_wandb_logger(trainer: pl.Trainer) -> WandbLogger:
 
     if not logger:
         raise Exception(
-            "You're using wandb related callback, "
+            "You are using wandb related callback,"
             "but WandbLogger was not found for some reason..."
         )
 

@@ -11,7 +11,7 @@ defaults:
     - override /logger: null
 
 # we override default configurations with nulls to prevent them from loading at all
-# instead we define all modules and their paths directly in this config, 
+# instead we define all modules and their paths directly in this config,
 # so everything is stored in one place for more readibility
 
 seed: 12345

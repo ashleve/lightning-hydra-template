@@ -1,6 +1,6 @@
-<div align="center">  
+<div align="center">
 
-# PyTorch Lightning + Hydra Template 
+# PyTorch Lightning + Hydra Template
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on <b>`Use this template`</b> button above to initialize new repository.
 
@@ -53,8 +53,8 @@ This template tries to be as generic as possible. You should be able to easily m
 
 ## Some Notes
 - ***Warning: this template currently uses development version of hydra which might be unstable (we wait until Hydra 1.1 is released).*** <br>
-- *Inspired by: 
-[PyTorchLightning/deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template), 
+- *Inspired by:
+[PyTorchLightning/deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template),
 [drivendata/cookiecutter-data-science](https://github.com/drivendata/cookiecutter-data-science),
 [tchaton/lightning-hydra-seed](https://github.com/tchaton/lightning-hydra-seed),
 [Erlemar/pytorch_tempest](https://github.com/Erlemar/pytorch_tempest),
@@ -68,7 +68,7 @@ This template tries to be as generic as possible. You should be able to easily m
 
 
 ## Project Structure
-The directory structure of new project looks like this: 
+The directory structure of new project looks like this:
 ```
 ├── configs                 <- Hydra configuration files
 │   ├── trainer                 <- Configurations of Lightning trainers
@@ -77,7 +77,7 @@ The directory structure of new project looks like this:
 │   ├── callbacks               <- Configurations of Lightning callbacks
 │   ├── logger                  <- Configurations of Lightning loggers
 │   ├── experiment              <- Configurations of experiments
-│   │         
+│   │
 │   ├── config.yaml             <- Main project configuration file
 │   └── config_optuna.yaml      <- Configuration of Optuna hyperparameter search
 │
@@ -100,7 +100,7 @@ The directory structure of new project looks like this:
 │   ├── models                  <- PyTorch Lightning models
 │   ├── transforms              <- Data transformations
 │   └── utils                   <- Utility scripts
-│       ├── inference_example.py    <- Example of inference with trained model 
+│       ├── inference_example.py    <- Example of inference with trained model
 │       └── template_utils.py       <- Some extra template utilities
 │
 ├── train.py                <- Train model with chosen experiment configuration
@@ -132,7 +132,7 @@ The directory structure of new project looks like this:
     - LogBestMetricScoresToWandb
     - LogF1PrecisionRecallHeatmapToWandb
     - LogConfusionMatrixToWandb
-- ~~Validating correctness of config with Hydra schemas~~ (TODO) 
+- ~~Validating correctness of config with Hydra schemas~~ (TODO)
 - Method to pretty print configuration composed by Hydra at the start of the run, using [Rich](https://github.com/willmcgugan/rich/) library ([template_utils.py](src/utils/template_utils.py))
 - Method to log chosen parts of Hydra config to all loggers ([template_utils.py](src/utils/template_utils.py))
 - Example of hyperparameter search with Optuna sweeps ([config_optuna.yaml](configs/config_optuna.yaml))
@@ -151,7 +151,7 @@ Location: [configs/config.yaml](configs/config.yaml)<br>
 Main project config contains default training configuration.<br>
 It determines how config is composed when simply executing command: `python train.py`
 ```yaml
-# to execute run with default training configuration simply run: 
+# to execute run with default training configuration simply run:
 # python train.py
 
 
@@ -208,7 +208,7 @@ defaults:
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-seed: 12345 
+seed: 12345
 
 trainer:
     max_epochs: 10
@@ -234,12 +234,12 @@ More advanced experiment configuration:
 defaults:
     - override /trainer: null
     - override /model: null
-    - override /datamodule: null 
+    - override /datamodule: null
     - override /callbacks: null
     - override /logger: null
 
 # we override default configurations with nulls to prevent them from loading at all
-# instead we define all modules and their paths directly in this config, 
+# instead we define all modules and their paths directly in this config,
 # so everything is stored in one place for more readibility
 
 seed: 12345
@@ -323,7 +323,7 @@ By default, logs have the following structure:
 │       │   └── ...
 │       ├── ...
 │       └── ...
-│    
+│
 ```
 You can change this structure by modifying paths in [config.yaml](configs/config.yaml).
 <br><br>
@@ -350,8 +350,8 @@ You can use many of them at once (see [configs/logger/many_loggers.yaml](configs
 
 ## Tricks
 (TODO)
-<!-- installing miniconda, PrettyErrors and Rich exception handling, VSCode setup, 
-k-fold cross validation, linter, faster tab completion import trick, 
+<!-- installing miniconda, PrettyErrors and Rich exception handling, VSCode setup,
+k-fold cross validation, linter, faster tab completion import trick,
 choosing metric names with '/' for wandb -->
 <br><br>
 
@@ -361,13 +361,13 @@ choosing metric names with '/' for wandb -->
 <br>
 <br>
 
-### DELETE EVERYTHING ABOVE FOR YOUR PROJECT  
- 
+### DELETE EVERYTHING ABOVE FOR YOUR PROJECT
+
 ---
 
-<div align="center">    
- 
-# Your Project Name     
+<div align="center">
+
+# Your Project Name
 Some short description.
 
 </div>
@@ -443,7 +443,7 @@ python train.py -m '+experiment=glob(*)' trainer.max_epochs=10 logger=wandb
 
 To create a sweep over some hyperparameters run:
 ```yaml
-# this will run 6 experiments one after the other, 
+# this will run 6 experiments one after the other,
 # each with different combination of batch_size and learning rate
 python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
