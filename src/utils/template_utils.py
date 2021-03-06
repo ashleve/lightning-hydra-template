@@ -4,6 +4,7 @@ import pytorch_lightning as pl
 # hydra imports
 from omegaconf import DictConfig, OmegaConf
 from hydra.utils import get_original_cwd, to_absolute_path
+from hydra.utils import log
 
 # logger imports
 import wandb
@@ -21,7 +22,44 @@ from rich import print
 
 # normal imports
 from typing import List
-from copy import deepcopy
+import warnings
+import logging
+
+
+def extras(config: DictConfig):
+    """A couple of optional utilities, controlled with variables in main config file.
+    Simply delete those if you don' want them.
+
+    Args:
+        config (DictConfig): [description]
+    """
+
+    # [OPTIONAL] Disable python warnings if <disable_warnings=True>
+    if config.get("disable_warnings"):
+        log.info(f"Disabling python warnings! <{config.disable_warnings=}>")
+        warnings.filterwarnings("ignore")
+
+    # [OPTIONAL] Disable Lightning logs if <disable_lightning_logs=True>
+    if config.get("disable_lightning_logs"):
+        log.info(f"Disabling lightning logs! {config.disable_lightning_logs=}>")
+        logging.getLogger("lightning").setLevel(logging.ERROR)
+
+    # [OPTIONAL] Force debugger friendly configuration if <trainer.fast_dev_run=True>
+    if config.trainer.get("fast_dev_run"):
+        log.info(
+            f"Forcing debugger friendly configuration! "
+            f"<{config.trainer.fast_dev_run=}>"
+        )
+        # Debuggers don't like GPUs or multiprocessing
+        if config.trainer.get("gpus"):
+            config.trainer.gpus = 0
+        if config.datamodule.get("num_workers"):
+            config.datamodule.num_workers = 0
+
+    # [OPTIONAL] Pretty print config using Rich library if <print_config=True>
+    if config.get("print_config"):
+        log.info(f"Pretty printing config with Rich! <{config.print_config=}>")
+        print_config(config)
 
 
 def print_config(config: DictConfig):
@@ -72,28 +110,6 @@ def print_config(config: DictConfig):
     seed_branch.add(str(seed) + "\n")
 
     print(tree)
-
-
-def convert_config_to_debug_fiendly(config: DictConfig) -> DictConfig:
-    """Modify Hydra config to make it debug friendly for 'fast_dev_run=True' flag.
-    Debuggers don't like GPUs or multiprocessing.
-    Disable model checkpointing since it crashes with 'fast_dev_run=True'.
-
-    Args:
-        config (DictConfig): [description]
-
-    Returns:
-        DictConfig: [description]
-    """
-    config = deepcopy(config)
-    if config.trainer.get("gpus"):
-        config.trainer.gpus = 0
-    if config.datamodule.get("num_workers"):
-        config.datamodule.num_workers = 0
-    if config.get("callbacks") and config.callbacks.get("model_checkpoint"):
-        OmegaConf.set_struct(config, False)  # enable 'pop' for hydra config
-        config.callbacks.pop("model_checkpoint")
-    return config
 
 
 def log_hparams_to_all_loggers(

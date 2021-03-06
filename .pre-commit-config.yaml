@@ -4,8 +4,8 @@ default_language_version:
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
-    # supported hooks: https://pre-commit.com/hooks.html
     hooks:
+      # list of supported hooks: https://pre-commit.com/hooks.html
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: debug-statements
@@ -18,6 +18,7 @@ repos:
     rev: 20.8b1
     hooks:
       - id: black
+        # args: [--force-exclude, train.py]
 
 #   - repo: https://github.com/PyCQA/isort
 #     rev: 5.7.0
