@@ -1,17 +1,33 @@
 <div align="center">
 
 # PyTorch Lightning + Hydra Template
+
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-orange?style=for-the-badge&logo=pytorch"></a>
+<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-blueviolet?style=for-the-badge"></a>
+<a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-blue?style=for-the-badge"></a>
+<a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-200000.svg?style=for-the-badge"></a>
+
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
-Click on <b>`Use this template`</b> button above to initialize new repository.
+Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
 
-This template tries to be as generic as possible. You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
+This template tries to be as generic as possible.
+You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
 
-*This is work in progress. I'm currently figuring out the best workflow for scalable experimentation process. Suggestions are always welcome!*
+*This is work in progress. I'm currently figuring out the best workflow for scalable experimentation process.* <br>
+*Suggestions are always welcome!*
 
 </div>
 <br>
+<br>
 
-## Contents
+
+If you use this template please add <br>
+[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=black)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
+to you `README.md`.
+<br>
+
+
+**Contents**
 - [PyTorch Lightning + Hydra Template](#pytorch-lightning--hydra-template)
   - [Why Lightning + Hydra?](#why-lightning--hydra)
   - [Main Ideas](#main-ideas)
@@ -59,6 +75,7 @@ This template tries to be as generic as possible. You should be able to easily m
 [tchaton/lightning-hydra-seed](https://github.com/tchaton/lightning-hydra-seed),
 [Erlemar/pytorch_tempest](https://github.com/Erlemar/pytorch_tempest),
 [ryul99/pytorch-project-template](https://github.com/ryul99/pytorch-project-template).*
+- *Check out [lucmos/nn-template](https://github.com/lucmos/nn-template) for easier-to-start but less scalable version of this template.*
 - *To learn how to configure PyTorch with Hydra take a look at [this detailed MNIST tutorial](https://github.com/pytorch/hydra-torch/blob/master/examples/mnist_00.md).*
 - *Repositories useful for configuring PyTorch and PyTorch Lightning classes with Hydra:
 [romesco/hydra-lightning](https://github.com/romesco/hydra-lightning),
@@ -368,7 +385,11 @@ choosing metric names with '/' for wandb -->
 <div align="center">
 
 # Your Project Name
-Some short description.
+
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-orange?logo=pytorch"></a>
+<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-blueviolet"></a>
+<a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-blue"></a>
+[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=black)](https://github.com/hobogalaxy/lightning-hydra-template) 
 
 </div>
 
