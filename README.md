@@ -10,7 +10,7 @@
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
 
-This template tries to be as generic as possible. <br>
+This template tries to be as generic as possible.
 You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
 
 *This is work in progress. I'm currently figuring out the best workflow for scalable experimentation process.* <br>
