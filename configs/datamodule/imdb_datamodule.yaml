@@ -1,0 +1,5 @@
+_target_: src.datamodules.imdb_datamodule.IMDBDataModule
+data_dir: ${data_dir}  # data_dir is specified in config.yaml
+batch_size: 64
+val_test_split_ratio: 0.5 # part of test set to use as validation
+max_vocab_size: 25000

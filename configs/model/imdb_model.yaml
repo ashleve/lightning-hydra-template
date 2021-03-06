@@ -1,0 +1,14 @@
+_target_: src.models.imdb_model.LitModeIMDB
+optimizer: adam
+lr: 0.001
+weight_decay: 0.00005
+embedding_dim: 100
+hidden_dim: 256
+output_dim: 1
+n_layers: 1
+bidirectional: true
+dropout: 0.5
+
+pad_idx: '${datamodule: pad_idx}'
+vocab_size: '${datamodule: vocab_size}'
+

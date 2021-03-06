@@ -4,7 +4,7 @@ from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning import seed_everything
 
 # hydra imports
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 import hydra
 
 # normal imports
@@ -15,6 +15,10 @@ from src.utils import template_utils as utils
 
 
 def train(config: DictConfig):
+    OmegaConf.register_new_resolver("datamodule",
+                                    lambda name: getattr(datamodule, name)
+                                    if 'datamodule' in locals() else f'datamodule.{name}',
+                                    use_cache=False)
 
     # Pretty print config using Rich library
     if config["print_config"]:
@@ -24,13 +28,13 @@ def train(config: DictConfig):
     if "seed" in config:
         seed_everything(config["seed"])
 
-    # Init PyTorch Lightning model ⚡
-    model: LightningModule = hydra.utils.instantiate(config["model"])
-
     # Init PyTorch Lightning datamodule ⚡
     datamodule: LightningDataModule = hydra.utils.instantiate(config["datamodule"])
     datamodule.prepare_data()
     datamodule.setup()
+
+    # Init PyTorch Lightning model ⚡
+    model: LightningModule = hydra.utils.instantiate(config["model"])
 
     # Init PyTorch Lightning callbacks ⚡
     callbacks: List[Callback] = []

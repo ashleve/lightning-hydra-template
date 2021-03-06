@@ -1,7 +1,8 @@
 # --------- pytorch --------- #
-torch>=1.7.1
+torch==1.7.1
 torchvision>=0.8.2
 torchaudio>=0.7.2
+torchtext==0.8.0
 pytorch-lightning>=1.2.1
 
 # --------- hydra --------- #
