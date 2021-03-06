@@ -13,6 +13,7 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 This template tries to be as generic as possible. You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
 
 *This is work in progress. I'm currently figuring out the best workflow for scalable experimentation process.*
+
 *Suggestions are always welcome!*
 
 </div>
@@ -22,7 +23,7 @@ This template tries to be as generic as possible. You should be able to easily m
 
 If you use this template please add <br>
 [![](https://shields.io/badge/-lightning--hydra--template-emerald?style=flat&logo=github&labelColor=black)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
-to you README.md 
+to you `README.md`.
 <br>
 
 
