@@ -10,10 +10,10 @@
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
 
-This template tries to be as generic as possible.
+This template tries to be as general as possible.
 You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
 
-*This is work in progress. I'm currently figuring out the best workflow for scalable experimentation process.* <br>
+*This template is work in progress.* <br>
 *Suggestions are always welcome!*
 
 </div>
@@ -33,16 +33,21 @@ to you `README.md`.
   - [Main Ideas](#main-ideas)
   - [Some Notes](#some-notes)
   - [Project Structure](#project-structure)
+  - [Quick Setup](#quick-setup)
+    - [Your Superpowers](#your-superpowers)
   - [Features](#features)
   - [Main Project Configuration](#main-project-configuration)
   - [Experiment Configuration](#experiment-configuration)
+    - [Simple Example](#simple-example)
+    - [Advanced Example](#advanced-example)
   - [Workflow](#workflow)
   - [Logs](#logs)
   - [Experiment Tracking](#experiment-tracking)
   - [Tests](#tests)
   - [Distributed Training](#distributed-training)
+  - [Linting](#linting)
   - [Tricks](#tricks)
-  - [How to run](#how-to-run)
+  - [Examples Of Repositories Using This Template](#examples-of-repositories-using-this-template)
   - [Installing project as a package](#installing-project-as-a-package)
 <br>
 
@@ -105,7 +110,7 @@ The directory structure of new project looks like this:
 ├── notebooks               <- Jupyter notebooks
 │
 ├── tests                   <- Tests of any kind
-│   ├── quick_tests.sh          <- A couple of quick experiments to test if your model
+│   ├── smoke_tests.sh          <- A couple of quick experiments to test if your model
 │   │                              doesn't crash under different training conditions
 │   └── ...
 │
@@ -123,6 +128,7 @@ The directory structure of new project looks like this:
 ├── train.py                <- Train model with chosen experiment configuration
 │
 ├── .gitignore
+├── .pre-commit-config.yaml <- Configuration of hooks for automatic code formatting
 ├── LICENSE
 ├── README.md
 ├── conda_env_gpu.yaml      <- File for installing conda env for GPU
@@ -133,23 +139,135 @@ The directory structure of new project looks like this:
 <br>
 
 
+## Quick Setup
+Install dependencies:
+```yaml
+# clone project
+git clone https://github.com/hobogalaxy/lightning-hydra-template
+cd lightning-hydra-template
+
+# optionally create conda environment
+conda env create -f conda_env_gpu.yaml -n testenv
+conda activate testenv
+
+# install requirements
+pip install -r requirements.txt
+```
+
+When running `python train.py` you should see this:
+<div align="center">
+  
+![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/teminal.png)
+
+</div>
+
+### Your Superpowers
+<details>
+<summary>Override any config parameter from command line</summary>
+
+```yaml
+python train.py trainer.max_epochs=20 model.lr=0.0005
+```
+
+</details>
+
+<details>
+<summary>Train on GPU</summary>
+
+```yaml
+python train.py trainer.gpus=1
+```
+
+</details>
+
+<details>
+  <summary>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></summary>
+
+```yaml
+# set project and entity names in `configs/logger/wandb.yaml`
+wandb:
+    project: "your_project_name"
+    entity: "your_wandb_team_name"
+```
+
+```yaml
+# train model with Weights&Biases
+python train.py logger=wandb
+```
+
+</details>
+
+<details>
+<summary>Train model with chosen experiment config</summary>
+
+```yaml
+# experiment configurations are placed in folder `configs/experiment/`
+python train.py +experiment=exp_example_simple
+```
+
+</details>
+
+<details>
+<summary>Execute all experiments from folder</summary>
+
+```yaml
+# execute all experiments from folder `configs/experiment/`
+python train.py -m '+experiment=glob(*)'
+```
+
+</details>
+
+<details>
+<summary>Attach some callbacks to run</summary>
+
+```yaml
+# callback set configurations are placed in `configs/callbacks/`
+python train.py callbacks=default_callbacks
+```
+
+</details>
+
+<details>
+<summary>Create a sweep over some hyperparameters </summary>
+
+```yaml
+# this will run 6 experiments one after the other,
+# each with different combination of batch_size and learning rate
+python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
+```
+
+</details>
+
+<details>
+<summary>Create a sweep over some hyperparameters with Optuna</summary>
+
+```yaml
+# this will run hyperparameter search defined in `configs/config_optuna.yaml` 
+# over chosen experiment config
+python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
+```
+
+</details>
+
+
+<details>
+<summary>Resume training from checkpoint</summary>
+(TODO)
+<!--
+```yaml
+# checkpoint can be either path or URL
+# path should be either absolute or prefixed with `${work_dir}/`
+# use quotes '' around argument or otherwise $ symbol breaks it
+python train.py '+trainer.resume_from_checkpoint=${work_dir}/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt'
+```
+-->
+
+</details>
+
+<br>
+
+
 ## Features
-- Hydra superpowers
-    - Override any config parameter from command line
-    - Easily switch between different loggers, callbacks sets, optimizers, etc. from command line
-    - Sweep over hyperparameters from command line
-    - Automatic logging of run history
-    - Sweeper integrations for Optuna, Ray and others
-- Optional callbacks for Weigths&Biases ([wandb_callbacks.py](src/callbacks/wandb_callbacks.py))
-  - To support reproducibility:
-    - UploadCodeToWandbAsArtifact
-    - UploadCheckpointsToWandbAsArtifact
-    - WatchModelWithWandb
-  - To provide examples of logging custom visualisations and metrics with callbacks:
-    - LogBestMetricScoresToWandb
-    - LogF1PrecisionRecallHeatmapToWandb
-    - LogConfusionMatrixToWandb
-- ~~Validating correctness of config with Hydra schemas~~ (TODO)
 - Method to pretty print configuration composed by Hydra at the start of the run, using [Rich](https://github.com/willmcgugan/rich/) library ([template_utils.py](src/utils/template_utils.py))
 - Method to log chosen parts of Hydra config to all loggers ([template_utils.py](src/utils/template_utils.py))
 - Example of hyperparameter search with Optuna sweeps ([config_optuna.yaml](configs/config_optuna.yaml))
@@ -159,7 +277,17 @@ The directory structure of new project looks like this:
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env_gpu.yaml](conda_env_gpu.yaml), [conda_env_cpu.yaml](conda_env_cpu.yaml))
 - Built in python package setup ([setup.py](setup.py))
+- Built in pre-commit hooks for automatic code formatting ([pre-commit-config.yaml](pre-commit-config.yaml))
 - Example with MNIST classification ([mnist_model.py](src/models/mnist_model.py), [mnist_datamodule.py](src/datamodules/mnist_datamodule.py))
+- Optional callbacks for Weigths&Biases ([wandb_callbacks.py](src/callbacks/wandb_callbacks.py))
+  - To support reproducibility:
+    - UploadCodeToWandbAsArtifact
+    - UploadCheckpointsToWandbAsArtifact
+    - WatchModelWithWandb
+  - To provide examples of logging custom visualisations and metrics with callbacks:
+    - LogBestMetricScoresToWandb
+    - LogF1PrecisionRecallHeatmapToWandb
+    - LogConfusionMatrixToWandb
 <br>
 
 
@@ -168,10 +296,6 @@ Location: [configs/config.yaml](configs/config.yaml)<br>
 Main project config contains default training configuration.<br>
 It determines how config is composed when simply executing command: `python train.py`
 ```yaml
-# to execute run with default training configuration simply run:
-# python train.py
-
-
 # specify here default training configuration
 defaults:
     - trainer: default_trainer.yaml
@@ -196,6 +320,14 @@ data_dir: ${work_dir}/data/
 print_config: True
 
 
+# disable python warnings if they annoy you
+disable_warnings: False
+
+
+# disable lightning logs if they annoy you
+disable_lightning_logs: False
+
+
 # output paths for hydra logs
 hydra:
     run:
@@ -210,7 +342,7 @@ hydra:
 ## Experiment Configuration
 Location: [configs/experiment](configs/experiment)<br>
 You can store many experiment configurations in this folder.<br>
-Example experiment configuration:
+### Simple Example
 ```yaml
 # to execute this experiment run:
 # python train.py +experiment=exp_example_simple
@@ -243,7 +375,7 @@ datamodule:
 ```
 <br>
 
-More advanced experiment configuration:
+### Advanced Example
 ```yaml
 # to execute this experiment run:
 # python train.py +experiment=exp_example_full
@@ -300,9 +432,9 @@ logger:
 
 
 ## Workflow
-1. Write your PyTorch Lightning model (see [mnist_model.py](project/src/models/mnist_model.py) for example)
-2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](project/src/datamodules/mnist_datamodule.py) for example)
-3. Write your experiment config, containing paths to your model and datamodule (see [project/configs/experiment](project/configs/experiment) for examples)
+1. Write your PyTorch Lightning model (see [mnist_model.py](src/models/mnist_model.py) for example)
+2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
+3. Write your experiment config, containing paths to your model and datamodule (see [configs/experiment](configs/experiment) for examples)
 4. Run training with chosen experiment config:<br>
     ```bash
     python train.py +experiment=experiment_name.yaml
@@ -356,11 +488,20 @@ You can use many of them at once (see [configs/logger/many_loggers.yaml](configs
 
 
 ## Tests
-(TODO)
+(TODO) <br>
+To execute:
+```bash
+bash tests/smoke_tests.sh
+```
 <br><br>
 
 
 ## Distributed Training
+(TODO)
+<br><br>
+
+
+## Linting
 (TODO)
 <br><br>
 
@@ -370,6 +511,11 @@ You can use many of them at once (see [configs/logger/many_loggers.yaml](configs
 <!-- installing miniconda, PrettyErrors and Rich exception handling, VSCode setup,
 k-fold cross validation, linter, faster tab completion import trick,
 choosing metric names with '/' for wandb -->
+<br><br>
+
+
+## Examples Of Repositories Using This Template
+(TODO)
 <br><br>
 
 
@@ -418,7 +564,7 @@ python train.py
 
 Or you can train model with chosen logger like Weights&Biases:
 ```yaml
-# set project and entity names in `project/configs/logger/wandb.yaml`
+# set project and entity names in `configs/logger/wandb.yaml`
 wandb:
     project: "your_project_name"
     entity: "your_wandb_team_name"
@@ -429,16 +575,10 @@ wandb:
 python train.py logger=wandb
 ```
 
-Or you can train model with chosen experiment config:
+Train model with chosen experiment config:
 ```yaml
 # experiment configurations are placed in folder `configs/experiment/`
 python train.py +experiment=exp_example_simple
-```
-
-To execute all experiments from folder run:
-```yaml
-# execute all experiments from folder `configs/experiment/`
-python train.py -m '+experiment=glob(*)'
 ```
 
 You can override any parameter from command line like this:
@@ -451,37 +591,6 @@ To train on GPU:
 python train.py trainer.gpus=1
 ```
 
-Attach some callback set to run:
-```yaml
-# callback sets configurations are placed in `configs/callbacks/`
-python train.py callbacks=default_callbacks
-```
-
-Combaining it all:
-```yaml
-python train.py -m '+experiment=glob(*)' trainer.max_epochs=10 logger=wandb
-```
-
-To create a sweep over some hyperparameters run:
-```yaml
-# this will run 6 experiments one after the other,
-# each with different combination of batch_size and learning rate
-python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
-```
-
-To sweep with Optuna:
-```yaml
-# this will run hyperparameter search defined in `configs/config_optuna.yaml`
-python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
-```
-
-Resume from checkpoint:
-```yaml
-# checkpoint can be either path or URL
-# path should be either absolute or prefixed with `${work_dir}/`
-# use quotes '' around argument or otherwise $ symbol breaks it
-python train.py '+trainer.resume_from_checkpoint=${work_dir}/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt'
-```
 <br>
 
 
