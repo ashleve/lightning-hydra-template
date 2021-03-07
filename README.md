@@ -13,7 +13,7 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 This template tries to be as general as possible.
 You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
 
-*This is work in progress. I'm currently figuring out the best workflow for scalable experimentation process.* <br>
+*This template is work in progress.* <br>
 *Suggestions are always welcome!*
 
 </div>
@@ -45,6 +45,7 @@ to you `README.md`.
   - [Experiment Tracking](#experiment-tracking)
   - [Tests](#tests)
   - [Distributed Training](#distributed-training)
+  - [Linting](#linting)
   - [Tricks](#tricks)
   - [Installing project as a package](#installing-project-as-a-package)
 <br>
@@ -126,6 +127,7 @@ The directory structure of new project looks like this:
 ├── train.py                <- Train model with chosen experiment configuration
 │
 ├── .gitignore
+├── .pre-commit-config.yaml <- Configuration of hooks for automatic code formatting
 ├── LICENSE
 ├── README.md
 ├── conda_env_gpu.yaml      <- File for installing conda env for GPU
@@ -274,6 +276,7 @@ python train.py '+trainer.resume_from_checkpoint=${work_dir}/logs/runs/2021-02-2
 - Built in requirements ([requirements.txt](requirements.txt))
 - Built in conda environment initialization ([conda_env_gpu.yaml](conda_env_gpu.yaml), [conda_env_cpu.yaml](conda_env_cpu.yaml))
 - Built in python package setup ([setup.py](setup.py))
+- Built in pre-commit hooks for automatic code formatting ([pre-commit-config.yaml](pre-commit-config.yaml))
 - Example with MNIST classification ([mnist_model.py](src/models/mnist_model.py), [mnist_datamodule.py](src/datamodules/mnist_datamodule.py))
 - Optional callbacks for Weigths&Biases ([wandb_callbacks.py](src/callbacks/wandb_callbacks.py))
   - To support reproducibility:
@@ -493,6 +496,11 @@ bash tests/smoke_tests.sh
 
 
 ## Distributed Training
+(TODO)
+<br><br>
+
+
+## Linting
 (TODO)
 <br><br>
 
