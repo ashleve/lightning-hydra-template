@@ -53,6 +53,15 @@ to you `README.md`.
 <br>
 
 
+## Quick Setup
+When running `python train.py` you should see something like this:
+<div align="center">
+  
+![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/teminal.png)
+
+</div>
+
+
 ## Main Ideas
 - Predefined Structure: clean and scalable so that work can easily be extended and replicated (see [#Project Structure](#project-structure))
 - Rapid Experimentation: thanks to automating pipeline with config files and hydra command line superpowers
