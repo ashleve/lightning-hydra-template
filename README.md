@@ -153,7 +153,7 @@ python train.py -m '+experiment=glob(*)'
 <summary>Attach some callbacks to run</summary>
 
 ```yaml
-# callback sets configurations are placed in `configs/callbacks/`
+# callback set configurations are placed in `configs/callbacks/`
 python train.py callbacks=default_callbacks
 ```
 
@@ -174,11 +174,28 @@ python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 <summary>Create a sweep over some hyperparameters with Optuna</summary>
 
 ```yaml
-# this will run hyperparameter search defined in `configs/config_optuna.yaml` over chosen experiment config
+# this will run hyperparameter search defined in `configs/config_optuna.yaml` 
+# over chosen experiment config
 python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
 ```
 
 </details>
+
+
+<details>
+<summary>Resume training from checkpoint</summary>
+(TODO)
+<!--
+```yaml
+# checkpoint can be either path or URL
+# path should be either absolute or prefixed with `${work_dir}/`
+# use quotes '' around argument or otherwise $ symbol breaks it
+python train.py '+trainer.resume_from_checkpoint=${work_dir}/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt'
+```
+-->
+
+</details>
+
 <br>
 
 
@@ -325,7 +342,7 @@ hydra:
 ## Experiment Configuration
 Location: [configs/experiment](configs/experiment)<br>
 You can store many experiment configurations in this folder.<br>
-### Simple Example:
+### Simple Example
 ```yaml
 # to execute this experiment run:
 # python train.py +experiment=exp_example_simple
@@ -415,9 +432,9 @@ logger:
 
 
 ## Workflow
-1. Write your PyTorch Lightning model (see [mnist_model.py](project/src/models/mnist_model.py) for example)
-2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](project/src/datamodules/mnist_datamodule.py) for example)
-3. Write your experiment config, containing paths to your model and datamodule (see [project/configs/experiment](project/configs/experiment) for examples)
+1. Write your PyTorch Lightning model (see [mnist_model.py](src/models/mnist_model.py) for example)
+2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
+3. Write your experiment config, containing paths to your model and datamodule (see [configs/experiment](configs/experiment) for examples)
 4. Run training with chosen experiment config:<br>
     ```bash
     python train.py +experiment=experiment_name.yaml
@@ -533,7 +550,7 @@ python train.py
 
 Or you can train model with chosen logger like Weights&Biases:
 ```yaml
-# set project and entity names in `project/configs/logger/wandb.yaml`
+# set project and entity names in `configs/logger/wandb.yaml`
 wandb:
     project: "your_project_name"
     entity: "your_wandb_team_name"
@@ -544,16 +561,10 @@ wandb:
 python train.py logger=wandb
 ```
 
-Or you can train model with chosen experiment config:
+Train model with chosen experiment config:
 ```yaml
 # experiment configurations are placed in folder `configs/experiment/`
 python train.py +experiment=exp_example_simple
-```
-
-To execute all experiments from folder run:
-```yaml
-# execute all experiments from folder `configs/experiment/`
-python train.py -m '+experiment=glob(*)'
 ```
 
 You can override any parameter from command line like this:
@@ -566,37 +577,6 @@ To train on GPU:
 python train.py trainer.gpus=1
 ```
 
-Attach some callback set to run:
-```yaml
-# callback sets configurations are placed in `configs/callbacks/`
-python train.py callbacks=default_callbacks
-```
-
-Combaining it all:
-```yaml
-python train.py -m '+experiment=glob(*)' trainer.max_epochs=10 logger=wandb
-```
-
-To create a sweep over some hyperparameters run:
-```yaml
-# this will run 6 experiments one after the other,
-# each with different combination of batch_size and learning rate
-python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
-```
-
-To sweep with Optuna:
-```yaml
-# this will run hyperparameter search defined in `configs/config_optuna.yaml`
-python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
-```
-
-Resume from checkpoint:
-```yaml
-# checkpoint can be either path or URL
-# path should be either absolute or prefixed with `${work_dir}/`
-# use quotes '' around argument or otherwise $ symbol breaks it
-python train.py '+trainer.resume_from_checkpoint=${work_dir}/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt'
-```
 <br>
 
 
