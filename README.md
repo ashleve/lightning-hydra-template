@@ -10,7 +10,7 @@
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
 
-This template tries to be as generic as possible.
+This template tries to be as general as possible.
 You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
 
 *This is work in progress. I'm currently figuring out the best workflow for scalable experimentation process.* <br>
@@ -31,10 +31,10 @@ to you `README.md`.
 - [PyTorch Lightning + Hydra Template](#pytorch-lightning--hydra-template)
   - [Why Lightning + Hydra?](#why-lightning--hydra)
   - [Main Ideas](#main-ideas)
-  - [Quick Setup](#quick-setup)
-    - [Your Superpowers](#your-superpowers)
   - [Some Notes](#some-notes)
   - [Project Structure](#project-structure)
+  - [Quick Setup](#quick-setup)
+    - [Your Superpowers](#your-superpowers)
   - [Features](#features)
   - [Main Project Configuration](#main-project-configuration)
   - [Experiment Configuration](#experiment-configuration)
@@ -46,7 +46,6 @@ to you `README.md`.
   - [Tests](#tests)
   - [Distributed Training](#distributed-training)
   - [Tricks](#tricks)
-  - [How to run](#how-to-run)
   - [Installing project as a package](#installing-project-as-a-package)
 <br>
 
@@ -109,7 +108,7 @@ The directory structure of new project looks like this:
 ├── notebooks               <- Jupyter notebooks
 │
 ├── tests                   <- Tests of any kind
-│   ├── quick_tests.sh          <- A couple of quick experiments to test if your model
+│   ├── smoke_tests.sh          <- A couple of quick experiments to test if your model
 │   │                              doesn't crash under different training conditions
 │   └── ...
 │
@@ -266,16 +265,6 @@ python train.py '+trainer.resume_from_checkpoint=${work_dir}/logs/runs/2021-02-2
 
 
 ## Features
-- Optional callbacks for Weigths&Biases ([wandb_callbacks.py](src/callbacks/wandb_callbacks.py))
-  - To support reproducibility:
-    - UploadCodeToWandbAsArtifact
-    - UploadCheckpointsToWandbAsArtifact
-    - WatchModelWithWandb
-  - To provide examples of logging custom visualisations and metrics with callbacks:
-    - LogBestMetricScoresToWandb
-    - LogF1PrecisionRecallHeatmapToWandb
-    - LogConfusionMatrixToWandb
-- ~~Validating correctness of config with Hydra schemas~~ (TODO)
 - Method to pretty print configuration composed by Hydra at the start of the run, using [Rich](https://github.com/willmcgugan/rich/) library ([template_utils.py](src/utils/template_utils.py))
 - Method to log chosen parts of Hydra config to all loggers ([template_utils.py](src/utils/template_utils.py))
 - Example of hyperparameter search with Optuna sweeps ([config_optuna.yaml](configs/config_optuna.yaml))
@@ -286,6 +275,15 @@ python train.py '+trainer.resume_from_checkpoint=${work_dir}/logs/runs/2021-02-2
 - Built in conda environment initialization ([conda_env_gpu.yaml](conda_env_gpu.yaml), [conda_env_cpu.yaml](conda_env_cpu.yaml))
 - Built in python package setup ([setup.py](setup.py))
 - Example with MNIST classification ([mnist_model.py](src/models/mnist_model.py), [mnist_datamodule.py](src/datamodules/mnist_datamodule.py))
+- Optional callbacks for Weigths&Biases ([wandb_callbacks.py](src/callbacks/wandb_callbacks.py))
+  - To support reproducibility:
+    - UploadCodeToWandbAsArtifact
+    - UploadCheckpointsToWandbAsArtifact
+    - WatchModelWithWandb
+  - To provide examples of logging custom visualisations and metrics with callbacks:
+    - LogBestMetricScoresToWandb
+    - LogF1PrecisionRecallHeatmapToWandb
+    - LogConfusionMatrixToWandb
 <br>
 
 
@@ -486,7 +484,11 @@ You can use many of them at once (see [configs/logger/many_loggers.yaml](configs
 
 
 ## Tests
-(TODO)
+(TODO) <br>
+To execute:
+```bash
+bash tests/smoke_tests.sh
+```
 <br><br>
 
 
