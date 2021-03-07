@@ -10,8 +10,6 @@ import hydra
 
 # normal imports
 from typing import List
-import warnings
-import logging
 
 # src imports
 from src.utils import template_utils as utils

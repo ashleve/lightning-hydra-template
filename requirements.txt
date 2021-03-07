@@ -8,6 +8,7 @@ pytorch-lightning>=1.2.1
 hydra-core==1.1.0.dev3
 hydra_colorlog>=1.0.0
 hydra-optuna-sweeper>=0.9.0rc2
+hydra-ray-launcher==0.1.2
 
 # --------- loggers --------- #
 wandb>=0.10.20
@@ -20,6 +21,7 @@ wandb>=0.10.20
 pre-commit
 # isort
 # black
+# mypy
 
 # --------- others --------- #
 rich>=9.12.3

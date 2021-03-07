@@ -7,7 +7,7 @@ defaults:
   # load everything from main config file
   - config.yaml
 
-  # override sweeper to optuna!
+  # override sweeper to Optuna!
   - override hydra/sweeper: optuna
 
 
