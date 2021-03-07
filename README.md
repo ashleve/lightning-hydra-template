@@ -156,7 +156,7 @@ pip install -r requirements.txt
 
 When running `python train.py` you should see this:
 <div align="center">
-  
+
 ![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/teminal.png)
 
 </div>
@@ -242,7 +242,7 @@ python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 <summary>Create a sweep over some hyperparameters with Optuna</summary>
 
 ```yaml
-# this will run hyperparameter search defined in `configs/config_optuna.yaml` 
+# this will run hyperparameter search defined in `configs/config_optuna.yaml`
 # over chosen experiment config
 python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
 ```
@@ -535,7 +535,7 @@ choosing metric names with '/' for wandb -->
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-orange?logo=pytorch"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-blueviolet"></a>
 <a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-blue"></a>
-[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=001A22)](https://github.com/hobogalaxy/lightning-hydra-template) 
+[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=001A22)](https://github.com/hobogalaxy/lightning-hydra-template)
 
 </div>
 
