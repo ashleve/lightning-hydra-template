@@ -31,11 +31,15 @@ to you `README.md`.
 - [PyTorch Lightning + Hydra Template](#pytorch-lightning--hydra-template)
   - [Why Lightning + Hydra?](#why-lightning--hydra)
   - [Main Ideas](#main-ideas)
+  - [Quick Setup](#quick-setup)
+    - [Your Superpowers](#your-superpowers)
   - [Some Notes](#some-notes)
   - [Project Structure](#project-structure)
   - [Features](#features)
   - [Main Project Configuration](#main-project-configuration)
   - [Experiment Configuration](#experiment-configuration)
+    - [Simple Example](#simple-example)
+    - [Advanced Example](#advanced-example)
   - [Workflow](#workflow)
   - [Logs](#logs)
   - [Experiment Tracking](#experiment-tracking)
@@ -53,15 +57,6 @@ to you `README.md`.
 <br>
 
 
-## Quick Setup
-When running `python train.py` you should see something like this:
-<div align="center">
-  
-![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/teminal.png)
-
-</div>
-
-
 ## Main Ideas
 - Predefined Structure: clean and scalable so that work can easily be extended and replicated (see [#Project Structure](#project-structure))
 - Rapid Experimentation: thanks to automating pipeline with config files and hydra command line superpowers
@@ -73,6 +68,117 @@ When running `python train.py` you should see something like this:
 - Smoke Tests: simple bash scripts running 1-2 epoch experiments to check if your model doesn't crash under different conditions (see [tests](tests/))
 - Hyperparameter Search: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
+<br>
+
+
+## Quick Setup
+Install dependencies:
+```yaml
+# clone project
+git clone https://github.com/hobogalaxy/lightning-hydra-template
+cd lightning-hydra-template
+
+# optionally create conda environment
+conda env create -f conda_env_gpu.yaml -n testenv
+conda activate testenv
+
+# install requirements
+pip install -r requirements.txt
+```
+
+When running `python train.py` you should see this:
+<div align="center">
+  
+![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/teminal.png)
+
+</div>
+
+### Your Superpowers
+<details>
+<summary>Override any config parameter from command line</summary>
+
+```yaml
+python train.py trainer.max_epochs=20 model.lr=0.0005
+```
+
+</details>
+
+<details>
+<summary>Train on GPU</summary>
+
+```yaml
+python train.py trainer.gpus=1
+```
+
+</details>
+
+<details>
+  <summary>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></summary>
+
+```yaml
+# set project and entity names in `configs/logger/wandb.yaml`
+wandb:
+    project: "your_project_name"
+    entity: "your_wandb_team_name"
+```
+
+```yaml
+# train model with Weights&Biases
+python train.py logger=wandb
+```
+
+</details>
+
+<details>
+<summary>Train model with chosen experiment config</summary>
+
+```yaml
+# experiment configurations are placed in folder `configs/experiment/`
+python train.py +experiment=exp_example_simple
+```
+
+</details>
+
+<details>
+<summary>Execute all experiments from folder</summary>
+
+```yaml
+# execute all experiments from folder `configs/experiment/`
+python train.py -m '+experiment=glob(*)'
+```
+
+</details>
+
+<details>
+<summary>Attach some callbacks to run</summary>
+
+```yaml
+# callback sets configurations are placed in `configs/callbacks/`
+python train.py callbacks=default_callbacks
+```
+
+</details>
+
+<details>
+<summary>Create a sweep over some hyperparameters </summary>
+
+```yaml
+# this will run 6 experiments one after the other,
+# each with different combination of batch_size and learning rate
+python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
+```
+
+</details>
+
+<details>
+<summary>Create a sweep over some hyperparameters with Optuna</summary>
+
+```yaml
+# this will run hyperparameter search defined in `configs/config_optuna.yaml` over chosen experiment config
+python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
+```
+
+</details>
 <br>
 
 
@@ -219,7 +325,7 @@ hydra:
 ## Experiment Configuration
 Location: [configs/experiment](configs/experiment)<br>
 You can store many experiment configurations in this folder.<br>
-Example experiment configuration:
+### Simple Example:
 ```yaml
 # to execute this experiment run:
 # python train.py +experiment=exp_example_simple
@@ -252,7 +358,7 @@ datamodule:
 ```
 <br>
 
-More advanced experiment configuration:
+### Advanced Example
 ```yaml
 # to execute this experiment run:
 # python train.py +experiment=exp_example_full
