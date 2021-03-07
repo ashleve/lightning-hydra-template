@@ -47,6 +47,7 @@ to you `README.md`.
   - [Distributed Training](#distributed-training)
   - [Linting](#linting)
   - [Tricks](#tricks)
+  - [Examples Of Repositories Using This Template](#examples-of-repositories-using-this-template)
   - [Installing project as a package](#installing-project-as-a-package)
 <br>
 
@@ -510,6 +511,11 @@ bash tests/smoke_tests.sh
 <!-- installing miniconda, PrettyErrors and Rich exception handling, VSCode setup,
 k-fold cross validation, linter, faster tab completion import trick,
 choosing metric names with '/' for wandb -->
+<br><br>
+
+
+## Examples Of Repositories Using This Template
+(TODO)
 <br><br>
 
 
