@@ -48,10 +48,6 @@ to your `README.md`.
   - [Linting](#linting)
   - [Tricks](#tricks)
   - [Examples Of Repositories Using This Template](#examples-of-repositories-using-this-template)
-    - [DELETE EVERYTHING ABOVE FOR YOUR PROJECT](#delete-everything-above-for-your-project)
-- [Your Project Name](#your-project-name)
-  - [Description](#description)
-  - [How to run](#how-to-run)
   - [Installing project as a package](#installing-project-as-a-package)
 <br>
 
