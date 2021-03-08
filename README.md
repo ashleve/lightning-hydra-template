@@ -23,7 +23,7 @@ You should be able to easily modify behavior in [train.py](train.py) in case you
 
 If you use this template please add <br>
 [![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
-to you `README.md`.
+to your `README.md`.
 <br>
 
 
@@ -362,7 +362,7 @@ hydra:
 
 ## Experiment Configuration
 Location: [configs/experiment](configs/experiment)<br>
-You can store many experiment configurations in this folder.<br>
+You should store all your experiment configurations in this folder.<br>
 ### Simple Example
 ```yaml
 # to execute this experiment run:
