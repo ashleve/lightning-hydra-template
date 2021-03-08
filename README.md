@@ -22,7 +22,7 @@ You should be able to easily modify behavior in [train.py](train.py) in case you
 
 
 If you use this template please add <br>
-[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=001A22)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
+[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
 to you `README.md`.
 <br>
 
@@ -33,7 +33,7 @@ to you `README.md`.
   - [Main Ideas](#main-ideas)
   - [Some Notes](#some-notes)
   - [Project Structure](#project-structure)
-  - [Quick Setup](#quick-setup)
+  - [Quickstart](#quickstart)
     - [Your Superpowers](#your-superpowers)
   - [Features](#features)
   - [Main Project Configuration](#main-project-configuration)
@@ -48,6 +48,10 @@ to you `README.md`.
   - [Linting](#linting)
   - [Tricks](#tricks)
   - [Examples Of Repositories Using This Template](#examples-of-repositories-using-this-template)
+    - [DELETE EVERYTHING ABOVE FOR YOUR PROJECT](#delete-everything-above-for-your-project)
+- [Your Project Name](#your-project-name)
+  - [Description](#description)
+  - [How to run](#how-to-run)
   - [Installing project as a package](#installing-project-as-a-package)
 <br>
 
@@ -139,14 +143,13 @@ The directory structure of new project looks like this:
 <br>
 
 
-## Quick Setup
-Install dependencies:
+## Quickstart
 ```yaml
 # clone project
 git clone https://github.com/hobogalaxy/lightning-hydra-template
 cd lightning-hydra-template
 
-# optionally create conda environment
+# [OPTIONAL] create conda environment
 conda env create -f conda_env_gpu.yaml -n testenv
 conda activate testenv
 
@@ -154,7 +157,7 @@ conda activate testenv
 pip install -r requirements.txt
 ```
 
-When running `python train.py` you should see this:
+When running `python train.py` you should see something like this:
 <div align="center">
 
 ![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/teminal.png)
@@ -162,6 +165,8 @@ When running `python train.py` you should see this:
 </div>
 
 ### Your Superpowers
+(click to expand)
+
 <details>
 <summary>Override any config parameter from command line</summary>
 
@@ -171,6 +176,7 @@ python train.py trainer.max_epochs=20 model.lr=0.0005
 
 </details>
 
+
 <details>
 <summary>Train on GPU</summary>
 
@@ -179,6 +185,7 @@ python train.py trainer.gpus=1
 ```
 
 </details>
+
 
 <details>
   <summary>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></summary>
@@ -197,6 +204,7 @@ python train.py logger=wandb
 
 </details>
 
+
 <details>
 <summary>Train model with chosen experiment config</summary>
 
@@ -206,6 +214,7 @@ python train.py +experiment=exp_example_simple
 ```
 
 </details>
+
 
 <details>
 <summary>Execute all experiments from folder</summary>
@@ -217,6 +226,7 @@ python train.py -m '+experiment=glob(*)'
 
 </details>
 
+
 <details>
 <summary>Attach some callbacks to run</summary>
 
@@ -226,6 +236,31 @@ python train.py callbacks=default_callbacks
 ```
 
 </details>
+
+
+<details>
+<summary>Easily debug</summary>
+
+```yaml
+# run 1 train, val and test loop, using only 1 batch
+python train.py trainer.fast_dev_run=True
+```
+
+</details>
+
+
+<details>
+<summary>Resume training from checkpoint</summary>
+
+```yaml
+# checkpoint can be either path or URL
+# path should absolute!
+python train.py trainer.resume_from_checkpoint="/home/user/X/lightning-hydra-template/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt"
+# currently loading ckpt in Lightning doesn't resume logger experiment, this should change when v1.3 is released...
+```
+
+</details>
+
 
 <details>
 <summary>Create a sweep over some hyperparameters </summary>
@@ -238,6 +273,7 @@ python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 
 </details>
 
+
 <details>
 <summary>Create a sweep over some hyperparameters with Optuna</summary>
 
@@ -246,21 +282,6 @@ python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 # over chosen experiment config
 python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
 ```
-
-</details>
-
-
-<details>
-<summary>Resume training from checkpoint</summary>
-(TODO)
-<!--
-```yaml
-# checkpoint can be either path or URL
-# path should be either absolute or prefixed with `${work_dir}/`
-# use quotes '' around argument or otherwise $ symbol breaks it
-python train.py '+trainer.resume_from_checkpoint=${work_dir}/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt'
-```
--->
 
 </details>
 
@@ -535,7 +556,7 @@ choosing metric names with '/' for wandb -->
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-orange?logo=pytorch"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-blueviolet"></a>
 <a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-blue"></a>
-[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=001A22)](https://github.com/hobogalaxy/lightning-hydra-template)
+[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/hobogalaxy/lightning-hydra-template)
 
 </div>
 

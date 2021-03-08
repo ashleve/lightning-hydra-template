@@ -1,8 +1,8 @@
 # @package _global_
 
 defaults:
-  # load everything from main config file
-  - config.yaml
+    # load everything from main config file
+    - config.yaml
 
-  # override sweeper to Ray!
-  - override hydra/launcher: ray_aws
+    # override sweeper to Ray!
+    - override hydra/launcher: ray_aws

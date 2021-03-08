@@ -8,3 +8,4 @@ progress_bar_refresh_rate: 10
 weights_summary: null
 default_root_dir: "lightning_logs/"
 fast_dev_run: False
+resume_from_checkpoint: null

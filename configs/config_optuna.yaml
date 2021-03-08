@@ -4,11 +4,11 @@
 # python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple logger=wandb
 
 defaults:
-  # load everything from main config file
-  - config.yaml
+    # load everything from main config file
+    - config.yaml
 
-  # override sweeper to Optuna!
-  - override hydra/sweeper: optuna
+    # override sweeper to Optuna!
+    - override hydra/sweeper: optuna
 
 
 # choose metric which will be optimized by optuna

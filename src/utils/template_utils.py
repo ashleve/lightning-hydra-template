@@ -28,7 +28,6 @@ import logging
 
 def extras(config: DictConfig):
     """A couple of optional utilities, controlled with variables in main config file.
-    Simply delete those if you don' want them.
 
     Args:
         config (DictConfig): [description]
@@ -55,11 +54,6 @@ def extras(config: DictConfig):
             config.trainer.gpus = 0
         if config.datamodule.get("num_workers"):
             config.datamodule.num_workers = 0
-
-    # [OPTIONAL] Pretty print config using Rich library if <print_config=True>
-    if config.get("print_config"):
-        log.info(f"Pretty printing config with Rich! <{config.print_config=}>")
-        print_config(config)
 
 
 def print_config(config: DictConfig):
