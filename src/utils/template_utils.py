@@ -27,23 +27,24 @@ import logging
 
 
 def extras(config: DictConfig):
-    """A couple of optional utilities, controlled with variables in main config file.
-
+    """A couple of optional utilities, controlled by main config file.
+        - easier access to debug mode
+        - forcing debug friendly configuration
+        - disabling warnings
+        - disabling lightning logs
     Args:
         config (DictConfig): [description]
     """
 
-    # [OPTIONAL] Disable python warnings if <disable_warnings=True>
-    if config.get("disable_warnings"):
-        log.info(f"Disabling python warnings! <{config.disable_warnings=}>")
-        warnings.filterwarnings("ignore")
+    # make it possible to add new keys to config
+    OmegaConf.set_struct(config, False)
 
-    # [OPTIONAL] Disable Lightning logs if <disable_lightning_logs=True>
-    if config.get("disable_lightning_logs"):
-        log.info(f"Disabling lightning logs! {config.disable_lightning_logs=}>")
-        logging.getLogger("lightning").setLevel(logging.ERROR)
+    # [OPTIONAL] Set <config.trainer.fast_dev_run=True> if  <config.debug=True>
+    if config.get("debug"):
+        log.info(f"Running in debug mode! <{config.debug=}>")
+        config.trainer.fast_dev_run = True
 
-    # [OPTIONAL] Force debugger friendly configuration if <trainer.fast_dev_run=True>
+    # [OPTIONAL] Force debugger friendly configuration if <config.trainer.fast_dev_run=True>
     if config.trainer.get("fast_dev_run"):
         log.info(
             f"Forcing debugger friendly configuration! "
@@ -55,12 +56,26 @@ def extras(config: DictConfig):
         if config.datamodule.get("num_workers"):
             config.datamodule.num_workers = 0
 
+    # [OPTIONAL] Disable python warnings if <config.disable_warnings=True>
+    if config.get("disable_warnings"):
+        log.info(f"Disabling python warnings! <{config.disable_warnings=}>")
+        warnings.filterwarnings("ignore")
 
-def print_config(config: DictConfig):
+    # [OPTIONAL] Disable Lightning logs if <config.disable_lightning_logs=True>
+    if config.get("disable_lightning_logs"):
+        log.info(f"Disabling lightning logs! {config.disable_lightning_logs=}>")
+        logging.getLogger("lightning").setLevel(logging.ERROR)
+
+    # disable adding new keys to config
+    OmegaConf.set_struct(config, True)
+
+
+def print_config(config: DictConfig, resolve: bool = True):
     """Prints content of Hydra config using Rich library.
 
     Args:
         config (DictConfig): [description]
+        resolve (bool, optional): Whether to resolve reference fields in Hydra config.
     """
 
     # TODO print main config path and experiment config path
@@ -71,15 +86,15 @@ def print_config(config: DictConfig):
 
     tree = Tree(f":gear: TRAINING CONFIG", style=style, guide_style=style)
 
-    trainer = OmegaConf.to_yaml(config["trainer"], resolve=True)
+    trainer = OmegaConf.to_yaml(config["trainer"], resolve=resolve)
     trainer_branch = tree.add("Trainer", style=style, guide_style=style)
     trainer_branch.add(Syntax(trainer, "yaml"))
 
-    model = OmegaConf.to_yaml(config["model"], resolve=True)
+    model = OmegaConf.to_yaml(config["model"], resolve=resolve)
     model_branch = tree.add("Model", style=style, guide_style=style)
     model_branch.add(Syntax(model, "yaml"))
 
-    datamodule = OmegaConf.to_yaml(config["datamodule"], resolve=True)
+    datamodule = OmegaConf.to_yaml(config["datamodule"], resolve=resolve)
     datamodule_branch = tree.add("Datamodule", style=style, guide_style=style)
     datamodule_branch.add(Syntax(datamodule, "yaml"))
 
@@ -87,7 +102,7 @@ def print_config(config: DictConfig):
     if "callbacks" in config:
         for cb_name, cb_conf in config["callbacks"].items():
             cb = callbacks_branch.add(cb_name, style=style, guide_style=style)
-            cb.add(Syntax(OmegaConf.to_yaml(cb_conf, resolve=True), "yaml"))
+            cb.add(Syntax(OmegaConf.to_yaml(cb_conf, resolve=resolve), "yaml"))
     else:
         callbacks_branch.add("None")
 
@@ -95,7 +110,7 @@ def print_config(config: DictConfig):
     if "logger" in config:
         for lg_name, lg_conf in config["logger"].items():
             lg = logger_branch.add(lg_name, style=style, guide_style=style)
-            lg.add(Syntax(OmegaConf.to_yaml(lg_conf, resolve=True), "yaml"))
+            lg.add(Syntax(OmegaConf.to_yaml(lg_conf, resolve=resolve), "yaml"))
     else:
         logger_branch.add("None")
 
@@ -115,6 +130,7 @@ def log_hparams_to_all_loggers(
     logger: List[pl.loggers.LightningLoggerBase],
 ):
     """This method controls which parameters from Hydra config are saved by Lightning loggers.
+    It additionaly saves sizes of each dataset and number of trainable model parameters.
 
     Args:
         config (DictConfig): [description]

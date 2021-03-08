@@ -24,6 +24,12 @@ work_dir: ${hydra:runtime.cwd}
 data_dir: ${work_dir}/data/
 
 
+# use `python train.py debug=true` for easy debugging!
+# this will run 1 train, val and test loop with only 1 batch
+# (equivalent to running `python train.py trainer.fast_dev_run=True`)
+debug: False
+
+
 # pretty print config at the start of the run using Rich library
 print_config: True
 
@@ -45,8 +51,9 @@ hydra:
         subdir: ${hydra.job.num}
 
     job:
+        # set here your environment variables
         env_set:
             # currently there are some issues with running sweeps alongside wandb
             # https://github.com/wandb/client/issues/1314
-            # this env variable fixes that
+            # this env var fixes that
             WANDB_START_METHOD: thread

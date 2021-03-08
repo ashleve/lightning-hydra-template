@@ -254,7 +254,7 @@ python train.py trainer.fast_dev_run=True
 
 ```yaml
 # checkpoint can be either path or URL
-# path should absolute!
+# path should be absolute!
 python train.py trainer.resume_from_checkpoint="/home/user/X/lightning-hydra-template/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt"
 # currently loading ckpt in Lightning doesn't resume logger experiment, this should change when v1.3 is released...
 ```
