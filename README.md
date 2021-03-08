@@ -239,7 +239,7 @@ python train.py callbacks=default_callbacks
 
 ```yaml
 # run 1 train, val and test loop, using only 1 batch
-python train.py trainer.fast_dev_run=True
+python train.py debug=True
 ```
 
 </details>
@@ -333,6 +333,11 @@ work_dir: ${hydra:runtime.cwd}
 data_dir: ${work_dir}/data/
 
 
+# use `python train.py debug=true` for easy debugging!
+# (equivalent to running `python train.py trainer.fast_dev_run=True`)
+debug: False
+
+
 # pretty print config at the start of the run using Rich library
 print_config: True
 
@@ -345,13 +350,20 @@ disable_warnings: False
 disable_lightning_logs: False
 
 
-# output paths for hydra logs
+# hydra configuration
 hydra:
+    
+    # output paths for hydra logs
     run:
         dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
     sweep:
         dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
         subdir: ${hydra.job.num}
+    
+    # set your environment variables here
+    job:
+        env_set:
+            ENV_VAR_X: something
 ```
 <br>
 
