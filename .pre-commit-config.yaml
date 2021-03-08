@@ -19,7 +19,7 @@ repos:
     rev: 20.8b1
     hooks:
       - id: black
-        args: [--force-exclude, train.py]
+        # args: [--force-exclude, train.py]
 
 
 # Isort - import sorting
