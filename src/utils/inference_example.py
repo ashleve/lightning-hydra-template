@@ -5,7 +5,7 @@ from PIL import Image
 
 def predict():
     """
-    This method is example of inference with a trained model.
+    This is example of inference with a trained model.
     It Loads trained image classification model from checkpoint.
     Then it loads example image and predicts its label.
     """

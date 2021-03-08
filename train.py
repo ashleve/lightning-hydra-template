@@ -10,8 +10,6 @@ import hydra
 
 # normal imports
 from typing import List
-import warnings
-import logging
 
 # src imports
 from src.utils import template_utils as utils
@@ -20,11 +18,17 @@ from src.utils import template_utils as utils
 def train(config: DictConfig):
 
     # A couple of optional utilities:
-    # - disabling warnings,
-    # - printing config with Rich,
+    # - easier access to debug mode
     # - forcing debug friendly configuration
+    # - disabling warnings
+    # - disabling lightning logs
     # You can safely get rid of this line if you don't want those
     utils.extras(config)
+
+    # Pretty print config using Rich library
+    if config.get("print_config"):
+        log.info(f"Pretty printing config with Rich! <{config.print_config=}>")
+        utils.print_config(config, resolve=True)
 
     # Set seed for random number generators in pytorch, numpy and python.random
     if "seed" in config:
@@ -101,6 +105,7 @@ def train(config: DictConfig):
 
 @hydra.main(config_path="configs/", config_name="config.yaml")
 def main(config: DictConfig):
+    pass
     return train(config)
 
 

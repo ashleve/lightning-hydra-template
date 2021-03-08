@@ -27,6 +27,12 @@ datamodule.num_workers=4 datamodule.pin_memory=True \
 print_config=false
 
 echo "TEST 3"
+echo "Train with 16-bit precision (1 epoch)"
+python train.py trainer.gpus=-1 trainer.max_epochs=2 \
++trainer.precision=16 \
+print_config=false
+
+echo "TEST 4"
 echo "Train with mixed-precision (apex, 2 epochs)"
 python train.py trainer.gpus=-1 trainer.max_epochs=2 \
 +trainer.amp_backend='apex' +trainer.amp_level='O2' \
