@@ -1,6 +1,7 @@
+from PIL import Image
+
 from src.models.mnist_model import LitModelMNIST
 from src.transforms import mnist_transforms
-from PIL import Image
 
 
 def predict():

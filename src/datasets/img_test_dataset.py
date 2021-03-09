@@ -1,6 +1,7 @@
-from torch.utils.data import Dataset
-from PIL import Image
 import os
+
+from PIL import Image
+from torch.utils.data import Dataset
 
 
 class TestDataset(Dataset):

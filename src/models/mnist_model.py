@@ -1,12 +1,11 @@
 from typing import Any, Dict, List, Sequence, Tuple, Union
 
-from pytorch_lightning.metrics.classification import Accuracy
-import pytorch_lightning as pl
-import torch.nn.functional as F
-import torch
-from torch.optim import Optimizer
-
 import hydra
+import pytorch_lightning as pl
+import torch
+import torch.nn.functional as F
+from pytorch_lightning.metrics.classification import Accuracy
+from torch.optim import Optimizer
 
 from src.architectures.simple_dense_net import SimpleDenseNet
 

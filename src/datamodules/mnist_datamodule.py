@@ -1,7 +1,7 @@
-from torch.utils.data import DataLoader, ConcatDataset, random_split
 from pytorch_lightning import LightningDataModule
-from torchvision.transforms import transforms
+from torch.utils.data import ConcatDataset, DataLoader, random_split
 from torchvision.datasets import MNIST
+from torchvision.transforms import transforms
 
 
 class MNISTDataModule(LightningDataModule):
