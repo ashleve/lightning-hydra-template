@@ -94,9 +94,7 @@ class LitModelMNIST(pl.LightningModule):
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
 
-        # we can return here dict with any tensors
-        # and then read it in some callback or in test_epoch_end()
-        return {"loss": loss, "preds": preds, "targets": targets}
+        return {"loss": loss}
 
     def training_epoch_end(self, outputs: List[Any]) -> None:
         # log best so far train acc and train loss

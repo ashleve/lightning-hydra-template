@@ -50,7 +50,7 @@ print_config=false
 
 echo "TEST 7"
 echo "Run default hydra sweep (executes 4 different combinations in debug mode)"
-python train.py -m datamodule.batch_size=32,64 model.lr=0.001,0.003 \
+python train.py -m datamodule.batch_size=32,64 optimizer.lr=0.001,0.003 \
 debug=True \
 print_config=false
 
