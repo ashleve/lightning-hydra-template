@@ -1,0 +1,8 @@
+_target_: torch.optim.Adam
+# these are default parameters for Adam
+lr: 0.001
+eps: 1e-08
+weight_decay: 0
+
+
+# betas: [ 0.9, 0.999 ]  # BUGGED :(

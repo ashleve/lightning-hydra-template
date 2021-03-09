@@ -48,7 +48,7 @@ def extras(config: DictConfig):
     if config.get("disable_lightning_logs"):
         log.info(f"Disabling lightning logs! {config.disable_lightning_logs=}>")
         logging.getLogger("lightning").setLevel(logging.ERROR)
-        
+
     # [OPTIONAL] Set <config.trainer.fast_dev_run=True> if  <config.debug=True>
     if config.get("debug"):
         log.info(f"Running in debug mode! <{config.debug=}>")

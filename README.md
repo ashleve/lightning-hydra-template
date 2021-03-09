@@ -352,14 +352,14 @@ disable_lightning_logs: False
 
 # hydra configuration
 hydra:
-    
+
     # output paths for hydra logs
     run:
         dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
     sweep:
         dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
         subdir: ${hydra.job.num}
-    
+
     # set your environment variables here
     job:
         env_set:

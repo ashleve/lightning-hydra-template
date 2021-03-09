@@ -18,10 +18,10 @@ from src.utils import template_utils as utils
 def train(config: DictConfig):
 
     # A couple of optional utilities:
-    # - easier access to debug mode
-    # - forcing debug friendly configuration
     # - disabling warnings
     # - disabling lightning logs
+    # - easier access to debug mode
+    # - forcing debug friendly configuration
     # You can safely get rid of this line if you don't want those
     utils.extras(config)
 
@@ -34,13 +34,13 @@ def train(config: DictConfig):
     if "seed" in config:
         seed_everything(config.seed)
 
-    # Init Lightning model ⚡
-    log.info(f"Instantiating model <{config.model._target_}>")
-    model: LightningModule = hydra.utils.instantiate(config.model)
-
     # Init Lightning datamodule ⚡
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(config.datamodule)
+
+    # Init Lightning model ⚡
+    log.info(f"Instantiating model <{config.model._target_}>")
+    model: LightningModule = hydra.utils.instantiate(config.model, optimizer=config.optimizer, _recursive_=False)
 
     # Init Lightning callbacks ⚡
     callbacks: List[Callback] = []
