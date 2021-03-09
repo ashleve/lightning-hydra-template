@@ -14,7 +14,7 @@ repos:
       - id: check-added-large-files
 
 
-# Black - code formatting
+# Black (code formatting)
   - repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:
@@ -22,7 +22,7 @@ repos:
         args: [--force-exclude, train.py]
 
 
-# Isort - import sorting
+# Isort (import sorting)
 #   - repo: https://github.com/PyCQA/isort
 #     rev: 5.7.0
 #     hooks:
@@ -30,9 +30,10 @@ repos:
 #         # profiles: https://pycqa.github.io/isort/docs/configuration/profiles/
 #         # other flags: https://pycqa.github.io/isort/docs/configuration/options/
 #         args: [--profile, black]
+#         files: "src/.*"
 
 
-# MyPy - static type checking
+# MyPy (static type checking)
 #   - repo: https://github.com/pre-commit/mirrors-mypy
 #     rev: v0.790
 #     hooks:

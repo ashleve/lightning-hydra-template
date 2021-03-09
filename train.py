@@ -42,7 +42,7 @@ def train(config: DictConfig):
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(config.datamodule)
 
-    # Init Lightning callbacks
+    # Init Lightning callbacks ⚡
     callbacks: List[Callback] = []
     if "callbacks" in config:
         for _, cb_conf in config["callbacks"].items():
@@ -50,7 +50,7 @@ def train(config: DictConfig):
                 log.info(f"Instantiating callback <{cb_conf._target_}>")
                 callbacks.append(hydra.utils.instantiate(cb_conf))
 
-    # Init Lightning loggers
+    # Init Lightning loggers ⚡
     logger: List[LightningLoggerBase] = []
     if "logger" in config:
         for _, lg_conf in config["logger"].items():
