@@ -27,7 +27,8 @@ data_dir: ${work_dir}/data/
 
 # use `python train.py debug=true` for easy debugging!
 # this will run 1 train, val and test loop with only 1 batch
-# (equivalent to running `python train.py trainer.fast_dev_run=True`)
+# equivalent to running `python train.py trainer.fast_dev_run=true`
+# (this is placed here just for easier access from command line)
 debug: False
 
 

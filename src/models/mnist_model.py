@@ -64,20 +64,20 @@ class LitModelMNIST(pl.LightningModule):
     def training_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
         loss, preds, targets = self.step(batch)
 
-        # log train metrics
+        # log train metrics to your loggers!
         acc = self.train_accuracy(preds, targets)
         self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
         self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
         # we can return here dict with any tensors
         # and then read it in some callback or in training_epoch_end() below
-        # remeber to always return loss from training_step, or else backpropagation will fail!
+        # remember to always return loss from training_step, or else backpropagation will fail!
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
         loss, preds, targets = self.step(batch)
 
-        # log val metrics
+        # log val metrics to your loggers!
         acc = self.val_accuracy(preds, targets)
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
         self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
@@ -89,7 +89,7 @@ class LitModelMNIST(pl.LightningModule):
     def test_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
         loss, preds, targets = self.step(batch)
 
-        # log test metrics
+        # log test metrics to your loggers!
         acc = self.test_accuracy(preds, targets)
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)

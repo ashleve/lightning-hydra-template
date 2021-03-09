@@ -29,13 +29,11 @@ to your `README.md`.
 
 **Contents**
 - [PyTorch Lightning + Hydra Template](#pytorch-lightning--hydra-template)
-  - [Why Lightning + Hydra?](#why-lightning--hydra)
+  - [Why This Template?](#why-this-template)
   - [Main Ideas](#main-ideas)
-  - [Some Notes](#some-notes)
   - [Project Structure](#project-structure)
   - [Quickstart](#quickstart)
     - [Your Superpowers](#your-superpowers)
-  - [Features](#features)
   - [Main Project Configuration](#main-project-configuration)
   - [Experiment Configuration](#experiment-configuration)
     - [Simple Example](#simple-example)
@@ -43,16 +41,22 @@ to your `README.md`.
   - [Workflow](#workflow)
   - [Logs](#logs)
   - [Experiment Tracking](#experiment-tracking)
+  - [Best Practices](#best-practices)
   - [Tests](#tests)
-  - [Distributed Training](#distributed-training)
-  - [Linting](#linting)
   - [Tricks](#tricks)
+- [Other Repositories](#other-repositories)
+  - [Inspirations](#inspirations)
+  - [Useful Repositories](#useful-repositories)
   - [Examples Of Repositories Using This Template](#examples-of-repositories-using-this-template)
+    - [DELETE EVERYTHING ABOVE FOR YOUR PROJECT](#delete-everything-above-for-your-project)
+- [Your Project Name](#your-project-name)
+  - [Description](#description)
+  - [How to run](#how-to-run)
   - [Installing project as a package](#installing-project-as-a-package)
 <br>
 
 
-## Why Lightning + Hydra?
+## Why This Template?
 - <b>[PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning)</b> provides great abstractions for well structured ML code and advanced features like checkpointing, gradient accumulation, distributed training, etc.
 - <b>[Hydra](https://github.com/facebookresearch/hydra)</b> provides convenient way to manage experiment configurations and advanced features like overriding any config parameter from command line, scheduling execution of many runs, etc.
 <br>
@@ -72,32 +76,17 @@ to your `README.md`.
 <br>
 
 
-## Some Notes
-- ***Warning: this template currently uses development version of hydra which might be unstable (we wait until Hydra 1.1 is released).*** <br>
-- *Inspired by:
-[PyTorchLightning/deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template),
-[drivendata/cookiecutter-data-science](https://github.com/drivendata/cookiecutter-data-science),
-[tchaton/lightning-hydra-seed](https://github.com/tchaton/lightning-hydra-seed),
-[Erlemar/pytorch_tempest](https://github.com/Erlemar/pytorch_tempest),
-[ryul99/pytorch-project-template](https://github.com/ryul99/pytorch-project-template).*
-- *Check out [lucmos/nn-template](https://github.com/lucmos/nn-template) for easier-to-start but less scalable version of this template.*
-- *To learn how to configure PyTorch with Hydra take a look at [this detailed MNIST tutorial](https://github.com/pytorch/hydra-torch/blob/master/examples/mnist_00.md).*
-- *Repositories useful for configuring PyTorch and PyTorch Lightning classes with Hydra:
-[romesco/hydra-lightning](https://github.com/romesco/hydra-lightning),
-[pytorch/hydra-torch](https://github.com/pytorch/hydra-torch).*
-- *Suggestions are always welcome!*
-<br>
-
 
 ## Project Structure
 The directory structure of new project looks like this:
 ```
 ├── configs                 <- Hydra configuration files
 │   ├── trainer                 <- Configurations of Lightning trainers
-│   ├── model                   <- Configurations of Lightning models
 │   ├── datamodule              <- Configurations of Lightning datamodules
+│   ├── model                   <- Configurations of Lightning models
 │   ├── callbacks               <- Configurations of Lightning callbacks
 │   ├── logger                  <- Configurations of Lightning loggers
+│   ├── optimizer               <- Configurations of optimizers
 │   ├── experiment              <- Configurations of experiments
 │   │
 │   ├── config.yaml             <- Main project configuration file
@@ -154,11 +143,11 @@ pip install -r requirements.txt
 ```
 
 When running `python train.py` you should see something like this:
-<div align="center">
+<!-- <div align="center">
 
 ![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/teminal.png)
 
-</div>
+</div> -->
 
 ### Your Superpowers
 (click to expand)
@@ -166,18 +155,33 @@ When running `python train.py` you should see something like this:
 <details>
 <summary>Override any config parameter from command line</summary>
 
+Hydra allows you to overwrite any parameter defined in your config, without writing any code!
 ```yaml
-python train.py trainer.max_epochs=20 model.lr=0.0005
+python train.py trainer.max_epochs=20 optimizer.lr=1e-4
 ```
 
 </details>
 
 
 <details>
-<summary>Train on GPU</summary>
+<summary>Train on CPU, GPU, TPU or even with DDP and mixed precision</summary>
 
+PyTorch Lightning makes it incedibly easy to train your models on different hardware!
 ```yaml
+# train on CPU
+python train.py trainer.gpus=0
+
+# train on 1 GPU
 python train.py trainer.gpus=1
+
+# train on TPU
+python train.py trainer.tpu_cores=8
+
+# train with DDP (Distributed Data Parallel) (8 GPUs, 2 nodes)
+python train.py trainer.gpus=4 trainer.num_nodes=2 trainer.accelerator='ddp'
+
+# train with mixed precision
+python train.py trainer.amp_backend="apex" trainer.amp_level="O1" trainer.precision=16
 ```
 
 </details>
@@ -186,6 +190,7 @@ python train.py trainer.gpus=1
 <details>
   <summary>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></summary>
 
+PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking). Example setup is as easy as:
 ```yaml
 # set project and entity names in `configs/logger/wandb.yaml`
 wandb:
@@ -204,6 +209,7 @@ python train.py logger=wandb
 <details>
 <summary>Train model with chosen experiment config</summary>
 
+Hydra allows you to separate project config from experiment configs.
 ```yaml
 # experiment configurations are placed in folder `configs/experiment/`
 python train.py +experiment=exp_example_simple
@@ -213,19 +219,9 @@ python train.py +experiment=exp_example_simple
 
 
 <details>
-<summary>Execute all experiments from folder</summary>
-
-```yaml
-# execute all experiments from folder `configs/experiment/`
-python train.py -m '+experiment=glob(*)'
-```
-
-</details>
-
-
-<details>
 <summary>Attach some callbacks to run</summary>
 
+Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).
 ```yaml
 # callback set configurations are placed in `configs/callbacks/`
 python train.py callbacks=default_callbacks
@@ -235,11 +231,49 @@ python train.py callbacks=default_callbacks
 
 
 <details>
+<summary>Use different tricks available in Pytorch Lightning</summary>
+
+PyTorch Lightning provides about [40+ useful trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags), like:
+```yaml
+# accumulate gradients from 10 training steps
+python train.py trainer.accumulate_grad_batches=10
+
+# gradient clipping may be enabled to avoid exploding gradients
+python train.py trainer.gradient_clip_val=0.5
+
+# stochastic weight averaging can make your models generalize better
+python train.py trainer.stochastic_weight_avg=True
+
+# run validation loop 4 times during a training epoch
+python train.py trainer.val_check_interval=0.25
+
+
+```
+
+
+</details>
+
+
+<details>
 <summary>Easily debug</summary>
 
 ```yaml
 # run 1 train, val and test loop, using only 1 batch
-python train.py debug=True
+python train.py debug=true
+
+# print full weight summary of all PyTorch modules
+python train.py trainer.weights_summary="full"
+
+# print execution time profiling after training ends
+python train.py trainer.profiler="simple"
+
+# try overfitting to 10 batches
+python train.py trainer.overfit_batches=10
+
+# use only 20% of the data
+python train.py trainer.limit_train_batches=0.2 \
+trainer.limit_val_batches=0.2 trainer.limit_test_batches=0.2
+
 ```
 
 </details>
@@ -251,27 +285,28 @@ python train.py debug=True
 ```yaml
 # checkpoint can be either path or URL
 # path should be absolute!
-python train.py trainer.resume_from_checkpoint="/home/user/X/lightning-hydra-template/logs/runs/2021-02-28/16-50-49/checkpoints/last.ckpt"
-# currently loading ckpt in Lightning doesn't resume logger experiment, this should change when v1.3 is released...
+python train.py trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
 ```
+Currently loading ckpt in Lightning doesn't resume logger experiment, but this will change in future release of Lightning.
 
 </details>
 
 
 <details>
-<summary>Create a sweep over some hyperparameters </summary>
+<summary>Create a sweep over hyperparameters </summary>
 
 ```yaml
 # this will run 6 experiments one after the other,
 # each with different combination of batch_size and learning rate
 python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
+*Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported inn future Hydra release.
 
 </details>
 
 
 <details>
-<summary>Create a sweep over some hyperparameters with Optuna</summary>
+<summary>Create a sweep over hyperparameters with Optuna</summary>
 
 ```yaml
 # this will run hyperparameter search defined in `configs/config_optuna.yaml`
@@ -281,37 +316,33 @@ python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simp
 
 </details>
 
+<details>
+<summary>Execute all experiments from folder</summary>
+
+Hydra provides special syntax for controlling multiruns. Read more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run).
+```yaml
+# execute all experiments from folder `configs/experiment/`
+python train.py -m '+experiment=glob(*)'
+```
+
+</details>
+
+<details>
+<summary>Execute sweep on a remote AWS cluster</summary>
+
+This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.
+
+</details>
+
 <br>
 
-
-## Features
-- Method to pretty print configuration composed by Hydra at the start of the run, using [Rich](https://github.com/willmcgugan/rich/) library ([template_utils.py](src/utils/template_utils.py))
-- Method to log chosen parts of Hydra config to all loggers ([template_utils.py](src/utils/template_utils.py))
-- Example of hyperparameter search with Optuna sweeps ([config_optuna.yaml](configs/config_optuna.yaml))
-- ~~Example of hyperparameter search with Weights&Biases sweeps~~ (TODO)
-- Examples of simple bash scripts to check if your model doesn't crash under different training conditions ([tests/](tests/))
-- Example of inference with trained model  ([inference_example.py](src/utils/inference_example.py))
-- Built in requirements ([requirements.txt](requirements.txt))
-- Built in conda environment initialization ([conda_env_gpu.yaml](conda_env_gpu.yaml), [conda_env_cpu.yaml](conda_env_cpu.yaml))
-- Built in python package setup ([setup.py](setup.py))
-- Built in pre-commit hooks for automatic code formatting ([pre-commit-config.yaml](pre-commit-config.yaml))
-- Example with MNIST classification ([mnist_model.py](src/models/mnist_model.py), [mnist_datamodule.py](src/datamodules/mnist_datamodule.py))
-- Optional callbacks for Weigths&Biases ([wandb_callbacks.py](src/callbacks/wandb_callbacks.py))
-  - To support reproducibility:
-    - UploadCodeToWandbAsArtifact
-    - UploadCheckpointsToWandbAsArtifact
-    - WatchModelWithWandb
-  - To provide examples of logging custom visualisations and metrics with callbacks:
-    - LogBestMetricScoresToWandb
-    - LogF1PrecisionRecallHeatmapToWandb
-    - LogConfusionMatrixToWandb
-<br>
 
 
 ## Main Project Configuration
 Location: [configs/config.yaml](configs/config.yaml)<br>
 Main project config contains default training configuration.<br>
-It determines how config is composed when simply executing command: `python train.py`
+It determines how config is composed when simply executing command `python train.py`.<br>
+It also specifies everything that shouldn't be managed by experiment configurations.
 ```yaml
 # specify here default training configuration
 defaults:
@@ -371,6 +402,7 @@ hydra:
 ## Experiment Configuration
 Location: [configs/experiment](configs/experiment)<br>
 You should store all your experiment configurations in this folder.<br>
+Experiment configurations allow you to overwrite parameters from main project configuration.
 ### Simple Example
 ```yaml
 # to execute this experiment run:
@@ -454,6 +486,8 @@ datamodule:
 
 logger:
     wandb:
+        _target_: pytorch_lightning.loggers.wandb.WandbLogger
+        project: "lightning-hydra-template"
         tags: ["best_model", "uwu"]
         notes: "Description of this model."
 ```
@@ -466,7 +500,7 @@ logger:
 3. Write your experiment config, containing paths to your model and datamodule (see [configs/experiment](configs/experiment) for examples)
 4. Run training with chosen experiment config:<br>
     ```bash
-    python train.py +experiment=experiment_name.yaml
+    python train.py +experiment=experiment_name
     ```
 <br>
 
@@ -503,35 +537,43 @@ By default, logs have the following structure:
 │       └── ...
 │
 ```
-You can change this structure by modifying paths in [config.yaml](configs/config.yaml).
+You can change this structure by modifying paths in [main project configuration](configs/config.yaml).
 <br><br>
 
 
 ## Experiment Tracking
-PyTorch Lightning provides built in loggers for Weights&Biases, Neptune, Comet, MLFlow, Tensorboard and CSV. To use one of them, simply add its config to [configs/logger](configs/logger) and run:
+PyTorch Lightning supports the most popular logging frameworks:
+- Weights&Biases
+- Neptune
+- Comet
+- MLFlow
+- TestTube
+- Tensorboard
+- Csv files
+
+These tools help you keep track of hyperparameters and output metrics and allow you to compare and visualize results.
+
+To use one of them simply complete its configuration in [configs/logger](configs/logger) and run:
+ ```yaml
+ python train.py logger=logger_name
  ```
- python train.py logger=logger_config.yaml
- ```
-You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).
+You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).<br>
+You can also write your own logger.<br>
+
+Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_model.py).
+
 <br><br>
 
 
+## Best Practices
+
+
 ## Tests
-(TODO) <br>
+Simple bash script running a couple of 1-2 epoch experiments.
 To execute:
 ```bash
 bash tests/smoke_tests.sh
 ```
-<br><br>
-
-
-## Distributed Training
-(TODO)
-<br><br>
-
-
-## Linting
-(TODO)
 <br><br>
 
 
@@ -542,16 +584,35 @@ k-fold cross validation, linter, faster tab completion import trick,
 choosing metric names with '/' for wandb -->
 <br><br>
 
+- *To learn how to configure PyTorch with Hydra take a look at [this detailed MNIST tutorial](https://github.com/pytorch/hydra-torch/blob/master/examples/mnist_00.md).*
+# Other Repositories
 
-## Examples Of Repositories Using This Template
+## Inspirations
+This template was inspired by:
+[PyTorchLightning/deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template),
+[drivendata/cookiecutter-data-science](https://github.com/drivendata/cookiecutter-data-science),
+[tchaton/lightning-hydra-seed](https://github.com/tchaton/lightning-hydra-seed),
+[Erlemar/pytorch_tempest](https://github.com/Erlemar/pytorch_tempest),
+[ryul99/pytorch-project-template](https://github.com/ryul99/pytorch-project-template),
+[lucmos/nn-template](https://github.com/lucmos/nn-template).
+
+
+##  Useful Repositories
+- [pytorch/hydra-torch](https://github.com/pytorch/hydra-torch) - resources for configuring PyTorch classes with Hydra
+- [romesco/hydra-lightning](https://github.com/romesco/hydra-lightning) - resources for configuring PyTorch Lightning classes with Hydra
+- [lucmos/nn-template](https://github.com/lucmos/nn-template) - similar template that's easier to start with but less scalable/general
+
+##  Examples Of Repositories Using This Template
 (TODO)
-<br><br>
 
 
 
 <br>
 <br>
 <br>
+<br>
+
+
 
 ### DELETE EVERYTHING ABOVE FOR YOUR PROJECT
 
@@ -572,7 +633,7 @@ choosing metric names with '/' for wandb -->
 What it does
 
 ## How to run
-First, install dependencies:
+Install dependencies:
 ```yaml
 # clone project
 git clone https://github.com/YourGithubName/your-repo-name
@@ -586,12 +647,12 @@ conda activate your_env_name
 pip install -r requirements.txt
 ```
 
-Next, you can train model with default configuration without logging:
+Train model with default configuration:
 ```yaml
 python train.py
 ```
 
-Or you can train model with chosen logger like Weights&Biases:
+Train model with chosen logger like Weights&Biases:
 ```yaml
 # set project and entity names in `configs/logger/wandb.yaml`
 wandb:
