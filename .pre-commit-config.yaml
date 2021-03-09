@@ -2,6 +2,8 @@ default_language_version:
     python: python3.8
 
 repos:
+
+# Pre-commit-hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
@@ -12,14 +14,12 @@ repos:
       - id: check-yaml
       - id: check-added-large-files
 
-
 # Black (code formatting)
   - repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:
       - id: black
         # args: [--force-exclude, train.py]
-
 
 # Isort (import sorting)
   - repo: https://github.com/PyCQA/isort
@@ -30,7 +30,6 @@ repos:
         # other flags: https://pycqa.github.io/isort/docs/configuration/options/
         args: [--profile, black, --skip, train.py, --filter-files]
         # files: "src/.*"
-
 
 # MyPy (static type checking)
 #   - repo: https://github.com/pre-commit/mirrors-mypy
