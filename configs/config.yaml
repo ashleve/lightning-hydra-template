@@ -42,8 +42,10 @@ disable_warnings: True
 disable_lightning_logs: False
 
 
-# output paths for hydra logs
+# hydra configuration
 hydra:
+
+    # output paths for hydra logs
     run:
         dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
     sweep:
@@ -51,7 +53,7 @@ hydra:
         subdir: ${hydra.job.num}
 
     job:
-        # set here your environment variables
+        # set your environment variables here
         env_set:
             # currently there are some issues with running sweeps alongside wandb
             # https://github.com/wandb/client/issues/1314

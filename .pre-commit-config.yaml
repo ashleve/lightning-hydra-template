@@ -30,6 +30,7 @@ repos:
 #         # profiles: https://pycqa.github.io/isort/docs/configuration/profiles/
 #         # other flags: https://pycqa.github.io/isort/docs/configuration/options/
 #         args: [--profile, black]
+#         files: "src/.*"
 
 
 # MyPy - static type checking
