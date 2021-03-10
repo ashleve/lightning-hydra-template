@@ -32,8 +32,7 @@ class LitModelMNIST(pl.LightningModule):
         # it also allows to access params with 'self.hparams' attribute
         self.save_hyperparameters()
 
-        # self.architecture = SimpleDenseNet(hparams=self.hparams)
-        self.architecture = SimpleDenseNet(hparams=kwargs)
+        self.architecture = SimpleDenseNet(hparams=self.hparams)
 
         # loss function
         self.criterion = torch.nn.CrossEntropyLoss()
@@ -96,6 +95,7 @@ class LitModelMNIST(pl.LightningModule):
 
         return {"loss": loss}
 
+    # [OPTIONAL METHOD]
     def training_epoch_end(self, outputs: List[Any]) -> None:
         # log best so far train acc and train loss
         self.metric_hist["train/acc"].append(self.trainer.callback_metrics["train/acc"])
@@ -105,6 +105,7 @@ class LitModelMNIST(pl.LightningModule):
         self.log("train/acc_best", max(self.metric_hist["train/acc"]), prog_bar=False)
         self.log("train/loss_best", min(self.metric_hist["train/loss"]), prog_bar=False)
 
+    # [OPTIONAL METHOD]
     def validation_epoch_end(self, outputs: List[Any]) -> None:
         # log best so far val acc and val loss
         self.metric_hist["val/acc"].append(self.trainer.callback_metrics["val/acc"])

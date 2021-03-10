@@ -54,7 +54,7 @@ hydra:
         subdir: ${hydra.job.num}
 
     job:
-        # set your environment variables here
+        # you can set environment variables here
         env_set:
             # currently there are some issues with running sweeps alongside wandb
             # https://github.com/wandb/client/issues/1314

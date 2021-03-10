@@ -166,7 +166,7 @@ python train.py trainer.max_epochs=20 optimizer.lr=1e-4
 <details>
 <summary>Train on CPU, GPU, TPU or even with DDP and mixed precision</summary>
 
-PyTorch Lightning makes it incedibly easy to train your models on different hardware!
+PyTorch Lightning makes it really easy to train your models on different hardware!
 ```yaml
 # train on CPU
 python train.py trainer.gpus=0
@@ -190,7 +190,7 @@ python train.py trainer.amp_backend="apex" trainer.amp_level="O1" trainer.precis
 <details>
   <summary>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></summary>
 
-PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking). Example setup is as easy as:
+PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking).
 ```yaml
 # set project and entity names in `configs/logger/wandb.yaml`
 wandb:
@@ -209,7 +209,6 @@ python train.py logger=wandb
 <details>
 <summary>Train model with chosen experiment config</summary>
 
-Hydra allows you to separate project config from experiment configs.
 ```yaml
 # experiment configurations are placed in folder `configs/experiment/`
 python train.py +experiment=exp_example_simple
@@ -287,7 +286,7 @@ trainer.limit_val_batches=0.2 trainer.limit_test_batches=0.2
 # path should be absolute!
 python train.py trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
 ```
-Currently loading ckpt in Lightning doesn't resume logger experiment, but this will change in future release of Lightning.
+> *Currently loading ckpt in Lightning doesn't resume logger experiment, but this will be supported in future Lightning release.*
 
 </details>
 
@@ -300,7 +299,7 @@ Currently loading ckpt in Lightning doesn't resume logger experiment, but this w
 # each with different combination of batch_size and learning rate
 python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
-*Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported inn future Hydra release.
+> Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported in future Hydra release.*
 
 </details>
 
@@ -551,9 +550,7 @@ PyTorch Lightning supports the most popular logging frameworks:
 - Tensorboard
 - Csv files
 
-These tools help you keep track of hyperparameters and output metrics and allow you to compare and visualize results.
-
-To use one of them simply complete its configuration in [configs/logger](configs/logger) and run:
+These tools help you keep track of hyperparameters and output metrics and allow you to compare and visualize results. To use one of them simply complete its configuration in [configs/logger](configs/logger) and run:
  ```yaml
  python train.py logger=logger_name
  ```
@@ -597,10 +594,10 @@ This template was inspired by:
 [lucmos/nn-template](https://github.com/lucmos/nn-template).
 
 
-##  Useful Repositories
+## Useful Repositories
 - [pytorch/hydra-torch](https://github.com/pytorch/hydra-torch) - resources for configuring PyTorch classes with Hydra
 - [romesco/hydra-lightning](https://github.com/romesco/hydra-lightning) - resources for configuring PyTorch Lightning classes with Hydra
-- [lucmos/nn-template](https://github.com/lucmos/nn-template) - similar template that's easier to start with but less scalable/general
+- [lucmos/nn-template](https://github.com/lucmos/nn-template) - similar template that's easier to start with but less scalable
 
 ##  Examples Of Repositories Using This Template
 (TODO)
@@ -673,7 +670,7 @@ python train.py +experiment=exp_example_simple
 
 You can override any parameter from command line like this:
 ```yaml
-python train.py trainer.max_epochs=20 model.lr=0.0005
+python train.py trainer.max_epochs=20 optimizer.lr=0.0005
 ```
 
 To train on GPU:
