@@ -532,7 +532,7 @@ By default, logs have the following structure:
 │
 ```
 You can change this structure by modifying paths in [main project configuration](configs/config.yaml).
-<br>
+<br><br>
 
 
 ### Experiment Tracking
@@ -553,7 +553,7 @@ You can use many of them at once (see [configs/logger/many_loggers.yaml](configs
 You can also write your own logger.<br>
 
 Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_model.py).
-<br>
+<br><br>
 
 
 ### Callbacks
