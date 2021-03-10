@@ -30,6 +30,13 @@ to your `README.md`.
 - [Project Structure](#project-structure)
 - [Quickstart](#quickstart)
 - [Guide](#guide)
+    - [How To Start?](#how-to-start)
+    - [Main Project Configuration](#main-project-configuration)
+    - [Experiment Configuration](#experiment-configuration)
+    - [Workflow](#workflow)
+    - [Logs](#logs)
+    - [Experiment Tracking](#experiment-tracking)
+    - [Callbacks](#callbacks)
 - [Best Practices](#best-practices)
 - [Tricks](#tricks)
 - [Other Repositories](#other-repositories)
@@ -66,10 +73,9 @@ Hydra is an open-source Python framework that simplifies the development of rese
 - Experiment Configurations: stored in a separate folder, they can be composed out of smaller configs, override chosen parameters or define everything from scratch (see [#Experiment Configuration](#experiment-configuration))
 - Experiment Tracking: many logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
 - Logs: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
-- Smoke Tests: simple bash scripts running 1-2 epoch experiments to check if your model doesn't crash under different conditions (see [tests](tests/))
 - Hyperparameter Search: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
-- Best Practices: a couple of recommended tools and standards (see [#Best Practices](#best-practices))
+- Best Practices: a couple of recommended tools, practices and standards (see [#Best Practices](#best-practices))
 <br>
 
 
@@ -624,7 +630,7 @@ bash tests/smoke_tests.sh
 
 ### Environment Variables
 (TODO)
-<br>
+<br><br>
 
 
 ## Tricks
