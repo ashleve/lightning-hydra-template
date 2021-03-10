@@ -43,6 +43,7 @@ Makes your code neatly organized and provides lots of useful features, like abil
 Hydra is an open-source Python framework that simplifies the development of research and other complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. It provides convenient ways to manage experiments and advanced features like overriding any config parameter from command line or sweeping over hyperparameters.
 <br>
 <br>
+<br>
 
 
 ## Main Ideas Of This Template
@@ -533,6 +534,7 @@ By default, logs have the following structure:
 You can change this structure by modifying paths in [main project configuration](configs/config.yaml).
 <br>
 
+
 ### Experiment Tracking
 PyTorch Lightning supports the most popular logging frameworks:
 - Weights&Biases
@@ -552,6 +554,7 @@ You can also write your own logger.<br>
 
 Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_model.py).
 <br>
+
 
 ### Callbacks
 Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
