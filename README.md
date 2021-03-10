@@ -10,11 +10,7 @@
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
 
-This template tries to be as general as possible.
-You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
-
-*This template is work in progress.* <br>
-*Suggestions are always welcome!*
+*This template is work in progress. Suggestions are always welcome!*
 
 </div>
 <br>
@@ -27,33 +23,19 @@ to your `README.md`.
 <br>
 
 
-**Contents**
-- [PyTorch Lightning + Hydra Template](#pytorch-lightning--hydra-template)
-  - [Main Ideas](#main-ideas)
-  - [Project Structure](#project-structure)
-  - [Quickstart](#quickstart)
-    - [Your Superpowers](#your-superpowers)
-  - [Guide](#guide)
-    - [Main Project Configuration](#main-project-configuration)
-    - [Experiment Configuration](#experiment-configuration)
-      - [Simple Example](#simple-example)
-      - [Advanced Example](#advanced-example)
-    - [Workflow](#workflow)
-    - [Logs](#logs)
-    - [Experiment Tracking](#experiment-tracking)
-  - [Best Practices](#best-practices)
-    - [Code Formating](#code-formating)
-    - [Tests](#tests)
-  - [Tricks](#tricks)
-  - [Other Repositories](#other-repositories)
-    - [Inspirations](#inspirations)
-    - [Useful Repositories](#useful-repositories)
-    - [Examples Of Repositories Using This Template](#examples-of-repositories-using-this-template)
-    - [DELETE EVERYTHING ABOVE FOR YOUR PROJECT](#delete-everything-above-for-your-project)
-- [Your Project Name](#your-project-name)
-  - [Description](#description)
-  - [How to run](#how-to-run)
-  - [Installing project as a package](#installing-project-as-a-package)
+## Introduction
+This template tries to be as general as possible.
+You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
+
+> Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com) or [Neptune](https://neptune.ai) is also recommended.
+
+The main advantage of using it, is that it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code.
+To my knowledge, it's the most all-in-one technology stack for Deep Learning that currently exists. It's also a collection of best practices for efficient workflow and reproducibility.
+
+The main arguments for not using this template, are that Lightning and Hydra are not yet mature, which means you will probably run into some bugs. Also Lightning is not suited for everything, e.g. for Reinforcement Learning it's probably better to replace it with Ray + RLlib.
+
+
+
 <br>
 
 
@@ -336,6 +318,13 @@ python train.py -m '+experiment=glob(*)'
 
 ## Guide
 
+### How To Start?
+- First you should probably get familiar with PyTorch Lightning
+- Next, read this blog post: [Keeping Up with PyTorch Lightning and Hydra](https://towardsdatascience.com/keeping-up-with-pytorch-lightning-and-hydra-2nd-edition-34f88e9d5c90)
+- Lastly, go through [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
+<br>
+
+
 ### Main Project Configuration
 Location: [configs/config.yaml](configs/config.yaml)<br>
 Main project config contains default training configuration.<br>
@@ -396,6 +385,7 @@ hydra:
             ENV_VAR_X: something
 ```
 <br>
+
 
 
 ### Experiment Configuration
@@ -554,7 +544,7 @@ PyTorch Lightning supports the most popular logging frameworks:
 - MLFlow
 - TestTube
 - Tensorboard
-- Csv files
+- Csv
 
 These tools help you keep track of hyperparameters and output metrics and allow you to compare and visualize results. To use one of them simply complete its configuration in [configs/logger](configs/logger) and run:
  ```yaml
@@ -589,7 +579,7 @@ k-fold cross validation, linter, faster tab completion import trick,
 choosing metric names with '/' for wandb -->
 <br><br>
 
-- *To learn how to configure PyTorch with Hydra take a look at [this detailed MNIST tutorial](https://github.com/pytorch/hydra-torch/blob/master/examples/mnist_00.md).*
+
 ## Other Repositories
 
 ### Inspirations
@@ -603,12 +593,14 @@ This template was inspired by:
 
 
 ### Useful Repositories
-- [pytorch/hydra-torch](https://github.com/pytorch/hydra-torch) - resources for configuring PyTorch classes with Hydra
+- [pytorch/hydra-torch](https://github.com/pytorch/hydra-torch) - resources for configuring PyTorch classes with Hydra,
 - [romesco/hydra-lightning](https://github.com/romesco/hydra-lightning) - resources for configuring PyTorch Lightning classes with Hydra
 - [lucmos/nn-template](https://github.com/lucmos/nn-template) - similar template that's easier to start with but less scalable
 
 ###  Examples Of Repositories Using This Template
 (TODO)
+<br>
+
 
 
 
