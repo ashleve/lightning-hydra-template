@@ -5,9 +5,8 @@ from src.transforms import mnist_transforms
 
 
 def predict():
-    """
-    This is example of inference with a trained model.
-    It Loads trained image classification model from checkpoint.
+    """Example of inference with trained model.
+    It loads trained image classification model from checkpoint.
     Then it loads example image and predicts its label.
     """
 
