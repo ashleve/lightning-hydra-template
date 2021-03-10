@@ -143,11 +143,11 @@ pip install -r requirements.txt
 ```
 
 When running `python train.py` you should see something like this:
-<!-- <div align="center">
+<div align="center">
 
 ![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/teminal.png)
 
-</div> -->
+</div>
 
 ### Your Superpowers
 (click to expand)
@@ -220,7 +220,7 @@ python train.py +experiment=exp_example_simple
 <details>
 <summary>Attach some callbacks to run</summary>
 
-Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).
+>Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).
 ```yaml
 # callback set configurations are placed in `configs/callbacks/`
 python train.py callbacks=default_callbacks
@@ -232,7 +232,7 @@ python train.py callbacks=default_callbacks
 <details>
 <summary>Use different tricks available in Pytorch Lightning</summary>
 
-PyTorch Lightning provides about [40+ useful trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags), like:
+>PyTorch Lightning provides about [40+ useful trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags).
 ```yaml
 # accumulate gradients from 10 training steps
 python train.py trainer.accumulate_grad_batches=10
@@ -322,14 +322,14 @@ python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simp
 # execute all experiments from folder `configs/experiment/`
 python train.py -m '+experiment=glob(*)'
 ```
-> Hydra provides special syntax for controlling behavior multiruns. Read more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run).
+> Hydra provides special syntax for controlling of behavior multiruns. Read more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run).
 
 </details>
 
 <details>
 <summary>Execute sweep on a remote AWS cluster</summary>
 
-This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.
+>This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.
 
 </details>
 
