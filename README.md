@@ -13,9 +13,8 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 *This template is work in progress. Suggestions are always welcome!*
 
 </div>
+<br><br>
 
-
-<br>
 
 
 If you use this template please add <br>
