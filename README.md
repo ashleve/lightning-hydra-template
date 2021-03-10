@@ -168,9 +168,9 @@ python train.py trainer.amp_backend="apex" trainer.amp_level="O1" trainer.precis
 <details>
   <summary>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></summary>
 
-> *PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking).*
+> *PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking). Using wandb requires you to [setup account](https://www.wandb.com/) first. After that just complete the config as below.*
 ```yaml
-# set project and entity names in `configs/logger/wandb.yaml`
+# set project and entity names in `configs/logger/wandb`
 wandb:
     project: "your_project_name"
     entity: "your_wandb_team_name"
@@ -178,8 +178,10 @@ wandb:
 
 ```yaml
 # train model with Weights&Biases
+# link to wandb dashboard should appear in the terminal
 python train.py logger=wandb
 ```
+> Click [here]() to see example wandb dashboard generated with this template.
 
 </details>
 
@@ -224,8 +226,6 @@ python train.py trainer.stochastic_weight_avg=True
 
 # run validation loop 4 times during a training epoch
 python train.py trainer.val_check_interval=0.25
-
-
 ```
 
 
@@ -251,7 +251,6 @@ python train.py trainer.overfit_batches=10
 # use only 20% of the data
 python train.py trainer.limit_train_batches=0.2 \
 trainer.limit_val_batches=0.2 trainer.limit_test_batches=0.2
-
 ```
 
 </details>
