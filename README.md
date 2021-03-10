@@ -45,7 +45,6 @@ Hydra is an open-source Python framework that simplifies the development of rese
 <br>
 
 
-
 ## Main Ideas Of This Template
 - Predefined Structure: clean and scalable so that work can easily be extended and replicated (see [#Project Structure](#project-structure))
 - Rapid Experimentation: thanks to automating pipeline with config files and hydra command line superpowers
@@ -59,7 +58,6 @@ Hydra is an open-source Python framework that simplifies the development of rese
 - Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
 - Best Practices: a couple of recommended tools and standards (see [#Best Practices](#best-practices))
 <br>
-
 
 
 ## Project Structure
@@ -317,17 +315,15 @@ python train.py -m '+experiment=glob(*)'
 > *This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.*
 
 </details>
-
 <br>
 
 
 ## Guide
 
 ### How To Start?
-- First you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
+- First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
 - Next, read this blog post: [Keeping Up with PyTorch Lightning and Hydra](https://towardsdatascience.com/keeping-up-with-pytorch-lightning-and-hydra-2nd-edition-34f88e9d5c90)
 - Lastly, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
-<br>
 
 
 ### Main Project Configuration
@@ -389,14 +385,13 @@ hydra:
         env_set:
             ENV_VAR_X: something
 ```
-<br>
-
 
 
 ### Experiment Configuration
 Location: [configs/experiment](configs/experiment)<br>
 You should store all your experiment configurations in this folder.<br>
 Experiment configurations allow you to overwrite parameters from main project configuration.
+
 #### Simple Example
 ```yaml
 # to execute this experiment run:
@@ -431,7 +426,7 @@ datamodule:
     batch_size: 64
     train_val_test_split: [55_000, 5_000, 10_000]
 ```
-<br>
+
 
 #### Advanced Example
 ```yaml
@@ -491,7 +486,6 @@ logger:
         tags: ["best_model", "uwu"]
         notes: "Description of this model."
 ```
-<br>
 
 
 ### Workflow
@@ -537,7 +531,6 @@ By default, logs have the following structure:
 │
 ```
 You can change this structure by modifying paths in [main project configuration](configs/config.yaml).
-<br><br>
 
 
 ### Experiment Tracking
@@ -559,8 +552,6 @@ You can also write your own logger.<br>
 
 Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_model.py).
 
-<br>
-
 
 ### Callbacks
 Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
@@ -573,8 +564,6 @@ To support reproducibility:
 To provide examples of logging custom visualisations with callbacks:
 - LogConfusionMatrixToWandb
 - LogF1PrecisionRecallHeatmapToWandb
-<br>
-
 
 
 ## Best Practices
@@ -620,16 +609,12 @@ bash tests/smoke_tests.sh
 ### Environment Variables
 (TODO)
 
-<br>
-
-
 
 ## Tricks
 (TODO)
 <!-- installing miniconda, PrettyErrors and Rich exception handling, VSCode setup,
 k-fold cross validation, linter, faster tab completion import trick,
 choosing metric names with '/' for wandb -->
-<br><br>
 
 
 ## Other Repositories
@@ -651,7 +636,7 @@ This template was inspired by:
 
 ###  Examples Of Repositories Using This Template
 (TODO)
-<br>
+
 
 
 
