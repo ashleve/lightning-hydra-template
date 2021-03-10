@@ -237,9 +237,6 @@ python train.py callbacks=default_callbacks
 
 > *PyTorch Lightning provides about [40+ useful trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags).*
 ```yaml
-# accumulate gradients from 10 training steps
-python train.py trainer.accumulate_grad_batches=10
-
 # gradient clipping may be enabled to avoid exploding gradients
 python train.py trainer.gradient_clip_val=0.5
 
@@ -248,6 +245,9 @@ python train.py trainer.stochastic_weight_avg=True
 
 # run validation loop 4 times during a training epoch
 python train.py trainer.val_check_interval=0.25
+
+# accumulate gradients
+python train.py trainer.accumulate_grad_batches=10
 ```
 
 
@@ -267,8 +267,8 @@ python train.py trainer.weights_summary="full"
 # print execution time profiling after training ends
 python train.py trainer.profiler="simple"
 
-# try overfitting to 10 batches
-python train.py trainer.overfit_batches=10
+# try overfitting to 1 batch
+python train.py trainer.overfit_batches=1 trainer.max_epochs=20
 
 # use only 20% of the data
 python train.py trainer.limit_train_batches=0.2 \
@@ -297,7 +297,7 @@ python train.py trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt
 ```yaml
 # this will run 6 experiments one after the other,
 # each with different combination of batch_size and learning rate
-python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
+python train.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
 ```
 > *Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported in future Hydra release.*
 
@@ -708,20 +708,7 @@ Train model with default configuration:
 python train.py
 ```
 
-Train model with chosen logger like Weights&Biases:
-```yaml
-# set project and entity names in `configs/logger/wandb.yaml`
-wandb:
-    project: "your_project_name"
-    entity: "your_wandb_team_name"
-```
-
-```yaml
-# train model with Weights&Biases
-python train.py logger=wandb
-```
-
-Train model with chosen experiment config:
+Train model with chosen experiment configuration:
 ```yaml
 # experiment configurations are placed in folder `configs/experiment/`
 python train.py +experiment=exp_example_simple
@@ -736,7 +723,6 @@ To train on GPU:
 ```yaml
 python train.py trainer.gpus=1
 ```
-
 <br>
 
 

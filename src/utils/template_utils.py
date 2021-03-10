@@ -24,6 +24,10 @@ def extras(config: DictConfig):
 
     # make it possible to add new keys to config
     OmegaConf.set_struct(config, False)
+    
+    # fix double logging bug (this will be removed when lightning releases patch)
+    pl_logger = logging.getLogger('lightning')
+    pl_logger.propagate = False
 
     # [OPTIONAL] Disable python warnings if <config.disable_warnings=True>
     if config.get("disable_warnings"):

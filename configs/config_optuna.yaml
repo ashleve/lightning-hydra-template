@@ -41,7 +41,7 @@ hydra:
             datamodule.batch_size:
                 type: categorical
                 choices: [32, 64, 128]
-            model.lr:
+            optimizer.lr:
                 type: float
                 low: 0.0001
                 high: 0.2

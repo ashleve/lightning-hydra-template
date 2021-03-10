@@ -107,7 +107,6 @@ def train(config: DictConfig):
 
 @hydra.main(config_path="configs/", config_name="config.yaml")
 def main(config: DictConfig):
-    pass
     return train(config)
 
 
