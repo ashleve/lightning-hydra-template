@@ -30,7 +30,7 @@ hydra:
             direction: maximize
 
             # number of experiments that will be executed
-            n_trials: 30
+            n_trials: 20
 
             # choose optuna hyperparameter sampler ('tpe', 'random', 'cmaes' or 'nsgaii', 'motpe')
             # learn more here: https://optuna.readthedocs.io/en/stable/reference/samplers.html

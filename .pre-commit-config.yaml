@@ -2,36 +2,34 @@ default_language_version:
     python: python3.8
 
 repos:
+
+# Pre-commit-hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
       # list of supported hooks: https://pre-commit.com/hooks.html
-      - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: debug-statements
       - id: detect-private-key
       - id: check-yaml
       - id: check-added-large-files
 
-
 # Black (code formatting)
   - repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:
       - id: black
-        args: [--force-exclude, train.py]
-
+        # args: [--force-exclude, train.py]
 
 # Isort (import sorting)
-#   - repo: https://github.com/PyCQA/isort
-#     rev: 5.7.0
-#     hooks:
-#       - id: isort
-#         # profiles: https://pycqa.github.io/isort/docs/configuration/profiles/
-#         # other flags: https://pycqa.github.io/isort/docs/configuration/options/
-#         args: [--profile, black]
-#         files: "src/.*"
-
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.7.0
+    hooks:
+      - id: isort
+        # profiles: https://pycqa.github.io/isort/docs/configuration/profiles/
+        # other flags: https://pycqa.github.io/isort/docs/configuration/options/
+        args: [--profile, black, --skip, train.py, --filter-files]
+        # files: "src/.*"
 
 # MyPy (static type checking)
 #   - repo: https://github.com/pre-commit/mirrors-mypy

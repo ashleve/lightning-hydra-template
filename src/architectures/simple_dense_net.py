@@ -2,7 +2,7 @@ from torch import nn
 
 
 class SimpleDenseNet(nn.Module):
-    def __init__(self, hparams):
+    def __init__(self, hparams: dict):
         super().__init__()
 
         self.model = nn.Sequential(
@@ -19,7 +19,6 @@ class SimpleDenseNet(nn.Module):
             nn.ReLU(),
             nn.Dropout(p=hparams["dropout3"]),
             nn.Linear(hparams["lin3_size"], hparams["output_size"]),
-            nn.LogSoftmax(dim=1),
         )
 
     def forward(self, x):

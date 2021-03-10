@@ -1,37 +1,23 @@
-# lightning imports
+import logging
+import warnings
+from typing import List
+
 import pytorch_lightning as pl
-
-# hydra imports
-from omegaconf import DictConfig, OmegaConf
-from hydra.utils import get_original_cwd, to_absolute_path
-from hydra.utils import log
-
-# logger imports
 import wandb
+from hydra.utils import get_original_cwd, log, to_absolute_path
+from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.loggers.wandb import WandbLogger
-
-# from pytorch_lightning.loggers.neptune import NeptuneLogger
-# from pytorch_lightning.loggers.comet import CometLogger
-# from pytorch_lightning.loggers.mlflow import MLFlowLogger
-# from pytorch_lightning.loggers.tensorboard import TensorBoardLogger
-
-# rich imports
+from rich import print
 from rich.syntax import Syntax
 from rich.tree import Tree
-from rich import print
-
-# normal imports
-from typing import List
-import warnings
-import logging
 
 
 def extras(config: DictConfig):
     """A couple of optional utilities, controlled by main config file.
-        - easier access to debug mode
-        - forcing debug friendly configuration
         - disabling warnings
         - disabling lightning logs
+        - easier access to debug mode
+        - forcing debug friendly configuration
     Args:
         config (DictConfig): [description]
     """
@@ -48,7 +34,7 @@ def extras(config: DictConfig):
     if config.get("disable_lightning_logs"):
         log.info(f"Disabling lightning logs! {config.disable_lightning_logs=}>")
         logging.getLogger("lightning").setLevel(logging.ERROR)
-        
+
     # [OPTIONAL] Set <config.trainer.fast_dev_run=True> if  <config.debug=True>
     if config.get("debug"):
         log.info(f"Running in debug mode! <{config.debug=}>")

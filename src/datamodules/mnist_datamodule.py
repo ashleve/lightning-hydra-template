@@ -1,12 +1,17 @@
-from torch.utils.data import DataLoader, ConcatDataset, random_split
 from pytorch_lightning import LightningDataModule
-from torchvision.transforms import transforms
+from torch.utils.data import ConcatDataset, DataLoader, random_split
 from torchvision.datasets import MNIST
+from torchvision.transforms import transforms
 
 
 class MNISTDataModule(LightningDataModule):
     """
-    This is example of LightningDataModule for MNIST dataset.
+    Example of LightningDataModule for MNIST dataset.
+
+    A DataModule standardizes the training, val, test splits, data preparation and transforms.
+    The main advantage is consistent data splits, data preparation and transforms across models.
+
+    Read the docs:
         https://pytorch-lightning.readthedocs.io/en/latest/datamodules.html
     """
 

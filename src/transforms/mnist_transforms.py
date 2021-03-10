@@ -1,6 +1,5 @@
 from torchvision import transforms
 
-
 mnist_train_transforms = transforms.Compose(
     [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
 )

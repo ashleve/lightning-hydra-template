@@ -4,6 +4,7 @@
 defaults:
     - trainer: default_trainer.yaml
     - model: mnist_model.yaml
+    - optimizer: adam.yaml
     - datamodule: mnist_datamodule.yaml
     - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
@@ -26,7 +27,8 @@ data_dir: ${work_dir}/data/
 
 # use `python train.py debug=true` for easy debugging!
 # this will run 1 train, val and test loop with only 1 batch
-# (equivalent to running `python train.py trainer.fast_dev_run=True`)
+# equivalent to running `python train.py trainer.fast_dev_run=true`
+# (this is placed here just for easier access from command line)
 debug: False
 
 
@@ -52,7 +54,7 @@ hydra:
         subdir: ${hydra.job.num}
 
     job:
-        # set your environment variables here
+        # you can set environment variables here
         env_set:
             # currently there are some issues with running sweeps alongside wandb
             # https://github.com/wandb/client/issues/1314

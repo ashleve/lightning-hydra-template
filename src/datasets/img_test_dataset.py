@@ -1,23 +1,21 @@
-from torch.utils.data import Dataset
-from PIL import Image
 import os
+
+from PIL import Image
+from torch.utils.data import Dataset
 
 
 class TestDataset(Dataset):
-    """
-    Example dataset class for loading images from folder and converting them to monochromatic.
-    Can be used to perform inference with trained MNIST model.
-    """
+    """Example dataset class for loading images from folder."""
 
-    def __init__(self, img_dir, transform):
+    def __init__(self, dir: str, transform):
         self.transform = transform
-        self.images = [os.path.join(img_dir, fname) for fname in os.listdir(img_dir)]
+        self.images = [os.path.join(dir, fname) for fname in os.listdir(dir)]
 
     def __getitem__(self, idx):
         image = Image.open(self.images[idx]).convert("L")  # convert to black and white
         # image = Image.open(self.images[idx]).convert("RGB")
 
-        if self.transform is not None:
+        if self.transform:
             image = self.transform(image)
 
         return image

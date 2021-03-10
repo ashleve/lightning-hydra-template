@@ -1,12 +1,12 @@
+from PIL import Image
+
 from src.models.mnist_model import LitModelMNIST
 from src.transforms import mnist_transforms
-from PIL import Image
 
 
 def predict():
-    """
-    This is example of inference with a trained model.
-    It Loads trained image classification model from checkpoint.
+    """Example of inference with trained model.
+    It loads trained image classification model from checkpoint.
     Then it loads example image and predicts its label.
     """
 

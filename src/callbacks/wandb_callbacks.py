@@ -1,17 +1,13 @@
-# wandb
-from pytorch_lightning.loggers import WandbLogger
-import wandb
-
-# pytorch
-from pytorch_lightning import Callback
-import pytorch_lightning as pl
-import torch
-
-# others
-from sklearn.metrics import precision_score, recall_score, f1_score
-from typing import List
 import glob
 import os
+from typing import List
+
+import pytorch_lightning as pl
+import torch
+import wandb
+from pytorch_lightning import Callback
+from pytorch_lightning.loggers import WandbLogger
+from sklearn.metrics import f1_score, precision_score, recall_score
 
 
 def get_wandb_logger(trainer: pl.Trainer) -> WandbLogger:
