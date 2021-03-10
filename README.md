@@ -155,7 +155,7 @@ When running `python train.py` you should see something like this:
 <details>
 <summary>Override any config parameter from command line</summary>
 
-Hydra allows you to overwrite any parameter defined in your config, without writing any code!
+> Hydra allows you to overwrite any parameter defined in your config, without writing any code!
 ```yaml
 python train.py trainer.max_epochs=20 optimizer.lr=1e-4
 ```
@@ -166,7 +166,7 @@ python train.py trainer.max_epochs=20 optimizer.lr=1e-4
 <details>
 <summary>Train on CPU, GPU, TPU or even with DDP and mixed precision</summary>
 
-PyTorch Lightning makes it really easy to train your models on different hardware!
+> PyTorch Lightning makes it really easy to train your models on different hardware!
 ```yaml
 # train on CPU
 python train.py trainer.gpus=0
@@ -190,7 +190,7 @@ python train.py trainer.amp_backend="apex" trainer.amp_level="O1" trainer.precis
 <details>
   <summary>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></summary>
 
-PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking).
+> PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking).
 ```yaml
 # set project and entity names in `configs/logger/wandb.yaml`
 wandb:
@@ -286,7 +286,7 @@ trainer.limit_val_batches=0.2 trainer.limit_test_batches=0.2
 # path should be absolute!
 python train.py trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
 ```
-> *Currently loading ckpt in Lightning doesn't resume logger experiment, but this will be supported in future Lightning release.*
+> *Currently loading ckpt in Lightning doesn't resume logger experiment, but it will be supported in future Lightning release.*
 
 </details>
 
@@ -299,7 +299,7 @@ python train.py trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt
 # each with different combination of batch_size and learning rate
 python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
-> Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported in future Hydra release.*
+> *Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported in future Hydra release.*
 
 </details>
 
@@ -318,11 +318,11 @@ python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simp
 <details>
 <summary>Execute all experiments from folder</summary>
 
-Hydra provides special syntax for controlling multiruns. Read more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run).
 ```yaml
 # execute all experiments from folder `configs/experiment/`
 python train.py -m '+experiment=glob(*)'
 ```
+> Hydra provides special syntax for controlling behavior multiruns. Read more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run).
 
 </details>
 
