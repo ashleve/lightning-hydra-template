@@ -324,7 +324,7 @@ python train.py -m '+experiment=glob(*)'
 - First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
 - Next, read this blog post: [Keeping Up with PyTorch Lightning and Hydra](https://towardsdatascience.com/keeping-up-with-pytorch-lightning-and-hydra-2nd-edition-34f88e9d5c90)
 - Lastly, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
-
+<br>
 
 ### Main Project Configuration
 Location: [configs/config.yaml](configs/config.yaml)<br>
@@ -385,7 +385,7 @@ hydra:
         env_set:
             ENV_VAR_X: something
 ```
-
+<br>
 
 ### Experiment Configuration
 Location: [configs/experiment](configs/experiment)<br>
@@ -486,7 +486,7 @@ logger:
         tags: ["best_model", "uwu"]
         notes: "Description of this model."
 ```
-
+<br>
 
 ### Workflow
 1. Write your PyTorch Lightning model (see [mnist_model.py](src/models/mnist_model.py) for example)
@@ -496,7 +496,7 @@ logger:
     ```bash
     python train.py +experiment=experiment_name
     ```
-
+<br>
 
 ### Logs
 Hydra creates new working directory for every executed run. <br>
@@ -531,7 +531,7 @@ By default, logs have the following structure:
 │
 ```
 You can change this structure by modifying paths in [main project configuration](configs/config.yaml).
-
+<br>
 
 ### Experiment Tracking
 PyTorch Lightning supports the most popular logging frameworks:
@@ -551,7 +551,7 @@ You can use many of them at once (see [configs/logger/many_loggers.yaml](configs
 You can also write your own logger.<br>
 
 Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_model.py).
-
+<br>
 
 ### Callbacks
 Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
@@ -561,9 +561,10 @@ To support reproducibility:
 - UploadCheckpointsToWandbAsArtifact
 - WatchModelWithWandb
 
-To provide examples of logging custom visualisations with callbacks:
+To provide examples of logging custom visualisations with callbacks only:
 - LogConfusionMatrixToWandb
 - LogF1PrecisionRecallHeatmapToWandb
+<br>
 
 
 ## Best Practices
@@ -598,7 +599,7 @@ You can exclude chosen files from automatic formatting, by modifying config (see
 
 
 ### Tests
-I find myself often running into bugs that come out only in some edge cases or on some specific hardware/environment. To speed up the development I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (using the right trainer flags)<br>
+I find myself often running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
 Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed.
 To execute:
 ```yaml
@@ -608,6 +609,7 @@ bash tests/smoke_tests.sh
 
 ### Environment Variables
 (TODO)
+<br>
 
 
 ## Tricks
@@ -615,6 +617,7 @@ bash tests/smoke_tests.sh
 <!-- installing miniconda, PrettyErrors and Rich exception handling, VSCode setup,
 k-fold cross validation, linter, faster tab completion import trick,
 choosing metric names with '/' for wandb -->
+<br>
 
 
 ## Other Repositories
@@ -634,7 +637,7 @@ This template was inspired by:
 - [romesco/hydra-lightning](https://github.com/romesco/hydra-lightning) - resources for configuring PyTorch Lightning classes with Hydra
 - [lucmos/nn-template](https://github.com/lucmos/nn-template) - similar template that's easier to start with but less scalable
 
-###  Examples Of Repositories Using This Template
+### Examples Of Repositories Using This Template
 (TODO)
 
 
