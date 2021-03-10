@@ -3,9 +3,9 @@
 # specify here default training configuration
 defaults:
     - trainer: default_trainer.yaml
-    - datamodule: mnist_datamodule.yaml
     - model: mnist_model.yaml
     - optimizer: adam.yaml
+    - datamodule: mnist_datamodule.yaml
     - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
 

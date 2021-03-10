@@ -29,25 +29,26 @@ to your `README.md`.
 
 **Contents**
 - [PyTorch Lightning + Hydra Template](#pytorch-lightning--hydra-template)
-  - [Why This Template?](#why-this-template)
   - [Main Ideas](#main-ideas)
   - [Project Structure](#project-structure)
   - [Quickstart](#quickstart)
     - [Your Superpowers](#your-superpowers)
-  - [Main Project Configuration](#main-project-configuration)
-  - [Experiment Configuration](#experiment-configuration)
-    - [Simple Example](#simple-example)
-    - [Advanced Example](#advanced-example)
-  - [Workflow](#workflow)
-  - [Logs](#logs)
-  - [Experiment Tracking](#experiment-tracking)
+  - [Guide](#guide)
+    - [Main Project Configuration](#main-project-configuration)
+    - [Experiment Configuration](#experiment-configuration)
+      - [Simple Example](#simple-example)
+      - [Advanced Example](#advanced-example)
+    - [Workflow](#workflow)
+    - [Logs](#logs)
+    - [Experiment Tracking](#experiment-tracking)
   - [Best Practices](#best-practices)
-  - [Tests](#tests)
+    - [Code Formating](#code-formating)
+    - [Tests](#tests)
   - [Tricks](#tricks)
-- [Other Repositories](#other-repositories)
-  - [Inspirations](#inspirations)
-  - [Useful Repositories](#useful-repositories)
-  - [Examples Of Repositories Using This Template](#examples-of-repositories-using-this-template)
+  - [Other Repositories](#other-repositories)
+    - [Inspirations](#inspirations)
+    - [Useful Repositories](#useful-repositories)
+    - [Examples Of Repositories Using This Template](#examples-of-repositories-using-this-template)
     - [DELETE EVERYTHING ABOVE FOR YOUR PROJECT](#delete-everything-above-for-your-project)
 - [Your Project Name](#your-project-name)
   - [Description](#description)
@@ -55,11 +56,6 @@ to your `README.md`.
   - [Installing project as a package](#installing-project-as-a-package)
 <br>
 
-
-## Why This Template?
-- <b>[PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning)</b> provides great abstractions for well structured ML code and advanced features like checkpointing, gradient accumulation, distributed training, etc.
-- <b>[Hydra](https://github.com/facebookresearch/hydra)</b> provides convenient way to manage experiment configurations and advanced features like overriding any config parameter from command line, scheduling execution of many runs, etc.
-<br>
 
 
 ## Main Ideas
@@ -150,7 +146,7 @@ When running `python train.py` you should see something like this:
 </div>
 
 ### Your Superpowers
-> *click to expand*
+*(click to expand)*
 
 <details>
 <summary>Override any config parameter from command line</summary>
@@ -313,7 +309,7 @@ python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 # over chosen experiment config
 python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
 ```
-> *Using Optuna Sweeper plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a single config file.*
+> *Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a single config file.*
 
 </details>
 
@@ -338,8 +334,9 @@ python train.py -m '+experiment=glob(*)'
 <br>
 
 
+## Guide
 
-## Main Project Configuration
+### Main Project Configuration
 Location: [configs/config.yaml](configs/config.yaml)<br>
 Main project config contains default training configuration.<br>
 It determines how config is composed when simply executing command `python train.py`.<br>
@@ -349,6 +346,7 @@ It also specifies everything that shouldn't be managed by experiment configurati
 defaults:
     - trainer: default_trainer.yaml
     - model: mnist_model.yaml
+    - optimizer: adam.yaml
     - datamodule: mnist_datamodule.yaml
     - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
@@ -400,11 +398,11 @@ hydra:
 <br>
 
 
-## Experiment Configuration
+### Experiment Configuration
 Location: [configs/experiment](configs/experiment)<br>
 You should store all your experiment configurations in this folder.<br>
 Experiment configurations allow you to overwrite parameters from main project configuration.
-### Simple Example
+#### Simple Example
 ```yaml
 # to execute this experiment run:
 # python train.py +experiment=exp_example_simple
@@ -412,6 +410,7 @@ Experiment configurations allow you to overwrite parameters from main project co
 defaults:
     - override /trainer: default_trainer.yaml
     - override /model: mnist_model.yaml
+    - override /optimizer: adam.yaml
     - override /datamodule: mnist_datamodule.yaml
     - override /callbacks: default_callbacks.yaml
     - override /logger: null
@@ -426,10 +425,12 @@ trainer:
     gradient_clip_val: 0.5
 
 model:
-    lr: 0.001
     lin1_size: 128
     lin2_size: 256
     lin3_size: 64
+
+optimizer:
+    lr: 0.005
 
 datamodule:
     batch_size: 64
@@ -437,7 +438,7 @@ datamodule:
 ```
 <br>
 
-### Advanced Example
+#### Advanced Example
 ```yaml
 # to execute this experiment run:
 # python train.py +experiment=exp_example_full
@@ -445,6 +446,7 @@ datamodule:
 defaults:
     - override /trainer: null
     - override /model: null
+    - override /optimizer: null
     - override /datamodule: null
     - override /callbacks: null
     - override /logger: null
@@ -464,10 +466,6 @@ trainer:
 
 model:
     _target_: src.models.mnist_model.LitModelMNIST
-    optimizer: adam
-    lr: 0.001
-    weight_decay: 0.00005
-    architecture: SimpleDenseNet
     input_size: 784
     lin1_size: 256
     dropout1: 0.30
@@ -476,6 +474,12 @@ model:
     lin3_size: 128
     dropout3: 0.20
     output_size: 10
+
+optimizer:
+    _target_: torch.optim.Adam
+    lr: 0.001
+    eps: 1e-08
+    weight_decay: 0
 
 datamodule:
     _target_: src.datamodules.mnist_datamodule.MNISTDataModule
@@ -495,7 +499,7 @@ logger:
 <br>
 
 
-## Workflow
+### Workflow
 1. Write your PyTorch Lightning model (see [mnist_model.py](src/models/mnist_model.py) for example)
 2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
 3. Write your experiment config, containing paths to your model and datamodule (see [configs/experiment](configs/experiment) for examples)
@@ -506,7 +510,7 @@ logger:
 <br>
 
 
-## Logs
+### Logs
 Hydra creates new working directory for every executed run. <br>
 By default, logs have the following structure:
 ```
@@ -542,7 +546,7 @@ You can change this structure by modifying paths in [main project configuration]
 <br><br>
 
 
-## Experiment Tracking
+### Experiment Tracking
 PyTorch Lightning supports the most popular logging frameworks:
 - Weights&Biases
 - Neptune
@@ -567,7 +571,9 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 ## Best Practices
 
 
-## Tests
+### Code Formating
+
+### Tests
 Simple bash script running a couple of 1-2 epoch experiments.
 To execute:
 ```bash
@@ -584,9 +590,9 @@ choosing metric names with '/' for wandb -->
 <br><br>
 
 - *To learn how to configure PyTorch with Hydra take a look at [this detailed MNIST tutorial](https://github.com/pytorch/hydra-torch/blob/master/examples/mnist_00.md).*
-# Other Repositories
+## Other Repositories
 
-## Inspirations
+### Inspirations
 This template was inspired by:
 [PyTorchLightning/deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template),
 [drivendata/cookiecutter-data-science](https://github.com/drivendata/cookiecutter-data-science),
@@ -596,12 +602,12 @@ This template was inspired by:
 [lucmos/nn-template](https://github.com/lucmos/nn-template).
 
 
-## Useful Repositories
+### Useful Repositories
 - [pytorch/hydra-torch](https://github.com/pytorch/hydra-torch) - resources for configuring PyTorch classes with Hydra
 - [romesco/hydra-lightning](https://github.com/romesco/hydra-lightning) - resources for configuring PyTorch Lightning classes with Hydra
 - [lucmos/nn-template](https://github.com/lucmos/nn-template) - similar template that's easier to start with but less scalable
 
-##  Examples Of Repositories Using This Template
+###  Examples Of Repositories Using This Template
 (TODO)
 
 
