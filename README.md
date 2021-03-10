@@ -1,6 +1,6 @@
 <div align="center">
 
-# PyTorch Lightning + Hydra Template
+# Lightning-Hydra-Template
 
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-orange?style=for-the-badge&logo=pytorch"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-blueviolet?style=for-the-badge"></a>
@@ -21,23 +21,27 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 If you use this template please add <br>
 [![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
 to your `README.md`.
-
-
 <br>
 
 
 ## Introduction
 This template tries to be as general as possible.
 You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
+By using it, you avoid writing any boilerplate code. At the same time it's very flexible and you can easily delete any unwanted features from the pipeline.
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
-The main advantage of using it, is that it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's the most all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
+The main advantage of using it, is that it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it might be the most convenient and all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
 
-The main arguments for not using this template, are that Lightning and Hydra are not yet mature, which means you will probably run into some bugs. Also Lightning is not suited for everything, e.g. for Reinforcement Learning it's probably better to replace it with Ray + RLlib.
+The main arguments for not using this template, are that Lightning and Hydra are not yet mature, which means you will probably run into some bugs. Also Lightning is not suited for everything, e.g. for Reinforcement Learning it's probably better to replace it with Ray/RLlib.
+
+### Why PyTorch Lightning?
+PyTorch Lightning is a lightweight PyTorch wrapper for high-performance AI research.
+Makes your code neatly organized and provides lots of useful features, like ability to run model on CPU, GPU, multi-GPU cluster and TPU.
 
 
-
+### Why Hydra?
+Hydra is an open-source Python framework that simplifies the development of research and other complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. It provides convenient ways to manage experiments and advanced features like overriding any config parameter from command line or sweeping over hyperparameters.
 <br>
 
 
@@ -183,7 +187,7 @@ wandb:
 # link to wandb dashboard should appear in the terminal
 python train.py logger=wandb
 ```
-> Click [here]() to see example wandb dashboard generated with this template.
+> *Click [here]() to see example wandb dashboard generated with this template.*
 
 </details>
 
@@ -319,9 +323,9 @@ python train.py -m '+experiment=glob(*)'
 ## Guide
 
 ### How To Start?
-- First you should probably get familiar with PyTorch Lightning
+- First you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
 - Next, read this blog post: [Keeping Up with PyTorch Lightning and Hydra](https://towardsdatascience.com/keeping-up-with-pytorch-lightning-and-hydra-2nd-edition-34f88e9d5c90)
-- Lastly, go through [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
+- Lastly, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
 <br>
 
 
@@ -543,7 +547,7 @@ PyTorch Lightning supports the most popular logging frameworks:
 - MLFlow
 - TestTube
 - Tensorboard
-- Csv
+- CSV
 
 These tools help you keep track of hyperparameters and output metrics and allow you to compare and visualize results. To use one of them simply complete its configuration in [configs/logger](configs/logger) and run:
  ```yaml
@@ -559,10 +563,12 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 
 ### Callbacks
 Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
+
 To support reproducibility:
 - UploadCodeToWandbAsArtifact
 - UploadCheckpointsToWandbAsArtifact
 - WatchModelWithWandb
+
 To provide examples of logging custom visualisations with callbacks:
 - LogConfusionMatrixToWandb
 - LogF1PrecisionRecallHeatmapToWandb
@@ -571,7 +577,6 @@ To provide examples of logging custom visualisations with callbacks:
 
 
 ## Best Practices
-
 
 ### Miniconda
 Use miniconda for your python environments. Makes it easier to install cudatoolkit for GPU and PyTorch.<br>
@@ -584,23 +589,26 @@ bash Miniconda3-latest-Linux-x86_64.sh
 
 
 ### Code Formating
-Use pre-commit hooks to standardize code formatting of your project and save mental energy. Simply install it with:
+Use pre-commit hooks to standardize code formatting of your project and save mental energy.<br>
+Simply install pre-commit package with:
 ```yaml
 pip install pre-commit
-
-# execute in main project folder containing `pre-commit-config.yaml`
+```
+Next, install hooks from `.pre-commit-config.yaml`:
+```
 pre-commit install
 ```
 After that your code will be automatically reformatted on every new commit.<br>
-Currently `pre-commit-config.yaml` contains configuration of **Black** (python code formatting) and **Isort** (python import sorting).
+Currently `.pre-commit-config.yaml` contains configurations of **Black** (python code formatting) and **Isort** (python import sorting).
 To format all files in the project use command:
 ```yaml
 pre-commit run --all-files
 ```
+You can exclude chosen files from automatic formatting, by modifying config (see [.pre-commit-config.yaml](pre-commit-config.yaml))
 
 
 ### Tests
-I find myself often running into bugs that come out only in some edge cases or in some specific hardware/environment. To speed up the development I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case.<br>
+I find myself often running into bugs that come out only in some edge cases or on some specific hardware/environment. To speed up the development I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (using the right trainer flags)<br>
 Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed.
 To execute:
 ```yaml
@@ -609,10 +617,9 @@ bash tests/smoke_tests.sh
 
 
 ### Environment Variables
-
+(TODO)
 
 <br>
-
 
 
 
