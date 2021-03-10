@@ -22,7 +22,7 @@ print_config=false
 
 echo "TEST 2"
 echo "Overfit to 10 batches (10 epochs)"
-python train.py +trainer.overfit_batches=10 \
+python train.py trainer.overfit_batches=10 \
 trainer.min_epochs=10 trainer.max_epochs=10 \
 print_config=false
 
@@ -34,13 +34,13 @@ print_config=false
 echo "TEST 4"
 echo "Train on 25% of data (1 epoch)"
 python train.py trainer.max_epochs=1 \
-+trainer.limit_train_batches=0.25 +trainer.limit_val_batches=0.25 +trainer.limit_test_batches=0.25 \
+trainer.limit_train_batches=0.25 trainer.limit_val_batches=0.25 trainer.limit_test_batches=0.25 \
 print_config=false
 
 echo "TEST 5"
 echo "Train on 15 train batches, 10 val batches, 5 test batches (1 epoch)"
 python train.py trainer.max_epochs=1 \
-+trainer.limit_train_batches=15 +trainer.limit_val_batches=10 +trainer.limit_test_batches=5 \
+trainer.limit_train_batches=15 trainer.limit_val_batches=10 trainer.limit_test_batches=5 \
 print_config=false
 
 echo "TEST 6"
@@ -56,12 +56,12 @@ print_config=false
 
 echo "TEST 8"
 echo "Run with gradient accumulation (1 epoch)"
-python train.py trainer.max_epochs=1 +trainer.accumulate_grad_batches=10 \
+python train.py trainer.max_epochs=1 trainer.accumulate_grad_batches=10 \
 print_config=false
 
 echo "TEST 9"
 echo "Run validation loop twice per epoch (2 epochs)"
-python train.py trainer.max_epochs=2 +trainer.val_check_interval=0.5 \
+python train.py trainer.max_epochs=2 trainer.val_check_interval=0.5 \
 print_config=false
 
 echo "TEST 10"

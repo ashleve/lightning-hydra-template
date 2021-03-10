@@ -16,7 +16,6 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 
 
 <br>
-<br>
 
 
 If you use this template please add <br>
@@ -499,7 +498,6 @@ logger:
     ```bash
     python train.py +experiment=experiment_name
     ```
-<br>
 
 
 ### Logs
@@ -557,26 +555,53 @@ You can also write your own logger.<br>
 
 Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_model.py).
 
-<br><br>
+<br>
 
 
 ### Callbacks
-Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).
-- To support reproducibility:
-  - UploadCodeToWandbAsArtifact
-  - UploadCheckpointsToWandbAsArtifact
-  - WatchModelWithWandb
-- To provide examples of logging custom visualisations with callbacks:
-  - LogConfusionMatrixToWandb
-  - LogF1PrecisionRecallHeatmapToWandb
+Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
+To support reproducibility:
+- UploadCodeToWandbAsArtifact
+- UploadCheckpointsToWandbAsArtifact
+- WatchModelWithWandb
+To provide examples of logging custom visualisations with callbacks:
+- LogConfusionMatrixToWandb
+- LogF1PrecisionRecallHeatmapToWandb
+<br>
+
+
 
 ## Best Practices
 
 
+### Miniconda
+Use miniconda for your python environments. Makes it easier to install cudatoolkit for GPU and PyTorch.<br>
+(I find it unnecessary to install full Anaconda environment, miniconda should be enough)<br>
+Example installation:
+```
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+
 ### Code Formating
+Use pre-commit hooks to standardize code formatting of your project and save mental energy. Simply install it with:
+```
+pip install pre-commit
+
+# execute in main project folder containing `pre-commit-config.yaml`
+pre-commit install
+```
+After that your code will be automatically reformatted on every new commit.<br>
+Currently `pre-commit-config.yaml` contains configuration of **Black** (python code formatting) and **Isort** (python import sorting).
+To format all files in the project use command:
+```
+pre-commit run --all-files
+```
+<br>
+
 
 ### Tests
-Simple bash script running a couple of 1-2 epoch experiments.
+I find myself often running into bugs that come out only in some edge cases or in some specific hardware/environment. To speed up the development I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed.
 To execute:
 ```bash
 bash tests/smoke_tests.sh
@@ -612,7 +637,6 @@ This template was inspired by:
 ###  Examples Of Repositories Using This Template
 (TODO)
 <br>
-
 
 
 
