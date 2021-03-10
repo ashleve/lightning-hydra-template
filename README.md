@@ -26,14 +26,13 @@ to your `README.md`.
 
 ## Introduction
 This template tries to be as general as possible.
-You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
-By using it, you avoid writing any boilerplate code. At the same time it's very flexible and you can easily delete any unwanted features from the pipeline.
+By using it, you avoid writing any boilerplate code. At the same time it's flexible - you can easily delete any unwanted features from the pipeline or rewire the configuration, by modifying behavior in [train.py](train.py).
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
 The main advantage of using it, is that it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it might be the most convenient and all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
 
-The main arguments for not using this template, are that Lightning and Hydra are not yet mature, which means you will probably run into some bugs. Also Lightning is not suited for everything, e.g. for Reinforcement Learning it's probably better to replace it with Ray/RLlib.
+The main arguments for not using this template, are that Lightning and Hydra are not yet mature, which means you will probably run into some bugs. Also Lightning is not well suited for everything, e.g. for Reinforcement Learning it's probably better to replace it with Ray/RLlib.
 
 ### Why PyTorch Lightning?
 PyTorch Lightning is a lightweight PyTorch wrapper for high-performance AI research.
@@ -43,10 +42,11 @@ Makes your code neatly organized and provides lots of useful features, like abil
 ### Why Hydra?
 Hydra is an open-source Python framework that simplifies the development of research and other complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. It provides convenient ways to manage experiments and advanced features like overriding any config parameter from command line or sweeping over hyperparameters.
 <br>
+<br>
 
 
 
-## Main Ideas
+## Main Ideas Of This Template
 - Predefined Structure: clean and scalable so that work can easily be extended and replicated (see [#Project Structure](#project-structure))
 - Rapid Experimentation: thanks to automating pipeline with config files and hydra command line superpowers
 - Little Boilerplate: so pipeline can be easily modified (see [train.py](train.py))
@@ -57,6 +57,7 @@ Hydra is an open-source Python framework that simplifies the development of rese
 - Smoke Tests: simple bash scripts running 1-2 epoch experiments to check if your model doesn't crash under different conditions (see [tests](tests/))
 - Hyperparameter Search: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
+- Best Practices: a couple of recommended tools and standards (see [#Best Practices](#best-practices))
 <br>
 
 
