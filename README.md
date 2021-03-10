@@ -24,7 +24,6 @@ to your `README.md`.
 
 
 <br>
-<br>
 
 
 ## Introduction
@@ -583,9 +582,10 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
 
+
 ### Code Formating
 Use pre-commit hooks to standardize code formatting of your project and save mental energy. Simply install it with:
-```
+```yaml
 pip install pre-commit
 
 # execute in main project folder containing `pre-commit-config.yaml`
@@ -594,19 +594,26 @@ pre-commit install
 After that your code will be automatically reformatted on every new commit.<br>
 Currently `pre-commit-config.yaml` contains configuration of **Black** (python code formatting) and **Isort** (python import sorting).
 To format all files in the project use command:
-```
+```yaml
 pre-commit run --all-files
 ```
-<br>
 
 
 ### Tests
-I find myself often running into bugs that come out only in some edge cases or in some specific hardware/environment. To speed up the development I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed.
+I find myself often running into bugs that come out only in some edge cases or in some specific hardware/environment. To speed up the development I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case.<br>
+Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed.
 To execute:
-```bash
+```yaml
 bash tests/smoke_tests.sh
 ```
-<br><br>
+
+
+### Environment Variables
+
+
+<br>
+
+
 
 
 ## Tricks
