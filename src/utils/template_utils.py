@@ -71,6 +71,8 @@ def print_config(config: DictConfig, resolve: bool = True):
     # TODO print main config path and experiment config path
     # directory = to_absolute_path("configs/config.yaml")
     # print(f"Main config path: [link file://{directory}]{directory}")
+    
+    #TODO make this method more general
 
     style = "dim"
 
@@ -87,6 +89,10 @@ def print_config(config: DictConfig, resolve: bool = True):
     datamodule = OmegaConf.to_yaml(config["datamodule"], resolve=resolve)
     datamodule_branch = tree.add("Datamodule", style=style, guide_style=style)
     datamodule_branch.add(Syntax(datamodule, "yaml"))
+    
+    optimizer = OmegaConf.to_yaml(config["optimizer"], resolve=resolve)
+    optimizer_branch = tree.add("Optimizer", style=style, guide_style=style)
+    optimizer_branch.add(Syntax(optimizer, "yaml"))
 
     callbacks_branch = tree.add("Callbacks", style=style, guide_style=style)
     if "callbacks" in config:
@@ -111,7 +117,7 @@ def print_config(config: DictConfig, resolve: bool = True):
     print(tree)
 
 
-def log_hparams_to_all_loggers(
+def log_hyperparameters(
     config: DictConfig,
     model: pl.LightningModule,
     datamodule: pl.LightningDataModule,
@@ -120,7 +126,10 @@ def log_hparams_to_all_loggers(
     logger: List[pl.loggers.LightningLoggerBase],
 ):
     """This method controls which parameters from Hydra config are saved by Lightning loggers.
-    It additionaly saves sizes of each dataset and number of trainable model parameters.
+    
+    Additionaly saves: 
+        - sizes of train, val, test dataset
+        - number of trainable model parameters
 
     Args:
         config (DictConfig): [description]
@@ -132,39 +141,41 @@ def log_hparams_to_all_loggers(
     """
 
     hparams = {}
-
-    # save all params of model, datamodule and trainer
-    hparams.update(config["model"])
-    hparams.update(config["datamodule"])
-    hparams.update(config["trainer"])
-    hparams.pop("_target_")
-
-    # save seed
-    hparams["seed"] = config.get("seed", "None")
-
-    # save targets
-    hparams["_class_model"] = config["model"]["_target_"]
-    hparams["_class_datamodule"] = config["datamodule"]["_target_"]
+    
+    # choose which parts of hydra config will be saved to loggers
+    hparams["trainer"] = config["trainer"]
+    hparams["model"] = config["model"]
+    hparams["optimizer"] = config["optimizer"]
+    hparams["datamodule"] = config["datamodule"]
+    if "callbacks" in config:
+        hparams["callbacks"] = config["callbacks"]
 
     # save sizes of each dataset
-    if hasattr(datamodule, "data_train") and datamodule.data_train:
-        hparams["train_size"] = len(datamodule.data_train)
-    if hasattr(datamodule, "data_val") and datamodule.data_val:
-        hparams["val_size"] = len(datamodule.data_val)
-    if hasattr(datamodule, "data_test") and datamodule.data_test:
-        hparams["test_size"] = len(datamodule.data_test)
+    # (requires calling `datamodule.setup()` first to initialize datasets)
+    # datamodule.setup()
+    # if hasattr(datamodule, "data_train") and datamodule.data_train:
+    #     hparams["datamodule/train_size"] = len(datamodule.data_train)
+    # if hasattr(datamodule, "data_val") and datamodule.data_val:
+    #     hparams["datamodule/val_size"] = len(datamodule.data_val)
+    # if hasattr(datamodule, "data_test") and datamodule.data_test:
+    #     hparams["datamodule/test_size"] = len(datamodule.data_test)
 
     # save number of model parameters
-    hparams["#params_total"] = sum(p.numel() for p in model.parameters())
-    hparams["#params_trainable"] = sum(
+    hparams["model/params_total"] = sum(p.numel() for p in model.parameters())
+    hparams["model/params_trainable"] = sum(
         p.numel() for p in model.parameters() if p.requires_grad
     )
-    hparams["#params_not_trainable"] = sum(
+    hparams["model/params_not_trainable"] = sum(
         p.numel() for p in model.parameters() if not p.requires_grad
     )
 
     # send hparams to all loggers
     trainer.logger.log_hyperparams(hparams)
+    
+    # disable logging any more hyperparameters for all loggers
+    # (this is just to prevent trainer logging hparams of model as we manage it ourselves)
+    for lg in logger:
+        lg.log_hyperparams = lambda x: None
 
 
 def finish(

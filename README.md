@@ -43,14 +43,13 @@ to your `README.md`.
 
 
 ## Introduction
-This template tries to be as general as possible.
-By using it, you avoid writing any boilerplate code. At the same time it's flexible - you can easily delete any unwanted features from the pipeline or rewire the configuration, by modifying behavior in [train.py](train.py).
+This template tries to be as general as possible - you can easily delete any unwanted features from the pipeline or rewire the configuration, by modifying behavior in [train.py](train.py).
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
-The main advantage of using it, is that it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it might be the most convenient and all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
+Why you should use it: it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most, if not the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
 
-The main arguments for not using this template, are that Lightning and Hydra are not yet mature, which means you will probably run into some bugs. Also Lightning is not well suited for everything, e.g. for Reinforcement Learning it's probably better to replace it with Ray/RLlib.
+Why you shouldn't use it: Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later.
 
 ### Why PyTorch Lightning?
 PyTorch Lightning is a lightweight PyTorch wrapper for high-performance AI research.
@@ -204,7 +203,7 @@ wandb:
 # link to wandb dashboard should appear in the terminal
 python train.py logger=wandb
 ```
-> *Click [here]() to see example wandb dashboard generated with this template.*
+> **Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.**
 
 </details>
 
@@ -340,8 +339,7 @@ python train.py -m '+experiment=glob(*)'
 
 ### How To Start?
 - First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
-- Next, read this blog post: [Keeping Up with PyTorch Lightning and Hydra](https://towardsdatascience.com/keeping-up-with-pytorch-lightning-and-hydra-2nd-edition-34f88e9d5c90)
-- Lastly, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
+- Next, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
 <br>
 
 ### Main Project Configuration
@@ -615,7 +613,7 @@ To format all files in the project use command:
 ```yaml
 pre-commit run --all-files
 ```
-You can exclude chosen files from automatic formatting, by modifying config (see [.pre-commit-config.yaml](pre-commit-config.yaml))
+You can exclude chosen files from automatic formatting, by modifying config (see [.pre-commit-config.yaml](.pre-commit-config.yaml))
 
 
 ### Tests

@@ -68,7 +68,7 @@ def train(config: DictConfig):
 
     # Send some parameters from config to all lightning loggers
     log.info(f"Logging hyperparameters!")
-    utils.log_hparams_to_all_loggers(
+    utils.log_hyperparameters(
         config=config,
         model=model,
         datamodule=datamodule,
@@ -100,9 +100,7 @@ def train(config: DictConfig):
     # Return metric score for Optuna optimization
     optimized_metric = config.get("optimized_metric")
     if optimized_metric:
-        result = trainer.callback_metrics[optimized_metric]
-        log.info(f"Returning metric for Optuna: <{optimized_metric}={result}>")
-        return result
+        return trainer.callback_metrics[optimized_metric]
 
 
 @hydra.main(config_path="configs/", config_name="config.yaml")

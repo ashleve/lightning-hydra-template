@@ -93,7 +93,7 @@ class LitModelMNIST(pl.LightningModule):
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
 
-        return {"loss": loss}
+        return loss
 
     # [OPTIONAL METHOD]
     def training_epoch_end(self, outputs: List[Any]) -> None:

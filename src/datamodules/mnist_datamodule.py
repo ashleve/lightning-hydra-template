@@ -1,7 +1,8 @@
 from pytorch_lightning import LightningDataModule
-from torch.utils.data import ConcatDataset, DataLoader, random_split
+from torch.utils.data import ConcatDataset, DataLoader, random_split, Dataset
 from torchvision.datasets import MNIST
 from torchvision.transforms import transforms
+from typing import Optional, Sequence
 
 
 class MNISTDataModule(LightningDataModule):
@@ -31,9 +32,9 @@ class MNISTDataModule(LightningDataModule):
         # self.dims is returned when you call datamodule.size()
         self.dims = (1, 28, 28)
 
-        self.data_train = None
-        self.data_val = None
-        self.data_test = None
+        self.data_train: Optional[Dataset] = None
+        self.data_val: Optional[Dataset] = None
+        self.data_test: Optional[Dataset] = None
 
     def prepare_data(self):
         """Download data if needed. This method is called only from a single GPU.
