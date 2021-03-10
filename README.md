@@ -150,12 +150,12 @@ When running `python train.py` you should see something like this:
 </div>
 
 ### Your Superpowers
-(click to expand)
+> *click to expand*
 
 <details>
 <summary>Override any config parameter from command line</summary>
 
-> Hydra allows you to overwrite any parameter defined in your config, without writing any code!
+> *Hydra allows you to overwrite any parameter defined in your config, without writing any code!*
 ```yaml
 python train.py trainer.max_epochs=20 optimizer.lr=1e-4
 ```
@@ -166,7 +166,7 @@ python train.py trainer.max_epochs=20 optimizer.lr=1e-4
 <details>
 <summary>Train on CPU, GPU, TPU or even with DDP and mixed precision</summary>
 
-> PyTorch Lightning makes it really easy to train your models on different hardware!
+> *PyTorch Lightning makes it really easy to train your models on different hardware!*
 ```yaml
 # train on CPU
 python train.py trainer.gpus=0
@@ -190,7 +190,7 @@ python train.py trainer.amp_backend="apex" trainer.amp_level="O1" trainer.precis
 <details>
   <summary>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></summary>
 
-> PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking).
+> *PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking).*
 ```yaml
 # set project and entity names in `configs/logger/wandb.yaml`
 wandb:
@@ -220,11 +220,12 @@ python train.py +experiment=exp_example_simple
 <details>
 <summary>Attach some callbacks to run</summary>
 
->Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).
 ```yaml
 # callback set configurations are placed in `configs/callbacks/`
 python train.py callbacks=default_callbacks
 ```
+> *Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).*
+
 
 </details>
 
@@ -232,7 +233,7 @@ python train.py callbacks=default_callbacks
 <details>
 <summary>Use different tricks available in Pytorch Lightning</summary>
 
->PyTorch Lightning provides about [40+ useful trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags).
+> *PyTorch Lightning provides about [40+ useful trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags).*
 ```yaml
 # accumulate gradients from 10 training steps
 python train.py trainer.accumulate_grad_batches=10
@@ -312,6 +313,7 @@ python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 # over chosen experiment config
 python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
 ```
+> *Using Optuna Sweeper plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a single config file.*
 
 </details>
 
@@ -322,14 +324,14 @@ python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simp
 # execute all experiments from folder `configs/experiment/`
 python train.py -m '+experiment=glob(*)'
 ```
-> Hydra provides special syntax for controlling of behavior multiruns. Read more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run).
+> *Hydra provides special syntax for controlling behavior of multiruns. Read more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run).*
 
 </details>
 
 <details>
 <summary>Execute sweep on a remote AWS cluster</summary>
 
->This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.
+> *This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.*
 
 </details>
 
