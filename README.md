@@ -13,6 +13,8 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 *This template is work in progress. Suggestions are always welcome!*
 
 </div>
+
+
 <br>
 <br>
 
@@ -20,6 +22,9 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 If you use this template please add <br>
 [![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
 to your `README.md`.
+
+
+<br>
 <br>
 
 
@@ -27,10 +32,9 @@ to your `README.md`.
 This template tries to be as general as possible.
 You should be able to easily modify behavior in [train.py](train.py) in case you need some unconventional configuration wiring.
 
-> Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com) or [Neptune](https://neptune.ai) is also recommended.
+> Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
-The main advantage of using it, is that it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code.
-To my knowledge, it's the most all-in-one technology stack for Deep Learning that currently exists. It's also a collection of best practices for efficient workflow and reproducibility.
+The main advantage of using it, is that it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's the most all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
 
 The main arguments for not using this template, are that Lightning and Hydra are not yet mature, which means you will probably run into some bugs. Also Lightning is not suited for everything, e.g. for Reinforcement Learning it's probably better to replace it with Ray + RLlib.
 
@@ -200,12 +204,11 @@ python train.py +experiment=exp_example_simple
 <details>
 <summary>Attach some callbacks to run</summary>
 
+> *Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).*
 ```yaml
 # callback set configurations are placed in `configs/callbacks/`
 python train.py callbacks=default_callbacks
 ```
-> *Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).*
-
 
 </details>
 
@@ -556,6 +559,16 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 
 <br><br>
 
+
+### Callbacks
+Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).
+- To support reproducibility:
+  - UploadCodeToWandbAsArtifact
+  - UploadCheckpointsToWandbAsArtifact
+  - WatchModelWithWandb
+- To provide examples of logging custom visualisations with callbacks:
+  - LogConfusionMatrixToWandb
+  - LogF1PrecisionRecallHeatmapToWandb
 
 ## Best Practices
 
