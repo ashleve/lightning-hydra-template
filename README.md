@@ -24,6 +24,18 @@ to your `README.md`.
 <br>
 
 
+**Contents**
+- [Introduction](#introduction)
+- [Main Ideas Of This Template](#main-ideas-of-this-template)
+- [Project Structure](#project-structure)
+- [Quickstart](#quickstart)
+- [Guide](#guide)
+- [Best Practices](#best-practices)
+- [Tricks](#tricks)
+- [Other Repositories](#other-repositories)
+<br>
+
+
 ## Introduction
 This template tries to be as general as possible.
 By using it, you avoid writing any boilerplate code. At the same time it's flexible - you can easily delete any unwanted features from the pipeline or rewire the configuration, by modifying behavior in [train.py](train.py).
