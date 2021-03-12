@@ -2,7 +2,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name="src",
+    name="src",  # you should probably change "src" to your project name
     version="0.0.0",
     description="Describe Your Cool Project",
     author="",

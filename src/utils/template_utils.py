@@ -1,10 +1,10 @@
 import logging
 import warnings
-from typing import List
+from typing import List, Sequence
 
 import pytorch_lightning as pl
 import wandb
-from hydra.utils import get_original_cwd, log, to_absolute_path
+from hydra.utils import log
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.loggers.wandb import WandbLogger
 from rich import print
@@ -12,7 +12,7 @@ from rich.syntax import Syntax
 from rich.tree import Tree
 
 
-def extras(config: DictConfig):
+def extras(config: DictConfig) -> None:
     """A couple of optional utilities, controlled by main config file.
         - disabling warnings
         - disabling lightning logs
@@ -24,9 +24,9 @@ def extras(config: DictConfig):
 
     # make it possible to add new keys to config
     OmegaConf.set_struct(config, False)
-    
+
     # fix double logging bug (this will be removed when lightning releases patch)
-    pl_logger = logging.getLogger('lightning')
+    pl_logger = logging.getLogger("lightning")
     pl_logger.propagate = False
 
     # [OPTIONAL] Disable python warnings if <config.disable_warnings=True>
@@ -60,59 +60,59 @@ def extras(config: DictConfig):
     OmegaConf.set_struct(config, True)
 
 
-def print_config(config: DictConfig, resolve: bool = True):
-    """Prints content of Hydra config using Rich library.
+def print_config(
+    config: DictConfig,
+    fields: Sequence[str] = (
+        "trainer",
+        "model",
+        "optimizer",
+        "datamodule",
+        "callbacks",
+        "logger",
+        "seed",
+    ),
+    extra_depth_fields: Sequence[str] = (
+        "callbacks",
+        "logger",
+    ),
+    resolve: bool = True,
+) -> None:
+    """Prints content of DictConfig using Rich library and its tree structure.
 
     Args:
-        config (DictConfig): [description]
-        resolve (bool, optional): Whether to resolve reference fields in Hydra config.
+        config (DictConfig): Config.
+        fields (Sequence[str], optional): Determines which main fields from config will be printed
+        and in what order.
+        extra_depth_fields (Sequence[str], optional): Fields which should be printed with extra tree depth.
+        resolve (bool, optional): Whether to resolve reference fields of DictConfig.
     """
 
     # TODO print main config path and experiment config path
-    # directory = to_absolute_path("configs/config.yaml")
     # print(f"Main config path: [link file://{directory}]{directory}")
-    
-    #TODO make this method more general
 
     style = "dim"
 
-    tree = Tree(f":gear: TRAINING CONFIG", style=style, guide_style=style)
+    tree = Tree(f":gear: CONFIG", style=style, guide_style=style)
 
-    trainer = OmegaConf.to_yaml(config["trainer"], resolve=resolve)
-    trainer_branch = tree.add("Trainer", style=style, guide_style=style)
-    trainer_branch.add(Syntax(trainer, "yaml"))
+    for field in fields:
+        branch = tree.add(field, style=style, guide_style=style)
 
-    model = OmegaConf.to_yaml(config["model"], resolve=resolve)
-    model_branch = tree.add("Model", style=style, guide_style=style)
-    model_branch.add(Syntax(model, "yaml"))
+        config_section = config.get(field)
 
-    datamodule = OmegaConf.to_yaml(config["datamodule"], resolve=resolve)
-    datamodule_branch = tree.add("Datamodule", style=style, guide_style=style)
-    datamodule_branch.add(Syntax(datamodule, "yaml"))
-    
-    optimizer = OmegaConf.to_yaml(config["optimizer"], resolve=resolve)
-    optimizer_branch = tree.add("Optimizer", style=style, guide_style=style)
-    optimizer_branch.add(Syntax(optimizer, "yaml"))
+        if not config_section:
+            # raise Exception(f"Field {field} not found in config!")
+            branch.add("None")
+            continue
 
-    callbacks_branch = tree.add("Callbacks", style=style, guide_style=style)
-    if "callbacks" in config:
-        for cb_name, cb_conf in config["callbacks"].items():
-            cb = callbacks_branch.add(cb_name, style=style, guide_style=style)
-            cb.add(Syntax(OmegaConf.to_yaml(cb_conf, resolve=resolve), "yaml"))
-    else:
-        callbacks_branch.add("None")
-
-    logger_branch = tree.add("Logger", style=style, guide_style=style)
-    if "logger" in config:
-        for lg_name, lg_conf in config["logger"].items():
-            lg = logger_branch.add(lg_name, style=style, guide_style=style)
-            lg.add(Syntax(OmegaConf.to_yaml(lg_conf, resolve=resolve), "yaml"))
-    else:
-        logger_branch.add("None")
-
-    seed = config.get("seed", "None")
-    seed_branch = tree.add(f"Seed", style=style, guide_style=style)
-    seed_branch.add(str(seed) + "\n")
+        if field in extra_depth_fields:
+            for nested_field in config_section:
+                nested_config_section = config_section[nested_field]
+                nested_branch = branch.add(nested_field, style=style, guide_style=style)
+                cfg_str = OmegaConf.to_yaml(nested_config_section, resolve=resolve)
+                nested_branch.add(Syntax(cfg_str, "yaml"))
+        else:
+            cfg_str = OmegaConf.to_yaml(config_section, resolve=resolve)
+            branch.add(Syntax(cfg_str, "yaml"))
 
     print(tree)
 
@@ -124,10 +124,10 @@ def log_hyperparameters(
     trainer: pl.Trainer,
     callbacks: List[pl.Callback],
     logger: List[pl.loggers.LightningLoggerBase],
-):
+) -> None:
     """This method controls which parameters from Hydra config are saved by Lightning loggers.
-    
-    Additionaly saves: 
+
+    Additionaly saves:
         - sizes of train, val, test dataset
         - number of trainable model parameters
 
@@ -141,7 +141,7 @@ def log_hyperparameters(
     """
 
     hparams = {}
-    
+
     # choose which parts of hydra config will be saved to loggers
     hparams["trainer"] = config["trainer"]
     hparams["model"] = config["model"]
@@ -171,11 +171,10 @@ def log_hyperparameters(
 
     # send hparams to all loggers
     trainer.logger.log_hyperparams(hparams)
-    
+
     # disable logging any more hyperparameters for all loggers
-    # (this is just to prevent trainer logging hparams of model as we manage it ourselves)
-    for lg in logger:
-        lg.log_hyperparams = lambda x: None
+    # (this is just a trick to prevent trainer from logging hparams of model, since we already did that above)
+    trainer.logger.log_hyperparams = lambda params: None
 
 
 def finish(
@@ -185,7 +184,7 @@ def finish(
     trainer: pl.Trainer,
     callbacks: List[pl.Callback],
     logger: List[pl.loggers.LightningLoggerBase],
-):
+) -> None:
     """Makes sure everything closed properly.
 
     Args:
