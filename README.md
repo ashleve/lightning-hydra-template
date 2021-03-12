@@ -57,7 +57,7 @@ Makes your code neatly organized and provides lots of useful features, like abil
 
 
 ### Why Hydra?
-Hydra is an open-source Python framework that simplifies the development of research and other complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. It provides convenient ways to manage experiments and contains very useful plugins, like Optuna Sweeper for hyperparameter search, or Ray Launcher for running jobs on a cluster.
+Hydra is an open-source Python framework that simplifies the development of research and other complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. It provides convenient ways to manage experiments and contains many useful plugins, like Optuna Sweeper for hyperparameter search, or Ray Launcher for running jobs on a cluster.
 <br>
 <br>
 <br>
@@ -593,8 +593,7 @@ To provide examples of logging custom visualisations with callbacks only:
 ## Best Practices
 
 ### Miniconda
-Use miniconda for your python environments. Makes it easier to install some dependencies, like GPU support for PyTorch.<br>
-(it's usually unnecessary to install full Anaconda environment, miniconda should be enough)<br>
+Use miniconda for your python environments. Makes it easier to install some dependencies, like GPU support for PyTorch (it's usually unnecessary to install full Anaconda environment, miniconda should be enough).<br>
 Example installation:
 ```yaml
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -717,7 +716,7 @@ This template was inspired by:
 What it does
 
 ## How to run
-Install dependencies:
+Install dependencies
 ```yaml
 # clone project
 git clone https://github.com/YourGithubName/your-repo-name
@@ -731,23 +730,23 @@ conda activate your_env_name
 pip install -r requirements.txt
 ```
 
-Train model with default configuration:
+Train model with default configuration
 ```yaml
 python train.py
 ```
 
-Train model with chosen experiment configuration:
+Train model with chosen experiment configuration
 ```yaml
 # experiment configurations are placed in folder `configs/experiment/`
 python train.py +experiment=exp_example_simple
 ```
 
-You can override any parameter from command line like this:
+You can override any parameter from command line like this
 ```yaml
 python train.py trainer.max_epochs=20 optimizer.lr=0.0005
 ```
 
-To train on GPU:
+Train on GPU
 ```yaml
 python train.py trainer.gpus=1
 ```
