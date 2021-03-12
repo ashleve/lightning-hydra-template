@@ -173,7 +173,7 @@ def log_hyperparameters(
     trainer.logger.log_hyperparams(hparams)
     
     # disable logging any more hyperparameters for all loggers
-    # (this is just to prevent trainer logging hparams of model as we manage it ourselves)
+    # (this is just a trick to prevent trainer from logging hparams of model, since we already did that above)
     for lg in logger:
         lg.log_hyperparams = lambda x: None
 

@@ -47,9 +47,9 @@ This template tries to be as general as possible - you can easily delete any unw
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
-Why you should use it: it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most, if not the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
+**Why you should use it:** it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most, if not the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
 
-Why you shouldn't use it: Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later.
+**Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible task.
 
 ### Why PyTorch Lightning?
 PyTorch Lightning is a lightweight PyTorch wrapper for high-performance AI research.
@@ -57,7 +57,7 @@ Makes your code neatly organized and provides lots of useful features, like abil
 
 
 ### Why Hydra?
-Hydra is an open-source Python framework that simplifies the development of research and other complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. It provides convenient ways to manage experiments and advanced features like overriding any config parameter from command line or sweeping over hyperparameters.
+Hydra is an open-source Python framework that simplifies the development of research and other complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. It provides convenient ways to manage experiments and contains very useful plugins, like Optuna Sweeper for hyperparameter search, or Ray Launcher for running jobs on a cluster.
 <br>
 <br>
 <br>
@@ -72,8 +72,8 @@ Hydra is an open-source Python framework that simplifies the development of rese
 - Experiment Tracking: many logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
 - Logs: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
 - Hyperparameter Search: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
-- Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
 - Best Practices: a couple of recommended tools, practices and standards (see [#Best Practices](#best-practices))
+- Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
 
 
@@ -150,7 +150,7 @@ When running `python train.py` you should see something like this:
 </div>
 
 ### Your Superpowers
-*(click to expand)*
+##### (click to expand)
 
 <details>
 <summary>Override any config parameter from command line</summary>
@@ -158,6 +158,11 @@ When running `python train.py` you should see something like this:
 > *Hydra allows you to overwrite any parameter defined in your config, without writing any code!*
 ```yaml
 python train.py trainer.max_epochs=20 optimizer.lr=1e-4
+```
+> *You can also add new parameters with `+` sign.*
+```yaml
+python train.py +trainer.new_param="uwu"
+
 ```
 
 </details>
@@ -211,8 +216,8 @@ python train.py logger=wandb
 <details>
 <summary>Train model with chosen experiment config</summary>
 
+> Experiment configurations are placed in folder `configs/experiment/`.
 ```yaml
-# experiment configurations are placed in folder `configs/experiment/`
 python train.py +experiment=exp_example_simple
 ```
 
@@ -222,9 +227,9 @@ python train.py +experiment=exp_example_simple
 <details>
 <summary>Attach some callbacks to run</summary>
 
-> *Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).*
+> *Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).<br>
+Callbacks configurations are placed in `configs/callbacks/`.*
 ```yaml
-# callback set configurations are placed in `configs/callbacks/`
 python train.py callbacks=default_callbacks
 ```
 
@@ -311,7 +316,7 @@ python train.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
 # over chosen experiment config
 python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
 ```
-> *Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a single config file.*
+> *Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a single config file!*
 
 </details>
 
@@ -588,10 +593,10 @@ To provide examples of logging custom visualisations with callbacks only:
 ## Best Practices
 
 ### Miniconda
-Use miniconda for your python environments. Makes it easier to install cudatoolkit for GPU and PyTorch.<br>
-(I find it unnecessary to install full Anaconda environment, miniconda should be enough)<br>
+Use miniconda for your python environments. Makes it easier to install some dependencies, like GPU support for PyTorch.<br>
+(it's usually unnecessary to install full Anaconda environment, miniconda should be enough)<br>
 Example installation:
-```
+```yaml
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
@@ -603,17 +608,17 @@ Simply install pre-commit package with:
 ```yaml
 pip install pre-commit
 ```
-Next, install hooks from `.pre-commit-config.yaml`:
-```
+Next, install hooks from [.pre-commit-config.yaml](.pre-commit-config.yaml):
+```yaml
 pre-commit install
 ```
 After that your code will be automatically reformatted on every new commit.<br>
-Currently `.pre-commit-config.yaml` contains configurations of **Black** (python code formatting) and **Isort** (python import sorting).
+Currently [.pre-commit-config.yaml](.pre-commit-config.yaml) contains configurations of **Black** (python code formatting) and **Isort** (python import sorting).
 To format all files in the project use command:
 ```yaml
-pre-commit run --all-files
+pre-commit run --all-filess
 ```
-You can exclude chosen files from automatic formatting, by modifying config (see [.pre-commit-config.yaml](.pre-commit-config.yaml))
+You can exclude chosen files from automatic formatting, by modifying [.pre-commit-config.yaml](.pre-commit-config.yaml).
 
 
 ### Tests
@@ -630,10 +635,35 @@ bash tests/smoke_tests.sh
 <br><br>
 
 
+### Data Control
+(TODO)
+<br><br>
+
+
+### Support Installing Project As a Package
+It allows other people to easily use your modules in their own projects.
+Change name of the `src` folder to your project name and modify configuration in `setup.py`.
+Now your project can be installed from local files:
+```yaml
+pip install -e .
+```
+Or directly from git repository:
+```yaml
+pip install git+git://github.com/YourGithubName/your-repo-name.git --upgrade
+```
+So any file can be easily imported into any other file like so:
+```python
+from project_name.models.mnist_model import LitModelMNIST
+from project_name.datamodules.mnist_datamodule import MNISTDataModule
+```
+<br><br>
+
+
+
 ## Tricks
 (TODO)
-<!-- installing miniconda, PrettyErrors and Rich exception handling, VSCode setup,
-k-fold cross validation, linter, faster tab completion import trick,
+<!-- PrettyErrors and Rich exception handling,
+k-fold cross validation, faster tab completion import trick,
 choosing metric names with '/' for wandb -->
 <br>
 
@@ -693,7 +723,7 @@ Install dependencies:
 git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
-# optionally create conda environment
+# [OPTIONAL] create conda environment
 conda env create -f conda_env_gpu.yaml -n your_env_name
 conda activate your_env_name
 
@@ -722,19 +752,3 @@ To train on GPU:
 python train.py trainer.gpus=1
 ```
 <br>
-
-
-## Installing project as a package
-Optionally you can install project as a package with [setup.py](setup.py):
-```yaml
-# install from local files
-pip install -e .
-
-# or install from git repo
-pip install git+git://github.com/YourGithubName/your-repo-name.git --upgrade
-```
-So you can easily import any file into any other file like so:
-```python
-from src.models.mnist_model import LitModelMNIST
-from src.datamodules.mnist_datamodule import MNISTDataModule
-```
