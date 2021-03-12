@@ -49,15 +49,15 @@ This template tries to be as general as possible - you can easily delete any unw
 
 **Why you should use it:** it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most, if not the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
 
-**Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible task.
+**Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
 
 ### Why PyTorch Lightning?
-PyTorch Lightning is a lightweight PyTorch wrapper for high-performance AI research.
-Makes your code neatly organized and provides lots of useful features, like ability to run model on CPU, GPU, multi-GPU cluster and TPU.
+[PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) is a lightweight PyTorch wrapper for high-performance AI research.
+It makes your code neatly organized and provides lots of useful features, like ability to run model on CPU, GPU, multi-GPU cluster and TPU.
 
 
 ### Why Hydra?
-Hydra is an open-source Python framework that simplifies the development of research and other complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. It provides convenient ways to manage experiments and contains many useful plugins, like Optuna Sweeper for hyperparameter search, or Ray Launcher for running jobs on a cluster.
+[Hydra](https://github.com/facebookresearch/hydra) is an open-source Python framework that simplifies the development of research and other complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. It  allows you to conveniently manage experiments and provides many useful plugins, like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) for hyperparameter search, or [Ray Launcher](https://hydra.cc/docs/next/plugins/ray_launcher) for running jobs on a cluster.
 <br>
 <br>
 <br>
@@ -180,13 +180,13 @@ python train.py trainer.gpus=0
 python train.py trainer.gpus=1
 
 # train on TPU
-python train.py trainer.tpu_cores=8
+python train.py +trainer.tpu_cores=8
 
 # train with DDP (Distributed Data Parallel) (8 GPUs, 2 nodes)
-python train.py trainer.gpus=4 trainer.num_nodes=2 trainer.accelerator='ddp'
+python train.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.accelerator='ddp'
 
 # train with mixed precision
-python train.py trainer.amp_backend="apex" trainer.amp_level="O1" trainer.precision=16
+python train.py +trainer.amp_backend="apex" +trainer.amp_level="O1" +trainer.precision=16
 ```
 
 </details>
@@ -242,16 +242,16 @@ python train.py callbacks=default_callbacks
 > *PyTorch Lightning provides about [40+ useful trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags).*
 ```yaml
 # gradient clipping may be enabled to avoid exploding gradients
-python train.py trainer.gradient_clip_val=0.5
+python train.py +trainer.gradient_clip_val=0.5
 
 # stochastic weight averaging can make your models generalize better
-python train.py trainer.stochastic_weight_avg=True
+python train.py +trainer.stochastic_weight_avg=True
 
 # run validation loop 4 times during a training epoch
-python train.py trainer.val_check_interval=0.25
+python train.py +trainer.val_check_interval=0.25
 
 # accumulate gradients
-python train.py trainer.accumulate_grad_batches=10
+python train.py +trainer.accumulate_grad_batches=10
 ```
 
 
@@ -269,14 +269,14 @@ python train.py debug=true
 python train.py trainer.weights_summary="full"
 
 # print execution time profiling after training ends
-python train.py trainer.profiler="simple"
+python train.py +trainer.profiler="simple"
 
 # try overfitting to 1 batch
-python train.py trainer.overfit_batches=1 trainer.max_epochs=20
+python train.py +trainer.overfit_batches=1 trainer.max_epochs=20
 
 # use only 20% of the data
-python train.py trainer.limit_train_batches=0.2 \
-trainer.limit_val_batches=0.2 trainer.limit_test_batches=0.2
+python train.py +trainer.limit_train_batches=0.2 \
++trainer.limit_val_batches=0.2 +trainer.limit_test_batches=0.2
 ```
 
 </details>
@@ -288,7 +288,7 @@ trainer.limit_val_batches=0.2 trainer.limit_test_batches=0.2
 ```yaml
 # checkpoint can be either path or URL
 # path should be absolute!
-python train.py trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
+python train.py +trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
 ```
 > *Currently loading ckpt in Lightning doesn't resume logger experiment, but it will be supported in future Lightning release.*
 
@@ -514,7 +514,7 @@ logger:
 2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
 3. Write your experiment config, containing paths to your model and datamodule (see [configs/experiment](configs/experiment) for examples)
 4. Run training with chosen experiment config:<br>
-    ```bash
+    ```yaml
     python train.py +experiment=experiment_name
     ```
 <br>
@@ -630,11 +630,6 @@ bash tests/smoke_tests.sh
 
 
 ### Environment Variables
-(TODO)
-<br><br>
-
-
-### Data Control
 (TODO)
 <br><br>
 
