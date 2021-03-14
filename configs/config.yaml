@@ -54,7 +54,7 @@ hydra:
 
     job:
         # you can set here environment variables that are universal for all users
-        # for user specific variables it's better to use .env file!
+        # for user specific variables (like data paths) it's better to use .env file!
         env_set:
             # currently there are some issues with running sweeps alongside wandb
             # https://github.com/wandb/client/issues/1314

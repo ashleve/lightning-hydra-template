@@ -25,5 +25,7 @@ pre-commit
 
 # --------- others --------- #
 rich>=9.12.3
+python-dotenv
+dvc
 # scikit-learn
 # pandas
