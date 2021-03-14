@@ -170,7 +170,7 @@ python run.py +trainer.new_param="uwu"
 <details>
 <summary>Train on CPU, GPU, TPU or even with DDP and mixed precision</summary>
 
-> *PyTorch Lightning makes it really easy to train your models on different hardware!*
+> *PyTorch Lightning makes it really easy to train your models on different hardware.*
 ```yaml
 # train on CPU
 python run.py trainer.gpus=0
@@ -601,7 +601,7 @@ To format all files in the project use command:
 pre-commit run --all-filess
 ```
 You can exclude chosen files from automatic formatting, by modifying [.pre-commit-config.yaml](.pre-commit-config.yaml).
-
+<br>
 
 
 ### Miniconda
@@ -612,7 +612,7 @@ Example installation:
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
-
+<br>
 
 
 ### Environment Variables
@@ -626,7 +626,7 @@ You can use environment variables in your Hydra `.yaml` files like this:
 ```yaml
 path_to_data: ${env:MY_VAR}
 ```
-
+<br>
 
 
 ### Data Version Control
@@ -644,7 +644,7 @@ DVC stores information about the added file (or a directory) in a special .dvc f
 git add data/MNIST.dvc data/.gitignore
 git commit -m "Add raw data"
 ```
-
+<br>
 
 
 ### Tests
@@ -655,7 +655,7 @@ To execute:
 ```yaml
 bash tests/smoke_tests.sh
 ```
-
+<br>
 
 
 ### Support Installing Project As a Package
@@ -670,7 +670,8 @@ setup(
     description="Describe Your Cool Project",
     author="",
     author_email="",
-    url="https://github.com/hobogalaxy/lightning-hydra-template",  # REPLACE WITH YOUR OWN GITHUB PROJECT LINK
+    # replace with your own github project link
+    url="https://github.com/hobogalaxy/lightning-hydra-template",
     install_requires=["pytorch-lightning>=1.2.0", "hydra-core>=1.0.6"],
     packages=find_packages(),
 )

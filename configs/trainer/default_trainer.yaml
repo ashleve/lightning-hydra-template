@@ -6,6 +6,5 @@ gpus: 0
 min_epochs: 1
 max_epochs: 10
 
-gradient_clip_val: 0.5
 weights_summary: null
 progress_bar_refresh_rate: 10
