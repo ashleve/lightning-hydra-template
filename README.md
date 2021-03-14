@@ -49,7 +49,7 @@ This template tries to be as general as possible - you can easily delete any unw
 
 **Why you should use it:** it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most, if not the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
 
-**Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
+**Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task. Read [#Limitations](#limitations) for more.
 
 ### Why PyTorch Lightning?
 [PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) is a lightweight PyTorch wrapper for high-performance AI research.
@@ -99,9 +99,6 @@ The directory structure of new project looks like this:
 ├── notebooks               <- Jupyter notebooks
 │
 ├── tests                   <- Tests of any kind
-│   ├── smoke_tests.sh          <- A couple of quick experiments to test if your model
-│   │                              doesn't crash under different training conditions
-│   └── ...
 │
 ├── src
 │   ├── architectures           <- PyTorch model architectures
@@ -120,8 +117,7 @@ The directory structure of new project looks like this:
 ├── .pre-commit-config.yaml <- Configuration of hooks for automatic code formatting
 ├── LICENSE
 ├── README.md
-├── conda_env_gpu.yaml      <- File for installing conda env for GPU
-├── conda_env_cpu.yaml      <- File for installing conda env for CPU
+├── conda_env_gpu.yaml      <- File for installing conda environment
 ├── requirements.txt        <- File for installing python dependencies
 └── setup.py                <- File for installing project as a package
 ```
@@ -142,6 +138,7 @@ conda activate testenv
 pip install -r requirements.txt
 ```
 
+Template contains example with MNIST classification.<br>
 When running `python train.py` you should see something like this:
 <div align="center">
 
@@ -391,20 +388,13 @@ disable_warnings: False
 disable_lightning_logs: False
 
 
-# hydra configuration
 hydra:
-
     # output paths for hydra logs
     run:
         dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
     sweep:
         dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
         subdir: ${hydra.job.num}
-
-    # set your environment variables here
-    job:
-        env_set:
-            ENV_VAR_X: something
 ```
 <br>
 
@@ -681,7 +671,11 @@ This template was inspired by:
 
 ### Examples Of Repositories Using This Template
 (TODO)
+<br>
 
+
+## Limitations
+(TODO)
 
 
 

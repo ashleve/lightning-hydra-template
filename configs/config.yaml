@@ -44,7 +44,6 @@ disable_warnings: True
 disable_lightning_logs: False
 
 
-# # hydra configuration
 hydra:
     # output paths for hydra logs
     run:
@@ -54,7 +53,8 @@ hydra:
         subdir: ${hydra.job.num}
 
     job:
-        # you can set environment variables here
+        # you can set here environment variables that are universal for all users
+        # for user specific variables it's better to use .env file!
         env_set:
             # currently there are some issues with running sweeps alongside wandb
             # https://github.com/wandb/client/issues/1314
