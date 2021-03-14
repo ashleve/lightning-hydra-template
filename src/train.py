@@ -101,12 +101,3 @@ def train(config: DictConfig):
     optimized_metric = config.get("optimized_metric")
     if optimized_metric:
         return trainer.callback_metrics[optimized_metric]
-
-
-@hydra.main(config_path="configs/", config_name="config.yaml")
-def main(config: DictConfig):
-    return train(config)
-
-
-if __name__ == "__main__":
-    main()
