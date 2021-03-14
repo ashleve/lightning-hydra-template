@@ -49,7 +49,7 @@ This template tries to be as general as possible - you can easily delete any unw
 
 **Why you should use it:** it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most, if not the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
 
-**Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task. Read [#Limitations](#limitations) for more.
+**Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
 
 ### Why PyTorch Lightning?
 [PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) is a lightweight PyTorch wrapper for high-performance AI research.
@@ -601,6 +601,18 @@ pre-commit run --all-filess
 You can exclude chosen files from automatic formatting, by modifying [.pre-commit-config.yaml](.pre-commit-config.yaml).
 
 
+
+### Miniconda
+Use miniconda for your python environments (it's usually unnecessary to install full anaconda environment, miniconda should be enough).
+It makes it easier to install some dependencies, like cudatoolkit for GPU support.<br>
+Example installation:
+```yaml
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+
+
+
 ### Environment Variables
 System specific variables (e.g. absolute paths to datasets) should not be under version control or it will result in conflict between different users.
 Template contains `.env` file which is excluded from further version control, so you can use it for setting your environment variables.
@@ -610,22 +622,27 @@ export MY_VAR=/home/user/my_system_path
 ```
 You can use environment variables in your Hydra `.yaml` files like this:
 ```yaml
-some_path: ${env:MY_VAR}
+path_to_data: ${env:MY_VAR}
 ```
 
-
-### Miniconda
-Use miniconda for your python environments (it's usually unnecessary to install full anaconda environment, miniconda should be enough).
-It makes it easier to install some dependencies, like cudatoolkit for GPU support .<br>
-Example installation:
-```bash
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
-```
 
 
 ### Data Version Control
-Use DVC to version control your data.
+Use [DVC](https://dvc.org) to version control big files, like your data or trained ML models.<br>
+To initialize the dvc repository:
+```yaml
+dvc init
+```
+To start tracking a file or directory, use `dvc add`:
+```yaml
+dvc add data/MNIST
+```
+DVC stores information about the added file (or a directory) in a special .dvc file named data/MNIST.dvc, a small text file with a human-readable format. This file can be easily versioned like source code with Git, as a placeholder for the original data:
+```yaml
+git add data/MNIST.dvc data/.gitignore
+git commit -m "Add raw data"
+```
+
 
 
 ### Tests
@@ -636,6 +653,7 @@ To execute:
 ```yaml
 bash tests/smoke_tests.sh
 ```
+
 
 
 ### Support Installing Project As a Package
@@ -700,7 +718,8 @@ This template was inspired by:
 
 ### Examples Of Repositories Using This Template
 (TODO)
-<br>
+<br><br>
+
 
 
 ## Limitations
