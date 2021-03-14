@@ -12,23 +12,10 @@ import hydra
 from typing import List
 
 # src imports
-from src.utils import template_utils as utils
+from src.utils import template_utils
 
 
 def train(config: DictConfig):
-
-    # A couple of optional utilities:
-    # - disabling warnings
-    # - disabling lightning logs
-    # - easier access to debug mode
-    # - forcing debug friendly configuration
-    # You can safely get rid of this line if you don't want those
-    utils.extras(config)
-
-    # Pretty print config using Rich library
-    if config.get("print_config"):
-        log.info(f"Pretty printing config with Rich! <{config.print_config=}>")
-        utils.print_config(config, resolve=True)
 
     # Set seed for random number generators in pytorch, numpy and python.random
     if "seed" in config:
@@ -68,7 +55,7 @@ def train(config: DictConfig):
 
     # Send some parameters from config to all lightning loggers
     log.info(f"Logging hyperparameters!")
-    utils.log_hyperparameters(
+    template_utils.log_hyperparameters(
         config=config,
         model=model,
         datamodule=datamodule,
@@ -88,7 +75,7 @@ def train(config: DictConfig):
 
     # Make sure everything closed properly
     log.info(f"Finalizing!")
-    utils.finish(
+    template_utils.finish(
         config=config,
         model=model,
         datamodule=datamodule,
