@@ -582,15 +582,6 @@ To provide examples of logging custom visualisations with callbacks only:
 
 ## Best Practices
 
-### Miniconda
-Use miniconda for your python environments. Makes it easier to install some dependencies, like GPU support for PyTorch (it's usually unnecessary to install full Anaconda environment, miniconda should be enough).<br>
-Example installation:
-```yaml
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
-```
-
-
 ### Code Formating
 Use pre-commit hooks to standardize code formatting of your project and save mental energy.<br>
 Simply install pre-commit package with:
@@ -610,23 +601,60 @@ pre-commit run --all-filess
 You can exclude chosen files from automatic formatting, by modifying [.pre-commit-config.yaml](.pre-commit-config.yaml).
 
 
+### Environment Variables
+System specific variables (e.g. absolute paths to datasets) should not be under version control or it will result in conflict between different users.
+Template contains `.env` file which is excluded from further version control, so you can use it for setting your environment variables.
+Simply add your var to `.env` like this:
+``` bash
+export MY_VAR=/home/user/my_system_path
+```
+You can use environment variables in your Hydra `.yaml` files like this:
+```yaml
+some_path: ${env:MY_VAR}
+```
+
+
+### Miniconda
+Use miniconda for your python environments (it's usually unnecessary to install full anaconda environment, miniconda should be enough).
+It makes it easier to install some dependencies, like cudatoolkit for GPU support .<br>
+Example installation:
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+
+
+### Data Version Control
+Use DVC to version control your data.
+
+
 ### Tests
 I find myself often running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
-Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed.
+
+Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed. It's always best if you write real unit tests for your code.<br>
 To execute:
 ```yaml
 bash tests/smoke_tests.sh
 ```
 
 
-### Environment Variables
-(TODO)
-<br><br>
-
-
 ### Support Installing Project As a Package
 It allows other people to easily use your modules in their own projects.
-Change name of the `src` folder to your project name and modify configuration in `setup.py`.
+Change name of the `src` folder to your project name and add `setup.py` file:
+```python
+from setuptools import find_packages, setup
+
+setup(
+    name="src",  # you should change "src" to your project name
+    version="0.0.0",
+    description="Describe Your Cool Project",
+    author="",
+    author_email="",
+    url="https://github.com/hobogalaxy/lightning-hydra-template",  # REPLACE WITH YOUR OWN GITHUB PROJECT LINK
+    install_requires=["pytorch-lightning>=1.2.0", "hydra-core>=1.0.6"],
+    packages=find_packages(),
+)
+```
 Now your project can be installed from local files:
 ```yaml
 pip install -e .
@@ -640,7 +668,7 @@ So any file can be easily imported into any other file like so:
 from project_name.models.mnist_model import LitModelMNIST
 from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
-<br><br>
+<br><br><br>
 
 
 
@@ -649,7 +677,8 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 <!-- PrettyErrors and Rich exception handling,
 k-fold cross validation, faster tab completion import trick,
 choosing metric names with '/' for wandb -->
-<br>
+<br><br>
+
 
 
 ## Other Repositories
