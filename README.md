@@ -598,7 +598,7 @@ After that your code will be automatically reformatted on every new commit.<br>
 Currently template contains configurations of **Black** (python code formatting) and **Isort** (python import sorting). You can exclude chosen files from automatic formatting, by modifying [.pre-commit-config.yaml](.pre-commit-config.yaml).<br>
 To format all files in the project use command:
 ```yaml
-pre-commit run --all-filess
+pre-commit run --all-files
 ```
 <br>
 
