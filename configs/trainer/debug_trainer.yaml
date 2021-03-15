@@ -13,7 +13,7 @@ progress_bar_refresh_rate: null
 weights_summary: null
 profiler: null
 
-# all of the parameters below are set to Lightning defaults
+# all parameters below are set to Lightning defaults
 
 # tricks
 gradient_clip_val: 0
@@ -42,8 +42,6 @@ deterministic: False
 
 resume_from_checkpoint: null
 
-# no accumulation for epochs 1-4. accumulate 3 for epochs 5-10. accumulate 20 after that
-# accumulate_grad_batches: {5: 3, 10: 20}
 
 # automatically find the largest batch size that fits into memory and is power of 2
 # (requires calling trainer.tune(model=model, datamodule=datamodule))

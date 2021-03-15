@@ -111,17 +111,17 @@ The directory structure of new project looks like this:
 │   │   ├── inference_example.py    <- Example of inference with trained model
 │   │   └── template_utils.py       <- Some extra template utilities
 │   │
-│   └── train.py                <- Contains the whole training pipeline
+│   └── train.py                <- Contains training pipeline
 │
-├── run.py                  <- Train model with chosen experiment configuration
+├── run.py                  <- Run training with chosen experiment configuration
 │
-├── .env                    <- Environment variables
-├── .gitignore              <- Files ignored by git
+├── .env                    <- File for storing environment variables
+├── .gitignore              <- List of files/folders ignored by git
 ├── .pre-commit-config.yaml <- Configuration of hooks for automatic code formatting
-├── LICENSE
-├── README.md
 ├── conda_env_gpu.yaml      <- File for installing conda environment
-└── requirements.txt        <- File for installing python dependencies
+├── requirements.txt        <- File for installing python dependencies
+├── LICENSE
+└── README.md
 ```
 <br>
 
@@ -568,6 +568,13 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 <br><br>
 
 
+
+### Inference
+Template contains simple example of loading model from checkpoint and running predictions. 
+Take a look at [inference_example.py](src/utils/inference_example.py).
+<br><br>
+
+
 ### Callbacks
 Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
 
@@ -596,6 +603,7 @@ pre-commit install
 ```
 After that your code will be automatically reformatted on every new commit.<br>
 Currently template contains configurations of **Black** (python code formatting) and **Isort** (python import sorting). You can exclude chosen files from automatic formatting, by modifying [.pre-commit-config.yaml](.pre-commit-config.yaml).<br>
+
 To format all files in the project use command:
 ```yaml
 pre-commit run --all-files

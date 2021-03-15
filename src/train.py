@@ -9,29 +9,38 @@ from hydra.utils import log
 import hydra
 
 # normal imports
-from typing import List
+from typing import List, Optional
 
 # src imports
 from src.utils import template_utils
 
 
-def train(config: DictConfig):
+def train(config: DictConfig) -> Optional[float]:
+    """Training pipeline.
+    Instantiates all PyTorch Lightning objects and executes training.
+
+    Args:
+        config (DictConfig): Configuration composed by Hydra.
+
+    Returns:
+        Optional[float]: Metric score for hyperparameter optimization.
+    """
 
     # Set seed for random number generators in pytorch, numpy and python.random
     if "seed" in config:
         seed_everything(config.seed)
 
-    # Init Lightning datamodule ⚡
+    # Init Lightning datamodule
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(config.datamodule)
 
-    # Init Lightning model ⚡
+    # Init Lightning model
     log.info(f"Instantiating model <{config.model._target_}>")
     model: LightningModule = hydra.utils.instantiate(
         config.model, optimizer=config.optimizer, _recursive_=False
     )
 
-    # Init Lightning callbacks ⚡
+    # Init Lightning callbacks
     callbacks: List[Callback] = []
     if "callbacks" in config:
         for _, cb_conf in config["callbacks"].items():
@@ -39,7 +48,7 @@ def train(config: DictConfig):
                 log.info(f"Instantiating callback <{cb_conf._target_}>")
                 callbacks.append(hydra.utils.instantiate(cb_conf))
 
-    # Init Lightning loggers ⚡
+    # Init Lightning loggers
     logger: List[LightningLoggerBase] = []
     if "logger" in config:
         for _, lg_conf in config["logger"].items():
@@ -47,14 +56,14 @@ def train(config: DictConfig):
                 log.info(f"Instantiating logger <{lg_conf._target_}>")
                 logger.append(hydra.utils.instantiate(lg_conf))
 
-    # Init Lightning trainer ⚡
+    # Init Lightning trainer
     log.info(f"Instantiating trainer <{config.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(
         config.trainer, callbacks=callbacks, logger=logger
     )
 
     # Send some parameters from config to all lightning loggers
-    log.info(f"Logging hyperparameters!")
+    log.info("Logging hyperparameters!")
     template_utils.log_hyperparameters(
         config=config,
         model=model,
@@ -64,17 +73,17 @@ def train(config: DictConfig):
         logger=logger,
     )
 
-    # Train the model ⚡
-    log.info(f"Starting training!")
+    # Train the model
+    log.info("Starting training!")
     trainer.fit(model=model, datamodule=datamodule)
 
     # Evaluate model on test set after training
     if not config.trainer.get("fast_dev_run"):
-        log.info(f"Starting testing!")
+        log.info("Starting testing!")
         trainer.test()
 
     # Make sure everything closed properly
-    log.info(f"Finalizing!")
+    log.info("Finalizing!")
     template_utils.finish(
         config=config,
         model=model,

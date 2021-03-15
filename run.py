@@ -2,19 +2,18 @@ import dotenv
 import hydra
 from omegaconf import DictConfig
 
-
 # load environment variables from `.env` file
 dotenv.load_dotenv(dotenv_path=".env", override=True)
 
 
 @hydra.main(config_path="configs/", config_name="config.yaml")
 def main(config: DictConfig):
-    
+
     # Imports should be nested inside @hydra.main to optimize tab completion
-    # Learn more here: https://github.com/facebookresearch/hydra/issues/934 
+    # Learn more here: https://github.com/facebookresearch/hydra/issues/934
     from src.train import train
     from src.utils import template_utils
-    
+
     # A couple of optional utilities:
     # - disabling python warnings
     # - disabling lightning logs
@@ -22,7 +21,7 @@ def main(config: DictConfig):
     # - forcing debug friendly configuration
     # You can safely get rid of this line if you don't want those
     template_utils.extras(config)
-    
+
     # Pretty print config using Rich library
     if config.get("print_config"):
         template_utils.print_config(config, resolve=True)
