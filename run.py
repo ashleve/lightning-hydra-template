@@ -1,4 +1,5 @@
 import hydra
+from hydra.utils import log
 from omegaconf import DictConfig
 
 
@@ -10,7 +11,7 @@ def main(config: DictConfig):
     import dotenv
     from src.train import train
     from src.utils import template_utils
-    
+
     # load environment variables from `.env` file
     dotenv.load_dotenv(dotenv_path=".env", override=True)
 
@@ -24,7 +25,7 @@ def main(config: DictConfig):
 
     # Pretty print config using Rich library
     if config.get("print_config"):
-        hydra.utils.log.info(f"Pretty printing config with Rich! <{config.print_config=}>")
+        log.info(f"Pretty printing config with Rich! <{config.print_config=}>")
         template_utils.print_config(config, resolve=True)
 
     # Train model

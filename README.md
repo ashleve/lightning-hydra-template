@@ -571,23 +571,17 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 
 
 ### Inference
-Template contains simple example of loading model from checkpoint and running predictions. 
+Template contains simple example of loading model from checkpoint and running predictions.<br>
 Take a look at [inference_example.py](src/utils/inference_example.py).
 <br><br>
 
 
 ### Callbacks
 Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
+To support reproducibility: *UploadCodeToWandbAsArtifact*, *UploadCheckpointsToWandbAsArtifact*, *WatchModelWithWandb*.<br>
+To provide examples of logging custom visualisations with callbacks only: *LogConfusionMatrixToWandb*, *LogF1PrecisionRecallHeatmapToWandb*.<br>
+<br><br>
 
-To support reproducibility:
-- UploadCodeToWandbAsArtifact
-- UploadCheckpointsToWandbAsArtifact
-- WatchModelWithWandb
-
-To provide examples of logging custom visualisations with callbacks only:
-- LogConfusionMatrixToWandb
-- LogF1PrecisionRecallHeatmapToWandb
-<br>
 
 
 ## Best Practices
