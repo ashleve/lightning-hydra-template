@@ -35,6 +35,7 @@ to your `README.md`.
     - [Workflow](#workflow)
     - [Logs](#logs)
     - [Experiment Tracking](#experiment-tracking)
+    - [Inference](#inference)
     - [Callbacks](#callbacks)
 - [Best Practices](#best-practices)
 - [Tricks](#tricks)
