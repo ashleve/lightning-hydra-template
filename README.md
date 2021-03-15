@@ -578,9 +578,10 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 
 ### Callbacks
 Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
-To support reproducibility: **UploadCodeToWandbAsArtifact**, **UploadCheckpointsToWandbAsArtifact**, **WatchModelWithWandb**.<br>
-To provide examples of logging custom visualisations with callbacks only: **LogConfusionMatrixToWandb**, **LogF1PrecisionRecallHeatmapToWandb**.<br>
-<br>
+To support reproducibility: *UploadCodeToWandbAsArtifact*, *UploadCheckpointsToWandbAsArtifact*, *WatchModelWithWandb*.<br>
+To provide examples of logging custom visualisations with callbacks only: *LogConfusionMatrixToWandb*, *LogF1PrecisionRecallHeatmapToWandb*.<br>
+<br><br>
+
 
 
 ## Best Practices
