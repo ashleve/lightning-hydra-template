@@ -16,7 +16,7 @@ optimized_metric: "val/acc_best"
 
 
 hydra:
-    # here we define optuna objective
+    # here we define Optuna hyperparameter search
     # it optimizes for value returned from function with @hydra.main decorator
     # learn more here: https://hydra.cc/docs/next/plugins/optuna_sweeper
     sweeper:

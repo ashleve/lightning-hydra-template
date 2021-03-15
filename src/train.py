@@ -16,8 +16,8 @@ from src.utils import template_utils
 
 
 def train(config: DictConfig) -> Optional[float]:
-    """Training pipeline.
-    Instantiates all PyTorch Lightning objects and executes training.
+    """Contains training pipeline.
+    Instantiates all PyTorch Lightning objects from config.
 
     Args:
         config (DictConfig): Configuration composed by Hydra.
