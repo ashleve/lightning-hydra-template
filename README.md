@@ -151,7 +151,7 @@ Template contains example with MNIST classification.<br>
 When running `python run.py` you should see something like this:
 <div align="center">
 
-![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/teminal.png)
+![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/terminal.png)
 
 </div>
 
