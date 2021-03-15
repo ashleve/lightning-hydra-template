@@ -89,7 +89,9 @@ def print_config(
 
     # TODO print main config path and experiment config path
     # print(f"Main config path: [link file://{directory}]{directory}")
-
+    
+    # TODO refactor the whole method
+        
     style = "dim"
 
     tree = Tree(f":gear: CONFIG", style=style, guide_style=style)
@@ -111,7 +113,10 @@ def print_config(
                 cfg_str = OmegaConf.to_yaml(nested_config_section, resolve=resolve)
                 nested_branch.add(Syntax(cfg_str, "yaml"))
         else:
-            cfg_str = OmegaConf.to_yaml(config_section, resolve=resolve)
+            if isinstance(config_section, DictConfig):
+                cfg_str = OmegaConf.to_yaml(config_section, resolve=resolve)
+            else:
+                cfg_str = str(config_section)
             branch.add(Syntax(cfg_str, "yaml"))
 
     print(tree)
