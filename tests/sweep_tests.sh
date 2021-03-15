@@ -17,15 +17,16 @@ export PYTHONWARNINGS="ignore"
 
 echo "TEST 1"
 echo "Default hydra sweep with wandb logging"
-python train.py -m datamodule.batch_size=64,128 model.lr=0.001,0.003 \
+python run.py -m \
 +experiment=exp_example_simple \
+datamodule.batch_size=64,128 optimizer.lr=0.001,0.003 \
 trainer.gpus=-1 trainer.max_epochs=2 \
 datamodule.num_workers=12 datamodule.pin_memory=True \
 logger=wandb logger.wandb.project="env_tests" logger.wandb.group="DefaultSweep_MNIST_SimpleDenseNet"
 
 echo "TEST 2"
 echo "Optuna sweep with wandb logging"
-python train.py -m --config-name config_optuna.yaml \
+python run.py -m --config-name config_optuna.yaml \
 +experiment=exp_example_simple \
 trainer.gpus=-1 trainer.max_epochs=5 \
 datamodule.num_workers=12 datamodule.pin_memory=True \

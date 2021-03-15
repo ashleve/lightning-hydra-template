@@ -1,7 +1,7 @@
 # @package _global_
 
 # to execute this experiment run:
-# python train.py +experiment=exp_example_simple
+# python run.py +experiment=exp_example_simple
 
 defaults:
     - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder or set to null

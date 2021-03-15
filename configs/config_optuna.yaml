@@ -1,7 +1,7 @@
 # @package _global_
 
 # example hyperparameter optimization of some experiment with optuna:
-# python train.py -m --config-name config_optuna.yaml +experiment=exp_example_simple logger=wandb
+# python run.py -m --config-name config_optuna.yaml +experiment=exp_example_simple logger=wandb
 
 defaults:
     # load everything from main config file
@@ -16,7 +16,7 @@ optimized_metric: "val/acc_best"
 
 
 hydra:
-    # here we define optuna objective
+    # here we define Optuna hyperparameter search
     # it optimizes for value returned from function with @hydra.main decorator
     # learn more here: https://hydra.cc/docs/next/plugins/optuna_sweeper
     sweeper:

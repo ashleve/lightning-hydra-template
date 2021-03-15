@@ -17,29 +17,29 @@ export PYTHONWARNINGS="ignore"
 
 echo "TEST 1"
 echo "Train on GPU (2 epochs)"
-python train.py trainer.gpus=-1 trainer.max_epochs=2 \
+python run.py trainer.gpus=-1 trainer.max_epochs=2 \
 print_config=false
 
 echo "TEST 2"
 echo "Train with 4 workers and cuda pinned memory (2 epochs)"
-python train.py trainer.gpus=-1 trainer.max_epochs=2 \
+python run.py trainer.gpus=-1 trainer.max_epochs=2 \
 datamodule.num_workers=4 datamodule.pin_memory=True \
 print_config=false
 
 echo "TEST 3"
 echo "Train with 16-bit precision (1 epoch)"
-python train.py trainer.gpus=-1 trainer.max_epochs=2 \
+python run.py trainer.gpus=-1 trainer.max_epochs=2 \
 +trainer.precision=16 \
 print_config=false
 
 echo "TEST 4"
 echo "Train with mixed precision (apex, amp level 01, 2 epochs)"
-python train.py trainer.gpus=-1 trainer.max_epochs=2 \
+python run.py trainer.gpus=-1 trainer.max_epochs=2 \
 +trainer.amp_backend="apex" +trainer.amp_level="O1" +trainer.precision=16 \
 print_config=false
 
 echo "TEST 5"
 echo "Train with mixed precision (apex, amp level 02, 2 epochs)"
-python train.py trainer.gpus=-1 trainer.max_epochs=2 \
+python run.py trainer.gpus=-1 trainer.max_epochs=2 \
 +trainer.amp_backend="apex" +trainer.amp_level="O2" +trainer.precision=16 \
 print_config=false

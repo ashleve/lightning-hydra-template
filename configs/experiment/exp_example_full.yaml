@@ -1,7 +1,7 @@
 # @package _global_
 
 # to execute this experiment run:
-# python train.py +experiment=exp_example_full
+# python run.py +experiment=exp_example_full
 
 defaults:
     - override /trainer: null  # override trainer to null so it's not loaded from main config defaults...

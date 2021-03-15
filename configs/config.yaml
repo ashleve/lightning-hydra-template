@@ -7,14 +7,14 @@ defaults:
     - optimizer: adam.yaml
     - datamodule: mnist_datamodule.yaml
     - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
-    - logger: null  # set logger here or use command line (e.g. `python train.py logger=wandb`)
+    - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
     # enable color logging
     # - override hydra/hydra_logging: colorlog
     # - override hydra/job_logging: colorlog
 
 
-# path to original working directory (that `train.py` was executed from in command line)
+# path to original working directory (that `run.py` was executed from in command line)
 # hydra hijacks working directory by changing it to the current log directory,
 # so it's useful to have path to original work dir as a special variable
 # read more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
@@ -25,9 +25,9 @@ work_dir: ${hydra:runtime.cwd}
 data_dir: ${work_dir}/data/
 
 
-# use `python train.py debug=true` for easy debugging!
+# use `python run.py debug=true` for easy debugging!
 # this will run 1 train, val and test loop with only 1 batch
-# equivalent to running `python train.py trainer.fast_dev_run=true`
+# equivalent to running `python run.py trainer.fast_dev_run=true`
 # (this is placed here just for easier access from command line)
 debug: False
 
@@ -44,7 +44,6 @@ disable_warnings: True
 disable_lightning_logs: False
 
 
-# # hydra configuration
 hydra:
     # output paths for hydra logs
     run:
@@ -54,7 +53,8 @@ hydra:
         subdir: ${hydra.job.num}
 
     job:
-        # you can set environment variables here
+        # you can set here environment variables that are universal for all users
+        # for system specific variables (like data paths) it's better to use .env file!
         env_set:
             # currently there are some issues with running sweeps alongside wandb
             # https://github.com/wandb/client/issues/1314

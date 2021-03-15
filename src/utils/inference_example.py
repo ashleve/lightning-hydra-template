@@ -11,10 +11,15 @@ def predict():
     """
 
     # ckpt can be also a URL!
-    CKPT_PATH = "epoch=0.ckpt"
+    CKPT_PATH = "last.ckpt"
 
     # load model from checkpoint
+    # model __init__ parameters will be loaded from ckpt automatically
+    # you can also pass some parameter explicitly to override it
     trained_model = LitModelMNIST.load_from_checkpoint(checkpoint_path=CKPT_PATH)
+    
+    # print model hyperparameters
+    print(trained_model.hparams)
 
     # switch to evaluation mode
     trained_model.eval()

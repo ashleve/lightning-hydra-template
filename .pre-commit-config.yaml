@@ -19,7 +19,7 @@ repos:
     rev: 20.8b1
     hooks:
       - id: black
-        # args: [--force-exclude, train.py]
+        # args: [--force-exclude, src/train.py]
 
 # Isort (import sorting)
   - repo: https://github.com/PyCQA/isort
@@ -28,7 +28,7 @@ repos:
       - id: isort
         # profiles: https://pycqa.github.io/isort/docs/configuration/profiles/
         # other flags: https://pycqa.github.io/isort/docs/configuration/options/
-        args: [--profile, black, --skip, train.py, --filter-files]
+        args: [--profile, black, --skip, src/train.py, --filter-files]
         # files: "src/.*"
 
 # MyPy (static type checking)

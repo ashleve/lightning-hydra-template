@@ -1,42 +1,10 @@
 _target_: pytorch_lightning.Trainer
 
-# set -1 to train on all GPUs available
-# set 0 to train on CPU only
+# set `1` to train on GPU, `0` to train on CPU only
 gpus: 0
 
 min_epochs: 1
 max_epochs: 10
 
-# prints
-# progress_bar_refresh_rate: null
 weights_summary: null
-# profiler: null
-
-# all of the parameters below are set to Lightning defaults
-
-# tricks
-# gradient_clip_val: 0
-# accumulate_grad_batches: 1
-# val_check_interval: 1.0
-# check_val_every_n_epoch: 1
-# stochastic_weight_avg: False
-
-# debug
-# num_sanity_val_steps: 2
-# fast_dev_run: False
-# overfit_batches: 0
-# limit_train_batches: 1.0
-# limit_val_batches: 1.0
-# limit_test_batches: 1.0
-# track_grad_norm: -1
-
-# others
-# amp_backend: "native"
-# amp_level: "02"
-# precision: 32
-# accelerator: null
-# num_nodes: 1
-# tpu_cores: null
-# deterministic: False
-
-# resume_from_checkpoint: null
+progress_bar_refresh_rate: 10
