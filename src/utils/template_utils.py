@@ -89,9 +89,9 @@ def print_config(
 
     # TODO print main config path and experiment config path
     # print(f"Main config path: [link file://{directory}]{directory}")
-    
+
     # TODO refactor the whole method
-        
+
     style = "dim"
 
     tree = Tree(f":gear: CONFIG", style=style, guide_style=style)

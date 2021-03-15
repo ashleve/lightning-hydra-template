@@ -571,7 +571,7 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 
 
 ### Inference
-Template contains simple example of loading model from checkpoint and running predictions. 
+Template contains simple example of loading model from checkpoint and running predictions.
 Take a look at [inference_example.py](src/utils/inference_example.py).
 <br><br>
 
