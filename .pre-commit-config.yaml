@@ -28,7 +28,7 @@ repos:
       - id: isort
         # profiles: https://pycqa.github.io/isort/docs/configuration/profiles/
         # other flags: https://pycqa.github.io/isort/docs/configuration/options/
-        args: [--profile, black, --skip, src/train.py, --filter-files]
+        args: [--profile, black, --skip, src/train.py, --skip, run.py, --filter-files]
         # files: "src/.*"
 
 # MyPy (static type checking)

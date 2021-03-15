@@ -1,4 +1,5 @@
 import hydra
+from hydra.utils import log
 from omegaconf import DictConfig
 
 
@@ -8,7 +9,6 @@ def main(config: DictConfig):
     # Imports should be nested inside @hydra.main to optimize tab completion
     # Learn more here: https://github.com/facebookresearch/hydra/issues/934
     import dotenv
-
     from src.train import train
     from src.utils import template_utils
 
@@ -25,9 +25,7 @@ def main(config: DictConfig):
 
     # Pretty print config using Rich library
     if config.get("print_config"):
-        hydra.utils.log.info(
-            f"Pretty printing config with Rich! <{config.print_config=}>"
-        )
+        log.info(f"Pretty printing config with Rich! <{config.print_config=}>")
         template_utils.print_config(config, resolve=True)
 
     # Train model
