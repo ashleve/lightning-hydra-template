@@ -60,16 +60,16 @@ python run.py trainer=debug_trainer trainer.max_epochs=1 trainer.accumulate_grad
 print_config=false
 
 echo "TEST 9"
-echo "Run validation loop twice per epoch (2 epochs)"
-python run.py trainer=debug_trainer trainer.max_epochs=2 trainer.val_check_interval=0.5 \
+echo "Run validation loop twice per epoch (1 epoch)"
+python run.py trainer=debug_trainer trainer.max_epochs=1 trainer.val_check_interval=0.5 \
 print_config=false
 
 echo "TEST 10"
-echo "Run with CSVLogger (2 epochs)"
-python run.py trainer=debug_trainer logger=csv trainer.min_epochs=5 trainer.max_epochs=2 \
+echo "Run with CSVLogger (3 epochs)"
+python run.py trainer=debug_trainer logger=csv trainer.max_epochs=2 trainer.limit_train_batches=10 \
 print_config=false
 
 echo "TEST 11"
-echo "Run with TensorBoardLogger (2 epochs)"
-python run.py trainer=debug_trainer logger=tensorboard trainer.min_epochs=5 trainer.max_epochs=2 \
+echo "Run with TensorBoardLogger (3 epochs)"
+python run.py trainer=debug_trainer logger=tensorboard trainer.max_epochs=2 trainer.limit_train_batches=10 \
 print_config=false

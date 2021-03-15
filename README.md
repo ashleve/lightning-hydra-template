@@ -29,7 +29,7 @@ to your `README.md`.
 - [Project Structure](#project-structure)
 - [Quickstart](#quickstart)
 - [Guide](#guide)
-    - [How To Learn?](#how-to-start)
+    - [How To Learn?](#how-to-learn)
     - [Main Project Configuration](#main-project-configuration)
     - [Experiment Configuration](#experiment-configuration)
     - [Workflow](#workflow)
@@ -42,8 +42,8 @@ to your `README.md`.
     - [Automatic Code Formatting](#automatic-code-formatting)
     - [Environment Variables](#environment-variables)
     - [Data Version Control](#data-version-control)
-    - [Tests](#tests)
     - [Installing Project As A Package](#support-installing-project-as-a-package)
+    - [Tests](#tests)
 - [Tricks](#tricks)
 - [Other Repositories](#other-repositories)
 <br>
@@ -343,7 +343,31 @@ python run.py -m '+experiment=glob(*)'
 > *This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.*
 
 </details>
+
+<details>
+<summary>Execute sweep on a Linux SLURM cluster</summary>
+
+> *This should be achievable with simple config using [Submitit launcher for Hydra](https://hydra.cc/docs/plugins/submitit_launcher). Example is not yet implemented in this template.*
+
+</details>
+
+<!-- 
+<details>
+<summary>Use Hydra tab completion</summary>
+
+> *Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Read more [here](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).* 
+
+> *To install tab completion for bash shell, navigate to project folder and run the command below.*
+
+```bash
+eval "$(python run.py -sc install=bash)"
+```
+ 
+</details> 
+-->
+
 <br>
+
 
 
 ## Guide
@@ -659,17 +683,6 @@ git commit -m "Add raw data"
 <br>
 
 
-### Tests
-I find myself often running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
-
-Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed. It's always best if you write real unit tests for your code.<br>
-To execute:
-```yaml
-bash tests/smoke_tests.sh
-```
-<br>
-
-
 ### Support Installing Project As a Package
 It allows other people to easily use your modules in their own projects.
 Change name of the `src` folder to your project name and add `setup.py` file:
@@ -701,11 +714,21 @@ So any file can be easily imported into any other file like so:
 from project_name.models.mnist_model import LitModelMNIST
 from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
+<br>
+
+
+### Tests
+I find myself often running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
+
+Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed. It's always best if you write real unit tests for your code.<br>
+To execute:
+```yaml
+bash tests/smoke_tests.sh
+```
 <br><br><br>
 
 
 ## Tricks
-
 ### Accessing Datamodule Attributes In Model
 The simplest way is to pass datamodule attribute directly to model on initialization:
 ```python
@@ -715,12 +738,12 @@ model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
 ```
 This is not a robust solution, since when you have many datamodules in your project, it will make them incompatible if this same parameter is not defined in each of them.
 
-A better solution is to add Omegaconf resolver to you datamodule:
+A better solution is to add Omegaconf resolver to your datamodule:
 ```python
-# you can place this snippet in your datamodule __init__()
 from omegaconf import OmegaConf
-resolver_name = "datamodule"
 
+# you can place this snippet in your datamodule __init__()
+resolver_name = "datamodule"
 OmegaConf.register_new_resolver(
     resolver_name,
     lambda name: getattr(self, name),

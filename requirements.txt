@@ -3,6 +3,7 @@ torch>=1.7.1
 torchvision>=0.8.2
 torchaudio>=0.7.2
 pytorch-lightning>=1.2.2
+torchmetrics
 
 # --------- hydra --------- #
 hydra-core==1.1.0.dev3
