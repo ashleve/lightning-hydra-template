@@ -618,13 +618,17 @@ bash Miniconda3-latest-Linux-x86_64.sh
 
 
 ### Environment Variables
-System specific variables (e.g. absolute paths to datasets) should not be under version control or it will result in conflict between different users.
-Template contains `.env` file which is excluded from further version control, so you can use it for setting your environment variables.
-Simply add your var to `.env` like this:
+System specific variables (e.g. absolute paths to datasets) should not be under version control or it will result in conflict between different users.<br>
+
+
+Template contains `.env.tmp` file. Change its name to `.env` (this name is excluded from version control in .gitignore).
+You should use it for storing environment variables like this: 
 ``` bash
 export MY_VAR=/home/user/my_system_path
 ```
-You can use environment variables in your Hydra `.yaml` files like this:
+All variables from `.env` are loaded in `run.py` automatically.
+
+Hydra allows you to reference any env variable in `.yaml` configs like this:
 ```yaml
 path_to_data: ${env:MY_VAR}
 ```
