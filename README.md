@@ -29,7 +29,7 @@ to your `README.md`.
 - [Project Structure](#project-structure)
 - [Quickstart](#quickstart)
 - [Guide](#guide)
-    - [How To Start?](#how-to-start)
+    - [How To Learn?](#how-to-learn)
     - [Main Project Configuration](#main-project-configuration)
     - [Experiment Configuration](#experiment-configuration)
     - [Workflow](#workflow)
@@ -38,6 +38,12 @@ to your `README.md`.
     - [Inference](#inference)
     - [Callbacks](#callbacks)
 - [Best Practices](#best-practices)
+    - [Miniconda](#miniconda)
+    - [Automatic Code Formatting](#automatic-code-formatting)
+    - [Environment Variables](#environment-variables)
+    - [Data Version Control](#data-version-control)
+    - [Installing Project As A Package](#support-installing-project-as-a-package)
+    - [Tests](#tests)
 - [Tricks](#tricks)
 - [Other Repositories](#other-repositories)
 <br>
@@ -145,7 +151,7 @@ Template contains example with MNIST classification.<br>
 When running `python run.py` you should see something like this:
 <div align="center">
 
-![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/teminal.png)
+![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/terminal.png)
 
 </div>
 
@@ -337,12 +343,36 @@ python run.py -m '+experiment=glob(*)'
 > *This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.*
 
 </details>
+
+<details>
+<summary>Execute sweep on a Linux SLURM cluster</summary>
+
+> *This should be achievable with simple config using [Submitit launcher for Hydra](https://hydra.cc/docs/plugins/submitit_launcher). Example is not yet implemented in this template.*
+
+</details>
+
+<!-- 
+<details>
+<summary>Use Hydra tab completion</summary>
+
+> *Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Read more [here](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).* 
+
+> *To install tab completion for bash shell, navigate to project folder and run the command below.*
+
+```bash
+eval "$(python run.py -sc install=bash)"
+```
+ 
+</details> 
+-->
+
 <br>
+
 
 
 ## Guide
 
-### How To Start?
+### How To Learn?
 - First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
 - Next, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
 <br>
@@ -586,7 +616,18 @@ To provide examples of logging custom visualisations with callbacks only: *LogCo
 
 ## Best Practices
 
-### Code Formating
+### Miniconda
+Use miniconda for your python environments (it's usually unnecessary to install full anaconda environment, miniconda should be enough).
+It makes it easier to install some dependencies, like cudatoolkit for GPU support.<br>
+Example installation:
+```yaml
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+<br>
+
+
+### Automatic Code Formatting
 Use pre-commit hooks to standardize code formatting of your project and save mental energy.<br>
 Simply install pre-commit package with:
 ```yaml
@@ -606,25 +647,18 @@ pre-commit run --all-files
 <br>
 
 
-### Miniconda
-Use miniconda for your python environments (it's usually unnecessary to install full anaconda environment, miniconda should be enough).
-It makes it easier to install some dependencies, like cudatoolkit for GPU support.<br>
-Example installation:
-```yaml
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
-```
-<br>
-
-
 ### Environment Variables
-System specific variables (e.g. absolute paths to datasets) should not be under version control or it will result in conflict between different users.
-Template contains `.env` file which is excluded from further version control, so you can use it for setting your environment variables.
-Simply add your var to `.env` like this:
+System specific variables (e.g. absolute paths to datasets) should not be under version control or it will result in conflict between different users.<br>
+
+
+Template contains `.env.tmp` file. Change its name to `.env` (this name is excluded from version control in .gitignore).
+You should use it for storing environment variables like this: 
 ``` bash
 export MY_VAR=/home/user/my_system_path
 ```
-You can use environment variables in your Hydra `.yaml` files like this:
+All variables from `.env` are loaded in `run.py` automatically.
+
+Hydra allows you to reference any env variable in `.yaml` configs like this:
 ```yaml
 path_to_data: ${env:MY_VAR}
 ```
@@ -645,17 +679,6 @@ DVC stores information about the added file (or a directory) in a special .dvc f
 ```yaml
 git add data/MNIST.dvc data/.gitignore
 git commit -m "Add raw data"
-```
-<br>
-
-
-### Tests
-I find myself often running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
-
-Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed. It's always best if you write real unit tests for your code.<br>
-To execute:
-```yaml
-bash tests/smoke_tests.sh
 ```
 <br>
 
@@ -691,13 +714,55 @@ So any file can be easily imported into any other file like so:
 from project_name.models.mnist_model import LitModelMNIST
 from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
+<br>
+
+
+### Tests
+I find myself often running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
+
+Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed. It's always best if you write real unit tests for your code.<br>
+To execute:
+```yaml
+bash tests/smoke_tests.sh
+```
 <br><br><br>
 
 
-
 ## Tricks
-(TODO)
-<!-- PrettyErrors and Rich exception handling,
+### Accessing Datamodule Attributes In Model
+The simplest way is to pass datamodule attribute directly to model on initialization:
+```python
+datamodule = hydra.utils.instantiate(config.datamodule)
+
+model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
+```
+This is not a robust solution, since when you have many datamodules in your project, it will make them incompatible if this same parameter is not defined in each of them.
+
+A better solution is to add Omegaconf resolver to your datamodule:
+```python
+from omegaconf import OmegaConf
+
+# you can place this snippet in your datamodule __init__()
+resolver_name = "datamodule"
+OmegaConf.register_new_resolver(
+    resolver_name,
+    lambda name: getattr(self, name),
+    use_cache=False
+)
+```
+This way you can reference any datamodule attribute from your config like this:
+```yaml
+# this will get 'datamodule.some_param' field
+some_parameter: ${datamodule: some_param} 
+```
+When later accessing this field, say in your lightning model, it will get automatically resolved based on all resolvers that are registered. Remember not to access this field before datamodule is initialized. **You also need to set resolve to false in print_config() in [run.py](run.py) method or it will throw errors!**
+```python
+template_utils.print_config(config, resolve=False)
+```
+
+
+<!-- TODO: 
+PrettyErrors and Rich exception handling,
 k-fold cross validation, faster tab completion import trick,
 choosing metric names with '/' for wandb -->
 <br><br>

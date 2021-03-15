@@ -12,7 +12,7 @@ def main(config: DictConfig):
     from src.train import train
     from src.utils import template_utils
 
-    # load environment variables from `.env` file
+    # load environment variables from `.env` file if it exists
     dotenv.load_dotenv(dotenv_path=".env", override=True)
 
     # A couple of optional utilities:
