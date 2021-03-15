@@ -29,7 +29,7 @@ to your `README.md`.
 - [Project Structure](#project-structure)
 - [Quickstart](#quickstart)
 - [Guide](#guide)
-    - [How To Start?](#how-to-start)
+    - [How To Learn?](#how-to-start)
     - [Main Project Configuration](#main-project-configuration)
     - [Experiment Configuration](#experiment-configuration)
     - [Workflow](#workflow)
@@ -38,6 +38,12 @@ to your `README.md`.
     - [Inference](#inference)
     - [Callbacks](#callbacks)
 - [Best Practices](#best-practices)
+    - [Miniconda](#miniconda)
+    - [Automatic Code Formatting](#automatic-code-formatting)
+    - [Environment Variables](#environment-variables)
+    - [Data Version Control](#data-version-control)
+    - [Tests](#tests)
+    - [Installing Project As A Package](#support-installing-project-as-a-package)
 - [Tricks](#tricks)
 - [Other Repositories](#other-repositories)
 <br>
@@ -342,7 +348,7 @@ python run.py -m '+experiment=glob(*)'
 
 ## Guide
 
-### How To Start?
+### How To Learn?
 - First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
 - Next, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
 <br>
@@ -586,7 +592,18 @@ To provide examples of logging custom visualisations with callbacks only: *LogCo
 
 ## Best Practices
 
-### Code Formating
+### Miniconda
+Use miniconda for your python environments (it's usually unnecessary to install full anaconda environment, miniconda should be enough).
+It makes it easier to install some dependencies, like cudatoolkit for GPU support.<br>
+Example installation:
+```yaml
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+<br>
+
+
+### Automatic Code Formatting
 Use pre-commit hooks to standardize code formatting of your project and save mental energy.<br>
 Simply install pre-commit package with:
 ```yaml
@@ -602,17 +619,6 @@ Currently template contains configurations of **Black** (python code formatting)
 To format all files in the project use command:
 ```yaml
 pre-commit run --all-files
-```
-<br>
-
-
-### Miniconda
-Use miniconda for your python environments (it's usually unnecessary to install full anaconda environment, miniconda should be enough).
-It makes it easier to install some dependencies, like cudatoolkit for GPU support.<br>
-Example installation:
-```yaml
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
 ```
 <br>
 
@@ -698,10 +704,42 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 <br><br><br>
 
 
-
 ## Tricks
-(TODO)
-<!-- PrettyErrors and Rich exception handling,
+
+### Accessing Datamodule Attributes In Model
+The simplest way is to pass datamodule attribute directly to model on initialization:
+```python
+datamodule = hydra.utils.instantiate(config.datamodule)
+
+model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
+```
+This is not a robust solution, since when you have many datamodules in your project, it will make them incompatible if this same parameter is not defined in each of them.
+
+A better solution is to add Omegaconf resolver to you datamodule:
+```python
+# you can place this snippet in your datamodule __init__()
+from omegaconf import OmegaConf
+resolver_name = "datamodule"
+
+OmegaConf.register_new_resolver(
+    resolver_name,
+    lambda name: getattr(self, name),
+    use_cache=False
+)
+```
+This way you can reference any datamodule attribute from your config like this:
+```yaml
+# this will get 'datamodule.some_param' field
+some_parameter: ${datamodule: some_param} 
+```
+When later accessing this field, say in your lightning model, it will get automatically resolved based on all resolvers that are registered. Remember not to access this field before datamodule is initialized. **You also need to set resolve to false in print_config() in [run.py](run.py) method or it will throw errors!**
+```python
+template_utils.print_config(config, resolve=False)
+```
+
+
+<!-- TODO: 
+PrettyErrors and Rich exception handling,
 k-fold cross validation, faster tab completion import trick,
 choosing metric names with '/' for wandb -->
 <br><br>
