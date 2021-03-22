@@ -92,10 +92,9 @@ def train(config: DictConfig) -> Optional[float]:
         callbacks=callbacks,
         logger=logger,
     )
-    
+
     # Print path to best checkpoint
-    log.info("Best checkpoint path:\n"
-            f"{trainer.checkpoint_callback.best_model_path}")
+    log.info(f"Best checkpoint path:\n{trainer.checkpoint_callback.best_model_path}")
 
     # Return metric score for Optuna optimization
     optimized_metric = config.get("optimized_metric")
