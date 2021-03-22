@@ -351,19 +351,19 @@ python run.py -m '+experiment=glob(*)'
 
 </details>
 
-<!-- 
+<!--
 <details>
 <summary>Use Hydra tab completion</summary>
 
-> *Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Read more [here](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).* 
+> *Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Read more [here](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).*
 
 > *To install tab completion for bash shell, navigate to project folder and run the command below.*
 
 ```bash
 eval "$(python run.py -sc install=bash)"
 ```
- 
-</details> 
+
+</details>
 -->
 
 <br>
@@ -652,7 +652,7 @@ System specific variables (e.g. absolute paths to datasets) should not be under 
 
 
 Template contains `.env.tmp` file. Change its name to `.env` (this name is excluded from version control in .gitignore).
-You should use it for storing environment variables like this: 
+You should use it for storing environment variables like this:
 ``` bash
 export MY_VAR=/home/user/my_system_path
 ```
@@ -753,7 +753,7 @@ OmegaConf.register_new_resolver(
 This way you can reference any datamodule attribute from your config like this:
 ```yaml
 # this will get 'datamodule.some_param' field
-some_parameter: ${datamodule: some_param} 
+some_parameter: ${datamodule: some_param}
 ```
 When later accessing this field, say in your lightning model, it will get automatically resolved based on all resolvers that are registered. Remember not to access this field before datamodule is initialized. **You also need to set resolve to false in print_config() in [run.py](run.py) method or it will throw errors!**
 ```python
@@ -761,7 +761,7 @@ template_utils.print_config(config, resolve=False)
 ```
 
 
-<!-- TODO: 
+<!-- TODO:
 PrettyErrors and Rich exception handling,
 k-fold cross validation, faster tab completion import trick,
 choosing metric names with '/' for wandb -->

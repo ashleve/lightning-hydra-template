@@ -143,3 +143,4 @@ dmypy.json
 # Lightning-Hydra-Template
 data/
 logs/
+wandb/

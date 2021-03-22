@@ -14,4 +14,4 @@ early_stopping:
     monitor: "val/acc"      # name of the logged metric which determines when model is improving
     patience: 100           # how many epochs of not improving until training stops
     mode: "max"             # can be "max" or "min"
-    min_delta: 0.0          # minimum change in the monitored metric needed to qualify as an improvement
+    min_delta: 0            # minimum change in the monitored metric needed to qualify as an improvement

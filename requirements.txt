@@ -24,3 +24,6 @@ python-dotenv
 pre-commit
 dvc
 scikit-learn
+pandas
+matplotlib
+seaborn

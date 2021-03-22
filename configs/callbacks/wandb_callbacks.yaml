@@ -10,7 +10,7 @@ upload_code_to_wandb_as_artifact:
 upload_ckpts_to_wandb_as_artifact:
     _target_: src.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact
     ckpt_dir: "checkpoints/"
-    upload_best_only: False
+    upload_best_only: True
 
 
 watch_model_with_wandb:
@@ -19,16 +19,9 @@ watch_model_with_wandb:
     log_freq: 100
 
 
-# BUGGED :(
-# save_best_metric_scores_to_wandb:
-#     _target_: src.callbacks.wandb_callbacks.LogBestMetricScoresToWandb
-
-
 save_f1_precision_recall_heatmap_to_wandb:
-    _target_: src.callbacks.wandb_callbacks.LogF1PrecisionRecallHeatmapToWandb
-    class_names: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    _target_: src.callbacks.wandb_callbacks.LogF1PrecRecHeatmapToWandb
 
 
 save_confusion_matrix_to_wandb:
     _target_: src.callbacks.wandb_callbacks.LogConfusionMatrixToWandb
-    class_names: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
