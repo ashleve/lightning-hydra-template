@@ -2,27 +2,26 @@ import glob
 import os
 from typing import List
 
-import pytorch_lightning as pl
+import matplotlib.pyplot as plt
+import seaborn as sn
 import torch
-import wandb
-from pytorch_lightning import Callback
+from pytorch_lightning import Callback, Trainer
 from pytorch_lightning.loggers import WandbLogger
+from sklearn import metrics
 from sklearn.metrics import f1_score, precision_score, recall_score
 
+import wandb
 
-def get_wandb_logger(trainer: pl.Trainer) -> WandbLogger:
-    logger = None
-    for lg in trainer.logger:
-        if isinstance(lg, WandbLogger):
-            logger = lg
 
-    if not logger:
-        raise Exception(
-            "You are using wandb related callback,"
-            "but WandbLogger was not found for some reason..."
-        )
+def get_wandb_logger(trainer: Trainer) -> WandbLogger:
+    for logger in trainer.logger:
+        if isinstance(logger, WandbLogger):
+            return logger
 
-    return logger
+    raise Exception(
+        "You are using wandb related callback,"
+        "but WandbLogger was not found for some reason..."
+    )
 
 
 class UploadCodeToWandbAsArtifact(Callback):
@@ -43,7 +42,7 @@ class UploadCodeToWandbAsArtifact(Callback):
 
 
 class UploadCheckpointsToWandbAsArtifact(Callback):
-    """Upload checkpoints to wandb as an artifact, at the end of training."""
+    """Upload checkpoints to wandb as an artifact, at the end of run."""
 
     def __init__(self, ckpt_dir: str = "checkpoints/", upload_best_only: bool = False):
         self.ckpt_dir = ckpt_dir
@@ -78,16 +77,17 @@ class WatchModelWithWandb(Callback):
         logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq)
 
 
-class LogF1PrecisionRecallHeatmapToWandb(Callback):
-    """
-    Generate f1, precision and recall heatmap from validation step outputs.
+class LogConfusionMatrixToWandb(Callback):
+    """Generate confusion matrix every epoch and send it to wandb.
     Expects validation step to return predictions and targets.
     """
 
-    def __init__(self, class_names: List[str] = None):
-        self.class_names = class_names
+    def __init__(self):
         self.preds = []
         self.targets = []
+        self.ready = True
+
+    def on_sanity_check_start(self, trainer, pl_module) -> None:
         self.ready = False
 
     def on_sanity_check_end(self, trainer, pl_module):
@@ -99,9 +99,68 @@ class LogF1PrecisionRecallHeatmapToWandb(Callback):
     ):
         """Gather data from single batch."""
         if self.ready:
-            preds, targets = outputs["preds"], outputs["targets"]
-            self.preds.append(preds)
-            self.targets.append(targets)
+            self.preds.append(outputs["preds"])
+            self.targets.append(outputs["targets"])
+
+    def on_validation_epoch_end(self, trainer, pl_module):
+        """Generate confusion matrix."""
+        if self.ready:
+            logger = get_wandb_logger(trainer)
+            experiment = logger.experiment
+
+            preds = torch.cat(self.preds).cpu().numpy()
+            targets = torch.cat(self.targets).cpu().numpy()
+
+            confusion_matrix = metrics.confusion_matrix(y_true=targets, y_pred=preds)
+
+            # set figure size
+            plt.figure(figsize=(14, 8))
+
+            # set labels size
+            sn.set(font_scale=1.4)
+
+            # set font size
+            sn.heatmap(confusion_matrix, annot=True, annot_kws={"size": 8}, fmt="g")
+
+            # names should be uniqe or else charts from different experiments in wandb will overlap
+            experiment.log(
+                {f"confusion_matrix/{experiment.name}": wandb.Image(plt)}, commit=False
+            )
+
+            # according to wandb docs this should also work but it crashes
+            # experiment.log(f{"confusion_matrix/{experiment.name}": plt})
+
+            # reset plot
+            plt.clf()
+
+            self.preds.clear()
+            self.targets.clear()
+
+
+class LogF1PrecRecHeatmapToWandb(Callback):
+    """Generate f1, precision, recall heatmap every epoch and send it to wandb.
+    Expects validation step to return predictions and targets.
+    """
+
+    def __init__(self, class_names: List[str] = None):
+        self.preds = []
+        self.targets = []
+        self.ready = True
+
+    def on_sanity_check_start(self, trainer, pl_module):
+        self.ready = False
+
+    def on_sanity_check_end(self, trainer, pl_module):
+        """Start executing this callback only after all validation sanity checks end."""
+        self.ready = True
+
+    def on_validation_batch_end(
+        self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
+    ):
+        """Gather data from single batch."""
+        if self.ready:
+            self.preds.append(outputs["preds"])
+            self.targets.append(outputs["targets"])
 
     def on_validation_epoch_end(self, trainer, pl_module):
         """Generate f1, precision and recall heatmap."""
@@ -109,72 +168,35 @@ class LogF1PrecisionRecallHeatmapToWandb(Callback):
             logger = get_wandb_logger(trainer=trainer)
             experiment = logger.experiment
 
-            self.preds = torch.cat(self.preds).cpu()
-            self.targets = torch.cat(self.targets).cpu()
-            f1 = f1_score(self.preds, self.targets, average=None)
-            r = recall_score(self.preds, self.targets, average=None)
-            p = precision_score(self.preds, self.targets, average=None)
+            preds = torch.cat(self.preds).cpu().numpy()
+            targets = torch.cat(self.targets).cpu().numpy()
+            f1 = f1_score(preds, targets, average=None)
+            r = recall_score(preds, targets, average=None)
+            p = precision_score(preds, targets, average=None)
+            data = [f1, p, r]
 
-            experiment.log(
-                {
-                    f"f1_p_r_heatmap/{trainer.current_epoch}_{experiment.id}": wandb.plots.HeatMap(
-                        x_labels=self.class_names,
-                        y_labels=["f1", "precision", "recall"],
-                        matrix_values=[f1, p, r],
-                        show_text=True,
-                    )
-                },
-                commit=False,
+            # set figure size
+            plt.figure(figsize=(14, 3))
+
+            # set labels size
+            sn.set(font_scale=1.2)
+
+            # set font size
+            sn.heatmap(
+                data,
+                annot=True,
+                annot_kws={"size": 10},
+                fmt=".3f",
+                yticklabels=["F1", "Precision", "Recall"],
             )
 
-            self.preds = []
-            self.targets = []
-
-
-class LogConfusionMatrixToWandb(Callback):
-    """
-    Generate Confusion Matrix.
-    Expects validation step to return predictions and targets.
-    """
-
-    def __init__(self, class_names: List[str] = None):
-        self.class_names = class_names
-        self.preds = []
-        self.targets = []
-        self.ready = False
-
-    def on_sanity_check_end(self, trainer, pl_module):
-        """Start executing this callback only after all validation sanity checks end."""
-        self.ready = True
-
-    def on_validation_batch_end(
-        self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
-    ):
-        """Gather data from single batch."""
-        if self.ready:
-            preds, targets = outputs["preds"], outputs["targets"]
-            self.preds.append(preds)
-            self.targets.append(targets)
-
-    def on_validation_epoch_end(self, trainer, pl_module):
-        """Generate confusion matrix."""
-        if self.ready:
-            logger = get_wandb_logger(trainer=trainer)
-            experiment = logger.experiment
-
-            self.preds = torch.cat(self.preds).tolist()
-            self.targets = torch.cat(self.targets).tolist()
-
+            # names should be uniqe or else charts from different experiments in wandb will overlap
             experiment.log(
-                {
-                    f"confusion_matrix/{trainer.current_epoch}_{experiment.id}": wandb.plot.confusion_matrix(
-                        preds=self.preds,
-                        y_true=self.targets,
-                        class_names=self.class_names,
-                    )
-                },
-                commit=False,
+                {f"f1_p_r_heatmap/{experiment.name}": wandb.Image(plt)}, commit=False
             )
 
-            self.preds = []
-            self.targets = []
+            # reset plot
+            plt.clf()
+
+            self.preds.clear()
+            self.targets.clear()
