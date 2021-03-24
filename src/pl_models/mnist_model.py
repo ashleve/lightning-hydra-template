@@ -24,7 +24,16 @@ class MNISTLitModel(LightningModule):
         https://pytorch-lightning.readthedocs.io/en/latest/lightning_module.html
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        optimizer,
+        input_size=784,
+        lin1_size=256,
+        lin2_size=256,
+        lin3_size=256,
+        output_size=10,
+        **kwargs
+    ):
         super().__init__()
 
         # this line ensures params passed to LightningModule will be saved to ckpt

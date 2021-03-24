@@ -166,7 +166,7 @@ python run.py trainer.max_epochs=20 optimizer.lr=1e-4
 ```
 > *You can also add new parameters with `+` sign.*
 ```yaml
-python run.py +new_param="uwu"
+python run.py +model.new_param="uwu"
 
 ```
 
