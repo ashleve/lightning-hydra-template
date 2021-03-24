@@ -179,6 +179,6 @@ def finish(
     """
 
     # without this sweeps with wandb logger might crash!
-    for lg in logger:
-        if isinstance(lg, WandbLogger):
+    for logger in trainer.logger:
+        if isinstance(logger, WandbLogger):
             wandb.finish()

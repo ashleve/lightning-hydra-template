@@ -28,7 +28,7 @@ trainer:
     # resume_from_checkpoint: ${work_dir}/last.ckpt
 
 model:
-    _target_: src.pl_models.mnist_model.LitModelMNIST
+    _target_: src.pl_models.mnist_model.MNISTLitModel
     optimizer: adam
     lr: 0.001
     weight_decay: 0.00005
