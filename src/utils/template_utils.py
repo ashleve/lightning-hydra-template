@@ -4,12 +4,13 @@ from typing import List, Sequence
 
 import pytorch_lightning as pl
 import wandb
-from hydra.utils import log
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.loggers.wandb import WandbLogger
 from rich import print
 from rich.syntax import Syntax
 from rich.tree import Tree
+
+log = logging.getLogger(__name__)
 
 
 def extras(config: DictConfig) -> None:
