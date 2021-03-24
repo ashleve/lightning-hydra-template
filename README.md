@@ -109,11 +109,10 @@ The directory structure of new project looks like this:
 │
 ├── src
 │   ├── architectures           <- PyTorch model architectures
-│   ├── callbacks               <- PyTorch Lightning callbacks
-│   ├── datamodules             <- PyTorch Lightning datamodules
 │   ├── datasets                <- PyTorch datasets
-│   ├── models                  <- PyTorch Lightning models
-│   ├── transforms              <- Data transformations
+│   ├── pl_callbacks               <- PyTorch Lightning callbacks
+│   ├── pl_datamodules             <- PyTorch Lightning datamodules
+│   ├── pl_models                  <- PyTorch Lightning models
 │   ├── utils                   <- Utility scripts
 │   │   ├── inference_example.py    <- Example of inference with trained model
 │   │   └── template_utils.py       <- Some extra template utilities
