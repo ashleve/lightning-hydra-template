@@ -8,12 +8,8 @@ def main(config: DictConfig):
     # Imports should be nested inside @hydra.main to optimize tab completion
     # Learn more here: https://github.com/facebookresearch/hydra/issues/934
     import dotenv
-    import logging
     from src.train import train
     from src.utils import template_utils
-
-    # get python logger
-    log = logging.getLogger(__name__)
 
     # load environment variables from `.env` file if it exists
     dotenv.load_dotenv(dotenv_path=".env", override=True)
@@ -28,7 +24,6 @@ def main(config: DictConfig):
 
     # Pretty print config using Rich library
     if config.get("print_config"):
-        log.info(f"Pretty printing config with Rich! <{config.print_config=}>")
         template_utils.print_config(config, resolve=True)
 
     # Train model
