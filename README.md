@@ -88,11 +88,11 @@ It makes your code neatly organized and provides lots of useful features, like a
 The directory structure of new project looks like this:
 ```
 ├── configs                 <- Hydra configuration files
-│   ├── trainer                 <- Configurations of Lightning trainers
-│   ├── datamodule              <- Configurations of Lightning datamodules
 │   ├── model                   <- Configurations of Lightning models
+│   ├── datamodule              <- Configurations of Lightning datamodules
 │   ├── callbacks               <- Configurations of Lightning callbacks
 │   ├── logger                  <- Configurations of Lightning loggers
+│   ├── trainer                 <- Configurations of Lightning trainers
 │   ├── optimizer               <- Configurations of optimizers
 │   ├── experiment              <- Configurations of experiments
 │   │
@@ -110,9 +110,9 @@ The directory structure of new project looks like this:
 ├── src
 │   ├── architectures           <- PyTorch model architectures
 │   ├── datasets                <- PyTorch datasets
-│   ├── pl_callbacks               <- PyTorch Lightning callbacks
-│   ├── pl_datamodules             <- PyTorch Lightning datamodules
-│   ├── pl_models                  <- PyTorch Lightning models
+│   ├── pl_callbacks            <- PyTorch Lightning callbacks
+│   ├── pl_datamodules          <- PyTorch Lightning datamodules
+│   ├── pl_models               <- PyTorch Lightning models
 │   ├── utils                   <- Utility scripts
 │   │   ├── inference_example.py    <- Example of inference with trained model
 │   │   └── template_utils.py       <- Some extra template utilities
@@ -166,7 +166,7 @@ python run.py trainer.max_epochs=20 optimizer.lr=1e-4
 ```
 > *You can also add new parameters with `+` sign.*
 ```yaml
-python run.py +trainer.new_param="uwu"
+python run.py +new_param="uwu"
 
 ```
 
@@ -213,7 +213,7 @@ wandb:
 # link to wandb dashboard should appear in the terminal
 python run.py logger=wandb
 ```
-> **Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.**
+> ***Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.***
 
 </details>
 
@@ -221,7 +221,7 @@ python run.py logger=wandb
 <details>
 <summary>Train model with chosen experiment config</summary>
 
-> Experiment configurations are placed in folder `configs/experiment/`.
+> *Experiment configurations are placed in [configs/experiment/](configs/experiment/).*
 ```yaml
 python run.py +experiment=exp_example_simple
 ```
@@ -233,7 +233,7 @@ python run.py +experiment=exp_example_simple
 <summary>Attach some callbacks to run</summary>
 
 > *Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).<br>
-Callbacks configurations are placed in `configs/callbacks/`.*
+Callbacks configurations are placed in [configs/callbacks/](configs/callbacks/).*
 ```yaml
 python run.py callbacks=default_callbacks
 ```
@@ -838,22 +838,24 @@ pip install -r requirements.txt
 
 Train model with default configuration
 ```yaml
+# default
 python run.py
+
+# train on CPU
+python run.py trainer.gpus=0
+
+# train on GPU
+python run.py trainer.gpus=1
 ```
 
-Train model with chosen experiment configuration
+Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)
 ```yaml
-# experiment configurations are placed in folder `configs/experiment/`
-python run.py +experiment=exp_example_simple
+python run.py +experiment=experiment_name
 ```
 
 You can override any parameter from command line like this
 ```yaml
-python run.py trainer.max_epochs=20 optimizer.lr=0.0005
+python run.py trainer.max_epochs=20 datamodule.batch_size=64
 ```
 
-Train on GPU
-```yaml
-python run.py trainer.gpus=1
-```
 <br>
