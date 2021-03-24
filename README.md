@@ -398,24 +398,30 @@ defaults:
 # learn more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 work_dir: ${hydra:runtime.cwd}
 
+
 # path to folder with data
 data_dir: ${work_dir}/data/
+
 
 # use `python run.py debug=true` for easy debugging!
 # (equivalent to running `python run.py trainer.fast_dev_run=True`)
 debug: False
 
+
 # pretty print config at the start of the run using Rich library
 print_config: True
+
 
 # disable python warnings if they annoy you
 disable_warnings: False
 
+
 # disable lightning logs if they annoy you
 disable_lightning_logs: False
 
+
+# output paths for hydra logs
 hydra:
-    # output paths for hydra logs
     run:
         dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
     sweep:
@@ -492,7 +498,7 @@ trainer:
     gradient_clip_val: 0.5
 
 model:
-    _target_: src.models.mnist_model.LitModelMNIST
+    _target_: src.pl_models.mnist_model.MNISTLitModel
     input_size: 784
     lin1_size: 256
     lin2_size: 256
@@ -506,7 +512,7 @@ optimizer:
     weight_decay: 0.0005
 
 datamodule:
-    _target_: src.datamodules.mnist_datamodule.MNISTDataModule
+    _target_: src.pl_datamodules.mnist_datamodule.MNISTDataModule
     data_dir: ${data_dir}
     batch_size: 64
     train_val_test_split: [55_000, 5_000, 10_000]
@@ -523,9 +529,9 @@ logger:
 <br>
 
 ### Workflow
-1. Write your PyTorch Lightning model (see [mnist_model.py](src/models/mnist_model.py) for example)
-2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
-3. Write your experiment config, containing paths to your model and datamodule (see [configs/experiment](configs/experiment) for examples)
+1. Write your PyTorch Lightning model (see [mnist_model.py](src/pl_models/mnist_model.py) for example)
+2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/pl_datamodules/mnist_datamodule.py) for example)
+3. Write your experiment config, containing paths to your model and datamodule (see [configs/experiment](configs/experiment/) for examples)
 4. Run training with chosen experiment config:<br>
     ```yaml
     python run.py +experiment=experiment_name
@@ -585,7 +591,7 @@ These tools help you keep track of hyperparameters and output metrics and allow 
 You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).<br>
 You can also write your own logger.<br>
 
-Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_model.py).
+Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/pl_models/mnist_model.py).
 <br><br>
 
 
@@ -597,7 +603,7 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 
 
 ### Callbacks
-Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
+Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/pl_callbacks/wandb_callbacks.py)).<br>
 To support reproducibility: *UploadCodeToWandbAsArtifact*, *UploadCheckpointsToWandbAsArtifact*, *WatchModelWithWandb*.<br>
 To provide examples of logging custom visualisations with callbacks only: *LogConfusionMatrixToWandb*, *LogF1PrecRecHeatmapToWandb*.<br>
 <br><br>
