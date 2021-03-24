@@ -21,7 +21,7 @@ class MNISTDataModule(LightningDataModule):
         self,
         data_dir="data/",
         batch_size=64,
-        train_val_test_split=[55_000, 5_000, 10_000],
+        train_val_test_split=(55_000, 5_000, 10_000),
         num_workers=0,
         pin_memory=False,
         **kwargs,

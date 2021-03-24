@@ -392,33 +392,27 @@ defaults:
     - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
 
-# path to original working directory (that `run.py` was executed from in command line)
-# hydra hijacks working directory by changing it to the current log directory,
-# so it's useful to have path to original working directory as a special variable
-# read more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
+# path to original working directory
+# hydra hijacks working directory by changing it to the current log directory
+# so it's useful to have this path as a special variable
+# learn more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 work_dir: ${hydra:runtime.cwd}
-
 
 # path to folder with data
 data_dir: ${work_dir}/data/
-
 
 # use `python run.py debug=true` for easy debugging!
 # (equivalent to running `python run.py trainer.fast_dev_run=True`)
 debug: False
 
-
 # pretty print config at the start of the run using Rich library
 print_config: True
-
 
 # disable python warnings if they annoy you
 disable_warnings: False
 
-
 # disable lightning logs if they annoy you
 disable_lightning_logs: False
-
 
 hydra:
     # output paths for hydra logs
@@ -501,18 +495,15 @@ model:
     _target_: src.models.mnist_model.LitModelMNIST
     input_size: 784
     lin1_size: 256
-    dropout1: 0.30
     lin2_size: 256
-    dropout2: 0.25
     lin3_size: 128
-    dropout3: 0.20
     output_size: 10
 
 optimizer:
     _target_: torch.optim.Adam
     lr: 0.001
     eps: 1e-08
-    weight_decay: 0
+    weight_decay: 0.0005
 
 datamodule:
     _target_: src.datamodules.mnist_datamodule.MNISTDataModule
@@ -608,7 +599,7 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 ### Callbacks
 Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
 To support reproducibility: *UploadCodeToWandbAsArtifact*, *UploadCheckpointsToWandbAsArtifact*, *WatchModelWithWandb*.<br>
-To provide examples of logging custom visualisations with callbacks only: *LogConfusionMatrixToWandb*, *LogF1PrecisionRecallHeatmapToWandb*.<br>
+To provide examples of logging custom visualisations with callbacks only: *LogConfusionMatrixToWandb*, *LogF1PrecRecHeatmapToWandb*.<br>
 <br><br>
 
 
@@ -710,7 +701,7 @@ pip install git+git://github.com/YourGithubName/your-repo-name.git --upgrade
 ```
 So any file can be easily imported into any other file like so:
 ```python
-from project_name.models.mnist_model import LitModelMNIST
+from project_name.models.mnist_model import MNISTLitModel
 from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
 <br>

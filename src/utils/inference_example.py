@@ -1,7 +1,7 @@
 from PIL import Image
 from torchvision import transforms
 
-from src.pl_models.mnist_model import LitModelMNIST
+from src.pl_models.mnist_model import MNISTLitModel
 
 
 def predict():
@@ -16,7 +16,7 @@ def predict():
     # load model from checkpoint
     # model __init__ parameters will be loaded from ckpt automatically
     # you can also pass some parameter explicitly to override it
-    trained_model = LitModelMNIST.load_from_checkpoint(checkpoint_path=CKPT_PATH)
+    trained_model = MNISTLitModel.load_from_checkpoint(checkpoint_path=CKPT_PATH)
 
     # print model hyperparameters
     print(trained_model.hparams)

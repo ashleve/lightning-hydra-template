@@ -6,7 +6,7 @@ from omegaconf import DictConfig
 def main(config: DictConfig):
 
     # Imports should be nested inside @hydra.main to optimize tab completion
-    # Learn more here: https://github.com/facebookresearch/hydra/issues/934
+    # Read more here: https://github.com/facebookresearch/hydra/issues/934
     import dotenv
     from src.train import train
     from src.utils import template_utils
