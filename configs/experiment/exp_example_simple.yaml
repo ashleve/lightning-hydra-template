@@ -6,7 +6,7 @@
 defaults:
     - override /trainer: default_trainer.yaml           # choose trainer from 'configs/trainer/' folder or set to null
     - override /model: mnist_model.yaml                 # choose model from 'configs/model/' folder or set to null
-    - override /optimizer: adam.yaml                 # choose model from 'configs/model/' folder or set to null
+    - override /optimizer: adam.yaml                    # choose model from 'configs/model/' folder or set to null
     - override /datamodule: mnist_datamodule.yaml       # choose datamodule from 'configs/datamodule/' folder or set to null
     - override /callbacks: default_callbacks.yaml       # choose callback set from 'configs/callbacks/' folder or set to null
     - override /logger: null                            # choose logger from 'configs/logger/' folder or set to null

@@ -88,11 +88,11 @@ It makes your code neatly organized and provides lots of useful features, like a
 The directory structure of new project looks like this:
 ```
 ├── configs                 <- Hydra configuration files
-│   ├── trainer                 <- Configurations of Lightning trainers
-│   ├── datamodule              <- Configurations of Lightning datamodules
 │   ├── model                   <- Configurations of Lightning models
+│   ├── datamodule              <- Configurations of Lightning datamodules
 │   ├── callbacks               <- Configurations of Lightning callbacks
 │   ├── logger                  <- Configurations of Lightning loggers
+│   ├── trainer                 <- Configurations of Lightning trainers
 │   ├── optimizer               <- Configurations of optimizers
 │   ├── experiment              <- Configurations of experiments
 │   │
@@ -109,11 +109,10 @@ The directory structure of new project looks like this:
 │
 ├── src
 │   ├── architectures           <- PyTorch model architectures
-│   ├── callbacks               <- PyTorch Lightning callbacks
-│   ├── datamodules             <- PyTorch Lightning datamodules
 │   ├── datasets                <- PyTorch datasets
-│   ├── models                  <- PyTorch Lightning models
-│   ├── transforms              <- Data transformations
+│   ├── pl_callbacks            <- PyTorch Lightning callbacks
+│   ├── pl_datamodules          <- PyTorch Lightning datamodules
+│   ├── pl_models               <- PyTorch Lightning models
 │   ├── utils                   <- Utility scripts
 │   │   ├── inference_example.py    <- Example of inference with trained model
 │   │   └── template_utils.py       <- Some extra template utilities
@@ -167,7 +166,7 @@ python run.py trainer.max_epochs=20 optimizer.lr=1e-4
 ```
 > *You can also add new parameters with `+` sign.*
 ```yaml
-python run.py +trainer.new_param="uwu"
+python run.py +model.new_param="uwu"
 
 ```
 
@@ -214,7 +213,7 @@ wandb:
 # link to wandb dashboard should appear in the terminal
 python run.py logger=wandb
 ```
-> **Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.**
+> ***Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.***
 
 </details>
 
@@ -222,7 +221,7 @@ python run.py logger=wandb
 <details>
 <summary>Train model with chosen experiment config</summary>
 
-> Experiment configurations are placed in folder `configs/experiment/`.
+> *Experiment configurations are placed in [configs/experiment/](configs/experiment/).*
 ```yaml
 python run.py +experiment=exp_example_simple
 ```
@@ -234,7 +233,7 @@ python run.py +experiment=exp_example_simple
 <summary>Attach some callbacks to run</summary>
 
 > *Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).<br>
-Callbacks configurations are placed in `configs/callbacks/`.*
+Callbacks configurations are placed in [configs/callbacks/](configs/callbacks/).*
 ```yaml
 python run.py callbacks=default_callbacks
 ```
@@ -393,10 +392,10 @@ defaults:
     - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
 
-# path to original working directory (that `run.py` was executed from in command line)
-# hydra hijacks working directory by changing it to the current log directory,
-# so it's useful to have path to original working directory as a special variable
-# read more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
+# path to original working directory
+# hydra hijacks working directory by changing it to the current log directory
+# so it's useful to have this path as a special variable
+# learn more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 work_dir: ${hydra:runtime.cwd}
 
 
@@ -421,8 +420,8 @@ disable_warnings: False
 disable_lightning_logs: False
 
 
+# output paths for hydra logs
 hydra:
-    # output paths for hydra logs
     run:
         dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
     sweep:
@@ -499,24 +498,21 @@ trainer:
     gradient_clip_val: 0.5
 
 model:
-    _target_: src.models.mnist_model.LitModelMNIST
+    _target_: src.pl_models.mnist_model.MNISTLitModel
     input_size: 784
     lin1_size: 256
-    dropout1: 0.30
     lin2_size: 256
-    dropout2: 0.25
     lin3_size: 128
-    dropout3: 0.20
     output_size: 10
 
 optimizer:
     _target_: torch.optim.Adam
     lr: 0.001
     eps: 1e-08
-    weight_decay: 0
+    weight_decay: 0.0005
 
 datamodule:
-    _target_: src.datamodules.mnist_datamodule.MNISTDataModule
+    _target_: src.pl_datamodules.mnist_datamodule.MNISTDataModule
     data_dir: ${data_dir}
     batch_size: 64
     train_val_test_split: [55_000, 5_000, 10_000]
@@ -533,9 +529,9 @@ logger:
 <br>
 
 ### Workflow
-1. Write your PyTorch Lightning model (see [mnist_model.py](src/models/mnist_model.py) for example)
-2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
-3. Write your experiment config, containing paths to your model and datamodule (see [configs/experiment](configs/experiment) for examples)
+1. Write your PyTorch Lightning model (see [mnist_model.py](src/pl_models/mnist_model.py) for example)
+2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/pl_datamodules/mnist_datamodule.py) for example)
+3. Write your experiment config, containing paths to your model and datamodule (see [configs/experiment](configs/experiment/) for examples)
 4. Run training with chosen experiment config:<br>
     ```yaml
     python run.py +experiment=experiment_name
@@ -595,7 +591,7 @@ These tools help you keep track of hyperparameters and output metrics and allow 
 You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).<br>
 You can also write your own logger.<br>
 
-Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_model.py).
+Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/pl_models/mnist_model.py).
 <br><br>
 
 
@@ -607,9 +603,9 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 
 
 ### Callbacks
-Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
+Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/pl_callbacks/wandb_callbacks.py)).<br>
 To support reproducibility: *UploadCodeToWandbAsArtifact*, *UploadCheckpointsToWandbAsArtifact*, *WatchModelWithWandb*.<br>
-To provide examples of logging custom visualisations with callbacks only: *LogConfusionMatrixToWandb*, *LogF1PrecisionRecallHeatmapToWandb*.<br>
+To provide examples of logging custom visualisations with callbacks only: *LogConfusionMatrixToWandb*, *LogF1PrecRecHeatmapToWandb*.<br>
 <br><br>
 
 
@@ -711,8 +707,8 @@ pip install git+git://github.com/YourGithubName/your-repo-name.git --upgrade
 ```
 So any file can be easily imported into any other file like so:
 ```python
-from project_name.models.mnist_model import LitModelMNIST
-from project_name.datamodules.mnist_datamodule import MNISTDataModule
+from project_name.pl_models.mnist_model import MNISTLitModel
+from project_name.pl_datamodules.mnist_datamodule import MNISTDataModule
 ```
 <br>
 
@@ -839,22 +835,24 @@ pip install -r requirements.txt
 
 Train model with default configuration
 ```yaml
+# default
 python run.py
+
+# train on CPU
+python run.py trainer.gpus=0
+
+# train on GPU
+python run.py trainer.gpus=1
 ```
 
-Train model with chosen experiment configuration
+Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)
 ```yaml
-# experiment configurations are placed in folder `configs/experiment/`
-python run.py +experiment=exp_example_simple
+python run.py +experiment=experiment_name
 ```
 
 You can override any parameter from command line like this
 ```yaml
-python run.py trainer.max_epochs=20 optimizer.lr=0.0005
+python run.py trainer.max_epochs=20 datamodule.batch_size=64
 ```
 
-Train on GPU
-```yaml
-python run.py trainer.gpus=1
-```
 <br>

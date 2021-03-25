@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Optional
 
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
@@ -10,21 +10,29 @@ class MNISTDataModule(LightningDataModule):
     """
     Example of LightningDataModule for MNIST dataset.
 
-    A DataModule standardizes the training, val, test splits, data preparation and transforms.
+    A DataModule standardizes the train, val, test splits, data preparation and transforms.
     The main advantage is consistent data splits, data preparation and transforms across models.
 
     Read the docs:
         https://pytorch-lightning.readthedocs.io/en/latest/datamodules.html
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        data_dir="data/",
+        batch_size=64,
+        train_val_test_split=(55_000, 5_000, 10_000),
+        num_workers=0,
+        pin_memory=False,
+        **kwargs,
+    ):
         super().__init__()
 
-        self.data_dir = kwargs["data_dir"]
-        self.batch_size = kwargs["batch_size"]
-        self.train_val_test_split = kwargs["train_val_test_split"]
-        self.num_workers = kwargs["num_workers"]
-        self.pin_memory = kwargs["pin_memory"]
+        self.data_dir = data_dir
+        self.batch_size = batch_size
+        self.train_val_test_split = train_val_test_split
+        self.num_workers = num_workers
+        self.pin_memory = pin_memory
 
         self.transforms = transforms.Compose(
             [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]

@@ -1,16 +1,15 @@
 from typing import Any, Dict, List, Sequence, Tuple, Union
 
 import hydra
-import pytorch_lightning as pl
 import torch
-import torch.nn.functional as F
+from pytorch_lightning import LightningModule
 from pytorch_lightning.metrics.classification import Accuracy
 from torch.optim import Optimizer
 
 from src.architectures.simple_dense_net import SimpleDenseNet
 
 
-class LitModelMNIST(pl.LightningModule):
+class MNISTLitModel(LightningModule):
     """
     Example of LightningModule for MNIST classification.
 
@@ -25,14 +24,23 @@ class LitModelMNIST(pl.LightningModule):
         https://pytorch-lightning.readthedocs.io/en/latest/lightning_module.html
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        optimizer,
+        input_size=784,
+        lin1_size=256,
+        lin2_size=256,
+        lin3_size=256,
+        output_size=10,
+        **kwargs
+    ):
         super().__init__()
 
         # this line ensures params passed to LightningModule will be saved to ckpt
         # it also allows to access params with 'self.hparams' attribute
         self.save_hyperparameters()
 
-        self.architecture = SimpleDenseNet(hparams=self.hparams)
+        self.model = SimpleDenseNet(hparams=self.hparams)
 
         # loss function
         self.criterion = torch.nn.CrossEntropyLoss()
@@ -51,7 +59,7 @@ class LitModelMNIST(pl.LightningModule):
         }
 
     def forward(self, x) -> torch.Tensor:
-        return self.architecture(x)
+        return self.model(x)
 
     def step(self, batch) -> Dict[str, torch.Tensor]:
         x, y = batch
@@ -63,7 +71,7 @@ class LitModelMNIST(pl.LightningModule):
     def training_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
         loss, preds, targets = self.step(batch)
 
-        # log train metrics to your loggers!
+        # log train metrics
         acc = self.train_accuracy(preds, targets)
         self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
         self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
@@ -76,19 +84,17 @@ class LitModelMNIST(pl.LightningModule):
     def validation_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
         loss, preds, targets = self.step(batch)
 
-        # log val metrics to your loggers!
+        # log val metrics
         acc = self.val_accuracy(preds, targets)
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
         self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
-        # we can return here dict with any tensors
-        # and then read it in some callback or in validation_epoch_end() below
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def test_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
         loss, preds, targets = self.step(batch)
 
-        # log test metrics to your loggers!
+        # log test metrics
         acc = self.test_accuracy(preds, targets)
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
@@ -112,6 +118,10 @@ class LitModelMNIST(pl.LightningModule):
         self.metric_hist["val/loss"].append(self.trainer.callback_metrics["val/loss"])
         self.log("val/acc_best", max(self.metric_hist["val/acc"]), prog_bar=False)
         self.log("val/loss_best", min(self.metric_hist["val/loss"]), prog_bar=False)
+
+    # [OPTIONAL METHOD]
+    def test_epoch_end(self, outputs: List[Any]) -> None:
+        pass
 
     def configure_optimizers(
         self,

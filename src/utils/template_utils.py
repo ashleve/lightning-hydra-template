@@ -4,12 +4,13 @@ from typing import List, Sequence
 
 import pytorch_lightning as pl
 import wandb
-from hydra.utils import log
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.loggers.wandb import WandbLogger
 from rich import print
 from rich.syntax import Syntax
 from rich.tree import Tree
+
+log = logging.getLogger(__name__)
 
 
 def extras(config: DictConfig) -> None:
@@ -22,10 +23,10 @@ def extras(config: DictConfig) -> None:
         config (DictConfig): [description]
     """
 
-    # make it possible to add new keys to config
+    # Enable adding new keys to config
     OmegaConf.set_struct(config, False)
 
-    # fix double logging bug (this will be removed when lightning releases patch)
+    # Fix double logging bug (this will be removed when lightning releases patch)
     pl_logger = logging.getLogger("lightning")
     pl_logger.propagate = False
 
@@ -56,7 +57,7 @@ def extras(config: DictConfig) -> None:
         if config.datamodule.get("num_workers"):
             config.datamodule.num_workers = 0
 
-    # disable adding new keys to config
+    # Disable adding new keys to config
     OmegaConf.set_struct(config, True)
 
 
@@ -71,10 +72,6 @@ def print_config(
         "logger",
         "seed",
     ),
-    extra_depth_fields: Sequence[str] = (
-        "callbacks",
-        "logger",
-    ),
     resolve: bool = True,
 ) -> None:
     """Prints content of DictConfig using Rich library and its tree structure.
@@ -83,41 +80,21 @@ def print_config(
         config (DictConfig): Config.
         fields (Sequence[str], optional): Determines which main fields from config will be printed
         and in what order.
-        extra_depth_fields (Sequence[str], optional): Fields which should be printed with extra tree depth.
         resolve (bool, optional): Whether to resolve reference fields of DictConfig.
     """
 
-    # TODO print main config path and experiment config path
-    # print(f"Main config path: [link file://{directory}]{directory}")
-
-    # TODO refactor the whole method
-
     style = "dim"
-
     tree = Tree(f":gear: CONFIG", style=style, guide_style=style)
 
     for field in fields:
         branch = tree.add(field, style=style, guide_style=style)
 
         config_section = config.get(field)
+        branch_content = str(config_section)
+        if isinstance(config_section, DictConfig):
+            branch_content = OmegaConf.to_yaml(config_section, resolve=resolve)
 
-        if not config_section:
-            # raise Exception(f"Field {field} not found in config!")
-            branch.add("None")
-            continue
-
-        if field in extra_depth_fields:
-            for nested_field in config_section:
-                nested_config_section = config_section[nested_field]
-                nested_branch = branch.add(nested_field, style=style, guide_style=style)
-                cfg_str = OmegaConf.to_yaml(nested_config_section, resolve=resolve)
-                nested_branch.add(Syntax(cfg_str, "yaml"))
-        else:
-            if isinstance(config_section, DictConfig):
-                cfg_str = OmegaConf.to_yaml(config_section, resolve=resolve)
-            else:
-                cfg_str = str(config_section)
-            branch.add(Syntax(cfg_str, "yaml"))
+        branch.add(Syntax(branch_content, "yaml"))
 
     print(tree)
 

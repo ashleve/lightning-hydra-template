@@ -1,18 +1,16 @@
-# lightning imports
+import logging
+from typing import List, Optional
+
 from pytorch_lightning import LightningModule, LightningDataModule, Callback, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning import seed_everything
 
-# hydra imports
-from omegaconf import DictConfig
-from hydra.utils import log
 import hydra
+from omegaconf import DictConfig
 
-# normal imports
-from typing import List, Optional
-
-# src imports
 from src.utils import template_utils
+
+log = logging.getLogger(__name__)
 
 
 def train(config: DictConfig) -> Optional[float]:

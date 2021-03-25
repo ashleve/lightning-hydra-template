@@ -28,18 +28,15 @@ trainer:
     # resume_from_checkpoint: ${work_dir}/last.ckpt
 
 model:
-    _target_: src.models.mnist_model.LitModelMNIST
+    _target_: src.pl_models.mnist_model.MNISTLitModel
     optimizer: adam
     lr: 0.001
     weight_decay: 0.00005
     architecture: SimpleDenseNet
     input_size: 784
     lin1_size: 256
-    dropout1: 0.30
     lin2_size: 256
-    dropout2: 0.25
     lin3_size: 128
-    dropout3: 0.20
     output_size: 10
 
 optimizer:
@@ -48,7 +45,7 @@ optimizer:
     weight_decay: 0
 
 datamodule:
-    _target_: src.datamodules.mnist_datamodule.MNISTDataModule
+    _target_: src.pl_datamodules.mnist_datamodule.MNISTDataModule
     data_dir: ${data_dir}
     batch_size: 64
     train_val_test_split: [55_000, 5_000, 10_000]
@@ -67,7 +64,7 @@ callbacks:
     early_stopping:
         _target_: pytorch_lightning.callbacks.EarlyStopping
         monitor: "val/acc"
-        patience: 100
+        patience: 10
         mode: "max"
 
 logger:
