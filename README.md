@@ -707,8 +707,8 @@ pip install git+git://github.com/YourGithubName/your-repo-name.git --upgrade
 ```
 So any file can be easily imported into any other file like so:
 ```python
-from project_name.models.mnist_model import MNISTLitModel
-from project_name.datamodules.mnist_datamodule import MNISTDataModule
+from project_name.pl_models.mnist_model import MNISTLitModel
+from project_name.pl_datamodules.mnist_datamodule import MNISTDataModule
 ```
 <br>
 
