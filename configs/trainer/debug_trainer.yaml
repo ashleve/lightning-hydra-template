@@ -30,6 +30,7 @@ limit_train_batches: 1.0
 limit_val_batches: 1.0
 limit_test_batches: 1.0
 track_grad_norm: -1
+terminate_on_nan: False
 
 # others
 amp_backend: "native"

@@ -47,19 +47,10 @@ hydra:
                 high: 0.2
             model.lin1_size:
                 type: categorical
-                choices: [64, 128, 256, 512]
-            model.dropout1:
-                type: categorical
-                choices: [0.05, 0.1, 0.25, 0.5]
+                choices: [32, 64, 128, 256, 512]
             model.lin2_size:
                 type: categorical
-                choices: [64, 128, 256, 512]
-            model.dropout2:
-                type: categorical
-                choices: [0.05, 0.1, 0.25, 0.5]
+                choices: [32, 64, 128, 256, 512]
             model.lin3_size:
                 type: categorical
-                choices: [32, 64, 128, 256]
-            model.dropout3:
-                type: categorical
-                choices: [0.05, 0.1, 0.25, 0.5]
+                choices: [32, 64, 128, 256, 512]
