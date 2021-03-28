@@ -12,7 +12,7 @@ def main(config: DictConfig):
     from src.utils import template_utils
 
     # load environment variables from `.env` file if it exists
-    dotenv.load_dotenv(dotenv_path=".env", override=True)
+    dotenv.load_dotenv(dotenv_path=hydra.utils.to_absolute_path(".env"), override=True)
 
     # A couple of optional utilities:
     # - disabling python warnings
