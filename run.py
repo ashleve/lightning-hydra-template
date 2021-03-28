@@ -3,7 +3,7 @@ import hydra
 from omegaconf import DictConfig
 
 # load environment variables from `.env` file if it exists
-dotenv.load_dotenv(dotenv_path=".env", override=True)
+dotenv.load_dotenv(override=True)
 
 
 @hydra.main(config_path="configs/", config_name="config.yaml")
