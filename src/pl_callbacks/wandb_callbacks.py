@@ -22,8 +22,7 @@ def get_wandb_logger(trainer: Trainer) -> WandbLogger:
                 return logger
 
     raise Exception(
-        "You are using wandb related callback,"
-        "but WandbLogger was not found for some reason..."
+        "You are using wandb related callback, but WandbLogger was not found for some reason..."
     )
 
 
@@ -60,9 +59,7 @@ class UploadCheckpointsToWandbAsArtifact(Callback):
         if self.upload_best_only:
             ckpts.add_file(trainer.checkpoint_callback.best_model_path)
         else:
-            for path in glob.glob(
-                os.path.join(self.ckpt_dir, "**/*.ckpt"), recursive=True
-            ):
+            for path in glob.glob(os.path.join(self.ckpt_dir, "**/*.ckpt"), recursive=True):
                 ckpts.add_file(path)
 
         experiment.use_artifact(ckpts)
@@ -126,9 +123,7 @@ class LogConfusionMatrixToWandb(Callback):
             sn.heatmap(confusion_matrix, annot=True, annot_kws={"size": 8}, fmt="g")
 
             # names should be uniqe or else charts from different experiments in wandb will overlap
-            experiment.log(
-                {f"confusion_matrix/{experiment.name}": wandb.Image(plt)}, commit=False
-            )
+            experiment.log({f"confusion_matrix/{experiment.name}": wandb.Image(plt)}, commit=False)
 
             # according to wandb docs this should also work but it crashes
             # experiment.log(f{"confusion_matrix/{experiment.name}": plt})
@@ -194,9 +189,7 @@ class LogF1PrecRecHeatmapToWandb(Callback):
             )
 
             # names should be uniqe or else charts from different experiments in wandb will overlap
-            experiment.log(
-                {f"f1_p_r_heatmap/{experiment.name}": wandb.Image(plt)}, commit=False
-            )
+            experiment.log({f"f1_p_r_heatmap/{experiment.name}": wandb.Image(plt)}, commit=False)
 
             # reset plot
             plt.clf()

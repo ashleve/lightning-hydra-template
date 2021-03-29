@@ -105,9 +105,7 @@ class MNISTLitModel(LightningModule):
     def training_epoch_end(self, outputs: List[Any]) -> None:
         # log best so far train acc and train loss
         self.metric_hist["train/acc"].append(self.trainer.callback_metrics["train/acc"])
-        self.metric_hist["train/loss"].append(
-            self.trainer.callback_metrics["train/loss"]
-        )
+        self.metric_hist["train/loss"].append(self.trainer.callback_metrics["train/loss"])
         self.log("train/acc_best", max(self.metric_hist["train/acc"]), prog_bar=False)
         self.log("train/loss_best", min(self.metric_hist["train/loss"]), prog_bar=False)
 
@@ -133,7 +131,5 @@ class MNISTLitModel(LightningModule):
             https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
 
         """
-        optim = hydra.utils.instantiate(
-            self.hparams.optimizer, params=self.parameters()
-        )
+        optim = hydra.utils.instantiate(self.hparams.optimizer, params=self.parameters())
         return optim

@@ -14,7 +14,7 @@ def main(config: DictConfig):
 
     # Imports can be nested inside @hydra.main to optimize tab completion
     # Read more here: https://github.com/facebookresearch/hydra/issues/934
-    # DDP alongside Hydra doesn't work when imports are nested.
+    # This is commented because DDP alongside Hydra doesn't work when imports are nested.
     # from src.train import train
     # from src.utils import template_utils
 
