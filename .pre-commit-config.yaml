@@ -3,7 +3,7 @@ default_language_version:
 
 repos:
 
-# Pre-commit-hooks
+# Pre-commit hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
@@ -19,7 +19,10 @@ repos:
     rev: 20.8b1
     hooks:
       - id: black
-        # args: [--force-exclude, src/train.py]
+        args: [
+          --line-length, "99",
+          # --exclude, src/train.py,
+        ]
 
 # Isort (import sorting)
   - repo: https://github.com/PyCQA/isort
@@ -28,5 +31,10 @@ repos:
       - id: isort
         # profiles: https://pycqa.github.io/isort/docs/configuration/profiles/
         # other flags: https://pycqa.github.io/isort/docs/configuration/options/
-        args: [--profile, black, --skip, src/train.py, --skip, run.py, --filter-files]
+        args: [
+          --profile, black,
+          --skip, src/train.py,
+          --skip, run.py,
+          --filter-files,
+        ]
         # files: "src/.*"
