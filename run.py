@@ -2,8 +2,8 @@ import dotenv
 import hydra
 from omegaconf import DictConfig
 
-from src.train import train
-from src.utils import template_utils
+# from src.train import train
+# from src.utils import template_utils
 
 # load environment variables from `.env` file if it exists
 # recursively searches for `.env` in all folders starting from work dir
@@ -16,8 +16,8 @@ def main(config: DictConfig):
     # Imports can be nested inside @hydra.main to optimize tab completion
     # Read more here: https://github.com/facebookresearch/hydra/issues/934
     # This is commented out because DDP alongside Hydra doesn't work when imports are nested.
-    # from src.train import train
-    # from src.utils import template_utils
+    from src.train import train
+    from src.utils import template_utils
 
     # A couple of optional utilities:
     # - disabling python warnings
