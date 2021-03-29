@@ -606,6 +606,7 @@ List of extra utilities available in the template:
 - forcing debug friendly configuration
 - method for logging hyperparameters to loggers
 - (TODO) resuming lastest run
+- (TODO) forcing DDP friendly configuration
 
 You can easily remove all of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
 <br><br>

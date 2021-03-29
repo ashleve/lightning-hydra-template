@@ -31,17 +31,17 @@ def extras(config: DictConfig) -> None:
 
     # disable python warnings if <config.disable_warnings=True>
     if config.get("disable_warnings"):
-        log.info(f"Disabling python warnings! <{config.disable_warnings=}>")
+        log.info(f"Disabling python warnings! <config.disable_warnings=True")
         warnings.filterwarnings("ignore")
 
-    # set <config.trainer.fast_dev_run=True> if  <config.debug=True>
+    # set <config.trainer.fast_dev_run=True> if <config.debug=True>
     if config.get("debug"):
-        log.info(f"Running in debug mode! <{config.debug=}>")
+        log.info("Running in debug mode! <config.debug=True>")
         config.trainer.fast_dev_run = True
 
     # force debugger friendly configuration if <config.trainer.fast_dev_run=True>
     if config.trainer.get("fast_dev_run"):
-        log.info(f"Forcing debugger friendly configuration! " f"<{config.trainer.fast_dev_run=}>")
+        log.info("Forcing debugger friendly configuration! <config.trainer.fast_dev_run=True>")
         # Debuggers don't like GPUs or multiprocessing
         if config.trainer.get("gpus"):
             config.trainer.gpus = 0
