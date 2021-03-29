@@ -20,33 +20,8 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 If you use this template please add <br>
 [![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
 to your `README.md`.
-<br>
+<br><br>
 
-
-**Contents**
-- [Introduction](#introduction)
-- [Main Ideas Of This Template](#main-ideas-of-this-template)
-- [Project Structure](#project-structure)
-- [Quickstart](#quickstart)
-- [Guide](#guide)
-    - [How To Learn?](#how-to-learn)
-    - [Main Project Configuration](#main-project-configuration)
-    - [Experiment Configuration](#experiment-configuration)
-    - [Workflow](#workflow)
-    - [Logs](#logs)
-    - [Experiment Tracking](#experiment-tracking)
-    - [Inference](#inference)
-    - [Callbacks](#callbacks)
-- [Best Practices](#best-practices)
-    - [Miniconda](#miniconda)
-    - [Automatic Code Formatting](#automatic-code-formatting)
-    - [Environment Variables](#environment-variables)
-    - [Data Version Control](#data-version-control)
-    - [Installing Project As A Package](#support-installing-project-as-a-package)
-    - [Tests](#tests)
-- [Tricks](#tricks)
-- [Other Repositories](#other-repositories)
-<br>
 
 
 ## Introduction
@@ -155,7 +130,7 @@ When running `python run.py` you should see something like this:
 </div>
 
 ### Your Superpowers
-##### (click to expand)
+**(click to expand)**
 
 <details>
 <summary>Override any config parameter from command line</summary>
@@ -609,6 +584,25 @@ To provide examples of logging custom visualisations with callbacks only: *LogCo
 <br><br>
 
 
+### Multi-GPU Training
+Lightning supports multiple ways of doing distributed training.<br>
+The most common one is DDP, which spawns separate process for each GPU and averages gradients between them. To learn about other approaches read [lightning docs](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
+
+You can run DDP on mnist example with 4 GPUs like this:
+```yaml
+python run.py trainer.gpus=4 +trainer.accelerator="ddp"
+```
+When using DDP you should remember about a couple of things:
+1. Make sure you set `datamodule.num_workers=0` and `datamodule.pin_memory=true`
+2. Use `self.log(..., sync_dist=True)` when logging metrics inside LightingModule to ensure proper reduction over multiple GPUs. Using this parameter affects performance by little so it's not recommended to set it to true when training with only 1 GPU.
+3. Remember `outputs` parameter in methods like `validation_epoch_end()` in LightningModule will contain only outputs from subset of data processed on given GPU
+4. Init tensors using `type_as` and `register_buffer`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#init-tensors-using-type-as-and-register-buffer).
+5. Make sure your model is pickable. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#make-models-pickleable).
+
+
+<br><br>
+
+
 
 ## Best Practices
 
@@ -800,7 +794,7 @@ This template was inspired by:
 
 
 
-### DELETE EVERYTHING ABOVE FOR YOUR PROJECT
+**DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
 ---
 
