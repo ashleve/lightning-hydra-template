@@ -16,36 +16,30 @@ log = logging.getLogger(__name__)
 def extras(config: DictConfig) -> None:
     """A couple of optional utilities, controlled by main config file.
         - disabling warnings
-        - disabling lightning logs
         - easier access to debug mode
         - forcing debug friendly configuration
     Args:
         config (DictConfig): [description]
     """
 
-    # Enable adding new keys to config
+    # enable adding new keys to config
     OmegaConf.set_struct(config, False)
 
-    # Fix double logging bug (this will be removed when lightning releases patch)
+    # fix double logging bug (this will be removed when lightning releases patch)
     pl_logger = logging.getLogger("lightning")
     pl_logger.propagate = False
 
-    # [OPTIONAL] Disable python warnings if <config.disable_warnings=True>
+    # disable python warnings if <config.disable_warnings=True>
     if config.get("disable_warnings"):
         log.info(f"Disabling python warnings! <{config.disable_warnings=}>")
         warnings.filterwarnings("ignore")
 
-    # [OPTIONAL] Disable Lightning logs if <config.disable_lightning_logs=True>
-    if config.get("disable_lightning_logs"):
-        log.info(f"Disabling lightning logs! {config.disable_lightning_logs=}>")
-        logging.getLogger("lightning").setLevel(logging.ERROR)
-
-    # [OPTIONAL] Set <config.trainer.fast_dev_run=True> if  <config.debug=True>
+    # set <config.trainer.fast_dev_run=True> if  <config.debug=True>
     if config.get("debug"):
         log.info(f"Running in debug mode! <{config.debug=}>")
         config.trainer.fast_dev_run = True
 
-    # [OPTIONAL] Force debugger friendly configuration if <config.trainer.fast_dev_run=True>
+    # force debugger friendly configuration if <config.trainer.fast_dev_run=True>
     if config.trainer.get("fast_dev_run"):
         log.info(f"Forcing debugger friendly configuration! " f"<{config.trainer.fast_dev_run=}>")
         # Debuggers don't like GPUs or multiprocessing
@@ -54,7 +48,7 @@ def extras(config: DictConfig) -> None:
         if config.datamodule.get("num_workers"):
             config.datamodule.num_workers = 0
 
-    # Disable adding new keys to config
+    # disable adding new keys to config
     OmegaConf.set_struct(config, True)
 
 

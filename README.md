@@ -10,7 +10,7 @@
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
 
-*This template is work in progress. Suggestions are always welcome!*
+*This template is work in progress. Currently dev version of Hydra is used.<br>Suggestions are always welcome!*
 
 </div>
 <br><br>
@@ -55,6 +55,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - Logs: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
 - Hyperparameter Search: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - Best Practices: a couple of recommended tools, practices and standards (see [#Best Practices](#best-practices))
+- Extra Features: template contains extra utilities which you can easily remove (see [#Extra Features](#extra-features))
 - Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
 
@@ -391,10 +392,6 @@ print_config: True
 disable_warnings: False
 
 
-# disable lightning logs if they annoy you
-disable_lightning_logs: False
-
-
 # output paths for hydra logs
 hydra:
     run:
@@ -593,13 +590,24 @@ You can run DDP on mnist example with 4 GPUs like this:
 python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 ```
 When using DDP you should remember about a couple of things:
-1. Make sure you set `datamodule.num_workers=0` and `datamodule.pin_memory=true`.
-2. Use metrics api like `pytorch_lightning.metrics.classification.Accuracy` when logging metrics in LightingModule to ensure proper reduction over multiple GPUs. You can also use `sync_dist` parameter instead (`self.log(..., sync_dist=True)`). Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#synchronize-validation-and-test-logging).
+1. Make sure you set `datamodule.num_workers=0`.
+2. Use metrics api objects, e.g. `pytorch_lightning.metrics.classification.Accuracy` when logging metrics in LightingModule to ensure proper reduction over multiple GPUs. You can also use `sync_dist` parameter instead (`self.log(..., sync_dist=True)`). Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#synchronize-validation-and-test-logging).
 3. Remember `outputs` parameter in methods like `validation_epoch_end()` in LightningModule will contain only outputs from subset of data processed on given GPU.
 4. Init tensors using `type_as` and `register_buffer`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#init-tensors-using-type-as-and-register-buffer).
 5. Make sure your model is pickable. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#make-models-pickleable).
+<br><br>
 
+### Extra Features
+List of extra utilities available in the template:
+- loading environment variables from [.env](.env.tmp) file
+- pretty printing config with [Rich](https://github.com/willmcgugan/rich) library
+- disabling python warnings
+- easier access to debug mode
+- forcing debug friendly configuration
+- method for logging hyperparameters to loggers
+- (TODO) resuming lastest run
 
+You can easily remove all of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
 <br><br>
 
 
@@ -706,7 +714,7 @@ from project_name.pl_datamodules.mnist_datamodule import MNISTDataModule
 ```
 <br>
 
-
+<!--
 ### Tests
 I find myself often running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
 
@@ -715,7 +723,7 @@ To execute:
 ```yaml
 bash tests/smoke_tests.sh
 ```
-<br><br><br>
+<br><br><br> -->
 
 
 ## Tricks
