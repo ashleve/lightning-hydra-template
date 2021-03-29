@@ -18,6 +18,7 @@ def extras(config: DictConfig) -> None:
         - disabling warnings
         - easier access to debug mode
         - forcing debug friendly configuration
+        - forcing multi-gpu friendly configuration
     Args:
         config (DictConfig): [description]
     """
@@ -47,6 +48,15 @@ def extras(config: DictConfig) -> None:
             config.trainer.gpus = 0
         if config.datamodule.get("num_workers"):
             config.datamodule.num_workers = 0
+    
+    # force multi-gpu friendly configuration if <config.trainer.accelerator=ddp>
+    if config.trainer.get("accelerator") in ["ddp", "ddp_spawn", "dp", "ddp2"]:
+        log.info("Forcing ddp friendly configuration! <config.trainer.accelerator=ddp>")
+        # ddp doesn't like num_workers>0 or pin_memory=True
+        if config.datamodule.get("num_workers"):
+            config.datamodule.num_workers = 0
+        if config.datamodule.get("pin_memory"):
+            config.datamodule.pin_memory = False
 
     # disable adding new keys to config
     OmegaConf.set_struct(config, True)
@@ -90,7 +100,7 @@ def print_config(
     print(tree)
 
 
-def placeholder(params, *args, **kwargs):
+def empty(*args, **kwargs):
     pass
 
 
@@ -122,8 +132,9 @@ def log_hyperparameters(
     # choose which parts of hydra config will be saved to loggers
     hparams["trainer"] = config["trainer"]
     hparams["model"] = config["model"]
-    hparams["optimizer"] = config["optimizer"]
     hparams["datamodule"] = config["datamodule"]
+    if "optimizer" in config:
+        hparams["optimizer"] = config["optimizer"]
     if "callbacks" in config:
         hparams["callbacks"] = config["callbacks"]
 
@@ -151,7 +162,7 @@ def log_hyperparameters(
 
     # disable logging any more hyperparameters for all loggers
     # (this is just a trick to prevent trainer from logging hparams of model, since we already did that above)
-    trainer.logger.log_hyperparams = placeholder
+    trainer.logger.log_hyperparams = empty
 
 
 def finish(

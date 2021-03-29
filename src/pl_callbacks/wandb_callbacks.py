@@ -26,6 +26,18 @@ def get_wandb_logger(trainer: Trainer) -> WandbLogger:
     )
 
 
+class WatchModelWithWandb(Callback):
+    """Make WandbLogger watch model at the beginning of the run."""
+
+    def __init__(self, log: str = "gradients", log_freq: int = 100):
+        self.log = log
+        self.log_freq = log_freq
+
+    def on_train_start(self, trainer, pl_module):
+        logger = get_wandb_logger(trainer=trainer)
+        logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq)
+        
+
 class UploadCodeToWandbAsArtifact(Callback):
     """Upload all *.py files to wandb as an artifact, at the beginning of the run."""
 
@@ -63,18 +75,6 @@ class UploadCheckpointsToWandbAsArtifact(Callback):
                 ckpts.add_file(path)
 
         experiment.use_artifact(ckpts)
-
-
-class WatchModelWithWandb(Callback):
-    """Make WandbLogger watch model at the beginning of the run."""
-
-    def __init__(self, log: str = "gradients", log_freq: int = 100):
-        self.log = log
-        self.log_freq = log_freq
-
-    def on_train_start(self, trainer, pl_module):
-        logger = get_wandb_logger(trainer=trainer)
-        logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq)
 
 
 class LogConfusionMatrixToWandb(Callback):

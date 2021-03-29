@@ -575,9 +575,9 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 
 
 ### Callbacks
-Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/pl_callbacks/wandb_callbacks.py)).<br>
-To support reproducibility: *UploadCodeToWandbAsArtifact*, *UploadCheckpointsToWandbAsArtifact*, *WatchModelWithWandb*.<br>
-To provide examples of logging custom visualisations with callbacks only: *LogConfusionMatrixToWandb*, *LogF1PrecRecHeatmapToWandb*.<br>
+Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/pl_callbacks/wandb_callbacks.py)).<br>
+To support reproducibility: **WatchModelWithWandb**, **UploadCodeToWandbAsArtifact**, **UploadCheckpointsToWandbAsArtifact**.<br>
+To provide examples of logging custom visualisations with callbacks only: **LogConfusionMatrixToWandb**, **LogF1PrecRecHeatmapToWandb**.<br>
 <br>
 
 
@@ -590,9 +590,9 @@ You can run DDP on mnist example with 4 GPUs like this:
 python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 ```
 When using DDP you should remember about a couple of things:
-1. Make sure you set `datamodule.num_workers=0`.
-2. Use metrics api objects, e.g. `pytorch_lightning.metrics.classification.Accuracy` when logging metrics in LightingModule to ensure proper reduction over multiple GPUs. You can also use `sync_dist` parameter instead (`self.log(..., sync_dist=True)`). Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#synchronize-validation-and-test-logging).
-3. Remember `outputs` parameter in methods like `validation_epoch_end()` in LightningModule will contain only outputs from subset of data processed on given GPU.
+1. Make sure you set `datamodule.num_workers=0` and `datamodule.pin_memory=False`.
+2. Use metrics api objects, e.g. `pytorch_lightning.metrics.classification.Accuracy` when logging metrics in `LightningModule`, to ensure proper reduction over multiple GPUs. You can also use `sync_dist` parameter instead with `self.log(..., sync_dist=True)`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#synchronize-validation-and-test-logging).
+3. Remember `outputs` parameters in hooks like `validation_epoch_end()` will contain only outputs from subset of data processed on given GPU.
 4. Init tensors using `type_as` and `register_buffer`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#init-tensors-using-type-as-and-register-buffer).
 5. Make sure your model is pickable. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#make-models-pickleable).
 <br><br>
@@ -604,11 +604,16 @@ List of extra utilities available in the template:
 - disabling python warnings
 - easier access to debug mode
 - forcing debug friendly configuration
+- forcing multi-gpu friendly configuration
 - method for logging hyperparameters to loggers
 - (TODO) resuming lastest run
-- (TODO) forcing DDP friendly configuration
 
 You can easily remove all of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
+<br><br>
+
+
+### How To Speed Up Training
+(TODO)
 <br><br>
 
 
@@ -728,6 +733,7 @@ bash tests/smoke_tests.sh
 
 
 ## Tricks
+
 ### Accessing Datamodule Attributes In Model
 The simplest way is to pass datamodule attribute directly to model on initialization:
 ```python
