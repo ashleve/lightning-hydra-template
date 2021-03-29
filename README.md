@@ -581,7 +581,7 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/pl_callbacks/wandb_callbacks.py)).<br>
 To support reproducibility: *UploadCodeToWandbAsArtifact*, *UploadCheckpointsToWandbAsArtifact*, *WatchModelWithWandb*.<br>
 To provide examples of logging custom visualisations with callbacks only: *LogConfusionMatrixToWandb*, *LogF1PrecRecHeatmapToWandb*.<br>
-<br><br>
+<br>
 
 
 ### Multi-GPU Training
@@ -593,9 +593,9 @@ You can run DDP on mnist example with 4 GPUs like this:
 python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 ```
 When using DDP you should remember about a couple of things:
-1. Make sure you set `datamodule.num_workers=0` and `datamodule.pin_memory=true`
-2. Use `self.log(..., sync_dist=True)` when logging metrics inside LightingModule to ensure proper reduction over multiple GPUs. Using this parameter affects performance by little so it's not recommended to set it to true when training with only 1 GPU.
-3. Remember `outputs` parameter in methods like `validation_epoch_end()` in LightningModule will contain only outputs from subset of data processed on given GPU
+1. Make sure you set `datamodule.num_workers=0` and `datamodule.pin_memory=true`.
+2. Use metrics api like `pytorch_lightning.metrics.classification.Accuracy` when logging metrics in LightingModule to ensure proper reduction over multiple GPUs. You can also use `sync_dist` parameter instead (`self.log(..., sync_dist=True)`). Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#synchronize-validation-and-test-logging).
+3. Remember `outputs` parameter in methods like `validation_epoch_end()` in LightningModule will contain only outputs from subset of data processed on given GPU.
 4. Init tensors using `type_as` and `register_buffer`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#init-tensors-using-type-as-and-register-buffer).
 5. Make sure your model is pickable. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#make-models-pickleable).
 
