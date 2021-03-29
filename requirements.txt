@@ -1,13 +1,16 @@
 # --------- pytorch --------- #
 torch==1.7.1
 torchvision==0.8.2
+# torch==1.8.1
+# torchvision==0.9.1
 pytorch-lightning>=1.2.5
 
 # --------- hydra --------- #
 hydra-core==1.1.0.dev5
-hydra_colorlog>=1.0.0
+hydra-colorlog>=1.0.0
 hydra-optuna-sweeper>=0.9.0rc2
 # hydra-ray-launcher>=0.1.2
+# hydra-submitit-launcher>=1.1.0
 
 # --------- loggers --------- #
 wandb>=0.10.20
