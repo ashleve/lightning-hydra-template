@@ -9,7 +9,6 @@ dependencies:
   - python=3.8
   - pip
   - notebook
-  - cudatoolkit=11.1
+  - cudatoolkit
   - pytorch=1.8.1
   - torchvision=0.9.1
-  - torchaudio
