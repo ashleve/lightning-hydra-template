@@ -641,7 +641,7 @@ Currently template contains configurations of **Black** (python code formatting)
 
 To format all files in the project use command:
 ```yaml
-pre-commit run --all-files
+pre-commit run -a
 ```
 <br>
 
