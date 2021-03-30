@@ -15,7 +15,6 @@ wandb>=0.10.20
 # neptune-client
 # comet_ml
 # mlflow
-# tensorboard
 
 # --------- others --------- #
 rich
