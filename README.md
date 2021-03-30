@@ -10,7 +10,7 @@
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
 
-*This template is work in progress. Currently dev version of Hydra is used.<br>Suggestions are always welcome!*
+*This template is work in progress. Currently uses dev version of Hydra.<br>Suggestions are always welcome!*
 
 </div>
 <br><br>
@@ -55,7 +55,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - Logs: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
 - Hyperparameter Search: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - Best Practices: a couple of recommended tools, practices and standards (see [#Best Practices](#best-practices))
-- Extra Features: template contains extra utilities which you can easily remove (see [#Extra Features](#extra-features))
+- Extra Features: optional utilities to make your life easier (see [#Extra Features](#extra-features))
 - Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
 
@@ -136,11 +136,11 @@ When running `python run.py` you should see something like this:
 <details>
 <summary>Override any config parameter from command line</summary>
 
-> *Hydra allows you to overwrite any parameter defined in your config, without writing any code!*
+> Hydra allows you to overwrite any parameter defined in your config, without writing any code!
 ```yaml
 python run.py trainer.max_epochs=20 optimizer.lr=1e-4
 ```
-> *You can also add new parameters with `+` sign.*
+> You can also add new parameters with `+` sign.
 ```yaml
 python run.py +model.new_param="uwu"
 
@@ -152,7 +152,7 @@ python run.py +model.new_param="uwu"
 <details>
 <summary>Train on CPU, GPU, TPU or even with DDP and mixed precision</summary>
 
-> *PyTorch Lightning makes it really easy to train your models on different hardware.*
+> PyTorch Lightning makes it really easy to train your models on different hardware.
 ```yaml
 # train on CPU
 python run.py trainer.gpus=0
@@ -163,11 +163,15 @@ python run.py trainer.gpus=1
 # train on TPU
 python run.py +trainer.tpu_cores=8
 
+# train with DDP (Distributed Data Parallel) (4 GPUs)
+python run.py trainer.gpus=4 +trainer.accelerator='ddp'
+
 # train with DDP (Distributed Data Parallel) (8 GPUs, 2 nodes)
 python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.accelerator='ddp'
 
 # train with mixed precision
-python run.py +trainer.amp_backend="apex" +trainer.amp_level="O1" +trainer.precision=16
+python run.py trainer.gpus=1 +trainer.amp_backend="apex" +trainer.precision=16 \
++trainer.amp_level="O2"
 ```
 
 </details>
@@ -176,7 +180,7 @@ python run.py +trainer.amp_backend="apex" +trainer.amp_level="O1" +trainer.preci
 <details>
   <summary>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></summary>
 
-> *PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking). Using wandb requires you to [setup account](https://www.wandb.com/) first. After that just complete the config as below.*
+> PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking). Using wandb requires you to [setup account](https://www.wandb.com/) first. After that just complete the config as below.
 ```yaml
 # set project and entity names in `configs/logger/wandb`
 wandb:
@@ -189,7 +193,7 @@ wandb:
 # link to wandb dashboard should appear in the terminal
 python run.py logger=wandb
 ```
-> ***Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.***
+> **Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.**
 
 </details>
 
@@ -197,7 +201,7 @@ python run.py logger=wandb
 <details>
 <summary>Train model with chosen experiment config</summary>
 
-> *Experiment configurations are placed in [configs/experiment/](configs/experiment/).*
+> Experiment configurations are placed in [configs/experiment/](configs/experiment/).
 ```yaml
 python run.py +experiment=exp_example_simple
 ```
@@ -208,8 +212,8 @@ python run.py +experiment=exp_example_simple
 <details>
 <summary>Attach some callbacks to run</summary>
 
-> *Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).<br>
-Callbacks configurations are placed in [configs/callbacks/](configs/callbacks/).*
+> Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).<br>
+Callbacks configurations are placed in [configs/callbacks/](configs/callbacks/).
 ```yaml
 python run.py callbacks=default_callbacks
 ```
@@ -220,7 +224,7 @@ python run.py callbacks=default_callbacks
 <details>
 <summary>Use different tricks available in Pytorch Lightning</summary>
 
-> *PyTorch Lightning provides about [40+ useful trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags).*
+> PyTorch Lightning provides about [40+ useful trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags).
 ```yaml
 # gradient clipping may be enabled to avoid exploding gradients
 python run.py +trainer.gradient_clip_val=0.5
@@ -234,7 +238,6 @@ python run.py +trainer.val_check_interval=0.25
 # accumulate gradients
 python run.py +trainer.accumulate_grad_batches=10
 ```
-
 
 </details>
 
@@ -271,7 +274,7 @@ python run.py +trainer.limit_train_batches=0.2 \
 # path should be absolute!
 python run.py +trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
 ```
-> *Currently loading ckpt in Lightning doesn't resume logger experiment, but it will be supported in future Lightning release.*
+> Currently loading ckpt in Lightning doesn't resume logger experiment, but it will be supported in future Lightning release.
 
 </details>
 
@@ -284,7 +287,7 @@ python run.py +trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
 # each with different combination of batch_size and learning rate
 python run.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
 ```
-> *Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported in future Hydra release.*
+> Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported in future Hydra release.
 
 </details>
 
@@ -292,54 +295,47 @@ python run.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
 <details>
 <summary>Create a sweep over hyperparameters with Optuna</summary>
 
+> Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a [single config file](configs/config_optuna.yaml)!
 ```yaml
 # this will run hyperparameter search defined in `configs/config_optuna.yaml`
 # over chosen experiment config
 python run.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
 ```
-> *Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a single config file!*
 
 </details>
 
 <details>
 <summary>Execute all experiments from folder</summary>
 
+> Hydra provides special syntax for controlling behavior of multiruns. Learn more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run). The command below executes all experiments from folder [configs/experiment/](configs/experiment/).
 ```yaml
-# execute all experiments from folder `configs/experiment/`
 python run.py -m '+experiment=glob(*)'
 ```
-> *Hydra provides special syntax for controlling behavior of multiruns. Read more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run).*
 
 </details>
 
 <details>
 <summary>Execute sweep on a remote AWS cluster</summary>
 
-> *This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.*
+> This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.
 
 </details>
 
 <details>
 <summary>Execute sweep on a Linux SLURM cluster</summary>
 
-> *This should be achievable with simple config using [Submitit launcher for Hydra](https://hydra.cc/docs/plugins/submitit_launcher). Example is not yet implemented in this template.*
+> This should be achievable with simple config using [Submitit launcher for Hydra](https://hydra.cc/docs/plugins/submitit_launcher). Example is not yet implemented in this template.
 
 </details>
 
-<!--
+
 <details>
 <summary>Use Hydra tab completion</summary>
 
-> *Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Read more [here](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).*
-
-> *To install tab completion for bash shell, navigate to project folder and run the command below.*
-
-```bash
-eval "$(python run.py -sc install=bash)"
-```
+> Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Learn more [here](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).
 
 </details>
--->
+
 
 <br>
 
