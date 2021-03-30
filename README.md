@@ -2,15 +2,15 @@
 
 # Lightning-Hydra-Template
 
-<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-orange?style=for-the-badge&logo=pytorch"></a>
-<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-blueviolet?style=for-the-badge"></a>
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch-ee4c2c?style=for-the-badge"></a>
+<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?style=for-the-badge"></a>
 <a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-blue?style=for-the-badge"></a>
 <a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge"></a>
 
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
 
-*This template is work in progress. Suggestions are always welcome!*
+*This template is work in progress. Currently uses dev version of Hydra.<br>Suggestions are always welcome!*
 
 </div>
 <br><br>
@@ -20,33 +20,8 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 If you use this template please add <br>
 [![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
 to your `README.md`.
-<br>
+<br><br>
 
-
-**Contents**
-- [Introduction](#introduction)
-- [Main Ideas Of This Template](#main-ideas-of-this-template)
-- [Project Structure](#project-structure)
-- [Quickstart](#quickstart)
-- [Guide](#guide)
-    - [How To Learn?](#how-to-learn)
-    - [Main Project Configuration](#main-project-configuration)
-    - [Experiment Configuration](#experiment-configuration)
-    - [Workflow](#workflow)
-    - [Logs](#logs)
-    - [Experiment Tracking](#experiment-tracking)
-    - [Inference](#inference)
-    - [Callbacks](#callbacks)
-- [Best Practices](#best-practices)
-    - [Miniconda](#miniconda)
-    - [Automatic Code Formatting](#automatic-code-formatting)
-    - [Environment Variables](#environment-variables)
-    - [Data Version Control](#data-version-control)
-    - [Installing Project As A Package](#support-installing-project-as-a-package)
-    - [Tests](#tests)
-- [Tricks](#tricks)
-- [Other Repositories](#other-repositories)
-<br>
 
 
 ## Introduction
@@ -80,6 +55,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - Logs: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
 - Hyperparameter Search: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - Best Practices: a couple of recommended tools, practices and standards (see [#Best Practices](#best-practices))
+- Extra Features: optional utilities to make your life easier (see [#Extra Features](#extra-features))
 - Workflow: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
 
@@ -155,16 +131,16 @@ When running `python run.py` you should see something like this:
 </div>
 
 ### Your Superpowers
-##### (click to expand)
+**(click to expand)**
 
 <details>
 <summary>Override any config parameter from command line</summary>
 
-> *Hydra allows you to overwrite any parameter defined in your config, without writing any code!*
+> Hydra allows you to overwrite any parameter defined in your config, without writing any code!
 ```yaml
 python run.py trainer.max_epochs=20 optimizer.lr=1e-4
 ```
-> *You can also add new parameters with `+` sign.*
+> You can also add new parameters with `+` sign.
 ```yaml
 python run.py +model.new_param="uwu"
 
@@ -176,7 +152,7 @@ python run.py +model.new_param="uwu"
 <details>
 <summary>Train on CPU, GPU, TPU or even with DDP and mixed precision</summary>
 
-> *PyTorch Lightning makes it really easy to train your models on different hardware.*
+> PyTorch Lightning makes it really easy to train your models on different hardware.
 ```yaml
 # train on CPU
 python run.py trainer.gpus=0
@@ -187,11 +163,15 @@ python run.py trainer.gpus=1
 # train on TPU
 python run.py +trainer.tpu_cores=8
 
+# train with DDP (Distributed Data Parallel) (4 GPUs)
+python run.py trainer.gpus=4 +trainer.accelerator='ddp'
+
 # train with DDP (Distributed Data Parallel) (8 GPUs, 2 nodes)
 python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.accelerator='ddp'
 
 # train with mixed precision
-python run.py +trainer.amp_backend="apex" +trainer.amp_level="O1" +trainer.precision=16
+python run.py trainer.gpus=1 +trainer.amp_backend="apex" +trainer.precision=16 \
++trainer.amp_level="O2"
 ```
 
 </details>
@@ -200,7 +180,7 @@ python run.py +trainer.amp_backend="apex" +trainer.amp_level="O1" +trainer.preci
 <details>
   <summary>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></summary>
 
-> *PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking). Using wandb requires you to [setup account](https://www.wandb.com/) first. After that just complete the config as below.*
+> PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking). Using wandb requires you to [setup account](https://www.wandb.com/) first. After that just complete the config as below.
 ```yaml
 # set project and entity names in `configs/logger/wandb`
 wandb:
@@ -213,7 +193,7 @@ wandb:
 # link to wandb dashboard should appear in the terminal
 python run.py logger=wandb
 ```
-> ***Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.***
+> **Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.**
 
 </details>
 
@@ -221,7 +201,7 @@ python run.py logger=wandb
 <details>
 <summary>Train model with chosen experiment config</summary>
 
-> *Experiment configurations are placed in [configs/experiment/](configs/experiment/).*
+> Experiment configurations are placed in [configs/experiment/](configs/experiment/).
 ```yaml
 python run.py +experiment=exp_example_simple
 ```
@@ -232,8 +212,8 @@ python run.py +experiment=exp_example_simple
 <details>
 <summary>Attach some callbacks to run</summary>
 
-> *Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).<br>
-Callbacks configurations are placed in [configs/callbacks/](configs/callbacks/).*
+> Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).<br>
+Callbacks configurations are placed in [configs/callbacks/](configs/callbacks/).
 ```yaml
 python run.py callbacks=default_callbacks
 ```
@@ -244,7 +224,7 @@ python run.py callbacks=default_callbacks
 <details>
 <summary>Use different tricks available in Pytorch Lightning</summary>
 
-> *PyTorch Lightning provides about [40+ useful trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags).*
+> PyTorch Lightning provides about [40+ useful trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#trainer-flags).
 ```yaml
 # gradient clipping may be enabled to avoid exploding gradients
 python run.py +trainer.gradient_clip_val=0.5
@@ -258,7 +238,6 @@ python run.py +trainer.val_check_interval=0.25
 # accumulate gradients
 python run.py +trainer.accumulate_grad_batches=10
 ```
-
 
 </details>
 
@@ -295,7 +274,7 @@ python run.py +trainer.limit_train_batches=0.2 \
 # path should be absolute!
 python run.py +trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
 ```
-> *Currently loading ckpt in Lightning doesn't resume logger experiment, but it will be supported in future Lightning release.*
+> Currently loading ckpt in Lightning doesn't resume logger experiment, but it will be supported in future Lightning release.
 
 </details>
 
@@ -308,7 +287,7 @@ python run.py +trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
 # each with different combination of batch_size and learning rate
 python run.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
 ```
-> *Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported in future Hydra release.*
+> Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported in future Hydra release.
 
 </details>
 
@@ -316,54 +295,47 @@ python run.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
 <details>
 <summary>Create a sweep over hyperparameters with Optuna</summary>
 
+> Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a [single config file](configs/config_optuna.yaml)!
 ```yaml
 # this will run hyperparameter search defined in `configs/config_optuna.yaml`
 # over chosen experiment config
 python run.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
 ```
-> *Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a single config file!*
 
 </details>
 
 <details>
 <summary>Execute all experiments from folder</summary>
 
+> Hydra provides special syntax for controlling behavior of multiruns. Learn more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run). The command below executes all experiments from folder [configs/experiment/](configs/experiment/).
 ```yaml
-# execute all experiments from folder `configs/experiment/`
 python run.py -m '+experiment=glob(*)'
 ```
-> *Hydra provides special syntax for controlling behavior of multiruns. Read more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run).*
 
 </details>
 
 <details>
 <summary>Execute sweep on a remote AWS cluster</summary>
 
-> *This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.*
+> This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not yet implemented in this template.
 
 </details>
 
 <details>
 <summary>Execute sweep on a Linux SLURM cluster</summary>
 
-> *This should be achievable with simple config using [Submitit launcher for Hydra](https://hydra.cc/docs/plugins/submitit_launcher). Example is not yet implemented in this template.*
+> This should be achievable with simple config using [Submitit launcher for Hydra](https://hydra.cc/docs/plugins/submitit_launcher). Example is not yet implemented in this template.
 
 </details>
 
-<!--
+
 <details>
 <summary>Use Hydra tab completion</summary>
 
-> *Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Read more [here](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).*
-
-> *To install tab completion for bash shell, navigate to project folder and run the command below.*
-
-```bash
-eval "$(python run.py -sc install=bash)"
-```
+> Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Learn more [here](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).
 
 </details>
--->
+
 
 <br>
 
@@ -414,10 +386,6 @@ print_config: True
 
 # disable python warnings if they annoy you
 disable_warnings: False
-
-
-# disable lightning logs if they annoy you
-disable_lightning_logs: False
 
 
 # output paths for hydra logs
@@ -603,10 +571,46 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 
 
 ### Callbacks
-Template contains example callbacks for better Weights&Biases integration (see [wandb_callbacks.py](src/pl_callbacks/wandb_callbacks.py)).<br>
-To support reproducibility: *UploadCodeToWandbAsArtifact*, *UploadCheckpointsToWandbAsArtifact*, *WatchModelWithWandb*.<br>
-To provide examples of logging custom visualisations with callbacks only: *LogConfusionMatrixToWandb*, *LogF1PrecRecHeatmapToWandb*.<br>
+Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/pl_callbacks/wandb_callbacks.py)).<br>
+To support reproducibility: **WatchModelWithWandb**, **UploadCodeToWandbAsArtifact**, **UploadCheckpointsToWandbAsArtifact**.<br>
+To provide examples of logging custom visualisations with callbacks only: **LogConfusionMatrixToWandb**, **LogF1PrecRecHeatmapToWandb**.<br>
+<br>
+
+
+### Multi-GPU Training
+Lightning supports multiple ways of doing distributed training.<br>
+The most common one is DDP, which spawns separate process for each GPU and averages gradients between them. To learn about other approaches read [lightning docs](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
+
+You can run DDP on mnist example with 4 GPUs like this:
+```yaml
+python run.py trainer.gpus=4 +trainer.accelerator="ddp"
+```
+When using DDP you should remember about a couple of things:
+1. Make sure you set `datamodule.num_workers=0` and `datamodule.pin_memory=False`.
+2. Use metrics api objects, e.g. `pytorch_lightning.metrics.classification.Accuracy` when logging metrics in `LightningModule`, to ensure proper reduction over multiple GPUs. You can also use `sync_dist` parameter instead with `self.log(..., sync_dist=True)`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#synchronize-validation-and-test-logging).
+3. Remember `outputs` parameters in hooks like `validation_epoch_end()` will contain only outputs from subset of data processed on given GPU.
+4. Init tensors using `type_as` and `register_buffer`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#init-tensors-using-type-as-and-register-buffer).
+5. Make sure your model is pickable. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#make-models-pickleable).
 <br><br>
+
+### Extra Features
+List of extra utilities available in the template:
+- loading environment variables from [.env](.env.tmp) file
+- pretty printing config with [Rich](https://github.com/willmcgugan/rich) library
+- disabling python warnings
+- easier access to debug mode
+- forcing debug friendly configuration
+- forcing multi-gpu friendly configuration
+- method for logging hyperparameters to loggers
+- (TODO) resuming latest run
+
+You can easily remove all of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
+<br><br>
+
+
+### How To Speed Up Training
+(TODO)
+<br><br><br>
 
 
 
@@ -638,7 +642,7 @@ Currently template contains configurations of **Black** (python code formatting)
 
 To format all files in the project use command:
 ```yaml
-pre-commit run --all-files
+pre-commit run -a
 ```
 <br>
 
@@ -712,7 +716,7 @@ from project_name.pl_datamodules.mnist_datamodule import MNISTDataModule
 ```
 <br>
 
-
+<!--
 ### Tests
 I find myself often running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
 
@@ -721,10 +725,11 @@ To execute:
 ```yaml
 bash tests/smoke_tests.sh
 ```
-<br><br><br>
+<br><br><br> -->
 
 
 ## Tricks
+
 ### Accessing Datamodule Attributes In Model
 The simplest way is to pass datamodule attribute directly to model on initialization:
 ```python
@@ -800,7 +805,7 @@ This template was inspired by:
 
 
 
-### DELETE EVERYTHING ABOVE FOR YOUR PROJECT
+**DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
 ---
 
@@ -808,10 +813,10 @@ This template was inspired by:
 
 # Your Project Name
 
-<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-orange?logo=pytorch"></a>
-<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-blueviolet"></a>
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c"></a>
+<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5"></a>
 <a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-blue"></a>
-[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/hobogalaxy/lightning-hydra-template)
+<a href="https://github.com/hobogalaxy/lightning-hydra-template"><img alt="Template" src="https://img.shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030"></a>
 
 </div>
 

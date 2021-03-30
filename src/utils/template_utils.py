@@ -16,48 +16,45 @@ log = logging.getLogger(__name__)
 def extras(config: DictConfig) -> None:
     """A couple of optional utilities, controlled by main config file.
         - disabling warnings
-        - disabling lightning logs
         - easier access to debug mode
         - forcing debug friendly configuration
+        - forcing multi-gpu friendly configuration
     Args:
         config (DictConfig): [description]
     """
 
-    # Enable adding new keys to config
+    # enable adding new keys to config
     OmegaConf.set_struct(config, False)
 
-    # Fix double logging bug (this will be removed when lightning releases patch)
-    pl_logger = logging.getLogger("lightning")
-    pl_logger.propagate = False
-
-    # [OPTIONAL] Disable python warnings if <config.disable_warnings=True>
+    # disable python warnings if <config.disable_warnings=True>
     if config.get("disable_warnings"):
-        log.info(f"Disabling python warnings! <{config.disable_warnings=}>")
+        log.info(f"Disabling python warnings! <config.disable_warnings=True")
         warnings.filterwarnings("ignore")
 
-    # [OPTIONAL] Disable Lightning logs if <config.disable_lightning_logs=True>
-    if config.get("disable_lightning_logs"):
-        log.info(f"Disabling lightning logs! {config.disable_lightning_logs=}>")
-        logging.getLogger("lightning").setLevel(logging.ERROR)
-
-    # [OPTIONAL] Set <config.trainer.fast_dev_run=True> if  <config.debug=True>
+    # set <config.trainer.fast_dev_run=True> if <config.debug=True>
     if config.get("debug"):
-        log.info(f"Running in debug mode! <{config.debug=}>")
+        log.info("Running in debug mode! <config.debug=True>")
         config.trainer.fast_dev_run = True
 
-    # [OPTIONAL] Force debugger friendly configuration if <config.trainer.fast_dev_run=True>
+    # force debugger friendly configuration if <config.trainer.fast_dev_run=True>
     if config.trainer.get("fast_dev_run"):
-        log.info(
-            f"Forcing debugger friendly configuration! "
-            f"<{config.trainer.fast_dev_run=}>"
-        )
+        log.info("Forcing debugger friendly configuration! <config.trainer.fast_dev_run=True>")
         # Debuggers don't like GPUs or multiprocessing
         if config.trainer.get("gpus"):
             config.trainer.gpus = 0
         if config.datamodule.get("num_workers"):
             config.datamodule.num_workers = 0
+    
+    # force multi-gpu friendly configuration if <config.trainer.accelerator=ddp>
+    if config.trainer.get("accelerator") in ["ddp", "ddp_spawn", "dp", "ddp2"]:
+        log.info("Forcing ddp friendly configuration! <config.trainer.accelerator=ddp>")
+        # ddp doesn't like num_workers>0 or pin_memory=True
+        if config.datamodule.get("num_workers"):
+            config.datamodule.num_workers = 0
+        if config.datamodule.get("pin_memory"):
+            config.datamodule.pin_memory = False
 
-    # Disable adding new keys to config
+    # disable adding new keys to config
     OmegaConf.set_struct(config, True)
 
 
@@ -99,6 +96,10 @@ def print_config(
     print(tree)
 
 
+def empty(*args, **kwargs):
+    pass
+
+
 def log_hyperparameters(
     config: DictConfig,
     model: pl.LightningModule,
@@ -127,8 +128,9 @@ def log_hyperparameters(
     # choose which parts of hydra config will be saved to loggers
     hparams["trainer"] = config["trainer"]
     hparams["model"] = config["model"]
-    hparams["optimizer"] = config["optimizer"]
     hparams["datamodule"] = config["datamodule"]
+    if "optimizer" in config:
+        hparams["optimizer"] = config["optimizer"]
     if "callbacks" in config:
         hparams["callbacks"] = config["callbacks"]
 
@@ -156,7 +158,7 @@ def log_hyperparameters(
 
     # disable logging any more hyperparameters for all loggers
     # (this is just a trick to prevent trainer from logging hparams of model, since we already did that above)
-    trainer.logger.log_hyperparams = lambda params: None
+    trainer.logger.log_hyperparams = empty
 
 
 def finish(

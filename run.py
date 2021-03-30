@@ -3,6 +3,7 @@ import hydra
 from omegaconf import DictConfig
 
 # load environment variables from `.env` file if it exists
+# recursively searches for `.env` in all folders starting from work dir
 dotenv.load_dotenv(override=True)
 
 
@@ -16,9 +17,9 @@ def main(config: DictConfig):
 
     # A couple of optional utilities:
     # - disabling python warnings
-    # - disabling lightning logs
     # - easier access to debug mode
     # - forcing debug friendly configuration
+    # - forcing multi-gpu friendly configuration
     # You can safely get rid of this line if you don't want those
     template_utils.extras(config)
 
