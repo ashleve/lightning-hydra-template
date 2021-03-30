@@ -602,7 +602,7 @@ List of extra utilities available in the template:
 - forcing debug friendly configuration
 - forcing multi-gpu friendly configuration
 - method for logging hyperparameters to loggers
-- (TODO) resuming lastest run
+- (TODO) resuming latest run
 
 You can easily remove all of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
 <br><br>
@@ -610,7 +610,7 @@ You can easily remove all of those by modifying [run.py](run.py) and [src/train.
 
 ### How To Speed Up Training
 (TODO)
-<br><br>
+<br><br><br>
 
 
 
