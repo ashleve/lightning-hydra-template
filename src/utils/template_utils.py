@@ -10,7 +10,30 @@ from rich import print
 from rich.syntax import Syntax
 from rich.tree import Tree
 
-log = logging.getLogger(__name__)
+from functools import partial
+from pytorch_lightning.utilities import rank_zero_only
+
+# log = logging.getLogger(__name__)
+
+
+class RankZeroLogger:
+    def __init__(self, level=logging.DEBUG):
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(level)
+        self.levels = ('debug', 'info', 'warning', 'error', 'exception', 'fatal', 'critical')
+        
+        # Create a method for each of the logging levels from the template ``log`` method
+        # This avoids duplicating code and ensures all levels run through the rank zero decorator
+        for l in self.levels:
+            setattr(RankZeroLogger, l, partial(self.log, level=l))
+    
+    @rank_zero_only
+    def log(self, msg, level):
+        logger_method = getattr(self.logger, level)
+        logger_method(msg)
+        
+
+log = RankZeroLogger()
 
 
 def extras(config: DictConfig) -> None:
