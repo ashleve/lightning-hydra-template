@@ -11,9 +11,6 @@ ENV PYTHON_VERSION=3.8
 ENV PYTORCH_VERSION=1.8.1
 ENV CUDA_TOOLKIT_VERSION=11.1
 
-# Print environment variables
-RUN printenv
-
 # Create a working directory
 RUN mkdir /workspace
 WORKDIR /workspace
@@ -27,6 +24,7 @@ RUN apt-get update && apt-get install -y \
 
 # Switch to bash shell
 SHELL ["/bin/bash", "-c"]
+# SHELL ["conda", "run", "-n", "env", "/bin/bash", "-c"]
 
 # Install Miniconda and Python
 ADD /miniconda3.sh /workspace
@@ -40,9 +38,19 @@ RUN conda create \
     -n ${CONDA_ENV_NAME} \
     python=${PYTHON_VERSION}
 
+# Install PyTorch
 RUN source activate ${CONDA_ENV_NAME} \
     && conda install cudatoolkit=${CUDA_TOOLKIT_VERSION} pytorch=${PYTORCH_VERSION} torchvision torchaudio \
     -c pytorch -c conda-forge -y
+
+# Set new conda env as default
+RUN echo "source activate ${CONDA_ENV_NAME}" > ~/.bashrc
+
+# Install Apex for mixed-precision training
+RUN source activate ${CONDA_ENV_NAME} \
+    && git clone https://github.com/NVIDIA/apex \
+    && cd apex \
+    && pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
 
 # Copy the requirements file to the container 
 # ADD /requirements.txt /workspace
@@ -50,10 +58,5 @@ RUN source activate ${CONDA_ENV_NAME} \
 # Install requirements
 # RUN pip install -r requirements.txt
 
-# Install Apex for mixed-precision training
-# RUN git clone https://github.com/NVIDIA/apex \
-#     && cd apex \
-#     && pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
-
-# Activate conda env by default
-CMD ["source activate ${CONDA_ENV_NAME}"]
+# Run container with: 
+# sudo docker run --gpus all -it --rm testcontainer
