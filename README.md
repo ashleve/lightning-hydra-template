@@ -109,6 +109,17 @@ The directory structure of new project looks like this:
 
 
 ## Quickstart
+<table>
+
+<tr>
+<th>Normal</th>
+<th>Docker</th>
+</tr>
+
+<tr>
+
+<td valign="top">
+
 ```yaml
 # clone project
 git clone https://github.com/hobogalaxy/lightning-hydra-template
@@ -121,6 +132,27 @@ conda activate testenv
 # install requirements
 pip install -r requirements.txt
 ```
+
+</td>
+
+<td valign="top">
+
+```yaml
+# clone project
+git clone https://github.com/hobogalaxy/lightning-hydra-template
+cd lightning-hydra-template
+
+# build docker image
+docker build -t testcontainer .
+
+# run container
+docker run --gpus all -it --rm testcontainer
+```
+
+</td>                                                        
+</tr>
+</table>
+
 
 Template contains example with MNIST classification.<br>
 When running `python run.py` you should see something like this:
