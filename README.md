@@ -354,6 +354,9 @@ Location: [configs/config.yaml](configs/config.yaml)<br>
 Main project config contains default training configuration.<br>
 It determines how config is composed when simply executing command `python run.py`.<br>
 It also specifies everything that shouldn't be managed by experiment configurations.
+<details>
+<summary><b>Show main project configuration</b></summary>
+
 ```yaml
 # specify here default training configuration
 defaults:
@@ -397,7 +400,10 @@ hydra:
         dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
         subdir: ${hydra.job.num}
 ```
+
+</details>
 <br>
+
 
 ### Experiment Configuration
 Location: [configs/experiment](configs/experiment)<br>
@@ -507,16 +513,16 @@ logger:
 ### Workflow
 1. Write your PyTorch Lightning model (see [mnist_model.py](src/pl_models/mnist_model.py) for example)
 2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/pl_datamodules/mnist_datamodule.py) for example)
-3. Write your experiment config, containing paths to your model and datamodule (see [configs/experiment](configs/experiment/) for examples)
-4. Run training with chosen experiment config:<br>
-    ```yaml
-    python run.py +experiment=experiment_name
-    ```
+3. Write your experiment config, containing paths to your model and datamodule
+4. Run training with chosen experiment config: `python run.py +experiment=experiment_name`
 <br>
 
 ### Logs
 Hydra creates new working directory for every executed run. <br>
 By default, logs have the following structure:
+<details>
+<summary><b>Show logs structure</b></summary>
+
 ```
 │
 ├── logs
@@ -546,6 +552,9 @@ By default, logs have the following structure:
 │       └── ...
 │
 ```
+
+</details>
+
 You can change this structure by modifying paths in [main project configuration](configs/config.yaml).
 <br><br>
 
@@ -600,7 +609,8 @@ Use metrics api objects, e.g. `pytorch_lightning.metrics.classification.Accuracy
 4. Init tensors using `type_as` and `register_buffer`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#init-tensors-using-type-as-and-register-buffer).
 5. Make sure your model is pickable. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#make-models-pickleable).
  -->
-<br><br>
+<br>
+
 
 ### Extra Features
 List of extra utilities available in the template:
@@ -797,13 +807,13 @@ template_utils.print_config(config, resolve=False)
 </details>
 
 <details>
-<summary><b>Name metrics using '/'</b></summary>
+<summary><b>Name metrics using '/' character</b></summary>
 
-Depending on which logger you're using, it's useful to define your metric names using `/` character:
+Depending on which logger you're using, it's often useful to define metric name with `/` character:
 ```python
 self.log("train/loss", loss)
 ```
-This way loggers will treat your metrics as belonging do different section, which often helps to get them organised in UI.
+This way loggers will treat your metrics as belonging to different sections, which helps to get them organised in UI.
 
 </details>
 
@@ -865,10 +875,11 @@ This template was inspired by:
 
 # Your Project Name
 
-<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c"></a>
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5"></a>
-<a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-blue"></a>
-<a href="https://github.com/hobogalaxy/lightning-hydra-template"><img alt="Template" src="https://img.shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030"></a>
+<a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-89b8cd"></a>
+[![made-with-Go](https://img.shields.io/badge/Made%20with-lightning--hydra--template-1f425f.svg)](http://golang.org)
+
 
 </div>
 
