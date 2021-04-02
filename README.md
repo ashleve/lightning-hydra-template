@@ -99,7 +99,8 @@ The directory structure of new project looks like this:
 │
 ├── .env                    <- File for storing environment variables
 ├── .gitignore              <- List of files/folders ignored by git
-├── .pre-commit-config.yaml <- Configuration of hooks for automatic code formatting
+├── .pre-commit-config.yaml <- Configuration of automatic code formatting
+├── Dockerfie               <- File for building docker image
 ├── conda_env_gpu.yaml      <- File for installing conda environment
 ├── requirements.txt        <- File for installing python dependencies
 ├── LICENSE
@@ -109,17 +110,6 @@ The directory structure of new project looks like this:
 
 
 ## Quickstart
-<table>
-
-<tr>
-<th>Normal</th>
-<th>Docker</th>
-</tr>
-
-<tr>
-
-<td valign="top">
-
 ```yaml
 # clone project
 git clone https://github.com/hobogalaxy/lightning-hydra-template
@@ -133,27 +123,6 @@ conda activate testenv
 pip install -r requirements.txt
 ```
 
-</td>
-
-<td valign="top">
-
-```yaml
-# clone project
-git clone https://github.com/hobogalaxy/lightning-hydra-template
-cd lightning-hydra-template
-
-# build docker image
-docker build -t testcontainer .
-
-# run container
-docker run --gpus all -it --rm testcontainer
-```
-
-</td>                                                        
-</tr>
-</table>
-
-
 Template contains example with MNIST classification.<br>
 When running `python run.py` you should see something like this:
 <div align="center">
@@ -162,11 +131,11 @@ When running `python run.py` you should see something like this:
 
 </div>
 
-### Your Superpowers
-**(click to expand)**
+## Your Superpowers
+(click to expand)
 
 <details>
-<summary>Override any config parameter from command line</summary>
+<summary><b>Override any config parameter from command line</b></summary>
 
 > Hydra allows you to overwrite any parameter defined in your config, without writing any code!
 ```yaml
@@ -182,7 +151,7 @@ python run.py +model.new_param="uwu"
 
 
 <details>
-<summary>Train on CPU, GPU, TPU or even with DDP and mixed precision</summary>
+<summary><b>Train on CPU, GPU, TPU or even with DDP and mixed precision</b></summary>
 
 > PyTorch Lightning makes it really easy to train your models on different hardware.
 ```yaml
@@ -210,7 +179,7 @@ python run.py trainer.gpus=1 +trainer.amp_backend="apex" +trainer.precision=16 \
 
 
 <details>
-  <summary>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></summary>
+  <summary><b>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></b></summary>
 
 > PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking). Using wandb requires you to [setup account](https://www.wandb.com/) first. After that just complete the config as below.
 ```yaml
