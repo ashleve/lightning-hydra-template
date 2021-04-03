@@ -336,12 +336,8 @@ python run.py -m '+experiment=glob(*)'
 > Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Learn more [here](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).
 
 </details>
-
-
 <br>
 
-
----
 
 
 ## Guide
@@ -633,8 +629,6 @@ You can easily remove all of those by modifying [run.py](run.py) and [src/train.
 (TODO)
 <br><br><br>
 
-
----
 
 
 ## Best Practices
