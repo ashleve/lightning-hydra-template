@@ -110,7 +110,7 @@ The directory structure of new project looks like this:
 <br>
 
 
-## 🚀 Quickstart
+## 🚀&nbsp; Quickstart
 ```yaml
 # clone project
 git clone https://github.com/hobogalaxy/lightning-hydra-template
@@ -132,7 +132,7 @@ When running `python run.py` you should see something like this:
 
 </div>
 
-### ⚡ Your Superpowers
+### ⚡&nbsp; Your Superpowers
 (click to expand)
 
 <details>
