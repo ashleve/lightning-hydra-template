@@ -30,9 +30,9 @@ This template tries to be as general as possible - you can easily delete any unw
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
-:heavy_plus_sign: **Why you should use it:** it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most, if not the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
+**Why you should use it:** it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most, if not the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
 
-:heavy_minus_sign: **Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
+**Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
 
 ### Why PyTorch Lightning?
 [PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) is a lightweight PyTorch wrapper for high-performance AI research.
@@ -61,7 +61,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 <br>
 
 
-## :information_source:&nbsp; Project Structure
+## Project Structure
 The directory structure of new project looks like this:
 ```
 ├── configs                 <- Hydra configuration files
@@ -340,7 +340,7 @@ python run.py -m '+experiment=glob(*)'
 
 
 
-## Guide
+## :information_source:&nbsp; Guide
 
 ### How To Learn?
 - First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
