@@ -65,13 +65,13 @@ RUN source activate ${CONDA_ENV_NAME} \
 
 # Download template and install dependencies
 RUN source activate ${CONDA_ENV_NAME} \
-    && git clone https://github.com/hobogalaxy/lightning-hydra-template \
+    && git clone https://github.com/ashlevski/lightning-hydra-template \
     && cd lightning-hydra-template \
     && pip install -r requirements.txt \ 
     && pre-commit install
 
 
-# Install tab completion for lightning hydra template
+# Install tab completion for template
 # RUN source activate ${CONDA_ENV_NAME} \
 #     && cd lightning-hydra-template \
 #     && RUN_PATH=$(realpath run.py) \
