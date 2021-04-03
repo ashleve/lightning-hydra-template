@@ -339,7 +339,7 @@ python run.py -m '+experiment=glob(*)'
 <br>
 
 
-## Docker
+## :whale:&nbsp; Docker
 Docker image for the template is available for download [here](https://hub.docker.com/r/ashlev/lightning-hydra).
 
 ```bash
