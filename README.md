@@ -461,7 +461,7 @@ datamodule:
 
 
 <details>
-<summary><b>Show advanced example</b></summary>
+<summary><b>Advanced example</b></summary>
 
 ```yaml
 # to execute this experiment run:
@@ -532,9 +532,6 @@ logger:
 ### Logs
 Hydra creates new working directory for every executed run. <br>
 By default, logs have the following structure:
-<details>
-<summary><b>Show logs structure</b></summary>
-
 ```
 │
 ├── logs
@@ -565,8 +562,6 @@ By default, logs have the following structure:
 │
 ```
 
-</details>
-
 You can change this structure by modifying paths in [main project configuration](configs/config.yaml).
 <br><br>
 
@@ -581,7 +576,6 @@ These tools help you keep track of hyperparameters and output metrics and allow 
  ```
 You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).<br>
 You can also write your own logger.<br>
-
 Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/pl_models/mnist_model.py).
 <br><br>
 
@@ -714,6 +708,17 @@ path_to_data: ${env:MY_VAR}
 </details>
 
 <details>
+<summary><b>Name metrics using '/' character</b></summary>
+
+Depending on which logger you're using, it's often useful to define metric name with `/` character:
+```python
+self.log("train/loss", loss)
+```
+This way loggers will treat your metrics as belonging to different sections, which helps to get them organised in UI.
+
+</details>
+
+<details>
 <summary><b>Version control your data and models with DVC</b></summary>
 
 Use [DVC](https://dvc.org) to version control big files, like your data or trained ML models.<br>
@@ -783,10 +788,6 @@ bash tests/smoke_tests.sh
 
 </details>
  -->
-<br>
-
-
-## Tricks
 
 <details>
 <summary><b>Accessing datamodule attributes in model</b></summary>
@@ -820,17 +821,6 @@ When later accessing this field, say in your lightning model, it will get automa
 ```python
 template_utils.print_config(config, resolve=False)
 ```
-
-</details>
-
-<details>
-<summary><b>Name metrics using '/' character</b></summary>
-
-Depending on which logger you're using, it's often useful to define metric name with `/` character:
-```python
-self.log("train/loss", loss)
-```
-This way loggers will treat your metrics as belonging to different sections, which helps to get them organised in UI.
 
 </details>
 
