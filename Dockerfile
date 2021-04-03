@@ -1,8 +1,10 @@
 # Make sure you have installed the NVIDIA driver >= 361.93 and Docker >= 19.03
 # https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)#prerequisites
 
-# Run container with: 
-# sudo docker run --gpus all -it --rm lit_hydra
+# Build container:
+#   docker build -t container_name .
+# Run container: 
+#   sudo docker run --gpus all -it --rm container_name
 
 ARG CUDA_VERSION=11.1
 
@@ -67,6 +69,13 @@ RUN source activate ${CONDA_ENV_NAME} \
     && cd lightning-hydra-template \
     && pip install -r requirements.txt \ 
     && pre-commit install
+
+
+# Install tab completion for lightning hydra template
+# RUN source activate ${CONDA_ENV_NAME} \
+#     && cd lightning-hydra-template \
+#     && RUN_PATH=$(realpath run.py) \
+#     && echo "eval \"\$(python ${RUN_PATH} -sc install=bash)\" " >> ~/.bashrc
 
 
 # Set conda env to default
