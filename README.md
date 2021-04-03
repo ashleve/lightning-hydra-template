@@ -110,7 +110,7 @@ The directory structure of new project looks like this:
 <br>
 
 
-## Quickstart
+## 🚀 Quickstart
 ```yaml
 # clone project
 git clone https://github.com/hobogalaxy/lightning-hydra-template
@@ -132,7 +132,7 @@ When running `python run.py` you should see something like this:
 
 </div>
 
-### Your Superpowers
+### ⚡ Your Superpowers
 (click to expand)
 
 <details>
@@ -627,6 +627,11 @@ You can easily remove all of those by modifying [run.py](run.py) and [src/train.
 
 ### How To Speed Up Training
 (TODO)
+<br><br>
+
+
+## Limitations
+(TODO)
 <br><br><br>
 
 
@@ -850,11 +855,6 @@ This template was inspired by:
 (TODO)
 
 </details>
-<br>
-
-
-## Limitations
-(TODO)
 
 
 
