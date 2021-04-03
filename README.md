@@ -30,16 +30,16 @@ This template tries to be as general as possible - you can easily delete any unw
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
-**Why you should use it:** it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most, if not the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
+:heavy_plus_sign: **Why you should use it:** it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most, if not the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
 
-**Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
+:heavy_minus_sign: **Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
 
-### Why PyTorch Lightning:grey_question:
+### Why PyTorch Lightning?
 [PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) is a lightweight PyTorch wrapper for high-performance AI research.
 It makes your code neatly organized and provides lots of useful features, like ability to run model on CPU, GPU, multi-GPU cluster and TPU.
 
 
-### Why Hydra:grey_question:
+### Why Hydra?
 [Hydra](https://github.com/facebookresearch/hydra) is an open-source Python framework that simplifies the development of research and other complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. It  allows you to conveniently manage experiments and provides many useful plugins, like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) for hyperparameter search, or [Ray Launcher](https://hydra.cc/docs/next/plugins/ray_launcher) for running jobs on a cluster.
 <br>
 <br>
@@ -61,7 +61,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 <br>
 
 
-## Project Structure
+## :information_source:&nbsp; Project Structure
 The directory structure of new project looks like this:
 ```
 ├── configs                 <- Hydra configuration files
