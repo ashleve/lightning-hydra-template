@@ -2,9 +2,9 @@
 # https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)#prerequisites
 
 # Build container:
-#   docker build -t container_name .
+#   docker build -t lightning-hydra .
 # Run container: 
-#   sudo docker run --gpus all -it --rm container_name
+#   sudo docker run --gpus all -it --rm lightning-hydra
 
 ARG CUDA_VERSION=11.1
 

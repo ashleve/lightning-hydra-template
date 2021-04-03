@@ -5,7 +5,7 @@
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?style=for-the-badge"></a>
 <a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-89b8cd?style=for-the-badge"></a>
-<a href="https://www.docker.com"><img alt="Docker" src="https://img.shields.io/badge/docker-257bd6?style=for-the-badge&logo=docker&logoColor=white"></a>
+<a href="https://hub.docker.com/r/ashlev/lightning-hydra"><img alt="Docker" src="https://img.shields.io/badge/docker-257bd6?style=for-the-badge&logo=docker&logoColor=white"></a>
 <a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge"></a>
 
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
@@ -339,6 +339,21 @@ python run.py -m '+experiment=glob(*)'
 <br>
 
 
+## Docker
+Docker image for the template is available for download [here](https://hub.docker.com/r/ashlev/lightning-hydra).
+
+```bash
+# download image
+docker pull ashlev/lightning-hydra:latest
+
+# run container from image
+docker run --gpus all -it --rm lightning-hydra
+
+# you can also build image by yourself using Dockerfile
+docker build -t lightning-hydra .
+```
+<br>
+
 
 ## :information_source:&nbsp; Guide
 
@@ -407,9 +422,8 @@ hydra:
 Location: [configs/experiment](configs/experiment)<br>
 You should store all your experiment configurations in this folder.<br>
 Experiment configurations allow you to overwrite parameters from main project configuration.
-<details>
-<summary><b>Show simple example</b></summary>
 
+**Simple example**
 ```yaml
 # to execute this experiment run:
 # python run.py +experiment=exp_example_simple
