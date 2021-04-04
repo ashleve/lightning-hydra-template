@@ -84,9 +84,9 @@ The directory structure of new project looks like this:
 ├── tests                   <- Tests of any kind
 │
 ├── src
-│   ├── callbacks            <- Lightning callbacks
-│   ├── datamodules          <- Lightning datamodules
-│   ├── models               <- Lightning models
+│   ├── callbacks               <- Lightning callbacks
+│   ├── datamodules             <- Lightning datamodules
+│   ├── models                  <- Lightning models
 │   ├── utils                   <- Utility scripts
 │   │   ├── inference_example.py    <- Example of inference with trained model
 │   │   └── template_utils.py       <- Some extra template utilities
