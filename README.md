@@ -180,9 +180,10 @@ python run.py trainer.gpus=1 +trainer.amp_backend="apex" +trainer.precision=16 \
 
 
 <details>
-  <summary><b>Train model with any logger available in PyTorch Lightning, like <a href="https://wandb.ai/">Weights&Biases</a></b></summary>
+  <summary><b>Train model with any logger available in PyTorch Lightning, like Weights&Biases</b></summary>
 
-> PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking). Using wandb requires you to [setup account](https://www.wandb.com/) first. After that just complete the config as below.
+> PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking). Using wandb requires you to [setup account](https://www.wandb.com/) first. After that just complete the config as below.<br>
+**Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.**
 ```yaml
 # set project and entity names in `configs/logger/wandb`
 wandb:
@@ -195,7 +196,6 @@ wandb:
 # link to wandb dashboard should appear in the terminal
 python run.py logger=wandb
 ```
-> **Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.**
 
 </details>
 
