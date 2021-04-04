@@ -65,7 +65,7 @@ RUN source activate ${CONDA_ENV_NAME} \
 
 # Download template and install dependencies
 RUN source activate ${CONDA_ENV_NAME} \
-    && git clone https://github.com/ashlevski/lightning-hydra-template \
+    && git clone https://github.com/ashleve/lightning-hydra-template \
     && cd lightning-hydra-template \
     && pip install -r requirements.txt \ 
     && pre-commit install
