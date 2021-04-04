@@ -65,13 +65,12 @@ It makes your code neatly organized and provides lots of useful features, like a
 The directory structure of new project looks like this:
 ```
 ├── configs                 <- Hydra configuration files
-│   ├── model                   <- Configurations of Lightning models
-│   ├── datamodule              <- Configurations of Lightning datamodules
-│   ├── callbacks               <- Configurations of Lightning callbacks
-│   ├── logger                  <- Configurations of Lightning loggers
-│   ├── trainer                 <- Configurations of Lightning trainers
-│   ├── optimizer               <- Configurations of optimizers
-│   ├── experiment              <- Configurations of experiments
+│   ├── callbacks               <- Callbacks configs
+│   ├── datamodule              <- Datamodule configs
+│   ├── experiment              <- Experiment configs
+│   ├── logger                  <- Logger configs
+│   ├── model                   <- Model configs
+│   ├── trainer                 <- Trainer configs
 │   │
 │   ├── config.yaml             <- Main project configuration file
 │   └── config_optuna.yaml      <- Configuration of Optuna hyperparameter search
@@ -85,25 +84,23 @@ The directory structure of new project looks like this:
 ├── tests                   <- Tests of any kind
 │
 ├── src
-│   ├── architectures           <- PyTorch model architectures
-│   ├── datasets                <- PyTorch datasets
-│   ├── pl_callbacks            <- PyTorch Lightning callbacks
-│   ├── pl_datamodules          <- PyTorch Lightning datamodules
-│   ├── pl_models               <- PyTorch Lightning models
+│   ├── callbacks            <- Lightning callbacks
+│   ├── datamodules          <- Lightning datamodules
+│   ├── models               <- Lightning models
 │   ├── utils                   <- Utility scripts
 │   │   ├── inference_example.py    <- Example of inference with trained model
 │   │   └── template_utils.py       <- Some extra template utilities
 │   │
-│   └── train.py                <- Contains training pipeline
+│   └── train.py                <- Training pipeline
 │
-├── run.py                  <- Run training with chosen experiment configuration
+├── run.py                  <- Run training pipeline with chosen experiment configuration
 │
-├── .env                    <- File for storing environment variables
+├── .envrc.template         <- File for storing environment variables
 ├── .gitignore              <- List of files/folders ignored by git
-├── .pre-commit-config.yaml <- Configuration of automatic code formatting
-├── Dockerfie               <- File for building docker image
+├── .pre-commit-config.yaml <- Configurations of automatic code formatting
 ├── conda_env_gpu.yaml      <- File for installing conda environment
 ├── requirements.txt        <- File for installing python dependencies
+├── Dockerfie               <- File for building docker image
 ├── LICENSE
 └── README.md
 ```
@@ -603,7 +600,7 @@ You can run DDP on mnist example with 4 GPUs like this:
 python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 ```
 ⚠️ When using DDP you have to be careful how you write your models - learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
-<!-- 
+<!--
 <details>
 <summary><b>Use metrics api objects</b></summary>
 
@@ -728,7 +725,7 @@ The style guide is available [here](https://pytorch-lightning.readthedocs.io/en/
     class LitModel(LightningModule):
         def __init__(self, layer_size: int = 256, lr: float = 0.001):
     ```
-    
+
 2. Preserve the recommended method order.
     ```python
     class LitModel(pl.LightningModule):
@@ -825,7 +822,7 @@ from project_name.pl_datamodules.mnist_datamodule import MNISTDataModule
 
 </details>
 
-<!-- 
+<!--
 <details>
 <summary><b>Use Miniconda</b></summary>
 
@@ -878,7 +875,7 @@ template_utils.print_config(config, resolve=False)
 
 </details>
 
-<!-- 
+<!--
 PrettyErrors and Rich exception handling,
  -->
 <br>

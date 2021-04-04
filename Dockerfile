@@ -3,7 +3,7 @@
 
 # Build container:
 #   docker build -t lightning-hydra .
-# Run container: 
+# Run container:
 #   sudo docker run --gpus all -it --rm lightning-hydra
 
 ARG CUDA_VERSION=11.1
@@ -67,7 +67,7 @@ RUN source activate ${CONDA_ENV_NAME} \
 RUN source activate ${CONDA_ENV_NAME} \
     && git clone https://github.com/ashleve/lightning-hydra-template \
     && cd lightning-hydra-template \
-    && pip install -r requirements.txt \ 
+    && pip install -r requirements.txt \
     && pre-commit install
 
 

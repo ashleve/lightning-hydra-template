@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
@@ -19,18 +19,18 @@ class MNISTDataModule(LightningDataModule):
 
     def __init__(
         self,
-        data_dir="data/",
-        batch_size=64,
-        train_val_test_split=(55_000, 5_000, 10_000),
-        num_workers=0,
-        pin_memory=False,
+        data_dir: str = "data/",
+        train_val_test_split: Tuple[int, int, int] = (55_000, 5_000, 10_000),
+        batch_size: int = 64,
+        num_workers: int = 0,
+        pin_memory: bool = False,
         **kwargs,
     ):
         super().__init__()
 
         self.data_dir = data_dir
-        self.batch_size = batch_size
         self.train_val_test_split = train_val_test_split
+        self.batch_size = batch_size
         self.num_workers = num_workers
         self.pin_memory = pin_memory
 
@@ -51,7 +51,7 @@ class MNISTDataModule(LightningDataModule):
         MNIST(self.data_dir, train=True, download=True)
         MNIST(self.data_dir, train=False, download=True)
 
-    def setup(self, stage=None):
+    def setup(self, stage: Optional[str] = None):
         """Load data. Set variables: self.data_train, self.data_val, self.data_test."""
         trainset = MNIST(self.data_dir, train=True, transform=self.transforms)
         testset = MNIST(self.data_dir, train=False, transform=self.transforms)
