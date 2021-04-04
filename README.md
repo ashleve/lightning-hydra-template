@@ -719,6 +719,50 @@ This way loggers will treat your metrics as belonging to different sections, whi
 </details>
 
 <details>
+<summary><b>Follow PyTorch Lightning style guide</b></summary>
+
+The style guide is available [here](https://pytorch-lightning.readthedocs.io/en/latest/starter/style_guide.html).<br>
+
+1. Be explicit in your init. Try to define all the relevant defaults so that the user doesn’t have to guess. Provide type hints. This way your module is reusable across projects!
+    ```python
+    class LitModel(LightningModule):
+        def __init__(self, layer_size: int = 256, lr: float = 0.001):
+    ```
+    
+2. Preserve the recommended method order.
+    ```python
+    class LitModel(pl.LightningModule):
+
+        def __init__(...):
+
+        def forward(...):
+
+        def training_step(...)
+
+        def training_step_end(...)
+
+        def training_epoch_end(...)
+
+        def validation_step(...)
+
+        def validation_step_end(...)
+
+        def validation_epoch_end(...)
+
+        def test_step(...)
+
+        def test_step_end(...)
+
+        def test_epoch_end(...)
+
+        def configure_optimizers(...)
+
+        def any_extra_hook(...)
+    ```
+
+</details>
+
+<details>
 <summary><b>Version control your data and models with DVC</b></summary>
 
 Use [DVC](https://dvc.org) to version control big files, like your data or trained ML models.<br>
@@ -774,6 +818,13 @@ from project_name.pl_datamodules.mnist_datamodule import MNISTDataModule
 
 </details>
 
+<details>
+<summary><b>Write tests</b></summary>
+
+(TODO)
+
+</details>
+
 <!-- 
 <details>
 <summary><b>Use Miniconda</b></summary>
@@ -788,7 +839,10 @@ bash tests/smoke_tests.sh
 
 </details>
  -->
+<br>
 
+
+## Tricks
 <details>
 <summary><b>Accessing datamodule attributes in model</b></summary>
 
