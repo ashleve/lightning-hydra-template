@@ -6,7 +6,6 @@
 defaults:
     - override /trainer: null  # override trainer to null so it's not loaded from main config defaults...
     - override /model: null
-    - override /optimizer: null
     - override /datamodule: null
     - override /callbacks: null
     - override /logger: null
@@ -28,8 +27,7 @@ trainer:
     # resume_from_checkpoint: ${work_dir}/last.ckpt
 
 model:
-    _target_: src.pl_models.mnist_model.MNISTLitModel
-    optimizer: adam
+    _target_: src.models.mnist_model.MNISTLitModel
     lr: 0.001
     weight_decay: 0.00005
     architecture: SimpleDenseNet
@@ -39,13 +37,8 @@ model:
     lin3_size: 128
     output_size: 10
 
-optimizer:
-    _target_: torch.optim.Adam
-    lr: 0.001
-    weight_decay: 0
-
 datamodule:
-    _target_: src.pl_datamodules.mnist_datamodule.MNISTDataModule
+    _target_: src.datamodules.mnist_datamodule.MNISTDataModule
     data_dir: ${data_dir}
     batch_size: 64
     train_val_test_split: [55_000, 5_000, 10_000]

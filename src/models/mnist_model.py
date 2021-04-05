@@ -1,12 +1,10 @@
-from typing import Any, Dict, List, Sequence, Tuple, Union
+from typing import Any, List
 
-import hydra
 import torch
 from pytorch_lightning import LightningModule
 from pytorch_lightning.metrics.classification import Accuracy
-from torch.optim import Optimizer
 
-from src.architectures.simple_dense_net import SimpleDenseNet
+from src.models.modules.simple_dense_net import SimpleDenseNet
 
 
 class MNISTLitModel(LightningModule):
@@ -26,12 +24,13 @@ class MNISTLitModel(LightningModule):
 
     def __init__(
         self,
-        optimizer,
-        input_size=784,
-        lin1_size=256,
-        lin2_size=256,
-        lin3_size=256,
-        output_size=10,
+        input_size: int = 784,
+        lin1_size: int = 256,
+        lin2_size: int = 256,
+        lin3_size: int = 256,
+        output_size: int = 10,
+        lr: float = 0.001,
+        weight_decay: float = 0.0005,
         **kwargs
     ):
         super().__init__()
@@ -58,17 +57,17 @@ class MNISTLitModel(LightningModule):
             "val/loss": [],
         }
 
-    def forward(self, x) -> torch.Tensor:
+    def forward(self, x):
         return self.model(x)
 
-    def step(self, batch) -> Dict[str, torch.Tensor]:
+    def step(self, batch):
         x, y = batch
         logits = self.forward(x)
         loss = self.criterion(logits, y)
         preds = torch.argmax(logits, dim=1)
         return loss, preds, y
 
-    def training_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
+    def training_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
 
         # log train metrics
@@ -81,7 +80,14 @@ class MNISTLitModel(LightningModule):
         # remember to always return loss from training_step, or else backpropagation will fail!
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def validation_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
+    def training_epoch_end(self, outputs: List[Any]):
+        # log best so far train acc and train loss
+        self.metric_hist["train/acc"].append(self.trainer.callback_metrics["train/acc"])
+        self.metric_hist["train/loss"].append(self.trainer.callback_metrics["train/loss"])
+        self.log("train/acc_best", max(self.metric_hist["train/acc"]), prog_bar=False)
+        self.log("train/loss_best", min(self.metric_hist["train/loss"]), prog_bar=False)
+
+    def validation_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
 
         # log val metrics
@@ -91,7 +97,14 @@ class MNISTLitModel(LightningModule):
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def test_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
+    def validation_epoch_end(self, outputs: List[Any]):
+        # log best so far val acc and val loss
+        self.metric_hist["val/acc"].append(self.trainer.callback_metrics["val/acc"])
+        self.metric_hist["val/loss"].append(self.trainer.callback_metrics["val/loss"])
+        self.log("val/acc_best", max(self.metric_hist["val/acc"]), prog_bar=False)
+        self.log("val/loss_best", min(self.metric_hist["val/loss"]), prog_bar=False)
+
+    def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
 
         # log test metrics
@@ -99,31 +112,12 @@ class MNISTLitModel(LightningModule):
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
 
-        return loss
+        return {"loss": loss, "preds": preds, "targets": targets}
 
-    # [OPTIONAL METHOD]
-    def training_epoch_end(self, outputs: List[Any]) -> None:
-        # log best so far train acc and train loss
-        self.metric_hist["train/acc"].append(self.trainer.callback_metrics["train/acc"])
-        self.metric_hist["train/loss"].append(self.trainer.callback_metrics["train/loss"])
-        self.log("train/acc_best", max(self.metric_hist["train/acc"]), prog_bar=False)
-        self.log("train/loss_best", min(self.metric_hist["train/loss"]), prog_bar=False)
-
-    # [OPTIONAL METHOD]
-    def validation_epoch_end(self, outputs: List[Any]) -> None:
-        # log best so far val acc and val loss
-        self.metric_hist["val/acc"].append(self.trainer.callback_metrics["val/acc"])
-        self.metric_hist["val/loss"].append(self.trainer.callback_metrics["val/loss"])
-        self.log("val/acc_best", max(self.metric_hist["val/acc"]), prog_bar=False)
-        self.log("val/loss_best", min(self.metric_hist["val/loss"]), prog_bar=False)
-
-    # [OPTIONAL METHOD]
-    def test_epoch_end(self, outputs: List[Any]) -> None:
+    def test_epoch_end(self, outputs: List[Any]):
         pass
 
-    def configure_optimizers(
-        self,
-    ) -> Union[Optimizer, Tuple[Sequence[Optimizer], Sequence[Any]]]:
+    def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
         Normally you'd need one. But in the case of GANs or similar you might have multiple.
 
@@ -131,5 +125,6 @@ class MNISTLitModel(LightningModule):
             https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
 
         """
-        optim = hydra.utils.instantiate(self.hparams.optimizer, params=self.parameters())
-        return optim
+        return torch.optim.Adam(
+            params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay
+        )

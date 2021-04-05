@@ -4,9 +4,8 @@
 # python run.py +experiment=exp_example_simple
 
 defaults:
-    - override /trainer: default_trainer.yaml  # choose trainer from 'configs/trainer/' or set to null...
+    - override /trainer: default_trainer.yaml  # choose trainer from 'configs/trainer/'
     - override /model: mnist_model.yaml
-    - override /optimizer: adam.yaml
     - override /datamodule: mnist_datamodule.yaml
     - override /callbacks: default_callbacks.yaml
     - override /logger: null
@@ -25,9 +24,7 @@ model:
     lin1_size: 128
     lin2_size: 256
     lin3_size: 64
-
-optimizer:
-    lr: 0.001
+    lr: 0.002
 
 datamodule:
     batch_size: 64
