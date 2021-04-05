@@ -839,7 +839,7 @@ bash tests/smoke_tests.sh
 <summary><b>Automatic activation of virtual environment and tab completion</b></summary>
 
 Template contains `.autoenv.template` file, which serves as an example. Create a new file called `.autoenv` (this name is excluded from version control in .gitignore).
-You can use it to automatically execute schell commands when entering folder:
+You can use it to automatically execute shell commands when entering folder:
 ```bash
 # activate conda environment
 conda activate myenv
