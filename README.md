@@ -475,8 +475,8 @@ model:
     lr: 0.005
 
 datamodule:
-    batch_size: 64
     train_val_test_split: [55_000, 5_000, 10_000]
+    batch_size: 64
 ```
 </details>
 
@@ -509,7 +509,7 @@ trainer:
     gradient_clip_val: 0.5
 
 model:
-    _target_: src.pl_models.mnist_model.MNISTLitModel
+    _target_: src.models.mnist_model.MNISTLitModel
     lr: 0.001
     weight_decay: 0.00005
     input_size: 784
@@ -519,10 +519,10 @@ model:
     output_size: 10
 
 datamodule:
-    _target_: src.pl_datamodules.mnist_datamodule.MNISTDataModule
+    _target_: src.datamodules.mnist_datamodule.MNISTDataModule
     data_dir: ${data_dir}
-    batch_size: 64
     train_val_test_split: [55_000, 5_000, 10_000]
+    batch_size: 64
     num_workers: 0
     pin_memory: False
 
@@ -636,7 +636,8 @@ Use metrics api objects, e.g. `pytorch_lightning.metrics.classification.Accuracy
 
 ### Extra Features
 List of extra utilities available in the template:
-- loading environment variables from [.env](.env.tmp) file
+- loading environment variables from [.env](.env.template) file
+- automatic virtual environment setup with [.autoenv](.autoenv.template) file
 - pretty printing config with [Rich](https://github.com/willmcgugan/rich) library
 - disabling python warnings
 - easier access to debug mode
