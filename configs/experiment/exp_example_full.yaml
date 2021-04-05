@@ -4,11 +4,11 @@
 # python run.py +experiment=exp_example_full
 
 defaults:
-    - override /datamodule: null
+    - override /trainer: null  # override trainer to null so it's not loaded from main config defaults...
     - override /model: null
+    - override /datamodule: null
     - override /callbacks: null
     - override /logger: null
-    - override /trainer: null  # override trainer to null so it's not loaded from main config defaults...
 
 # we override default configurations with nulls to prevent them from loading at all
 # instead we define all modules and their paths directly in this config,
@@ -28,7 +28,6 @@ trainer:
 
 model:
     _target_: src.models.mnist_model.MNISTLitModel
-    optimizer: adam
     lr: 0.001
     weight_decay: 0.00005
     architecture: SimpleDenseNet

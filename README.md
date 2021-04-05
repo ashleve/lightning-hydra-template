@@ -376,7 +376,6 @@ It also specifies everything that shouldn't be managed by experiment configurati
 defaults:
     - trainer: default_trainer.yaml
     - model: mnist_model.yaml
-    - optimizer: adam.yaml
     - datamodule: mnist_datamodule.yaml
     - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
@@ -432,7 +431,6 @@ Experiment configurations allow you to overwrite parameters from main project co
 defaults:
     - override /trainer: default_trainer.yaml
     - override /model: mnist_model.yaml
-    - override /optimizer: adam.yaml
     - override /datamodule: mnist_datamodule.yaml
     - override /callbacks: default_callbacks.yaml
     - override /logger: null
@@ -450,8 +448,6 @@ model:
     lin1_size: 128
     lin2_size: 256
     lin3_size: 64
-
-optimizer:
     lr: 0.005
 
 datamodule:
@@ -471,7 +467,6 @@ datamodule:
 defaults:
     - override /trainer: null
     - override /model: null
-    - override /optimizer: null
     - override /datamodule: null
     - override /callbacks: null
     - override /logger: null
@@ -491,17 +486,13 @@ trainer:
 
 model:
     _target_: src.pl_models.mnist_model.MNISTLitModel
+    lr: 0.001
+    weight_decay: 0.00005
     input_size: 784
     lin1_size: 256
     lin2_size: 256
     lin3_size: 128
     output_size: 10
-
-optimizer:
-    _target_: torch.optim.Adam
-    lr: 0.001
-    eps: 1e-08
-    weight_decay: 0.0005
 
 datamodule:
     _target_: src.pl_datamodules.mnist_datamodule.MNISTDataModule
