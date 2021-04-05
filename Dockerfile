@@ -70,8 +70,10 @@ RUN source activate ${CONDA_ENV_NAME} \
     && pip install -r requirements.txt \
     && pre-commit install
 
+
 # Set ${CONDA_ENV_NAME} to default virutal environment
 RUN echo "source activate ${CONDA_ENV_NAME}" >> ~/.bashrc
+
 
 # Install .autoenv for automatic conda env activation and tab completion
 RUN echo "autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc
