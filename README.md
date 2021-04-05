@@ -649,9 +649,9 @@ You can easily remove all of those by modifying [run.py](run.py) and [src/train.
 <details>
 <summary><b>Use Docker</b></summary>
 
-Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster.<br>
-You can extend Dockerfile provided in the template with your own instructions for building the container image.<br>
+Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster. You can extend Dockerfile provided in the template with your own instructions for building the container image.<br>
 See [#Docker](#:whale:-docker) for more.
+
 
 </details>
 
