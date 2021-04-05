@@ -30,7 +30,7 @@ This template tries to be as general as possible - you can easily delete any unw
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
-**Why you should use it:** it allows you to rapidly iterate over new models and scale your projects from small single experiments to large hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most, if not the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
+**Why you should use it:** it allows you to rapidly iterate over new models/datasets and scale your projects from small single experiments to hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
 
 **Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
 
@@ -358,10 +358,33 @@ If you want to use some popular official image instead, I recommed the [nvidia n
 
 ## :information_source:&nbsp; Guide
 
-### How To Learn?
+### How To Learn
 - First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
 - Next, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
 <br>
+
+
+### How it works
+By design, every pipeline should be initialized by `run.py` file.<br>
+[train.py](src/train.py) contains training pipeline. You can create different pipelines for different needs (e.g. for k-fold cross validation or for testing only).
+
+All PyTorch Lightning modules are dynamically instantiated from module paths specified in config, e.g. the model can be instantiated with the following line:
+```python
+model = hydra.utils.instantiate(config.model)
+```
+This allows us to easily iterate over new models!<br>
+Every time we create a new one, we only need to specify its module path and parameters in appriopriate config file:
+```yaml
+_target_: src.models.mnist_model.MNISTLitModel
+
+input_size: 784
+lin1_size: 256
+lin2_size: 256
+lin3_size: 256
+output_size: 10
+```
+<br>
+
 
 ### Main Project Configuration
 Location: [configs/config.yaml](configs/config.yaml)<br>
