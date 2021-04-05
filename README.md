@@ -352,6 +352,7 @@ docker run --gpus all -it --rm lightning-hydra
 # you can also build image by yourself using Dockerfile
 docker build -t lightning-hydra .
 ```
+If you want to use some popular official image instead, I recommed the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have preinstalled Apex for mixed precision training).
 <br>
 
 
@@ -860,11 +861,11 @@ To setup this automation for bash, execute the following line:
 ```bash
 echo "autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc
 ```
-**Explanation**
-This line appends your .bashrc file with 3 commands:
-1. `autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; }` - this declares the `autoenv()` function, which executes .autoenv file if it exists in current work dir
+**Explanation**<br>
+This line appends your `.bashrc` file with 3 commands:
+1. `autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; }` - this declares the `autoenv()` function, which executes `.autoenv` file if it exists in current work dir
 2. `cd() { builtin cd \"\$@\" ; autoenv ; }` - this extends behaviour of `cd` command, to make it execute `autoenv()` function each time you change folder in terminal
-3. `autoenv` this is just to ensure function will be also called when directly openning terminal in any folder
+3. `autoenv` this is just to ensure the function will also be called when directly openning terminal in any folder
 
 
 </details>
