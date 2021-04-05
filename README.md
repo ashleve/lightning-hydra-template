@@ -712,8 +712,8 @@ System specific variables (e.g. absolute paths to datasets) should not be under 
 
 Template contains `.env.template` file, which serves as an example. Create a new file called `.env` (this name is excluded from version control in .gitignore).
 You should use it for storing environment variables like this:
-```bash
-export MY_VAR=/home/user/my_system_path
+```yaml
+MY_VAR=/home/user/my_system_path
 ```
 All variables from `.env` are loaded in `run.py` automatically.
 
