@@ -365,15 +365,15 @@ If you want to use some popular official image instead, I recommed the [nvidia n
 
 
 ### How it works
-By design, every pipeline should be initialized by [run.py](run.py) file.<br>
-[train.py](src/train.py) contains training pipeline. You can create different pipelines for different needs (e.g. for k-fold cross validation or for testing only).
+By design, every pipeline should be initialized by [run.py](run.py) file. [train.py](src/train.py) contains training pipeline.
+You can create different pipelines for different needs (e.g. for k-fold cross validation or for testing only).
 
 All PyTorch Lightning modules are dynamically instantiated from module paths specified in config, e.g. the model can be instantiated with the following line:
 ```python
 model = hydra.utils.instantiate(config.model)
 ```
-This allows us to easily iterate over new models!<br>
-Every time we create a new one, we only need to specify its module path and parameters in appriopriate config file:
+This allows to easily iterate over new models!<br>
+Every time you create a new one, you only need to specify its module path and parameters in appriopriate config file:
 ```yaml
 _target_: src.models.mnist_model.MNISTLitModel
 
@@ -382,6 +382,7 @@ lin1_size: 256
 lin2_size: 256
 lin3_size: 256
 output_size: 10
+lr: 0.001
 ```
 <br>
 
