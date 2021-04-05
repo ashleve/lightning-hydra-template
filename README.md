@@ -347,10 +347,10 @@ Docker image for the template is available for download [here](https://hub.docke
 docker pull ashleve/lightning-hydra:latest
 
 # run container from image
-docker run --gpus all -it --rm lightning-hydra
+docker run --gpus all -it --rm ashleve/lightning-hydra
 
 # you can also build image by yourself using Dockerfile
-docker build -t ashleve/lightning-hydra .
+docker build -t lightning-hydra .
 ```
 [Dockerfile](Dockerfile) is also provided.<br>
 If you want to use some popular official image instead, I recommend the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
