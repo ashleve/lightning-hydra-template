@@ -4,12 +4,11 @@
 # python run.py +experiment=exp_example_simple
 
 defaults:
-    - override /trainer: default_trainer.yaml  # choose trainer from 'configs/trainer/' or set to null...
-    - override /model: mnist_model.yaml
-    - override /optimizer: adam.yaml
     - override /datamodule: mnist_datamodule.yaml
+    - override /model: mnist_model.yaml
     - override /callbacks: default_callbacks.yaml
     - override /logger: null
+    - override /trainer: default_trainer.yaml  # choose trainer from 'configs/trainer/'
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
@@ -25,9 +24,7 @@ model:
     lin1_size: 128
     lin2_size: 256
     lin3_size: 64
-
-optimizer:
-    lr: 0.001
+    lr: 0.002
 
 datamodule:
     batch_size: 64
