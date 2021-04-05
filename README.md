@@ -365,7 +365,7 @@ If you want to use some popular official image instead, I recommed the [nvidia n
 
 
 ### How it works
-By design, every pipeline should be initialized by `run.py` file.<br>
+By design, every pipeline should be initialized by [run.py](run.py) file.<br>
 [train.py](src/train.py) contains training pipeline. You can create different pipelines for different needs (e.g. for k-fold cross validation or for testing only).
 
 All PyTorch Lightning modules are dynamically instantiated from module paths specified in config, e.g. the model can be instantiated with the following line:
