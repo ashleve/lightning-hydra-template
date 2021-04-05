@@ -95,7 +95,7 @@ The directory structure of new project looks like this:
 │   │
 │   └── train.py                <- Training pipeline
 │
-├── run.py                  <- Run training pipeline with chosen experiment configuration
+├── run.py                  <- Run any pipeline with chosen experiment configuration
 │
 ├── .env.template           <- Template of file for storing private environment variables
 ├── .autoenv.template       <- Template of file for automatic virtual environment setup
@@ -352,6 +352,7 @@ docker run --gpus all -it --rm lightning-hydra
 # you can also build image by yourself using Dockerfile
 docker build -t lightning-hydra .
 ```
+[Dockerfile](Dockerfile) is also provided.<br>
 If you want to use some popular official image instead, I recommed the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
 <br><br><br>
 
