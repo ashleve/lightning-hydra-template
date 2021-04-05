@@ -11,7 +11,7 @@ ARG CUDA_VERSION=11.1
 # build from official cuda image, devel version is needed for apex
 FROM nvidia/cuda:${CUDA_VERSION}-devel
 
-ENV CONDA_ENV_NAME=env
+ENV CONDA_ENV_NAME=myenv
 ENV PYTHON_VERSION=3.8
 ENV PYTORCH_VERSION=1.8.1
 ENV CUDA_TOOLKIT_VERSION=11.1
@@ -71,12 +71,9 @@ RUN source activate ${CONDA_ENV_NAME} \
     && pre-commit install
 
 
-# Install tab completion for template
-# RUN source activate ${CONDA_ENV_NAME} \
-#     && cd lightning-hydra-template \
-#     && RUN_PATH=$(realpath run.py) \
-#     && echo "eval \"\$(python ${RUN_PATH} -sc install=bash)\" " >> ~/.bashrc
+# Install .autoenv for automatic conda env activation and tab completion
+RUN echo "autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc
 
 
-# Set conda env to default
+# Set ${CONDA_ENV_NAME} to default virutal environment
 RUN echo "source activate ${CONDA_ENV_NAME}" > ~/.bashrc

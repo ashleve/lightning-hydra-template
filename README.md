@@ -117,8 +117,8 @@ git clone https://github.com/hobogalaxy/lightning-hydra-template
 cd lightning-hydra-template
 
 # [OPTIONAL] create conda environment
-conda env create -f conda_env_gpu.yaml -n testenv
-conda activate testenv
+conda env create -f conda_env_gpu.yaml -n myenv
+conda activate myenv
 
 # install requirements
 pip install -r requirements.txt
@@ -352,8 +352,8 @@ docker run --gpus all -it --rm lightning-hydra
 # you can also build image by yourself using Dockerfile
 docker build -t lightning-hydra .
 ```
-If you want to use some popular official image instead, I recommed the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have preinstalled Apex for mixed precision training).
-<br>
+If you want to use some popular official image instead, I recommed the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
+<br><br><br>
 
 
 ## :information_source:&nbsp; Guide
