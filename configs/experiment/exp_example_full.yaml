@@ -27,7 +27,7 @@ trainer:
     # resume_from_checkpoint: ${work_dir}/last.ckpt
 
 model:
-    _target_: src.pl_models.mnist_model.MNISTLitModel
+    _target_: src.models.mnist_model.MNISTLitModel
     optimizer: adam
     lr: 0.001
     weight_decay: 0.00005
@@ -39,7 +39,7 @@ model:
     output_size: 10
 
 datamodule:
-    _target_: src.pl_datamodules.mnist_datamodule.MNISTDataModule
+    _target_: src.datamodules.mnist_datamodule.MNISTDataModule
     data_dir: ${data_dir}
     batch_size: 64
     train_val_test_split: [55_000, 5_000, 10_000]
