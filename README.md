@@ -350,7 +350,7 @@ docker pull ashlev/lightning-hydra:latest
 docker run --gpus all -it --rm lightning-hydra
 
 # you can also build image by yourself using Dockerfile
-docker build -t lightning-hydra .
+docker build -t ashlev/lightning-hydra .
 ```
 [Dockerfile](Dockerfile) is also provided.<br>
 If you want to use some popular official image instead, I recommed the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
@@ -377,7 +377,6 @@ This allows to easily iterate over new models!<br>
 Every time you create a new one, you only need to specify its module path and parameters in appriopriate config file:
 ```yaml
 _target_: src.models.mnist_model.MNISTLitModel
-
 input_size: 784
 lin1_size: 256
 lin2_size: 256
@@ -957,7 +956,9 @@ This template was inspired by:
 <details>
 <summary><b>List of repositories using this template</b></summary>
 
-(TODO)
+- [ashleve/graph_classification](https://github.com/ashleve/graph_classification) - benchmarking graph neural network architectures on graph classification datasets (Open Graph Benchmarks and image classification from superpixels)
+
+*if you have your own repo and want it to be referenced here, feel free to make a PR!*
 
 </details>
 

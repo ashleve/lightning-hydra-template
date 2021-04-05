@@ -1,4 +1,4 @@
-# this a template of the file that can be used to automatically execute schell commands when entering folder
+# this a template of the file that can be used to automatically execute shell commands when entering folder
 # it useful for automatic activation of conda environment and hydra tab completion
 # create a file named .autoenv
 # by default .autoenv will be excluded from version control
