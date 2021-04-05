@@ -71,9 +71,9 @@ RUN source activate ${CONDA_ENV_NAME} \
     && pre-commit install
 
 
+# Set ${CONDA_ENV_NAME} to default virutal environment
+RUN echo "source activate ${CONDA_ENV_NAME}" >> ~/.bashrc
+
+
 # Install .autoenv for automatic conda env activation and tab completion
 RUN echo "autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc
-
-
-# Set ${CONDA_ENV_NAME} to default virutal environment
-RUN echo "source activate ${CONDA_ENV_NAME}" > ~/.bashrc

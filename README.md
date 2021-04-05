@@ -95,7 +95,7 @@ The directory structure of new project looks like this:
 │   │
 │   └── train.py                <- Training pipeline
 │
-├── run.py                  <- Run training pipeline with chosen experiment configuration
+├── run.py                  <- Run any pipeline with chosen experiment configuration
 │
 ├── .env.template           <- Template of file for storing private environment variables
 ├── .autoenv.template       <- Template of file for automatic virtual environment setup
@@ -340,19 +340,20 @@ python run.py -m '+experiment=glob(*)'
 
 
 ## :whale:&nbsp; Docker
-Docker image for the template is available for download [here](https://hub.docker.com/r/ashlev/lightning-hydra).
+Docker image for the template is available for download [here](https://hub.docker.com/r/ashleve/lightning-hydra).
 
 ```yaml
 # download image
-docker pull ashlev/lightning-hydra:latest
+docker pull ashleve/lightning-hydra:latest
 
 # run container from image
-docker run --gpus all -it --rm lightning-hydra
+docker run --gpus all -it --rm ashleve/lightning-hydra
 
 # you can also build image by yourself using Dockerfile
 docker build -t lightning-hydra .
 ```
-If you want to use some popular official image instead, I recommed the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
+[Dockerfile](Dockerfile) is also provided.<br>
+If you want to use some popular official image instead, I recommend the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
 <br><br><br>
 
 
@@ -376,7 +377,6 @@ This allows to easily iterate over new models!<br>
 Every time you create a new one, you only need to specify its module path and parameters in appriopriate config file:
 ```yaml
 _target_: src.models.mnist_model.MNISTLitModel
-
 input_size: 784
 lin1_size: 256
 lin2_size: 256
@@ -475,8 +475,8 @@ model:
     lr: 0.005
 
 datamodule:
-    batch_size: 64
     train_val_test_split: [55_000, 5_000, 10_000]
+    batch_size: 64
 ```
 </details>
 
@@ -509,7 +509,7 @@ trainer:
     gradient_clip_val: 0.5
 
 model:
-    _target_: src.pl_models.mnist_model.MNISTLitModel
+    _target_: src.models.mnist_model.MNISTLitModel
     lr: 0.001
     weight_decay: 0.00005
     input_size: 784
@@ -519,10 +519,10 @@ model:
     output_size: 10
 
 datamodule:
-    _target_: src.pl_datamodules.mnist_datamodule.MNISTDataModule
+    _target_: src.datamodules.mnist_datamodule.MNISTDataModule
     data_dir: ${data_dir}
-    batch_size: 64
     train_val_test_split: [55_000, 5_000, 10_000]
+    batch_size: 64
     num_workers: 0
     pin_memory: False
 
@@ -636,7 +636,8 @@ Use metrics api objects, e.g. `pytorch_lightning.metrics.classification.Accuracy
 
 ### Extra Features
 List of extra utilities available in the template:
-- loading environment variables from [.env](.env.tmp) file
+- loading environment variables from [.env](.env.template) file
+- automatic virtual environment setup with [.autoenv](.autoenv.template) file
 - pretty printing config with [Rich](https://github.com/willmcgugan/rich) library
 - disabling python warnings
 - easier access to debug mode
@@ -955,7 +956,9 @@ This template was inspired by:
 <details>
 <summary><b>List of repositories using this template</b></summary>
 
-(TODO)
+- [ashleve/graph_classification](https://github.com/ashleve/graph_classification) - benchmarking graph neural network architectures on graph classification datasets (Open Graph Benchmarks and image classification from superpixels)
+
+*if you have your own repo and want it to be referenced here, feel free to make a PR!*
 
 </details>
 
