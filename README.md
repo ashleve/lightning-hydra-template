@@ -340,20 +340,20 @@ python run.py -m '+experiment=glob(*)'
 
 
 ## :whale:&nbsp; Docker
-Docker image for the template is available for download [here](https://hub.docker.com/r/ashlev/lightning-hydra).
+Docker image for the template is available for download [here](https://hub.docker.com/r/ashleve/lightning-hydra).
 
 ```yaml
 # download image
-docker pull ashlev/lightning-hydra:latest
+docker pull ashleve/lightning-hydra:latest
 
 # run container from image
 docker run --gpus all -it --rm lightning-hydra
 
 # you can also build image by yourself using Dockerfile
-docker build -t ashlev/lightning-hydra .
+docker build -t ashleve/lightning-hydra .
 ```
 [Dockerfile](Dockerfile) is also provided.<br>
-If you want to use some popular official image instead, I recommed the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
+If you want to use some popular official image instead, I recommend the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
 <br><br><br>
 
 
