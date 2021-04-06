@@ -354,12 +354,14 @@ docker build -t lightning-hydra .
 ```
 Dockerfiles are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building your own images.<br>
 If you want to use some popular official image instead, I recommend the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or "devel" version of [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed-precision training).
-<br>
+<br><br><br>
+
 
 
 ## :heart:&nbsp; Contributions
 Have a question? Found a bug? Missing a specific feature? Ran into a problem? Feel free to file a new issue with respective title and description. If you already found a solution to your problem, don't hesitate to share it. Suggestions for new best practices and tricks are always welcome!
 <br><br><br>
+
 
 
 ## :information_source:&nbsp; Guide
