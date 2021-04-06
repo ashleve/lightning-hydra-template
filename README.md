@@ -19,14 +19,12 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 </div>
 <br><br>
 
-
-
+<!--
 If you use this template please add <br>
 [![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
 to your `README.md`.
 <br><br>
-
-
+-->
 
 ## Introduction
 This template tries to be as general as possible - you can easily delete any unwanted features from the pipeline or rewire the configuration, by modifying behavior in [src/train.py](src/train.py).
@@ -355,7 +353,12 @@ docker run --gpus all -it --rm ashleve/lightning-hydra
 docker build -t lightning-hydra .
 ```
 Dockerfiles are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building your own images.<br>
-If you want to use some popular official image instead, I recommend the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
+If you want to use some popular official image instead, I recommend the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or "devel" version of [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed-precision training).
+<br>
+
+
+## :heart:&nbsp; Contributions
+Have a question? Found a bug? Missing a specific feature? Ran into a problem? Feel free to file a new issue with respective title and description. If you already found a solution to your problem, don't hesitate to share it. Suggestions for new best practices and tricks are always welcome!
 <br><br><br>
 
 
@@ -837,12 +840,14 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 
 </details>
 
+
 <details>
 <summary><b>Write tests</b></summary>
 
 (TODO)
 
 </details>
+
 
 <!--
 <details>
@@ -960,7 +965,7 @@ This template was inspired by:
 
 - [ashleve/graph_classification](https://github.com/ashleve/graph_classification) - benchmarking graph neural network architectures on graph classification datasets (Open Graph Benchmarks and image classification from superpixels)
 
-*if you have your own repo and want it to be referenced here, feel free to make a PR!*
+> if you'd like to share your project and add it to the list, feel free to make a PR!
 
 </details>
 
