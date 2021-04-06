@@ -2,6 +2,9 @@
 
 # Lightning-Hydra-Template
 
+<!-- 
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue?logo=python&logoColor=white&style=for-the-badge"></a>
+ -->
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?style=for-the-badge"></a>
 <a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-89b8cd?style=for-the-badge"></a>
@@ -11,7 +14,7 @@
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
 
-*This template is work in progress. Currently uses dev version of Hydra.<br>Suggestions are always welcome!*
+*Currently uses dev version of Hydra.<br>Suggestions are always welcome!*
 
 </div>
 <br><br>
@@ -30,7 +33,7 @@ This template tries to be as general as possible - you can easily delete any unw
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
-**Why you should use it:** it allows you to rapidly iterate over new models/datasets and scale your projects from small single experiments to hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most convenient all-in-one technology stack for Deep Learning research. It's also a collection of best practices for efficient workflow and reproducibility.
+**Why you should use it:** it allows you to rapidly iterate over new models/datasets and scale your projects from small single experiments to hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most convenient all-in-one technology stack for Deep Learning research. Good starting point for reproducing papers or kaggle competitions. It's also a collection of best practices for efficient workflow and reproducibility.
 
 **Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
 
@@ -55,7 +58,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Experiment Tracking**: many logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
 - **Logs**: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
 - **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
-- **Best Practices**: a couple of recommended tools, practices and standards (see [#Best Practices](#best-practices))
+- **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
 - **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
 - **Workflow**: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
@@ -103,7 +106,6 @@ The directory structure of new project looks like this:
 ├── .pre-commit-config.yaml <- Configuration of automatic code formatting
 ├── conda_env_gpu.yaml      <- File for installing conda environment
 ├── requirements.txt        <- File for installing python dependencies
-├── Dockerfie               <- File for building docker image
 ├── LICENSE
 └── README.md
 ```
@@ -352,7 +354,7 @@ docker run --gpus all -it --rm ashleve/lightning-hydra
 # you can also build image by yourself using Dockerfile
 docker build -t lightning-hydra .
 ```
-[Dockerfile](Dockerfile) is also provided.<br>
+Dockerfiles are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building your own images.<br>
 If you want to use some popular official image instead, I recommend the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
 <br><br><br>
 
@@ -366,15 +368,15 @@ If you want to use some popular official image instead, I recommend the [nvidia 
 
 
 ### How it works
-By design, every pipeline should be initialized by [run.py](run.py) file. [train.py](src/train.py) contains training pipeline.
+By design, every run is initialized by [run.py](run.py) file. [train.py](src/train.py) contains training pipeline.
 You can create different pipelines for different needs (e.g. for k-fold cross validation or for testing only).
 
 All PyTorch Lightning modules are dynamically instantiated from module paths specified in config, e.g. the model can be instantiated with the following line:
 ```python
 model = hydra.utils.instantiate(config.model)
 ```
-This allows to easily iterate over new models!<br>
-Every time you create a new one, you only need to specify its module path and parameters in appriopriate config file:
+This allows you to easily iterate over new models!<br>
+Every time you create a new one, just specify its module path and parameters in appriopriate config file:
 ```yaml
 _target_: src.models.mnist_model.MNISTLitModel
 input_size: 784
@@ -539,8 +541,8 @@ logger:
 <br>
 
 ### Workflow
-1. Write your PyTorch Lightning model (see [mnist_model.py](src/pl_models/mnist_model.py) for example)
-2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/pl_datamodules/mnist_datamodule.py) for example)
+1. Write your PyTorch Lightning model (see [mnist_model.py](src/models/mnist_model.py) for example)
+2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
 3. Write your experiment config, containing paths to your model and datamodule
 4. Run training with chosen experiment config: `python run.py +experiment=experiment_name`
 <br>
@@ -584,7 +586,7 @@ You can change this structure by modifying paths in [main project configuration]
 
 ### Experiment Tracking
 PyTorch Lightning supports the most popular logging frameworks:<br>
-**[Weights&Biases](https://www.wandb.com/) · [Neptune](https://neptune.ai/) · [Comet](https://www.comet.ml/) · [MLFlow](https://www.comet.ml/) · [Aim](https://github.com/aimhubio/aim) · [Tensorboard](https://www.tensorflow.org/tensorboard/)**
+**[Weights&Biases](https://www.wandb.com/) · [Neptune](https://neptune.ai/) · [Comet](https://www.comet.ml/) · [MLFlow](https://mlflow.org) · [Aim](https://github.com/aimhubio/aim) · [Tensorboard](https://www.tensorflow.org/tensorboard/)**
 
 These tools help you keep track of hyperparameters and output metrics and allow you to compare and visualize results. To use one of them simply complete its configuration in [configs/logger](configs/logger) and run:
  ```yaml
@@ -592,7 +594,7 @@ These tools help you keep track of hyperparameters and output metrics and allow 
  ```
 You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).<br>
 You can also write your own logger.<br>
-Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/pl_models/mnist_model.py).
+Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_model.py).
 <br><br>
 
 
@@ -604,7 +606,7 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 
 
 ### Callbacks
-Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/pl_callbacks/wandb_callbacks.py)).<br>
+Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
 To support reproducibility: **WatchModelWithWandb**, **UploadCodeToWandbAsArtifact**, **UploadCheckpointsToWandbAsArtifact**.<br>
 To provide examples of logging custom visualisations with callbacks only: **LogConfusionMatrixToWandb**, **LogF1PrecRecHeatmapToWandb**.<br>
 <br>
@@ -665,7 +667,7 @@ You can easily remove all of those by modifying [run.py](run.py) and [src/train.
 <details>
 <summary><b>Use Docker</b></summary>
 
-Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster. You can extend Dockerfile provided in the template with your own instructions for building the container image.<br>
+Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster. You can extend [dockerfiles](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles) provided in the template with your own instructions for building the image.<br>
 
 </details>
 
@@ -829,8 +831,8 @@ pip install git+git://github.com/YourGithubName/your-repo-name.git --upgrade
 ```
 So any file can be easily imported into any other file like so:
 ```python
-from project_name.pl_models.mnist_model import MNISTLitModel
-from project_name.pl_datamodules.mnist_datamodule import MNISTDataModule
+from project_name.models.mnist_model import MNISTLitModel
+from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
 
 </details>
@@ -997,8 +999,8 @@ git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
 # [OPTIONAL] create conda environment
-conda env create -f conda_env_gpu.yaml -n your_env_name
-conda activate your_env_name
+conda env create -f conda_env_gpu.yaml -n myenv
+conda activate myenv
 
 # install requirements
 pip install -r requirements.txt
