@@ -1,9 +1,0 @@
-_target_: src.models.mnist_model.MNISTLitModel
-
-input_size: 784
-lin1_size: 256
-lin2_size: 256
-lin3_size: 256
-output_size: 10
-lr: 0.001
-weight_decay: 0.0005
