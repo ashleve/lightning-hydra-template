@@ -25,4 +25,5 @@ pandas
 matplotlib
 seaborn
 pudb
+pytest
 # dvc

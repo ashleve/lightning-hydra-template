@@ -2,6 +2,7 @@
 
 # Lightning-Hydra-Template
 
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue?logo=python&logoColor=white&style=for-the-badge"></a>
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?style=for-the-badge"></a>
 <a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-89b8cd?style=for-the-badge"></a>
@@ -351,7 +352,7 @@ docker run --gpus all -it --rm ashleve/lightning-hydra
 # you can also build image by yourself using Dockerfile
 docker build -t lightning-hydra .
 ```
-Dockerfiles are provided on branch [dockerfiles](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building your own images.<br>
+Dockerfiles are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building your own images.<br>
 If you want to use some popular official image instead, I recommend the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
 <br><br><br>
 
