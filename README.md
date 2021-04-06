@@ -103,7 +103,6 @@ The directory structure of new project looks like this:
 ├── .pre-commit-config.yaml <- Configuration of automatic code formatting
 ├── conda_env_gpu.yaml      <- File for installing conda environment
 ├── requirements.txt        <- File for installing python dependencies
-├── Dockerfie               <- File for building docker image
 ├── LICENSE
 └── README.md
 ```
@@ -352,7 +351,7 @@ docker run --gpus all -it --rm ashleve/lightning-hydra
 # you can also build image by yourself using Dockerfile
 docker build -t lightning-hydra .
 ```
-[Dockerfile](Dockerfile) is also provided.<br>
+Dockerfiles are provided on branch [dockerfiles](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building your own images.<br>
 If you want to use some popular official image instead, I recommend the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed precision training).
 <br><br><br>
 
@@ -665,7 +664,7 @@ You can easily remove all of those by modifying [run.py](run.py) and [src/train.
 <details>
 <summary><b>Use Docker</b></summary>
 
-Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster. You can extend Dockerfile provided in the template with your own instructions for building the container image.<br>
+Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster. You can extend [dockerfiles](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles) provided in the template with your own instructions for building the image.<br>
 
 </details>
 
