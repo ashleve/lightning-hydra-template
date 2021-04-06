@@ -63,7 +63,6 @@ def print_config(
     fields: Sequence[str] = (
         "trainer",
         "model",
-        "optimizer",
         "datamodule",
         "callbacks",
         "logger",
