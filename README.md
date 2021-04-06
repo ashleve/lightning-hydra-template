@@ -14,7 +14,7 @@
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
 
-*This template is work in progress. Currently uses dev version of Hydra.<br>Suggestions are always welcome!*
+*Currently uses dev version of Hydra.<br>Suggestions are always welcome!*
 
 </div>
 <br><br>
