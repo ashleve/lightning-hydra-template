@@ -9,9 +9,16 @@ from torchvision.transforms import transforms
 class MNISTDataModule(LightningDataModule):
     """
     Example of LightningDataModule for MNIST dataset.
-
-    A DataModule standardizes the train, val, test splits, data preparation and transforms.
-    The main advantage is consistent data splits, data preparation and transforms across models.
+    
+    A DataModule implements 5 key methods:
+        - prepare_data (things to do on 1 GPU/TPU, not on every GPU/TPU in distributed mode)
+        - setup (things to do on every accelerator in distributed mode)
+        - train_dataloader (the training dataloader)
+        - val_dataloader (the validation dataloader(s))
+        - test_dataloader (the test dataloader(s))
+    
+    This allows you to share a full dataset without explaining how to download,
+    split, transform and process the data
 
     Read the docs:
         https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html
@@ -24,7 +31,7 @@ class MNISTDataModule(LightningDataModule):
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
-        **kwargs,
+        **kwargs
     ):
         super().__init__()
 

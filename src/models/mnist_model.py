@@ -57,10 +57,10 @@ class MNISTLitModel(LightningModule):
             "val/loss": [],
         }
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor):
         return self.model(x)
 
-    def step(self, batch):
+    def step(self, batch: Any):
         x, y = batch
         logits = self.forward(x)
         loss = self.criterion(logits, y)
