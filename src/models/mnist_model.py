@@ -19,7 +19,7 @@ class MNISTLitModel(LightningModule):
         - Optimizers (configure_optimizers)
 
     Read the docs:
-        https://pytorch-lightning.readthedocs.io/en/latest/lightning_module.html
+        https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html
     """
 
     def __init__(
@@ -57,10 +57,10 @@ class MNISTLitModel(LightningModule):
             "val/loss": [],
         }
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor):
         return self.model(x)
 
-    def step(self, batch):
+    def step(self, batch: Any):
         x, y = batch
         logits = self.forward(x)
         loss = self.criterion(logits, y)
@@ -123,7 +123,6 @@ class MNISTLitModel(LightningModule):
 
         See examples here:
             https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
-
         """
         return torch.optim.Adam(
             params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay

@@ -2,7 +2,7 @@
 
 # Lightning-Hydra-Template
 
-<!-- 
+<!--
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue?logo=python&logoColor=white&style=for-the-badge"></a>
  -->
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
@@ -113,7 +113,7 @@ The directory structure of new project looks like this:
 ## 🚀&nbsp; Quickstart
 ```yaml
 # clone project
-git clone https://github.com/hobogalaxy/lightning-hydra-template
+git clone https://github.com/ashleve/lightning-hydra-template
 cd lightning-hydra-template
 
 # [OPTIONAL] create conda environment
@@ -232,7 +232,7 @@ python run.py callbacks=default_callbacks
 python run.py +trainer.gradient_clip_val=0.5
 
 # stochastic weight averaging can make your models generalize better
-python run.py +trainer.stochastic_weight_avg=True
+python run.py +trainer.stochastic_weight_avg=true
 
 # run validation loop 4 times during a training epoch
 python run.py +trainer.val_check_interval=0.25
@@ -256,6 +256,9 @@ python run.py trainer.weights_summary="full"
 
 # print execution time profiling after training ends
 python run.py +trainer.profiler="simple"
+
+# raise exception, if any of the parameters or the loss are NaN or +/-inf
+python run.py trainer.terminate_on_nan=true
 
 # try overfitting to 1 batch
 python run.py +trainer.overfit_batches=1 trainer.max_epochs=20
@@ -360,7 +363,7 @@ If you want to use some popular official image instead, I recommend the [nvidia 
 
 ## :heart:&nbsp; Contributions
 Have a question? Found a bug? Missing a specific feature? Ran into a problem? Feel free to file a new issue with respective title and description. If you already found a solution to your problem, don't hesitate to share it. Suggestions for new best practices and tricks are always welcome!
-<br><br><br>
+<br><br><br><br>
 
 
 
@@ -424,7 +427,7 @@ data_dir: ${work_dir}/data/
 
 
 # use `python run.py debug=true` for easy debugging!
-# (equivalent to running `python run.py trainer.fast_dev_run=True`)
+# (equivalent to running `python run.py trainer.fast_dev_run=true`)
 debug: False
 
 
