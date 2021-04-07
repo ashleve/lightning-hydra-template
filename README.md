@@ -113,7 +113,7 @@ The directory structure of new project looks like this:
 ## 🚀&nbsp; Quickstart
 ```yaml
 # clone project
-git clone https://github.com/hobogalaxy/lightning-hydra-template
+git clone https://github.com/ashleve/lightning-hydra-template
 cd lightning-hydra-template
 
 # [OPTIONAL] create conda environment
