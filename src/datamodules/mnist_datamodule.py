@@ -14,7 +14,7 @@ class MNISTDataModule(LightningDataModule):
     The main advantage is consistent data splits, data preparation and transforms across models.
 
     Read the docs:
-        https://pytorch-lightning.readthedocs.io/en/latest/datamodules.html
+        https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html
     """
 
     def __init__(
