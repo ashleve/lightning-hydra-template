@@ -39,6 +39,10 @@ RUN /bin/bash miniconda3.sh -b -p /conda \
 ENV PATH="/conda/bin:${PATH}"
 
 
+# Update conda
+RUN conda update -n base -c defaults conda
+
+
 # Create conda env
 RUN conda create \
     -n ${CONDA_ENV_NAME} \
