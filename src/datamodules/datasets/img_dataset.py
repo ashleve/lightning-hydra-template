@@ -5,7 +5,7 @@ from PIL import Image
 from torch.utils.data import Dataset
 
 
-class TestDataset(Dataset):
+class ImgDataset(Dataset):
     """Example dataset class for loading images from folder."""
 
     def __init__(self, dir: str, transform: Optional[Callable] = None):
