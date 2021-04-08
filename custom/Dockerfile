@@ -75,9 +75,7 @@ RUN source activate ${CONDA_ENV_NAME} \
 
 # Download template
 RUN source activate ${CONDA_ENV_NAME} \
-    && git clone https://github.com/ashleve/lightning-hydra-template \
-    && cd lightning-hydra-template \
-    && pre-commit install
+    && git clone https://github.com/ashleve/lightning-hydra-template
 
 
 # Set ${CONDA_ENV_NAME} to default virutal environment
