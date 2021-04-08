@@ -74,7 +74,7 @@ RUN source activate ${CONDA_ENV_NAME} \
     python-dotenv \
     pre-commit \
     rich \
-    neptune wandb mlflow
+    neptune-client wandb mlflow
 
 
 # Download template
