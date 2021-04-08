@@ -3,11 +3,13 @@
 FROM nvcr.io/nvidia/pytorch:21.03-py3
 
 
-RUN pip install \
-    pytorch-lightning \
-    hydra-core>=1.1.0.dev5 \
-    hydra-colorlog \
-    hydra-optuna-sweeper \
-    python-dotenv \
-    pre-commit \
-    rich
+# Install python packages
+RUN pip install pytorch-lightning \
+    && pip install hydra-core --pre \
+    && pip install hydra-colorlog --pre \
+    && pip install hydra-optuna-sweeper --pre \
+    && pip install python-dotenv \
+    && pip install pre-commit \
+    && pip install rich \
+    && pip install neptune-client \ 
+    && pip install wandb
