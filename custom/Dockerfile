@@ -67,9 +67,9 @@ RUN source activate ${CONDA_ENV_NAME} \
 # Install python packages
 RUN source activate ${CONDA_ENV_NAME} \
     && pip install pytorch-lightning \
-    && pip install hydra-core==1.1.0.dev5 \
-    && pip install hydra-colorlog \
-    && pip install hydra-optuna-sweeper \
+    && pip install hydra-core --pre \
+    && pip install hydra-colorlog --pre \
+    && pip install hydra-optuna-sweeper --pre \
     && pip install python-dotenv \
     && pip install pre-commit \
     && pip install rich \
