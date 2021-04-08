@@ -1,15 +1,12 @@
 # Make sure you have installed the NVIDIA driver >= 361.93 and Docker >= 19.03
 # https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)#prerequisites
 
-# Build container:
-#   docker build -t lightning-hydra .
-# Run container:
-#   sudo docker run --gpus all -it --rm lightning-hydra
-
 ARG CUDA_VERSION=11.1
 
 # build from official cuda image, devel version is needed for apex
+# https://ngc.nvidia.com/catalog/containers/nvidia:cuda
 FROM nvidia/cuda:${CUDA_VERSION}-devel
+
 
 ENV CONDA_ENV_NAME=myenv
 ENV PYTHON_VERSION=3.8
@@ -63,17 +60,25 @@ RUN source activate ${CONDA_ENV_NAME} \
     && rm -r apex
 
 
-# Download template and install dependencies
+# Install python packages
+RUN source activate ${CONDA_ENV_NAME} \
+    && pip install \
+    pytorch-lightning \
+    hydra-core>=1.1.0.dev5 \
+    hydra-colorlog \
+    hydra-optuna-sweeper \
+    python-dotenv \
+    pre-commit \
+    rich \
+    neptune wandb mlflow
+
+
+# Download template
 RUN source activate ${CONDA_ENV_NAME} \
     && git clone https://github.com/ashleve/lightning-hydra-template \
     && cd lightning-hydra-template \
-    && pip install -r requirements.txt \
     && pre-commit install
 
 
 # Set ${CONDA_ENV_NAME} to default virutal environment
 RUN echo "source activate ${CONDA_ENV_NAME}" >> ~/.bashrc
-
-
-# Install .autoenv for automatic conda env activation and tab completion
-RUN echo "autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc

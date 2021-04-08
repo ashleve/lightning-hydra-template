@@ -1,5 +1,17 @@
 # Dockerfiles
 
-- **custom** - build from official nvidia cuda image, contains initialized miniconda environment, installed apex, and allows for specifying all dependiecies, like versions of python, cuda, pytorch, etc.
-- **simple** - build from official nvidia pytorch image, contains miniconda and apex
+- **simple** - build from official nvidia pytorch image, contains: apex, miniconda
+- **custom** - build from official nvidia cuda image, contains: apex, initialized miniconda environment, ready to run template, allows for specifying dependiecies (versions of cuda, python, pytorch)
+<br>
 
+
+> Make sure you have installed the NVIDIA driver >= 361.93 and Docker >= 19.03 <br>
+https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)#prerequisites
+<br>
+
+
+```bash
+cd simple
+docker build -t lightning-hydra .
+docker run --gpus all -it --rm -v /home/USER/Desktop:/workspace/Desktop lightning-hydra
+```
