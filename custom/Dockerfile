@@ -66,7 +66,6 @@ RUN source activate ${CONDA_ENV_NAME} \
 
 # Install python packages
 RUN source activate ${CONDA_ENV_NAME} \
-    && pip install \
     && pip install pytorch-lightning \
     && pip install hydra-core>=1.1.0.dev5 \
     && pip install hydra-colorlog \
