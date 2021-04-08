@@ -67,15 +67,14 @@ RUN source activate ${CONDA_ENV_NAME} \
 # Install python packages
 RUN source activate ${CONDA_ENV_NAME} \
     && pip install pytorch-lightning \
-    && pip install hydra-core>=1.1.0.dev5 \
+    && pip install hydra-core --upgrade --pre \
     && pip install hydra-colorlog \
     && pip install hydra-optuna-sweeper \
     && pip install python-dotenv \
     && pip install pre-commit \
     && pip install rich \
     && pip install neptune-client \ 
-    && pip install wandb \
-    && pip install mlflow
+    && pip install wandb
 
 
 # Download template
