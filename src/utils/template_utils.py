@@ -3,14 +3,30 @@ import warnings
 from typing import List, Sequence
 
 import pytorch_lightning as pl
+import rich
 import wandb
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.loggers.wandb import WandbLogger
-from rich import print
+from pytorch_lightning.utilities import rank_zero_only
 from rich.syntax import Syntax
 from rich.tree import Tree
 
-log = logging.getLogger(__name__)
+
+def get_logger(name=__name__, level=logging.INFO):
+    """Initializes python logger."""
+
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+
+    # this ensures all logging levels get marked with the rank zero decorator
+    # otherwise logs would get multiplied for each GPU process in multi-GPU setup
+    for level in ("debug", "info", "warning", "error", "exception", "fatal", "critical"):
+        setattr(logger, level, rank_zero_only(getattr(logger, level)))
+
+    return logger
+
+
+log = get_logger()
 
 
 def extras(config: DictConfig) -> None:
@@ -58,6 +74,7 @@ def extras(config: DictConfig) -> None:
     OmegaConf.set_struct(config, True)
 
 
+@rank_zero_only
 def print_config(
     config: DictConfig,
     fields: Sequence[str] = (
@@ -92,13 +109,14 @@ def print_config(
 
         branch.add(Syntax(branch_content, "yaml"))
 
-    print(tree)
+    rich.print(tree)
 
 
 def empty(*args, **kwargs):
     pass
 
 
+@rank_zero_only
 def log_hyperparameters(
     config: DictConfig,
     model: pl.LightningModule,
@@ -112,14 +130,6 @@ def log_hyperparameters(
     Additionaly saves:
         - sizes of train, val, test dataset
         - number of trainable model parameters
-
-    Args:
-        config (DictConfig): [description]
-        model (pl.LightningModule): [description]
-        datamodule (pl.LightningDataModule): [description]
-        trainer (pl.Trainer): [description]
-        callbacks (List[pl.Callback]): [description]
-        logger (List[pl.loggers.LightningLoggerBase]): [description]
     """
 
     hparams = {}
@@ -168,16 +178,7 @@ def finish(
     callbacks: List[pl.Callback],
     logger: List[pl.loggers.LightningLoggerBase],
 ) -> None:
-    """Makes sure everything closed properly.
-
-    Args:
-        config (DictConfig): [description]
-        model (pl.LightningModule): [description]
-        datamodule (pl.LightningDataModule): [description]
-        trainer (pl.Trainer): [description]
-        callbacks (List[pl.Callback]): [description]
-        logger (List[pl.loggers.LightningLoggerBase]): [description]
-    """
+    """Makes sure everything closed properly."""
 
     # without this sweeps with wandb logger might crash!
     for lg in logger:
