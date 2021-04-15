@@ -12,7 +12,7 @@
 <a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge"></a>
 
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
-Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
+Click on [<kbd>Use this template</kbd>](https://github.com/ashleve/lightning-hydra-template/generate) to initialize new repository.
 
 *Currently uses dev version of Hydra.<br>Suggestions are always welcome!*
 
@@ -21,7 +21,7 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 
 <!--
 If you use this template please add <br>
-[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
+[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/ashleve/lightning-hydra-template) <br>
 to your `README.md`.
 <br><br>
 -->
@@ -128,7 +128,7 @@ Template contains example with MNIST classification.<br>
 When running `python run.py` you should see something like this:
 <div align="center">
 
-![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/terminal.png)
+![](https://github.com/ashleve/lightning-hydra-template/blob/resources/terminal.png)
 
 </div>
 
@@ -362,7 +362,7 @@ If you want to use some popular official image instead, I recommend the [nvidia 
 
 
 ## :heart:&nbsp; Contributions
-Have a question? Found a bug? Missing a specific feature? Ran into a problem? Feel free to file a new issue with respective title and description. If you already found a solution to your problem, don't hesitate to share it. Suggestions for new best practices and tricks are always welcome!
+Have a question? Found a bug? Missing a specific feature? Ran into a problem? Feel free to file a new issue or PR with respective title and description. If you already found a solution to your problem, don't hesitate to share it. Suggestions for new best practices and tricks are always welcome!
 <br><br><br><br>
 
 
@@ -824,7 +824,7 @@ setup(
     author="",
     author_email="",
     # replace with your own github project link
-    url="https://github.com/hobogalaxy/lightning-hydra-template",
+    url="https://github.com/ashleve/lightning-hydra-template",
     install_requires=["pytorch-lightning>=1.2.0", "hydra-core>=1.0.6"],
     packages=find_packages(),
 )
@@ -994,9 +994,9 @@ This template was inspired by:
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5"></a>
 <a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-89b8cd"></a>
-<a href="https://github.com/hobogalaxy/lightning-hydra-template"><img alt="Template" src="https://img.shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=gray"></a><br>
+<a href="https://github.com/ashleve/lightning-hydra-template"><img alt="Template" src="https://img.shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=gray"></a><br>
 [![Paper](http://img.shields.io/badge/paper-arxiv.1001.2234-B31B1B.svg)](https://www.nature.com/articles/nature14539)
-[![Conference](http://img.shields.io/badge/AnyConference-year-4b44ce.svg)](https://papers.nips.cc/book/advances-in-neural-information-processing-systems-31-2018) 
+[![Conference](http://img.shields.io/badge/AnyConference-year-4b44ce.svg)](https://papers.nips.cc/book/advances-in-neural-information-processing-systems-31-2018)
 
 </div>
 

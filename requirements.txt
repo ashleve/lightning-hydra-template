@@ -24,6 +24,6 @@ scikit-learn
 pandas
 matplotlib
 seaborn
-pudb
-pytest
+# pudb
+# pytest
 # dvc
