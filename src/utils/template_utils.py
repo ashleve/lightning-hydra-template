@@ -3,27 +3,26 @@ import warnings
 from typing import List, Sequence
 
 import pytorch_lightning as pl
+import rich
 import wandb
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.loggers.wandb import WandbLogger
-import rich
+from pytorch_lightning.utilities import rank_zero_only
 from rich.syntax import Syntax
 from rich.tree import Tree
-
-from pytorch_lightning.utilities import rank_zero_only
 
 
 def get_logger(name=__name__, level=logging.INFO):
     """Initializes python logger."""
-    
+
     logger = logging.getLogger(name)
     logger.setLevel(level)
-    
+
     # this ensures all logging levels get marked with the rank zero decorator
     # otherwise logs would get multiplied for each GPU process in multi-GPU setup
-    for level in ('debug', 'info', 'warning', 'error', 'exception', 'fatal', 'critical'):
+    for level in ("debug", "info", "warning", "error", "exception", "fatal", "critical"):
         setattr(logger, level, rank_zero_only(getattr(logger, level)))
-    
+
     return logger
 
 
@@ -61,7 +60,7 @@ def extras(config: DictConfig) -> None:
             config.trainer.gpus = 0
         if config.datamodule.get("num_workers"):
             config.datamodule.num_workers = 0
-    
+
     # force multi-gpu friendly configuration if <config.trainer.accelerator=ddp>
     if config.trainer.get("accelerator") in ["ddp", "ddp_spawn", "dp", "ddp2"]:
         log.info("Forcing ddp friendly configuration! <config.trainer.accelerator=ddp>")
