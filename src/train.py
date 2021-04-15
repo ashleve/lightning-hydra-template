@@ -1,4 +1,3 @@
-import logging
 from typing import List, Optional
 
 from pytorch_lightning import LightningModule, LightningDataModule, Callback, Trainer
@@ -10,7 +9,7 @@ from omegaconf import DictConfig
 
 from src.utils import template_utils
 
-log = logging.getLogger(__name__)
+log = template_utils.get_logger(__name__)
 
 
 def train(config: DictConfig) -> Optional[float]:

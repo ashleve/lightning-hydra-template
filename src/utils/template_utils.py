@@ -6,34 +6,28 @@ import pytorch_lightning as pl
 import wandb
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.loggers.wandb import WandbLogger
-from rich import print
+import rich
 from rich.syntax import Syntax
 from rich.tree import Tree
 
-from functools import partial
 from pytorch_lightning.utilities import rank_zero_only
 
-# log = logging.getLogger(__name__)
 
-
-class RankZeroLogger:
-    def __init__(self, level=logging.DEBUG):
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(level)
-        self.levels = ('debug', 'info', 'warning', 'error', 'exception', 'fatal', 'critical')
-        
-        # Create a method for each of the logging levels from the template ``log`` method
-        # This avoids duplicating code and ensures all levels run through the rank zero decorator
-        for l in self.levels:
-            setattr(RankZeroLogger, l, partial(self.log, level=l))
+def get_logger(name=__name__, level=logging.INFO):
+    """Initializes python logger."""
     
-    @rank_zero_only
-    def log(self, msg, level):
-        logger_method = getattr(self.logger, level)
-        logger_method(msg)
-        
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    
+    # this ensures all logging levels get marked with the rank zero decorator
+    # otherwise logs would get multiplied for each GPU process in multi-GPU setup
+    for level in ('debug', 'info', 'warning', 'error', 'exception', 'fatal', 'critical'):
+        setattr(logger, level, rank_zero_only(getattr(logger, level)))
+    
+    return logger
 
-log = RankZeroLogger()
+
+log = get_logger()
 
 
 def extras(config: DictConfig) -> None:
@@ -81,6 +75,7 @@ def extras(config: DictConfig) -> None:
     OmegaConf.set_struct(config, True)
 
 
+@rank_zero_only
 def print_config(
     config: DictConfig,
     fields: Sequence[str] = (
@@ -116,13 +111,14 @@ def print_config(
 
         branch.add(Syntax(branch_content, "yaml"))
 
-    print(tree)
+    rich.print(tree)
 
 
 def empty(*args, **kwargs):
     pass
 
 
+@rank_zero_only
 def log_hyperparameters(
     config: DictConfig,
     model: pl.LightningModule,
@@ -136,14 +132,6 @@ def log_hyperparameters(
     Additionaly saves:
         - sizes of train, val, test dataset
         - number of trainable model parameters
-
-    Args:
-        config (DictConfig): [description]
-        model (pl.LightningModule): [description]
-        datamodule (pl.LightningDataModule): [description]
-        trainer (pl.Trainer): [description]
-        callbacks (List[pl.Callback]): [description]
-        logger (List[pl.loggers.LightningLoggerBase]): [description]
     """
 
     hparams = {}
@@ -192,16 +180,7 @@ def finish(
     callbacks: List[pl.Callback],
     logger: List[pl.loggers.LightningLoggerBase],
 ) -> None:
-    """Makes sure everything closed properly.
-
-    Args:
-        config (DictConfig): [description]
-        model (pl.LightningModule): [description]
-        datamodule (pl.LightningDataModule): [description]
-        trainer (pl.Trainer): [description]
-        callbacks (List[pl.Callback]): [description]
-        logger (List[pl.loggers.LightningLoggerBase]): [description]
-    """
+    """Makes sure everything closed properly."""
 
     # without this sweeps with wandb logger might crash!
     for lg in logger:
