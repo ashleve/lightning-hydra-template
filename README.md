@@ -69,12 +69,12 @@ The directory structure of new project looks like this:
 │   ├── callbacks               <- Callbacks configs
 │   ├── datamodule              <- Datamodule configs
 │   ├── experiment              <- Experiment configs
+│   ├── hparams_search          <- Hyperparameter search configs
 │   ├── logger                  <- Logger configs
 │   ├── model                   <- Model configs
 │   ├── trainer                 <- Trainer configs
 │   │
-│   ├── config.yaml             <- Main project configuration file
-│   └── config_optuna.yaml      <- Configuration of Optuna hyperparameter search
+│   └── config.yaml             <- Main project configuration file
 │
 ├── data                    <- Project data
 │
@@ -205,7 +205,7 @@ python run.py logger=wandb
 
 > Experiment configurations are placed in [configs/experiment/](configs/experiment/).
 ```yaml
-python run.py +experiment=exp_example_simple
+python run.py experiment=exp_example_simple
 ```
 
 </details>
@@ -301,9 +301,9 @@ python run.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
 
 > Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a [single config file](configs/config_optuna.yaml)!
 ```yaml
-# this will run hyperparameter search defined in `configs/config_optuna.yaml`
+# this will run hyperparameter search defined in `configs/hparams_search/mnist_optuna.yaml`
 # over chosen experiment config
-python run.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
+python run.py -m hparams_search=mnist_optuna experiment=exp_example_simple
 ```
 
 </details>
@@ -313,7 +313,7 @@ python run.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
 
 > Hydra provides special syntax for controlling behavior of multiruns. Learn more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run). The command below executes all experiments from folder [configs/experiment/](configs/experiment/).
 ```yaml
-python run.py -m '+experiment=glob(*)'
+python run.py -m 'experiment=glob(*)'
 ```
 
 </details>
@@ -656,12 +656,7 @@ List of extra utilities available in the template:
 - method for logging hyperparameters to loggers
 - (TODO) resuming latest run
 
-You can easily remove all of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
-<br><br>
-
-
-### How To Speed Up Training
-(TODO)
+You can easily remove any of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
 <br><br>
 
 

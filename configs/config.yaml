@@ -9,7 +9,7 @@ defaults:
     - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
     - experiment: null
-    - optuna: null
+    - hparams_search: null
 
     # enable color logging
     - override hydra/hydra_logging: colorlog
