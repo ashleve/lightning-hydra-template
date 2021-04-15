@@ -12,7 +12,7 @@
 <a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge"></a>
 
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
-Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-hydra-template/generate) to initialize new repository.
+Click on [<kbd>Use this template</kbd>](https://github.com/ashleve/lightning-hydra-template/generate) to initialize new repository.
 
 *Currently uses dev version of Hydra.<br>Suggestions are always welcome!*
 
@@ -21,7 +21,7 @@ Click on [<kbd>Use this template</kbd>](https://github.com/hobogalaxy/lightning-
 
 <!--
 If you use this template please add <br>
-[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/hobogalaxy/lightning-hydra-template) <br>
+[![](https://shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=303030)](https://github.com/ashleve/lightning-hydra-template) <br>
 to your `README.md`.
 <br><br>
 -->
@@ -69,12 +69,12 @@ The directory structure of new project looks like this:
 │   ├── callbacks               <- Callbacks configs
 │   ├── datamodule              <- Datamodule configs
 │   ├── experiment              <- Experiment configs
+│   ├── hparams_search          <- Hyperparameter search configs
 │   ├── logger                  <- Logger configs
 │   ├── model                   <- Model configs
 │   ├── trainer                 <- Trainer configs
 │   │
-│   ├── config.yaml             <- Main project configuration file
-│   └── config_optuna.yaml      <- Configuration of Optuna hyperparameter search
+│   └── config.yaml             <- Main project configuration file
 │
 ├── data                    <- Project data
 │
@@ -128,7 +128,7 @@ Template contains example with MNIST classification.<br>
 When running `python run.py` you should see something like this:
 <div align="center">
 
-![](https://github.com/hobogalaxy/lightning-hydra-template/blob/resources/terminal.png)
+![](https://github.com/ashleve/lightning-hydra-template/blob/resources/terminal.png)
 
 </div>
 
@@ -205,7 +205,7 @@ python run.py logger=wandb
 
 > Experiment configurations are placed in [configs/experiment/](configs/experiment/).
 ```yaml
-python run.py +experiment=exp_example_simple
+python run.py experiment=exp_example_simple
 ```
 
 </details>
@@ -301,9 +301,9 @@ python run.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
 
 > Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a [single config file](configs/config_optuna.yaml)!
 ```yaml
-# this will run hyperparameter search defined in `configs/config_optuna.yaml`
+# this will run hyperparameter search defined in `configs/hparams_search/mnist_optuna.yaml`
 # over chosen experiment config
-python run.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
+python run.py -m hparams_search=mnist_optuna experiment=exp_example_simple
 ```
 
 </details>
@@ -313,7 +313,7 @@ python run.py -m --config-name config_optuna.yaml +experiment=exp_example_simple
 
 > Hydra provides special syntax for controlling behavior of multiruns. Learn more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run). The command below executes all experiments from folder [configs/experiment/](configs/experiment/).
 ```yaml
-python run.py -m '+experiment=glob(*)'
+python run.py -m 'experiment=glob(*)'
 ```
 
 </details>
@@ -362,7 +362,7 @@ If you want to use some popular official image instead, I recommend the [nvidia 
 
 
 ## :heart:&nbsp; Contributions
-Have a question? Found a bug? Missing a specific feature? Ran into a problem? Feel free to file a new issue with respective title and description. If you already found a solution to your problem, don't hesitate to share it. Suggestions for new best practices and tricks are always welcome!
+Have a question? Found a bug? Missing a specific feature? Ran into a problem? Feel free to file a new issue or PR with respective title and description. If you already found a solution to your problem, don't hesitate to share it. Suggestions for new best practices and tricks are always welcome!
 <br><br><br><br>
 
 
@@ -656,12 +656,7 @@ List of extra utilities available in the template:
 - method for logging hyperparameters to loggers
 - (TODO) resuming latest run
 
-You can easily remove all of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
-<br><br>
-
-
-### How To Speed Up Training
-(TODO)
+You can easily remove any of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
 <br><br>
 
 
@@ -824,7 +819,7 @@ setup(
     author="",
     author_email="",
     # replace with your own github project link
-    url="https://github.com/hobogalaxy/lightning-hydra-template",
+    url="https://github.com/ashleve/lightning-hydra-template",
     install_requires=["pytorch-lightning>=1.2.0", "hydra-core>=1.0.6"],
     packages=find_packages(),
 )
@@ -994,7 +989,9 @@ This template was inspired by:
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5"></a>
 <a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-89b8cd"></a>
-<a href="https://github.com/hobogalaxy/lightning-hydra-template"><img alt="Template" src="https://img.shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=gray"></a>
+<a href="https://github.com/ashleve/lightning-hydra-template"><img alt="Template" src="https://img.shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=gray"></a><br>
+[![Paper](http://img.shields.io/badge/paper-arxiv.1001.2234-B31B1B.svg)](https://www.nature.com/articles/nature14539)
+[![Conference](http://img.shields.io/badge/AnyConference-year-4b44ce.svg)](https://papers.nips.cc/paper/2020)
 
 </div>
 
