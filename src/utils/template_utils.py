@@ -43,8 +43,8 @@ def extras(config: DictConfig) -> None:
     OmegaConf.set_struct(config, False)
 
     # disable python warnings if <config.disable_warnings=True>
-    if config.get("disable_warnings"):
-        log.info(f"Disabling python warnings! <config.disable_warnings=True>")
+    if config.get("ignore_warnings"):
+        log.info(f"Disabling python warnings! <config.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
 
     # set <config.trainer.fast_dev_run=True> if <config.debug=True>

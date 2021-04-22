@@ -343,21 +343,21 @@ python run.py -m 'experiment=glob(*)'
 
 
 ## :whale:&nbsp; Docker
-Docker image for the template is available for download [here](https://hub.docker.com/r/ashleve/lightning-hydra).
+I recommend the official [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags) (size: 6GB, it comes with installed Apex for mixed-precision training), or "devel" version of [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch).
 
+Custom dockerfiles for the template are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building your own images.
 ```yaml
 # download image
-docker pull ashleve/lightning-hydra:latest
+docker pull nvcr.io/nvidia/pytorch:21.03-py3
 
-# run container from image
-docker run --gpus all -it --rm ashleve/lightning-hydra
-
-# you can also build image by yourself using Dockerfile
+# run container from image with GPUs enabled
+docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
+```
+```yaml
+# alternatively build image by yourself using Dockerfile from the mentioned template branch
 docker build -t lightning-hydra .
 ```
-Dockerfiles are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building your own images.<br>
-If you want to use some popular official image instead, I recommend the [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags), or "devel" version of [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch) (this one doesn't have installed Apex for mixed-precision training).
-<br><br><br>
+<br><br>
 
 
 
@@ -507,7 +507,7 @@ defaults:
 
 # we override default configurations with nulls to prevent them from loading at all
 # instead we define all modules and their paths directly in this config,
-# so everything is stored in one place for more readibility
+# so everything is stored in one place for more readability
 
 seed: 12345
 
