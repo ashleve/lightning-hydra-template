@@ -39,7 +39,7 @@ print_config: True
 
 
 # disable python warnings if they annoy you
-disable_warnings: True
+ignore_warnings: True
 
 
 hydra:
