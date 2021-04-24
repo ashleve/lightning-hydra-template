@@ -216,6 +216,7 @@ class ImagePredictionLogger(Callback):
         self.ready = True
 
     def on_validation_epoch_end(self, trainer, pl_module):
+<<<<<<< HEAD
         if self.ready:
             logger = get_wandb_logger(trainer=trainer)
             experiment = logger.experiment
@@ -235,5 +236,21 @@ class ImagePredictionLogger(Callback):
                           for x, pred, y in zip(val_imgs[:self.num_samples],
                                                 preds[:self.num_samples],
                                                 val_labels[:self.num_samples])]
-            })
+=======
+        # get a validation batch from the validation dataloader
+        val_samples = next(iter(trainer.datamodule.val_dataloader()))
+        val_imgs, val_labels = val_samples
 
+        # run the batch through the network
+        val_imgs = val_imgs.to(device=pl_module.device)
+        logits = pl_module(val_imgs)
+        preds = torch.argmax(logits, axis=-1)
+
+        # log the images as wandb Image
+        trainer.logger.experiment[0].log({
+            'Images':[wandb.Image(x, caption=f'Pred:{pred}, Label:{y}')
+            for x, pred, y in zip(val_imgs[:self.num_samples],
+                                preds[:self.num_samples],
+                                val_labels[:self.num_samples])]
+>>>>>>> a4921ef30b9212be966e11470dceb9164be0cce2
+            })
