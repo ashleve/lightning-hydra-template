@@ -25,3 +25,7 @@ save_f1_precision_recall_heatmap_to_wandb:
 
 save_confusion_matrix_to_wandb:
     _target_: src.callbacks.wandb_callbacks.LogConfusionMatrixToWandb
+    
+log_images:
+    _target_: src.callbacks.wandb_callbacks.ImagePredictionLogger
+    num_samples: 8

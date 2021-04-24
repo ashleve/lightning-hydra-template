@@ -196,3 +196,44 @@ class LogF1PrecRecHeatmapToWandb(Callback):
 
             self.preds.clear()
             self.targets.clear()
+            
+
+class ImagePredictionLogger(Callback):
+    """Logs a validation batch and their predictions to wandb.
+       Example adapted from:
+       https://wandb.ai/wandb/wandb-lightning/reports/Image-Classification-using-PyTorch-Lightning--VmlldzoyODk1NzY
+    """
+
+    def __init__(self, num_samples: int = 8):
+        super().__init__()
+        self.num_samples = num_samples
+        self.ready = True
+
+    def on_sanity_check_start(self, trainer, pl_module):
+        self.ready = False
+
+    def on_sanity_check_end(self, trainer, pl_module):
+        """Start executing this callback only after all validation sanity checks end."""
+        self.ready = True
+
+    def on_validation_epoch_end(self, trainer, pl_module):
+        if self.ready:
+            logger = get_wandb_logger(trainer=trainer)
+            experiment = logger.experiment
+            
+            # get a validation batch from the validation dat loader
+            val_samples = next(iter(trainer.datamodule.val_dataloader()))
+            val_imgs, val_labels = val_samples
+
+            # run the batch through the network
+            val_imgs = val_imgs.to(device=pl_module.device)
+            logits = pl_module(val_imgs)
+            preds = torch.argmax(logits, axis=-1)
+
+            # log the images as wandb Image
+            experiment.log({
+                f"Images/{experiment.name}":[wandb.Image(x, caption=f"Pred:{pred}, Label:{y}")
+                          for x, pred, y in zip(val_imgs[:self.num_samples],
+                                                preds[:self.num_samples],
+                                                val_labels[:self.num_samples])]
+            })
