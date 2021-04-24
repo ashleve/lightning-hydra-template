@@ -216,7 +216,7 @@ class ImagePredictionLogger(Callback):
         self.ready = True
 
     def on_validation_epoch_end(self, trainer, pl_module):
-        # get a validation batch from the calidation dat loader
+        # get a validation batch from the validation dataloader
         val_samples = next(iter(trainer.datamodule.val_dataloader()))
         val_imgs, val_labels = val_samples
 
