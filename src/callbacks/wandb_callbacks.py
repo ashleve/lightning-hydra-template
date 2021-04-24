@@ -218,7 +218,7 @@ class ImagePredictionLogger(Callback):
     def on_validation_epoch_end(self, trainer, pl_module):
         # get a validation batch from the calidation dat loader
         val_samples = next(iter(trainer.datamodule.val_dataloader()))
-        val_imgs, val_labels = val_samples[0], val_samples[1]
+        val_imgs, val_labels = val_samples
 
         # run the batch through the network
         val_imgs = val_imgs.to(device=pl_module.device)
@@ -232,4 +232,3 @@ class ImagePredictionLogger(Callback):
                                 preds[:self.num_samples],
                                 val_labels[:self.num_samples])]
             })
-
