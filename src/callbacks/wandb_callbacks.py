@@ -207,6 +207,7 @@ class ImagePredictionLogger(Callback):
     def __init__(self, num_samples):
         super().__init__()
         self.num_samples = num_samples
+        self.ready = True
 
     def on_sanity_check_start(self, trainer, pl_module):
         self.ready = False
@@ -216,7 +217,6 @@ class ImagePredictionLogger(Callback):
         self.ready = True
 
     def on_validation_epoch_end(self, trainer, pl_module):
-<<<<<<< HEAD
         if self.ready:
             logger = get_wandb_logger(trainer=trainer)
             experiment = logger.experiment
@@ -237,3 +237,4 @@ class ImagePredictionLogger(Callback):
                                                 preds[:self.num_samples],
                                                 val_labels[:self.num_samples])]
             })
+
