@@ -204,7 +204,7 @@ class ImagePredictionLogger(Callback):
        https://wandb.ai/wandb/wandb-lightning/reports/Image-Classification-using-PyTorch-Lightning--VmlldzoyODk1NzY
     """
 
-    def __init__(self, num_samples):
+    def __init__(self, num_samples: int = 8):
         super().__init__()
         self.num_samples = num_samples
         self.ready = True
@@ -237,4 +237,3 @@ class ImagePredictionLogger(Callback):
                                                 preds[:self.num_samples],
                                                 val_labels[:self.num_samples])]
             })
-
