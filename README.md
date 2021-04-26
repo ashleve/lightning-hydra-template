@@ -58,7 +58,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
 - **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
-- **Tests**: unit tests and smoke tests to smoke (see [#Best Practices](#best-practices))
+- **Tests**: unit tests and smoke tests (see [#Best Practices](#best-practices))
 - **Workflow**: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
 
@@ -668,6 +668,20 @@ You can easily remove any of those by modifying [run.py](run.py) and [src/train.
 
 ## Best Practices
 <details>
+<summary><b>Write unit tests and smoke tests</b></summary>
+
+Template comes with example tests implemented with pytest library. <br>
+To execute them simply run:
+```yaml
+pytest
+```
+I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can find those tests implemented with pytest in [tests/smoke_tests](tests/smoke_tests) folder.
+
+You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
+
+</details>
+
+<details>
 <summary><b>Use Docker</b></summary>
 
 Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster. You can extend [dockerfiles](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles) provided in the template with your own instructions for building the image.<br>
@@ -684,7 +698,11 @@ Example installation:
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
-Docker image provided in the template already comes with initialized miniconda environment.
+Create environment from file provided in the template:
+```yaml
+conda env create -f conda_env_gpu.yaml -n myenv
+conda activate myenv
+```
 
 </details>
 
@@ -839,30 +857,15 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
 
 </details>
-
-
-<details>
-<summary><b>Write unit tests and smoke tests</b></summary>
-
-Template comes with example tests implemented with pytest library. <br>
-To execute them simply run:
-```yaml
-pytest
-```
-I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can find those tests implemented with pytest in [tests/smoke_tests](tests/smoke_tests) folder.
-
-You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
-
-</details>
 <br>
 
 
 ## Tricks
 <details>
-<summary><b>Automatic activation of virtual environment and tab completion</b></summary>
+<summary><b>Automatic activation of virtual environment and tab completion when entering folder</b></summary>
 
-Template contains `.autoenv.template` file, which serves as an example. Create a new file called `.autoenv` (this name is excluded from version control in .gitignore).
-You can use it to automatically execute shell commands when entering folder:
+Create a new file called `.autoenv` (this name is excluded from version control in .gitignore).
+Add to the file the following lines:
 ```bash
 # activate conda environment
 conda activate myenv
@@ -871,14 +874,15 @@ conda activate myenv
 eval "$(python run.py -sc install=bash)"
 ```
 
+You can use it to automatically execute shell commands when entering folder.
 To setup this automation for bash, execute the following line:
 ```bash
 echo "autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc
 ```
-Keep in mind this will modify your `.bashrc` file to always run `.autoenv` file whenever it's present in the current folder, which means it's more of a trick than best practice (since it creates a potential security issue).
+Keep in mind this will modify your `.bashrc` file to always run `.autoenv` file whenever it's present in the current folder, which means it creates a potential security issue.
 
 **Explanation**<br>
-This line appends your `.bashrc` file with 3 commands:
+The mentioned line appends your `.bashrc` file with 3 commands:
 1. `autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; }` - this declares the `autoenv()` function, which executes `.autoenv` file if it exists in current work dir
 2. `cd() { builtin cd \"\$@\" ; autoenv ; }` - this extends behaviour of `cd` command, to make it execute `autoenv()` function each time you change folder in terminal
 3. `autoenv` this is just to ensure the function will also be called when directly openning terminal in any folder
