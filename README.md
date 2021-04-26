@@ -511,7 +511,7 @@ defaults:
 
 # we override default configurations with nulls to prevent them from loading at all
 # instead we define all modules and their paths directly in this config,
-# so everything is stored in one place for more readability
+# so everything is stored in one place
 
 seed: 12345
 
