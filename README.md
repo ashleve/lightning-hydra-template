@@ -464,7 +464,7 @@ Experiment configurations allow you to overwrite parameters from main project co
 **Simple example**
 ```yaml
 # to execute this experiment run:
-# python run.py +experiment=exp_example_simple
+# python run.py +experiment=example_simple
 
 defaults:
     - override /trainer: minimal.yaml
@@ -500,7 +500,7 @@ datamodule:
 
 ```yaml
 # to execute this experiment run:
-# python run.py +experiment=exp_example_full
+# python run.py +experiment=example_full
 
 defaults:
     - override /trainer: null
