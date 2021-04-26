@@ -969,15 +969,16 @@ This template was inspired by:
 
 </details>
 <br>
-<br>
 
-## Stargazers over time
+
+## :star:&nbsp; Stargazers Over Time
 
 [![Stargazers over time](https://starchart.cc/ashleve/lightning-hydra-template.svg)](https://starchart.cc/ashleve/lightning-hydra-template)
 
 
 
 
+<br>
 <br>
 <br>
 <br>
