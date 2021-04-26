@@ -86,6 +86,8 @@ The directory structure of new project looks like this:
 │                              `1.0-jqp-initial-data-exploration.ipynb`.
 │
 ├── tests                   <- Tests of any kind
+│   ├── smoke_tests
+│   └── unit_tests
 │
 ├── src
 │   ├── callbacks               <- Lightning callbacks
@@ -100,7 +102,6 @@ The directory structure of new project looks like this:
 ├── run.py                  <- Run any pipeline with chosen experiment configuration
 │
 ├── .env.template           <- Template of file for storing private environment variables
-├── .autoenv.template       <- Template of file for automatic virtual environment setup
 ├── .gitignore              <- List of files/folders ignored by git
 ├── .pre-commit-config.yaml <- Configuration of automatic code formatting
 ├── conda_env_gpu.yaml      <- File for installing conda environment
@@ -673,7 +674,14 @@ You can easily remove any of those by modifying [run.py](run.py) and [src/train.
 Template comes with example tests implemented with pytest library. <br>
 To execute them simply run:
 ```yaml
+# run all tests
 pytest
+
+# run tests from specific file
+pytest tests/smoke_tests/test_commands.py
+
+# run all tests except the ones using wandb
+pytest -m "not wandb"
 ```
 I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can find those tests implemented with pytest in [tests/smoke_tests](tests/smoke_tests) folder.
 

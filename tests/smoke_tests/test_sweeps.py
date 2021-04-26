@@ -1,4 +1,4 @@
-from utils import run_command
+from tests.helpers.run_command import run_command
 
 
 def test_default_sweep():

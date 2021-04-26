@@ -1,6 +1,14 @@
-from utils import run_command
+import pytest
+
+from tests.helpers.run_command import run_command
+
+"""
+Use the following command to skip wandb tests:
+    pytest -m "not wandb"
+"""
 
 
+@pytest.mark.wandb
 def test_wandb_optuna_sweep():
     """Test wandb logging with Optuna sweep."""
     command = [

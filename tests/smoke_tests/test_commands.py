@@ -1,8 +1,22 @@
-from utils import run_command
+from tests.helpers.run_command import run_command
+from tests.helpers.runif import RunIf
 
 
-def test_default():
-    command = ["run.py", "trainer.max_epochs=1"]
+def test_default_cpu():
+    """Test default configuration on CPU."""
+    command = ["run.py", "trainer.max_epochs=1", "trainer.gpus=0"]
+    run_command(command)
+
+
+@RunIf(min_gpus=1)
+def test_default_gpu():
+    """Test default configuration on GPU."""
+    command = [
+        "run.py",
+        "trainer.max_epochs=1",
+        "trainer.gpus=1",
+        "datamodule.pin_memory=True",
+    ]
     run_command(command)
 
 
@@ -87,15 +101,3 @@ def test_overfit_batches():
         "trainer.overfit_batches=10",
     ]
     run_command(command)
-
-
-# def test_gpu():
-#     """Train 1 epoch on GPU."""
-#     command = [
-#         "run.py",
-#         "trainer=default",
-#         "trainer.max_epochs=1",
-#         "trainer.gpus=1",
-#         "datamodule.pin_memory=True",
-#     ]
-#     run_command(command)
