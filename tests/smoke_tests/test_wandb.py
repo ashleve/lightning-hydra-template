@@ -4,7 +4,7 @@ from tests.helpers.run_command import run_command
 
 """
 Use the following command to skip wandb tests:
-    pytest -m "not wandb"
+    pytest -k "not wandb"
 """
 
 

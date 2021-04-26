@@ -142,7 +142,7 @@ When running `python run.py` you should see something like this:
 
 > Hydra allows you to easily overwrite any parameter defined in your config.
 ```yaml
-python run.py trainer.max_epochs=20 optimizer.lr=1e-4
+python run.py trainer.max_epochs=20 model.lr=1e-4
 ```
 > You can also add new parameters with `+` sign.
 ```yaml
@@ -207,7 +207,7 @@ python run.py logger=wandb
 
 > Experiment configurations are placed in [configs/experiment/](configs/experiment/).
 ```yaml
-python run.py experiment=exp_example_simple
+python run.py experiment=example_simple
 ```
 
 </details>
@@ -219,7 +219,7 @@ python run.py experiment=exp_example_simple
 > Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).<br>
 Callbacks configurations are placed in [configs/callbacks/](configs/callbacks/).
 ```yaml
-python run.py callbacks=default_callbacks
+python run.py callbacks=default
 ```
 
 </details>
@@ -291,7 +291,7 @@ python run.py +trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
 ```yaml
 # this will run 6 experiments one after the other,
 # each with different combination of batch_size and learning rate
-python run.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
+python run.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
 > ⚠️ Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported in future Hydra release.
 
@@ -305,7 +305,7 @@ python run.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
 ```yaml
 # this will run hyperparameter search defined in `configs/hparams_search/mnist_optuna.yaml`
 # over chosen experiment config
-python run.py -m hparams_search=mnist_optuna experiment=exp_example_simple
+python run.py -m hparams_search=mnist_optuna experiment=example_simple
 ```
 
 </details>
@@ -354,6 +354,8 @@ docker pull nvcr.io/nvidia/pytorch:21.03-py3
 
 # run container from image with GPUs enabled
 docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
+# # run container with mounted volume
+# docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
 ```
 ```yaml
 # alternatively build image by yourself using Dockerfile from the mentioned template branch
@@ -410,10 +412,10 @@ It also specifies everything that shouldn't be managed by experiment configurati
 ```yaml
 # specify here default training configuration
 defaults:
-    - trainer: default_trainer.yaml
+    - trainer: minimal.yaml
     - model: mnist_model.yaml
     - datamodule: mnist_datamodule.yaml
-    - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
+    - callbacks: default.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
 
@@ -465,10 +467,10 @@ Experiment configurations allow you to overwrite parameters from main project co
 # python run.py +experiment=exp_example_simple
 
 defaults:
-    - override /trainer: default_trainer.yaml
+    - override /trainer: minimal.yaml
     - override /model: mnist_model.yaml
     - override /datamodule: mnist_datamodule.yaml
-    - override /callbacks: default_callbacks.yaml
+    - override /callbacks: default.yaml
     - override /logger: null
 
 # all parameters below will be merged with parameters from default configurations set above
@@ -617,8 +619,15 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 
 ### Callbacks
 Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
-To support reproducibility: **WatchModelWithWandb**, **UploadCodeToWandbAsArtifact**, **UploadCheckpointsToWandbAsArtifact**.<br>
-To provide examples of logging custom visualisations with callbacks only: **LogConfusionMatrixToWandb**, **LogF1PrecRecHeatmapToWandb**.<br>
+To support reproducibility:
+- **WatchModel**
+- **UploadCodeAsArtifact**
+- **UploadCheckpointsAsArtifact**
+
+To provide examples of logging custom visualisations with callbacks only:
+- **LogConfusionMatrix**
+- **LogF1PrecRecHeatmap**
+- **ImagePredictionLogger**
 <br>
 
 
@@ -681,7 +690,7 @@ pytest
 pytest tests/smoke_tests/test_commands.py
 
 # run all tests except the ones using wandb
-pytest -m "not wandb"
+pytest -k "not wandb"
 ```
 I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can find those tests implemented with pytest in [tests/smoke_tests](tests/smoke_tests) folder.
 
@@ -865,7 +874,16 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
 
 </details>
+
+<!--
+<details>
+<summary><b>Use torchmetrics</b></summary>
+</details>
+ -->
+
 <br>
+
+
 
 
 ## Tricks
@@ -1037,7 +1055,7 @@ python run.py trainer.gpus=1
 
 Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)
 ```yaml
-python run.py +experiment=experiment_name
+python run.py experiment=experiment_name
 ```
 
 You can override any parameter from command line like this
