@@ -1,7 +1,7 @@
 # @package _global_
 
 # to execute this experiment run:
-# python run.py +experiment=exp_example_full
+# python run.py experiment=example_full.yaml
 
 defaults:
     - override /trainer: null  # override trainer to null so it's not loaded from main config defaults...
@@ -12,7 +12,7 @@ defaults:
 
 # we override default configurations with nulls to prevent them from loading at all
 # instead we define all modules and their paths directly in this config,
-# so everything is stored in one place for more readability
+# so everything is stored in one place
 
 seed: 12345
 
