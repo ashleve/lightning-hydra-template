@@ -58,6 +58,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
 - **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
+- **Tests**: unit tests and smoke tests to smoke (see [#Best Practices](#best-practices))
 - **Workflow**: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
 
@@ -647,7 +648,6 @@ Use metrics api objects, e.g. `pytorch_lightning.metrics.classification.Accuracy
 ### Extra Features
 List of extra utilities available in the template:
 - loading environment variables from [.env](.env.template) file
-- automatic virtual environment setup with [.autoenv](.autoenv.template) file
 - pretty printing config with [Rich](https://github.com/willmcgugan/rich) library
 - disabling python warnings
 - easier access to debug mode
@@ -842,27 +842,18 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 
 
 <details>
-<summary><b>Write tests</b></summary>
+<summary><b>Write unit tests and smoke tests</b></summary>
 
-(TODO)
-
-</details>
-
-
-<!--
-<details>
-<summary><b>Use Miniconda</b></summary>
-
-I find myself often running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
-
-Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed. It's always best if you write real unit tests for your code.<br>
-To execute:
+Template comes with example tests implemented with pytest library. <br>
+To execute them simply run:
 ```yaml
-bash tests/smoke_tests.sh
+pytest
 ```
+I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can find those tests implemented with pytest in [tests/smoke_tests](tests/smoke_tests) folder.
+
+You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
 
 </details>
- -->
 <br>
 
 
@@ -884,12 +875,13 @@ To setup this automation for bash, execute the following line:
 ```bash
 echo "autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc
 ```
+Keep in mind this will modify your `.bashrc` file to always run `.autoenv` file whenever it's present in the current folder, which means it's more of a trick than best practice (since it creates a potential security issue).
+
 **Explanation**<br>
 This line appends your `.bashrc` file with 3 commands:
 1. `autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; }` - this declares the `autoenv()` function, which executes `.autoenv` file if it exists in current work dir
 2. `cd() { builtin cd \"\$@\" ; autoenv ; }` - this extends behaviour of `cd` command, to make it execute `autoenv()` function each time you change folder in terminal
 3. `autoenv` this is just to ensure the function will also be called when directly openning terminal in any folder
-
 
 </details>
 
@@ -956,7 +948,8 @@ This template was inspired by:
 
 - [pytorch/hydra-torch](https://github.com/pytorch/hydra-torch) - resources for configuring PyTorch classes with Hydra,
 - [romesco/hydra-lightning](https://github.com/romesco/hydra-lightning) - resources for configuring PyTorch Lightning classes with Hydra
-- [lucmos/nn-template](https://github.com/lucmos/nn-template) - similar template that's easier to start with but less scalable
+- [lucmos/nn-template](https://github.com/lucmos/nn-template) - similar template
+- [PyTorchLightning/lightning-transformers](https://github.com/PyTorchLightning/lightning-transformers) - official Lightning Transformers repo built with Hydra
 
 </details>
 
@@ -968,17 +961,14 @@ This template was inspired by:
 > if you'd like to share your project and add it to the list, feel free to make a PR!
 
 </details>
-<br>
 
 
-## :star:&nbsp; Stargazers Over Time
+<!-- ## :star:&nbsp; Stargazers Over Time
 
-[![Stargazers over time](https://starchart.cc/ashleve/lightning-hydra-template.svg)](https://starchart.cc/ashleve/lightning-hydra-template)
-
+[![Stargazers over time](https://starchart.cc/ashleve/lightning-hydra-template.svg)](https://starchart.cc/ashleve/lightning-hydra-template) -->
 
 
 
-<br>
 <br>
 <br>
 <br>
