@@ -26,7 +26,7 @@ to your `README.md`.
 <br><br>
 -->
 
-## Introduction
+## :pushpin:&nbsp; Introduction
 This template tries to be as general as possible - you can easily delete any unwanted features from the pipeline or rewire the configuration, by modifying behavior in [src/train.py](src/train.py).
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
@@ -58,6 +58,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
 - **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
+- **Tests**: unit tests and smoke tests (see [#Best Practices](#best-practices))
 - **Workflow**: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
 
@@ -85,6 +86,8 @@ The directory structure of new project looks like this:
 │                              `1.0-jqp-initial-data-exploration.ipynb`.
 │
 ├── tests                   <- Tests of any kind
+│   ├── smoke_tests
+│   └── unit_tests
 │
 ├── src
 │   ├── callbacks               <- Lightning callbacks
@@ -99,7 +102,6 @@ The directory structure of new project looks like this:
 ├── run.py                  <- Run any pipeline with chosen experiment configuration
 │
 ├── .env.template           <- Template of file for storing private environment variables
-├── .autoenv.template       <- Template of file for automatic virtual environment setup
 ├── .gitignore              <- List of files/folders ignored by git
 ├── .pre-commit-config.yaml <- Configuration of automatic code formatting
 ├── conda_env_gpu.yaml      <- File for installing conda environment
@@ -140,7 +142,7 @@ When running `python run.py` you should see something like this:
 
 > Hydra allows you to easily overwrite any parameter defined in your config.
 ```yaml
-python run.py trainer.max_epochs=20 optimizer.lr=1e-4
+python run.py trainer.max_epochs=20 model.lr=1e-4
 ```
 > You can also add new parameters with `+` sign.
 ```yaml
@@ -205,7 +207,7 @@ python run.py logger=wandb
 
 > Experiment configurations are placed in [configs/experiment/](configs/experiment/).
 ```yaml
-python run.py experiment=exp_example_simple
+python run.py experiment=example_simple
 ```
 
 </details>
@@ -217,7 +219,7 @@ python run.py experiment=exp_example_simple
 > Callbacks can be used for things such as as model checkpointing, early stopping and [many more](https://pytorch-lightning.readthedocs.io/en/latest/extensions/callbacks.html#built-in-callbacks).<br>
 Callbacks configurations are placed in [configs/callbacks/](configs/callbacks/).
 ```yaml
-python run.py callbacks=default_callbacks
+python run.py callbacks=default
 ```
 
 </details>
@@ -289,7 +291,7 @@ python run.py +trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
 ```yaml
 # this will run 6 experiments one after the other,
 # each with different combination of batch_size and learning rate
-python run.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
+python run.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
 > ⚠️ Currently sweeps aren't failure resistant (if one job crashes than the whole sweep crashes), but it will be supported in future Hydra release.
 
@@ -303,7 +305,7 @@ python run.py -m datamodule.batch_size=32,64,128 optimizer.lr=0.001,0.0005
 ```yaml
 # this will run hyperparameter search defined in `configs/hparams_search/mnist_optuna.yaml`
 # over chosen experiment config
-python run.py -m hparams_search=mnist_optuna experiment=exp_example_simple
+python run.py -m hparams_search=mnist_optuna experiment=example_simple
 ```
 
 </details>
@@ -352,6 +354,8 @@ docker pull nvcr.io/nvidia/pytorch:21.03-py3
 
 # run container from image with GPUs enabled
 docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
+# # run container with mounted volume
+# docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
 ```
 ```yaml
 # alternatively build image by yourself using Dockerfile from the mentioned template branch
@@ -369,7 +373,7 @@ Have a question? Found a bug? Missing a specific feature? Ran into a problem? Fe
 
 ## :information_source:&nbsp; Guide
 
-### How To Learn
+### How To Get Started
 - First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
 - Next, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
 <br>
@@ -408,10 +412,10 @@ It also specifies everything that shouldn't be managed by experiment configurati
 ```yaml
 # specify here default training configuration
 defaults:
-    - trainer: default_trainer.yaml
+    - trainer: minimal.yaml
     - model: mnist_model.yaml
     - datamodule: mnist_datamodule.yaml
-    - callbacks: default_callbacks.yaml  # set this to null if you don't want to use callbacks
+    - callbacks: default.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
 
@@ -460,13 +464,13 @@ Experiment configurations allow you to overwrite parameters from main project co
 **Simple example**
 ```yaml
 # to execute this experiment run:
-# python run.py +experiment=exp_example_simple
+# python run.py +experiment=example_simple
 
 defaults:
-    - override /trainer: default_trainer.yaml
+    - override /trainer: minimal.yaml
     - override /model: mnist_model.yaml
     - override /datamodule: mnist_datamodule.yaml
-    - override /callbacks: default_callbacks.yaml
+    - override /callbacks: default.yaml
     - override /logger: null
 
 # all parameters below will be merged with parameters from default configurations set above
@@ -496,7 +500,7 @@ datamodule:
 
 ```yaml
 # to execute this experiment run:
-# python run.py +experiment=exp_example_full
+# python run.py +experiment=example_full
 
 defaults:
     - override /trainer: null
@@ -507,7 +511,7 @@ defaults:
 
 # we override default configurations with nulls to prevent them from loading at all
 # instead we define all modules and their paths directly in this config,
-# so everything is stored in one place for more readability
+# so everything is stored in one place
 
 seed: 12345
 
@@ -615,8 +619,15 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 
 ### Callbacks
 Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
-To support reproducibility: **WatchModelWithWandb**, **UploadCodeToWandbAsArtifact**, **UploadCheckpointsToWandbAsArtifact**.<br>
-To provide examples of logging custom visualisations with callbacks only: **LogConfusionMatrixToWandb**, **LogF1PrecRecHeatmapToWandb**.<br>
+To support reproducibility:
+- **WatchModel**
+- **UploadCodeAsArtifact**
+- **UploadCheckpointsAsArtifact**
+
+To provide examples of logging custom visualisations with callbacks only:
+- **LogConfusionMatrix**
+- **LogF1PrecRecHeatmap**
+- **ImagePredictionLogger**
 <br>
 
 
@@ -647,7 +658,6 @@ Use metrics api objects, e.g. `pytorch_lightning.metrics.classification.Accuracy
 ### Extra Features
 List of extra utilities available in the template:
 - loading environment variables from [.env](.env.template) file
-- automatic virtual environment setup with [.autoenv](.autoenv.template) file
 - pretty printing config with [Rich](https://github.com/willmcgugan/rich) library
 - disabling python warnings
 - easier access to debug mode
@@ -668,6 +678,27 @@ You can easily remove any of those by modifying [run.py](run.py) and [src/train.
 
 ## Best Practices
 <details>
+<summary><b>Write unit tests and smoke tests</b></summary>
+
+Template comes with example tests implemented with pytest library. <br>
+To execute them simply run:
+```yaml
+# run all tests
+pytest
+
+# run tests from specific file
+pytest tests/smoke_tests/test_commands.py
+
+# run all tests except the ones using wandb
+pytest -k "not wandb"
+```
+I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can find those tests implemented with pytest in [tests/smoke_tests](tests/smoke_tests) folder.
+
+You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
+
+</details>
+
+<details>
 <summary><b>Use Docker</b></summary>
 
 Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster. You can extend [dockerfiles](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles) provided in the template with your own instructions for building the image.<br>
@@ -684,7 +715,11 @@ Example installation:
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
-Docker image provided in the template already comes with initialized miniconda environment.
+Create environment from file provided in the template:
+```yaml
+conda env create -f conda_env_gpu.yaml -n myenv
+conda activate myenv
+```
 
 </details>
 
@@ -840,38 +875,23 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 
 </details>
 
-
-<details>
-<summary><b>Write tests</b></summary>
-
-(TODO)
-
-</details>
-
-
 <!--
 <details>
-<summary><b>Use Miniconda</b></summary>
-
-I find myself often running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can easily modify the commands in the script for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
-
-Keep in mind those aren't real tests - it's simply executing commands one after the other, after which you need to take a look in terminal if some of them crashed. It's always best if you write real unit tests for your code.<br>
-To execute:
-```yaml
-bash tests/smoke_tests.sh
-```
-
+<summary><b>Use torchmetrics</b></summary>
 </details>
  -->
+
 <br>
+
+
 
 
 ## Tricks
 <details>
-<summary><b>Automatic activation of virtual environment and tab completion</b></summary>
+<summary><b>Automatic activation of virtual environment and tab completion when entering folder</b></summary>
 
-Template contains `.autoenv.template` file, which serves as an example. Create a new file called `.autoenv` (this name is excluded from version control in .gitignore).
-You can use it to automatically execute shell commands when entering folder:
+Create a new file called `.autoenv` (this name is excluded from version control in .gitignore).
+Add to the file the following lines:
 ```bash
 # activate conda environment
 conda activate myenv
@@ -880,16 +900,18 @@ conda activate myenv
 eval "$(python run.py -sc install=bash)"
 ```
 
+You can use it to automatically execute shell commands when entering folder.
 To setup this automation for bash, execute the following line:
 ```bash
 echo "autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc
 ```
+Keep in mind this will modify your `.bashrc` file to always run `.autoenv` file whenever it's present in the current folder, which means it creates a potential security issue.
+
 **Explanation**<br>
-This line appends your `.bashrc` file with 3 commands:
+The mentioned line appends your `.bashrc` file with 3 commands:
 1. `autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; }` - this declares the `autoenv()` function, which executes `.autoenv` file if it exists in current work dir
 2. `cd() { builtin cd \"\$@\" ; autoenv ; }` - this extends behaviour of `cd` command, to make it execute `autoenv()` function each time you change folder in terminal
 3. `autoenv` this is just to ensure the function will also be called when directly openning terminal in any folder
-
 
 </details>
 
@@ -956,7 +978,8 @@ This template was inspired by:
 
 - [pytorch/hydra-torch](https://github.com/pytorch/hydra-torch) - resources for configuring PyTorch classes with Hydra,
 - [romesco/hydra-lightning](https://github.com/romesco/hydra-lightning) - resources for configuring PyTorch Lightning classes with Hydra
-- [lucmos/nn-template](https://github.com/lucmos/nn-template) - similar template that's easier to start with but less scalable
+- [lucmos/nn-template](https://github.com/lucmos/nn-template) - similar template
+- [PyTorchLightning/lightning-transformers](https://github.com/PyTorchLightning/lightning-transformers) - official Lightning Transformers repo built with Hydra
 
 </details>
 
@@ -968,6 +991,11 @@ This template was inspired by:
 > if you'd like to share your project and add it to the list, feel free to make a PR!
 
 </details>
+
+
+<!-- ## :star:&nbsp; Stargazers Over Time
+
+[![Stargazers over time](https://starchart.cc/ashleve/lightning-hydra-template.svg)](https://starchart.cc/ashleve/lightning-hydra-template) -->
 
 
 
@@ -1027,7 +1055,7 @@ python run.py trainer.gpus=1
 
 Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)
 ```yaml
-python run.py +experiment=experiment_name
+python run.py experiment=experiment_name
 ```
 
 You can override any parameter from command line like this

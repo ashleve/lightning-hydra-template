@@ -201,7 +201,7 @@ class LogF1PrecRecHeatmapToWandb(Callback):
 class ImagePredictionLogger(Callback):
     """Logs a validation batch and their predictions to wandb.
     Example adapted from:
-    https://wandb.ai/wandb/wandb-lightning/reports/Image-Classification-using-PyTorch-Lightning--VmlldzoyODk1NzY
+        https://wandb.ai/wandb/wandb-lightning/reports/Image-Classification-using-PyTorch-Lightning--VmlldzoyODk1NzY
     """
 
     def __init__(self, num_samples: int = 8):

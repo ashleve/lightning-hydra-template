@@ -1,0 +1,21 @@
+_target_: pytorch_lightning.Trainer
+
+gpus: 0
+
+min_epochs: 1
+max_epochs: 3
+
+# prints
+progress_bar_refresh_rate: null
+weights_summary: null
+profiler: null
+
+# debugs
+num_sanity_val_steps: 2
+fast_dev_run: False
+overfit_batches: 0
+limit_train_batches: 1.0
+limit_val_batches: 1.0
+limit_test_batches: 1.0
+track_grad_norm: -1
+terminate_on_nan: False

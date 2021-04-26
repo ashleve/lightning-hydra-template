@@ -1,7 +1,7 @@
 # --------- pytorch --------- #
 torch==1.8.1
 torchvision==0.9.1
-pytorch-lightning>=1.2.7
+pytorch-lightning>=1.2.10
 
 # --------- hydra --------- #
 hydra-core==1.1.0.dev5
@@ -19,11 +19,11 @@ wandb>=0.10.26
 # --------- others --------- #
 rich
 python-dotenv
+pytest
 pre-commit
 scikit-learn
 pandas
 matplotlib
 seaborn
 # pudb
-# pytest
 # dvc
