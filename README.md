@@ -26,7 +26,7 @@ to your `README.md`.
 <br><br>
 -->
 
-## Introduction
+## :pushpin:&nbsp; Introduction
 This template tries to be as general as possible - you can easily delete any unwanted features from the pipeline or rewire the configuration, by modifying behavior in [src/train.py](src/train.py).
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
@@ -369,7 +369,7 @@ Have a question? Found a bug? Missing a specific feature? Ran into a problem? Fe
 
 ## :information_source:&nbsp; Guide
 
-### How To Learn
+### How To Get Started
 - First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
 - Next, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
 <br>
@@ -968,6 +968,13 @@ This template was inspired by:
 > if you'd like to share your project and add it to the list, feel free to make a PR!
 
 </details>
+<br>
+<br>
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/ashleve/lightning-hydra-template.svg)](https://starchart.cc/ashleve/lightning-hydra-template)
+
 
 
 

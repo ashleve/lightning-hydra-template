@@ -1,18 +1,4 @@
-from typing import List
-
-import pytest
-import sh
-
-
-def run_command(command: List[str]):
-    """Default method for executing shell commands."""
-    msg = None
-    try:
-        sh.python(command)
-    except sh.ErrorReturnCode as e:
-        msg = e.stderr.decode()
-    if msg:
-        pytest.fail(msg=msg)
+from utils import run_command
 
 
 def test_default():
@@ -79,7 +65,7 @@ def test_csv_logger():
     run_command(command)
 
 
-def test_tensorboard():
+def test_tensorboard_logger():
     """Train 5 epochs with 5 batches with TensorboardLogger."""
     command = [
         "run.py",
@@ -101,3 +87,15 @@ def test_overfit_batches():
         "trainer.overfit_batches=10",
     ]
     run_command(command)
+
+
+# def test_gpu():
+#     """Train 1 epoch on GPU."""
+#     command = [
+#         "run.py",
+#         "trainer=default",
+#         "trainer.max_epochs=1",
+#         "trainer.gpus=1",
+#         "datamodule.pin_memory=True",
+#     ]
+#     run_command(command)
