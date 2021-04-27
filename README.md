@@ -464,7 +464,7 @@ Experiment configurations allow you to overwrite parameters from main project co
 **Simple example**
 ```yaml
 # to execute this experiment run:
-# python run.py +experiment=example_simple
+# python run.py experiment=example_simple
 
 defaults:
     - override /trainer: minimal.yaml
@@ -500,7 +500,7 @@ datamodule:
 
 ```yaml
 # to execute this experiment run:
-# python run.py +experiment=example_full
+# python run.py experiment=example_full
 
 defaults:
     - override /trainer: null
@@ -556,7 +556,7 @@ logger:
 1. Write your PyTorch Lightning model (see [mnist_model.py](src/models/mnist_model.py) for example)
 2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
 3. Write your experiment config, containing paths to your model and datamodule
-4. Run training with chosen experiment config: `python run.py +experiment=experiment_name`
+4. Run training with chosen experiment config: `python run.py experiment=experiment_name`
 <br>
 
 ### Logs
@@ -917,7 +917,7 @@ chmod +x .autoenv
 **Explanation**<br>
 The mentioned line appends your `.bashrc` file with 2 commands:
 1. `autoenv() { if [ -x .autoenv ]; then source .autoenv ; echo '.autoenv executed' ; fi }` - this declares the `autoenv()` function, which executes `.autoenv` file if it exists in current work dir and has execution previligies
-2. `cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv` - this extends behaviour of `cd` command, to make it execute `autoenv()` function each time you change folder in terminal or opening new terminal
+2. `cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv` - this extends behaviour of `cd` command, to make it execute `autoenv()` function each time you change folder in terminal or open new terminal
 
 </details>
 
