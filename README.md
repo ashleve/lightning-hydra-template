@@ -241,6 +241,9 @@ python run.py +trainer.val_check_interval=0.25
 
 # accumulate gradients
 python run.py +trainer.accumulate_grad_batches=10
+
+# terminate training after 12 hours
+python run.py +trainer.max_time="00:12:00:00"
 ```
 
 </details>
@@ -333,7 +336,7 @@ python run.py -m 'experiment=glob(*)'
 <details>
 <summary><b>Execute sweep on a Linux SLURM cluster</b></summary>
 
-> This should be achievable with simple config using [Submitit launcher for Hydra](https://hydra.cc/docs/plugins/submitit_launcher). Example is not yet implemented in this template.
+> This should be achievable with either [the right lightning trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/clouds/cluster.html?highlight=SLURM#slurm-managed-cluster) or simple config using [Submitit launcher for Hydra](https://hydra.cc/docs/plugins/submitit_launcher). Example is not yet implemented in this template.
 
 </details>
 
