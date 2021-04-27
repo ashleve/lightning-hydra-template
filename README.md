@@ -683,7 +683,7 @@ List of extra utilities available in the template:
 - forcing debug friendly configuration
 - forcing multi-gpu friendly configuration
 - method for logging hyperparameters to loggers
-- (TODO) resuming latest run
+<!-- - (TODO) resuming latest run -->
 
 You can easily remove any of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
 <br><br>
