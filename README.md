@@ -268,6 +268,9 @@ python run.py +trainer.overfit_batches=1 trainer.max_epochs=20
 # use only 20% of the data
 python run.py +trainer.limit_train_batches=0.2 \
 +trainer.limit_val_batches=0.2 +trainer.limit_test_batches=0.2
+
+# log second gradient norm of the model
+python run.py +trainer.track_grad_norm=2
 ```
 
 </details>
@@ -797,7 +800,7 @@ This way loggers will treat your metrics as belonging to different sections, whi
 <details>
 <summary><b>Use torchmetrics</b></summary>
 
-Use official [torchmetrics](https://github.com/PytorchLightning/metrics) library to ensure proper calculation of metrics. This is especially important to ensure your results will be calculated correctly during multi-GPU training!
+Use official [torchmetrics](https://github.com/PytorchLightning/metrics) library to ensure proper calculation of metrics. This is especially important for multi-GPU training!
 
 For example, instead of calculating accuracy by yourself, you should use the provided `Accuracy` class like this:
 ```python
