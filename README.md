@@ -354,13 +354,11 @@ docker pull nvcr.io/nvidia/pytorch:21.03-py3
 
 # run container from image with GPUs enabled
 docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
-# # run container with mounted volume
-# docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
 ```
-```yaml
-# alternatively build image by yourself using Dockerfile from the mentioned template branch
-docker build -t lightning-hydra .
-```
+<!--
+# run container with mounted volume
+docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
+ -->
 <br><br>
 
 
@@ -617,6 +615,27 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 <br><br>
 
 
+
+### Tests
+Template comes with example tests implemented with pytest library. <br>
+To execute them simply run:
+```yaml
+# run all tests
+pytest
+
+# run tests from specific file
+pytest tests/smoke_tests/test_commands.py
+
+# run all tests except the ones using wandb
+pytest -k "not wandb"
+```
+I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exists to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke_tests](tests/smoke_tests) folder.
+
+You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).
+<br><br>
+
+
+
 ### Callbacks
 Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
 To support reproducibility:
@@ -669,11 +688,11 @@ List of extra utilities available in the template:
 You can easily remove any of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
 <br><br>
 
-
+<!--
 ### Limitations
 (TODO)
 <br><br><br>
-
+ -->
 
 
 ## Best Practices
