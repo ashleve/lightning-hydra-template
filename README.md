@@ -58,7 +58,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
 - **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
-- **Tests**: unit tests and smoke tests (see [#Best Practices](#best-practices))
+- **Tests**: unit tests and smoke tests (see [#Tests](#tests))
 - **Workflow**: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
 
@@ -629,7 +629,7 @@ pytest tests/smoke_tests/test_commands.py
 # run all tests except the ones using wandb
 pytest -k "not wandb"
 ```
-I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exists to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke_tests](tests/smoke_tests) folder.
+I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute tests that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exist to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke_tests](tests/smoke_tests) folder.
 
 You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).
 <br><br>
@@ -696,7 +696,7 @@ You can easily remove any of those by modifying [run.py](run.py) and [src/train.
 
 
 ## Best Practices
-<details>
+<!-- <details>
 <summary><b>Write unit tests and smoke tests</b></summary>
 
 Template comes with example tests implemented with pytest library. <br>
@@ -722,7 +722,7 @@ You can easily modify the commands in the scripts for your use case. If even 1 e
 
 Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster. You can extend [dockerfiles](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles) provided in the template with your own instructions for building the image.<br>
 
-</details>
+</details> -->
 
 <details>
 <summary><b>Use Miniconda</b></summary>
