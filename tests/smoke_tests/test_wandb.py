@@ -26,6 +26,7 @@ def test_wandb_optuna_sweep():
     run_command(command)
 
 
+@pytest.mark.wandb
 def test_wandb_callbacks():
     """Test wandb callbacks."""
     command = [

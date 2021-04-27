@@ -58,7 +58,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
 - **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
-- **Tests**: unit tests and smoke tests (see [#Best Practices](#best-practices))
+- **Tests**: unit tests and smoke tests (see [#Tests](#tests))
 - **Workflow**: comes down to 4 simple steps (see [#Workflow](#workflow))
 <br>
 
@@ -354,13 +354,11 @@ docker pull nvcr.io/nvidia/pytorch:21.03-py3
 
 # run container from image with GPUs enabled
 docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
-# # run container with mounted volume
-# docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
 ```
-```yaml
-# alternatively build image by yourself using Dockerfile from the mentioned template branch
-docker build -t lightning-hydra .
-```
+<!--
+# run container with mounted volume
+docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
+ -->
 <br><br>
 
 
@@ -464,7 +462,7 @@ Experiment configurations allow you to overwrite parameters from main project co
 **Simple example**
 ```yaml
 # to execute this experiment run:
-# python run.py +experiment=example_simple
+# python run.py experiment=example_simple
 
 defaults:
     - override /trainer: minimal.yaml
@@ -500,7 +498,7 @@ datamodule:
 
 ```yaml
 # to execute this experiment run:
-# python run.py +experiment=example_full
+# python run.py experiment=example_full
 
 defaults:
     - override /trainer: null
@@ -556,7 +554,7 @@ logger:
 1. Write your PyTorch Lightning model (see [mnist_model.py](src/models/mnist_model.py) for example)
 2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
 3. Write your experiment config, containing paths to your model and datamodule
-4. Run training with chosen experiment config: `python run.py +experiment=experiment_name`
+4. Run training with chosen experiment config: `python run.py experiment=experiment_name`
 <br>
 
 ### Logs
@@ -617,6 +615,27 @@ Take a look at [inference_example.py](src/utils/inference_example.py).
 <br><br>
 
 
+
+### Tests
+Template comes with example tests implemented with pytest library. <br>
+To execute them simply run:
+```yaml
+# run all tests
+pytest
+
+# run tests from specific file
+pytest tests/smoke_tests/test_commands.py
+
+# run all tests except the ones using wandb
+pytest -k "not wandb"
+```
+I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute tests that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exist to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke_tests](tests/smoke_tests) folder.
+
+You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).
+<br><br>
+
+
+
 ### Callbacks
 Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
 To support reproducibility:
@@ -664,20 +683,20 @@ List of extra utilities available in the template:
 - forcing debug friendly configuration
 - forcing multi-gpu friendly configuration
 - method for logging hyperparameters to loggers
-- (TODO) resuming latest run
+<!-- - (TODO) resuming latest run -->
 
 You can easily remove any of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
 <br><br>
 
-
+<!--
 ### Limitations
 (TODO)
 <br><br><br>
-
+ -->
 
 
 ## Best Practices
-<details>
+<!-- <details>
 <summary><b>Write unit tests and smoke tests</b></summary>
 
 Template comes with example tests implemented with pytest library. <br>
@@ -692,7 +711,7 @@ pytest tests/smoke_tests/test_commands.py
 # run all tests except the ones using wandb
 pytest -k "not wandb"
 ```
-I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. You can find those tests implemented with pytest in [tests/smoke_tests](tests/smoke_tests) folder.
+I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exists to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke_tests](tests/smoke_tests) folder.
 
 You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
 
@@ -703,7 +722,7 @@ You can easily modify the commands in the scripts for your use case. If even 1 e
 
 Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster. You can extend [dockerfiles](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles) provided in the template with your own instructions for building the image.<br>
 
-</details>
+</details> -->
 
 <details>
 <summary><b>Use Miniconda</b></summary>
@@ -890,8 +909,16 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 <details>
 <summary><b>Automatic activation of virtual environment and tab completion when entering folder</b></summary>
 
-Create a new file called `.autoenv` (this name is excluded from version control in .gitignore).
-Add to the file the following lines:
+
+Create a new file called `.autoenv` (this name is excluded from version control in .gitignore). <br>
+You can use it to automatically execute shell commands when entering folder.
+
+To setup this automation for bash, execute the following line:
+```bash
+echo "autoenv() { if [ -x .autoenv ]; then source .autoenv ; echo '.autoenv executed' ; fi } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc
+```
+
+Now you can add any commands to your `.autoenv` file, e.g. activation of virual environment and hydra tab completion:
 ```bash
 # activate conda environment
 conda activate myenv
@@ -899,19 +926,17 @@ conda activate myenv
 # initialize hydra tab completion for bash
 eval "$(python run.py -sc install=bash)"
 ```
+(these commands will be executed whenever you're openning or switching terminal to folder containing `.autoenv` file)
 
-You can use it to automatically execute shell commands when entering folder.
-To setup this automation for bash, execute the following line:
-```bash
-echo "autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc
+Lastly add execution previliges to your `.autoenv` file:
 ```
-Keep in mind this will modify your `.bashrc` file to always run `.autoenv` file whenever it's present in the current folder, which means it creates a potential security issue.
+chmod +x .autoenv
+```
 
 **Explanation**<br>
-The mentioned line appends your `.bashrc` file with 3 commands:
-1. `autoenv() { [[ -f \"\$PWD/.autoenv\" ]] && source .autoenv ; }` - this declares the `autoenv()` function, which executes `.autoenv` file if it exists in current work dir
-2. `cd() { builtin cd \"\$@\" ; autoenv ; }` - this extends behaviour of `cd` command, to make it execute `autoenv()` function each time you change folder in terminal
-3. `autoenv` this is just to ensure the function will also be called when directly openning terminal in any folder
+The mentioned line appends your `.bashrc` file with 2 commands:
+1. `autoenv() { if [ -x .autoenv ]; then source .autoenv ; echo '.autoenv executed' ; fi }` - this declares the `autoenv()` function, which executes `.autoenv` file if it exists in current work dir and has execution previligies
+2. `cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv` - this extends behaviour of `cd` command, to make it execute `autoenv()` function each time you change folder in terminal or open new terminal
 
 </details>
 
