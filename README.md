@@ -725,7 +725,7 @@ Docker makes it easy to initialize the whole training environment, e.g. when you
 </details> -->
 
 <details>
-<summary><b>Use Miniconda</b></summary>
+<summary><b>Use Miniconda for GPU environments</b></summary>
 
 Use miniconda for your python environments (it's usually unnecessary to install full anaconda environment, miniconda should be enough).
 It makes it easier to install some dependencies, like cudatoolkit for GPU support.<br>
@@ -795,6 +795,39 @@ This way loggers will treat your metrics as belonging to different sections, whi
 </details>
 
 <details>
+<summary><b>Use torchmetrics</b></summary>
+
+Use official [torchmetrics](https://github.com/PytorchLightning/metrics) library to ensure proper calculation of metrics. This is especially important to ensure your results will be calculated correctly during multi-GPU training!
+
+For example, instead of calculating accuracy by yourself, you should use the provided `Accuracy` class like this:
+```python
+from torchmetrics.classification.accuracy import Accuracy
+
+
+class LitModel(LightningModule):
+    def __init__(self)
+        self.train_acc = Accuracy()
+        self.val_acc = Accuracy()
+
+    def training_step(self, batch, batch_idx):
+        ...
+        acc = self.train_acc(predictions, targets)
+        self.log("train/acc", acc)
+        ...
+
+    def validation_step(self, batch, batch_idx):
+        ...
+        acc = self.val_acc(predictions, targets)
+        self.log("val/acc", acc)
+        ...
+```
+Make sure to use different metric instance for each step to ensure proper value reduction over all GPU processes.
+
+Torchmetrics provides metrics for most use cases, like F1 score or confusion matrix. Read [documentation](https://torchmetrics.readthedocs.io/en/latest/#more-reading) for more.
+
+</details>
+
+<details>
 <summary><b>Follow PyTorch Lightning style guide</b></summary>
 
 The style guide is available [here](https://pytorch-lightning.readthedocs.io/en/latest/starter/style_guide.html).<br>
@@ -809,31 +842,44 @@ The style guide is available [here](https://pytorch-lightning.readthedocs.io/en/
     ```python
     class LitModel(LightningModule):
 
-        def __init__(...):
+        def __init__():
+            ...
 
-        def forward(...):
+        def forward():
+            ...
 
-        def training_step(...)
+        def training_step():
+            ...
 
-        def training_step_end(...)
+        def training_step_end():
+            ...
 
-        def training_epoch_end(...)
+        def training_epoch_end():
+            ...
 
-        def validation_step(...)
+        def validation_step():
+            ...
 
-        def validation_step_end(...)
+        def validation_step_end():
+            ...
 
-        def validation_epoch_end(...)
+        def validation_epoch_end():
+            ...
 
-        def test_step(...)
+        def test_step():
+            ...
 
-        def test_step_end(...)
+        def test_step_end():
+            ...
 
-        def test_epoch_end(...)
+        def test_epoch_end():
+            ...
 
-        def configure_optimizers(...)
+        def configure_optimizers():
+            ...
 
-        def any_extra_hook(...)
+        def any_extra_hook():
+            ...
     ```
 
 </details>
@@ -893,13 +939,6 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
 
 </details>
-
-<!--
-<details>
-<summary><b>Use torchmetrics</b></summary>
-</details>
- -->
-
 <br>
 
 
@@ -960,7 +999,7 @@ from omegaconf import OmegaConf
 
 # you can place this snippet in your datamodule __init__()
 resolver_name = "datamodule"
-OmegaConf.register_new_resolver(
+OmegaConf.register_resolver(
     resolver_name,
     lambda name: getattr(self, name),
     use_cache=False
