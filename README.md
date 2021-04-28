@@ -624,10 +624,75 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 ### Hyperparameter Search
 Defining hyperparameter optimization is as easy as adding new config file to [configs/hparams_search](configs/hparams_search).
 <details>
-<summary><b>Show example hyperparameter optimization config</b></summary>
+<summary><b>Show example hyperparameter optimization config with Optuna</b></summary>
+
+```yaml
+defaults:
+    - override /hydra/sweeper: optuna
+
+
+# choose metric which will be optimized by Optuna
+optimized_metric: "val/acc_best"
+
+
+hydra:
+    # here we define Optuna hyperparameter search
+    # it optimizes for value returned from function with @hydra.main decorator
+    # learn more here: https://hydra.cc/docs/next/plugins/optuna_sweeper
+    sweeper:
+        _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+        storage: null
+        study_name: null
+        n_jobs: 1
+
+        # 'minimize' or 'maximize' the objective
+        direction: maximize
+
+        # number of experiments that will be executed
+        n_trials: 20
+
+        # choose Optuna hyperparameter sampler
+        # learn more here: https://optuna.readthedocs.io/en/stable/reference/samplers.html
+        sampler:
+            _target_: optuna.samplers.TPESampler
+            seed: 12345
+            consider_prior: true
+            prior_weight: 1.0
+            consider_magic_clip: true
+            consider_endpoints: false
+            n_startup_trials: 10
+            n_ei_candidates: 24
+            multivariate: false
+            warn_independent_sampling: true
+
+        # define range of hyperparameters
+        search_space:
+            datamodule.batch_size:
+                type: categorical
+                choices: [32, 64, 128]
+            model.lr:
+                type: float
+                low: 0.0001
+                high: 0.2
+            model.lin1_size:
+                type: categorical
+                choices: [32, 64, 128, 256, 512]
+            model.lin2_size:
+                type: categorical
+                choices: [32, 64, 128, 256, 512]
+            model.lin3_size:
+                type: categorical
+                choices: [32, 64, 128, 256, 512]
+```
 
 </details>
+
+Next, you can execute it for given experiment config with:
+```yaml
+python run.py hparams_search=mnist_optuna experiment=example_simple
+```
 Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file! <br>
+
 You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
 
 <br><br>
