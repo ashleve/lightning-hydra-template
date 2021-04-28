@@ -624,7 +624,7 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 ### Hyperparameter Search
 Defining hyperparameter optimization is as easy as adding new config file to [configs/hparams_search](configs/hparams_search).
 <details>
-<summary><b>Show example hyperparameter optimization config with Optuna</b></summary>
+<summary><b>Show example hyperparameter optimization config</b></summary>
 
 ```yaml
 defaults:
@@ -691,9 +691,8 @@ Next, you can execute it for given experiment config with:
 ```yaml
 python run.py hparams_search=mnist_optuna experiment=example_simple
 ```
-Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file! <br>
-You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
-<br>
+Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file! You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
+<br><br>
 
 
 
