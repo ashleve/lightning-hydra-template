@@ -134,7 +134,7 @@ When running `python run.py` you should see something like this:
 
 </div>
 
-### ⚡&nbsp; Your Superpowers
+### ⚡&nbsp;Your Superpowers
 (click to expand)
 
 <details>
