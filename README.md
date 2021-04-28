@@ -399,12 +399,12 @@ lin3_size: 256
 output_size: 10
 lr: 0.001
 ```
-Using this config we can instantiate the object with the following like:
+Using this config we can instantiate the object with the following line:
 ```python
 model = hydra.utils.instantiate(config.model)
 ```
 This allows you to easily iterate over new models!<br>
-Every time you create a new one, just specify its module path and parameters in appriopriate config.
+Every time you create a new one, just specify its module path and parameters in appriopriate config file.
 
 The whole pipeline managing the instantiation logic is placed in [src/train.py](src/train.py).
 
@@ -687,7 +687,7 @@ hydra:
 
 </details>
 
-Next, you can execute it\ with:
+Next, you can execute it with:
 ```yaml
 python run.py hparams_search=hparams_config_name
 ```
