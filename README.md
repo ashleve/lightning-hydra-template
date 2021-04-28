@@ -31,7 +31,7 @@ This template tries to be as general as possible - you can easily delete any unw
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
-**Why you should use it:** it allows you to rapidly iterate over new models/datasets and scale your projects from small single experiments to hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most convenient all-in-one technology stack for Deep Learning research. Relatively simple, yet powerful. Good starting point for reproducing papers, kaggle competitions or small-team research projects. It's also a collection of best practices for efficient workflow and reproducibility.
+**Why you should use it:** it allows you to rapidly iterate over new models/datasets and scale your projects from small single experiments to hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most convenient all-in-one technology stack for Deep Learning research. Good starting point for reproducing papers, kaggle competitions or small-team research projects. It's also a collection of best practices for efficient workflow and reproducibility.
 
 **Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
 
@@ -56,7 +56,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Workflow**: comes down to 4 simple steps (see [#Workflow](#workflow))
 - **Experiment Tracking**: many logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
 - **Logs**: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
-- **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper), every hyperparameter search is defined in separete config file (see [#Hyperparameter Search](#hyperparameter-search))
+- **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper), new hyperparameter search can be defined with a single config file (see [#Hyperparameter Search](#hyperparameter-search))
 - **Tests**: unit tests and smoke tests (see [#Tests](#tests))
 - **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
@@ -692,10 +692,8 @@ Next, you can execute it for given experiment config with:
 python run.py hparams_search=mnist_optuna experiment=example_simple
 ```
 Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file! <br>
-
 You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
-
-<br><br>
+<br>
 
 
 
