@@ -26,7 +26,7 @@ to your `README.md`.
 <br><br>
 -->
 
-## :pushpin:&nbsp; Introduction
+## 📌&nbsp;&nbsp;Introduction
 This template tries to be as general as possible - you can easily delete any unwanted features from the pipeline or rewire the configuration, by modifying behavior in [src/train.py](src/train.py).
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
@@ -56,7 +56,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Workflow**: comes down to 4 simple steps (see [#Workflow](#workflow))
 - **Experiment Tracking**: many logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
 - **Logs**: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
-- **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper), doesn't require coding any boilerplate into the pipeline, everything is define in a single config file (see [#Hyperparameter Search](#hyperparameter-search))
+- **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper), every hyperparameter search is defined in separete config file (see [#Hyperparameter Search](#hyperparameter-search))
 - **Tests**: unit tests and smoke tests (see [#Tests](#tests))
 - **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
@@ -112,7 +112,7 @@ The directory structure of new project looks like this:
 <br>
 
 
-## 🚀&nbsp; Quickstart
+## 🚀&nbsp;&nbsp;Quickstart
 ```yaml
 # clone project
 git clone https://github.com/ashleve/lightning-hydra-template
@@ -134,7 +134,7 @@ When running `python run.py` you should see something like this:
 
 </div>
 
-### ⚡&nbsp;Your Superpowers
+### ⚡&nbsp;&nbsp;Your Superpowers
 (click to expand)
 
 <details>
@@ -350,7 +350,7 @@ python run.py -m 'experiment=glob(*)'
 <br>
 
 
-## :whale:&nbsp; Docker
+## 🐳&nbsp;&nbsp;Docker
 I recommend the official [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags) (size: 6GB, it comes with installed Apex for mixed-precision training), or "devel" version of [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch).
 
 Custom dockerfiles for the template are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building your own images.
@@ -369,13 +369,13 @@ docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
 
 
 
-## :heart:&nbsp; Contributions
+## ❤️&nbsp;&nbsp;Contributions
 Have a question? Found a bug? Missing a specific feature? Ran into a problem? Feel free to file a new issue or PR with respective title and description. If you already found a solution to your problem, don't hesitate to share it. Suggestions for new best practices and tricks are always welcome!
 <br><br><br><br>
 
 
 
-## :information_source:&nbsp; Guide
+## ℹ️&nbsp;&nbsp;Guide
 
 ### How To Get Started
 - First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
@@ -406,7 +406,7 @@ model = hydra.utils.instantiate(config.model)
 This allows you to easily iterate over new models!<br>
 Every time you create a new one, just specify its module path and parameters in appriopriate config.
 
-The whole pipeline managing the instantiation logic can be found in [src/train.py](src/train.py).
+The whole pipeline managing the instantiation logic is placed in [src/train.py](src/train.py).
 
 <br>
 
@@ -622,6 +622,13 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 
 
 ### Hyperparameter Search
+Defining hyperparameter optimization is as easy as adding new config file to [configs/hparams_search](configs/hparams_search).
+<details>
+<summary><b>Show example hyperparameter optimization config</b></summary>
+
+</details>
+Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file! <br>
+You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
 
 <br><br>
 
