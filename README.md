@@ -31,7 +31,7 @@ This template tries to be as general as possible - you can easily delete any unw
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
-**Why you should use it:** it allows you to rapidly iterate over new models/datasets and scale your projects from small single experiments to hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most convenient all-in-one technology stack for Deep Learning research. Good starting point for reproducing papers or kaggle competitions. It's also a collection of best practices for efficient workflow and reproducibility.
+**Why you should use it:** it allows you to rapidly iterate over new models/datasets and scale your projects from small single experiments to hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most convenient all-in-one technology stack for Deep Learning research. Relatively simple, yet powerful. Good starting point for reproducing papers, kaggle competitions or small-team research projects. It's also a collection of best practices for efficient workflow and reproducibility.
 
 **Why you shouldn't use it:** Lightning and Hydra are not yet mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
 
@@ -334,7 +334,7 @@ python run.py -m 'experiment=glob(*)'
 </details>
 
 <details>
-<summary><b>Execute sweep on a Linux SLURM cluster</b></summary>
+<summary><b>Execute sweep on a SLURM cluster</b></summary>
 
 > This should be achievable with either [the right lightning trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/clouds/cluster.html?highlight=SLURM#slurm-managed-cluster) or simple config using [Submitit launcher for Hydra](https://hydra.cc/docs/plugins/submitit_launcher). Example is not yet implemented in this template.
 
@@ -384,15 +384,12 @@ Have a question? Found a bug? Missing a specific feature? Ran into a problem? Fe
 
 
 ### How it works
-By design, every run is initialized by [run.py](run.py) file. [train.py](src/train.py) contains training pipeline.
-You can create different pipelines for different needs (e.g. for k-fold cross validation or for testing only).
+By design, every run is initialized by [run.py](run.py) file.
+<!-- [train.py](src/train.py) contains training pipeline.
+You can create different pipelines for different needs (e.g. for k-fold cross validation or for testing only). -->
 
-All PyTorch Lightning modules are dynamically instantiated from module paths specified in config, e.g. the model can be instantiated with the following line:
-```python
-model = hydra.utils.instantiate(config.model)
-```
-This allows you to easily iterate over new models!<br>
-Every time you create a new one, just specify its module path and parameters in appriopriate config file:
+All PyTorch Lightning modules are dynamically instantiated from module paths specified in config. <br>
+Example model config:
 ```yaml
 _target_: src.models.mnist_model.MNISTLitModel
 input_size: 784
@@ -402,6 +399,15 @@ lin3_size: 256
 output_size: 10
 lr: 0.001
 ```
+Using this config we can instantiate the object with the following like:
+```python
+model = hydra.utils.instantiate(config.model)
+```
+This allows you to easily iterate over new models!<br>
+Every time you create a new one, just specify its module path and parameters in appriopriate config.
+
+The whole pipeline managing the instantiation logic can be found in [src/train.py](src/train.py).
+
 <br>
 
 

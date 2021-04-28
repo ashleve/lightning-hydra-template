@@ -10,7 +10,7 @@ watch_model:
 
 upload_code_as_artifact:
     _target_: src.callbacks.wandb_callbacks.UploadCodeToWandbAsArtifact
-    code_dir: ${work_dir}
+    code_dir: ${work_dir}/src
 
 
 upload_ckpts_as_artifact:
