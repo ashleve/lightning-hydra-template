@@ -687,9 +687,9 @@ hydra:
 
 </details>
 
-Next, you can execute it for given experiment config with:
+Next, you can execute it\ with:
 ```yaml
-python run.py hparams_search=mnist_optuna experiment=example_simple
+python run.py hparams_search=hparams_config_name
 ```
 Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file! You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
 <br><br>
