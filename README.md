@@ -71,6 +71,7 @@ The directory structure of new project looks like this:
 │   ├── datamodule              <- Datamodule configs
 │   ├── experiment              <- Experiment configs
 │   ├── hparams_search          <- Hyperparameter search configs
+│   ├── hydra                   <- Hydra related configs
 │   ├── logger                  <- Logger configs
 │   ├── model                   <- Model configs
 │   ├── trainer                 <- Trainer configs
@@ -440,9 +441,18 @@ defaults:
     - callbacks: default.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
+    - experiment: null
+    - hparams_search: null
+
+    - hydra: default.yaml
+
+    # enable color logging
+    - override hydra/hydra_logging: colorlog
+    - override hydra/job_logging: colorlog
+
 
 # path to original working directory
-# hydra hijacks working directory by changing it to the current log directory
+# hydra hijacks working directory by changing it to the current log directory,
 # so it's useful to have this path as a special variable
 # learn more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 work_dir: ${hydra:runtime.cwd}
@@ -453,7 +463,9 @@ data_dir: ${work_dir}/data/
 
 
 # use `python run.py debug=true` for easy debugging!
-# (equivalent to running `python run.py trainer.fast_dev_run=true`)
+# this will run 1 train, val and test loop with only 1 batch
+# equivalent to running `python run.py trainer.fast_dev_run=true`
+# (this is placed here just for easier access from command line)
 debug: False
 
 
@@ -462,16 +474,8 @@ print_config: True
 
 
 # disable python warnings if they annoy you
-disable_warnings: False
+ignore_warnings: True
 
-
-# output paths for hydra logs
-hydra:
-    run:
-        dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-    sweep:
-        dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
-        subdir: ${hydra.job.num}
 ```
 
 </details>
@@ -614,7 +618,7 @@ By default, logs have the following structure:
 │
 ```
 
-You can change this structure by modifying paths in [main project configuration](configs/config.yaml).
+You can change this structure by modifying paths in [hydra configuration](configs/hydra/default.yaml).
 <br><br>
 
 
@@ -877,7 +881,7 @@ All variables from `.env` are loaded in `run.py` automatically.
 
 Hydra allows you to reference any env variable in `.yaml` configs like this:
 ```yaml
-path_to_data: ${env:MY_VAR}
+path_to_data: ${oc.env:MY_VAR}
 ```
 
 </details>

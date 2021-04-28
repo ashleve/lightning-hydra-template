@@ -11,6 +11,8 @@ defaults:
     - experiment: null
     - hparams_search: null
 
+    - hydra: default.yaml
+
     # enable color logging
     - override hydra/hydra_logging: colorlog
     - override hydra/job_logging: colorlog
@@ -40,18 +42,3 @@ print_config: True
 
 # disable python warnings if they annoy you
 ignore_warnings: True
-
-
-hydra:
-    # output paths for hydra logs
-    run:
-        dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-    sweep:
-        dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
-        subdir: ${hydra.job.num}
-
-    job:
-        # you can set here environment variables that are universal for all users
-        # for system specific variables (like data paths) it's better to use .env file!
-        env_set:
-            EXAMPLE_VAR: "example_value"
