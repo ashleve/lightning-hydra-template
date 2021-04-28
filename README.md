@@ -397,12 +397,7 @@ Have a question? Found a bug? Missing a specific feature? Ran into a problem? Fe
 
 
 ### How it works
-By design, every run is initialized by [run.py](run.py) file.
-<!-- [train.py](src/train.py) contains training pipeline.
-You can create different pipelines for different needs (e.g. for k-fold cross validation or for testing only). -->
-
-All PyTorch Lightning modules are dynamically instantiated from module paths specified in config. <br>
-Example model config:
+By design, every run is initialized by [run.py](run.py) file. All PyTorch Lightning modules are dynamically instantiated from module paths specified in config. Example model config:
 ```yaml
 _target_: src.models.mnist_model.MNISTLitModel
 input_size: 784
@@ -417,8 +412,7 @@ Using this config we can instantiate the object with the following line:
 model = hydra.utils.instantiate(config.model)
 ```
 This allows you to easily iterate over new models!<br>
-Every time you create a new one, just specify its module path and parameters in appriopriate config file.
-
+Every time you create a new one, just specify its module path and parameters in appriopriate config file. <br>
 The whole pipeline managing the instantiation logic is placed in [src/train.py](src/train.py).
 
 <br>
@@ -640,7 +634,7 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 ### Hyperparameter Search
 Defining hyperparameter optimization is as easy as adding new config file to [configs/hparams_search](configs/hparams_search).
 <details>
-<summary><b>Show example hyperparameter optimization config</b></summary>
+<summary><b>Show example</b></summary>
 
 ```yaml
 defaults:
@@ -703,10 +697,7 @@ hydra:
 
 </details>
 
-Next, you can execute it with:
-```yaml
-python run.py hparams_search=hparams_config_name
-```
+Next, you can execute it with: `python run.py hparams_search=hparams_config_name`. <br>
 Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file! You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
 <br><br>
 
