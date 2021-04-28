@@ -412,7 +412,7 @@ Using this config we can instantiate the object with the following line:
 model = hydra.utils.instantiate(config.model)
 ```
 This allows you to easily iterate over new models!<br>
-Every time you create a new one, just specify its module path and parameters in appriopriate config file.
+Every time you create a new one, just specify its module path and parameters in appriopriate config file. <br>
 The whole pipeline managing the instantiation logic is placed in [src/train.py](src/train.py).
 
 <br>
@@ -697,7 +697,7 @@ hydra:
 
 </details>
 
-Next, you can execute it with: `python run.py hparams_search=hparams_config_name`
+Next, you can execute it with: `python run.py hparams_search=hparams_config_name`. <br>
 Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file! You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
 <br><br>
 
