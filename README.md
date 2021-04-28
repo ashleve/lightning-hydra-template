@@ -49,17 +49,17 @@ It makes your code neatly organized and provides lots of useful features, like a
 
 ## Main Ideas Of This Template
 - **Predefined Structure**: clean and scalable so that work can easily be extended and replicated (see [#Project Structure](#project-structure))
-- **Rapid Experimentation**: thanks to automating pipeline with config files and hydra command line superpowers
+- **Rapid Experimentation**: thanks to automating pipeline with config files and hydra command line superpowers (see [#Your Superpowers](#your-superpowers))
 - **Little Boilerplate**: so pipeline can be easily modified (see [src/train.py](src/train.py))
 - **Main Configuration**: main config file specifies default training configuration (see [#Main Project Configuration](#main-project-configuration))
 - **Experiment Configurations**: stored in a separate folder, they can be composed out of smaller configs, override chosen parameters or define everything from scratch (see [#Experiment Configuration](#experiment-configuration))
+- **Workflow**: comes down to 4 simple steps (see [#Workflow](#workflow))
 - **Experiment Tracking**: many logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
 - **Logs**: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
-- **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper)
-- **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
-- **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
+- **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper), doesn't require coding any boilerplate into the pipeline, everything is define in a single config file (see [#Hyperparameter Search](#hyperparameter-search))
 - **Tests**: unit tests and smoke tests (see [#Tests](#tests))
-- **Workflow**: comes down to 4 simple steps (see [#Workflow](#workflow))
+- **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
+- **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
 <br>
 
 
@@ -615,6 +615,12 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 
 
 
+### Hyperparameter Search
+
+<br><br>
+
+
+
 ### Inference
 Template contains simple example of loading model from checkpoint and running predictions.<br>
 Take a look at [inference_example.py](src/utils/inference_example.py).
@@ -955,7 +961,7 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 <summary><b>Automatic activation of virtual environment and tab completion when entering folder</b></summary>
 
 
-Create a new file called `.autoenv` (this name is excluded from version control in .gitignore). <br>
+Create a new file called `.autoenv` (this name is excluded from version control in `.gitignore`). <br>
 You can use it to automatically execute shell commands when entering folder.
 
 To setup this automation for bash, execute the following line:
