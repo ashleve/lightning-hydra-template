@@ -56,7 +56,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Workflow**: comes down to 4 simple steps (see [#Workflow](#workflow))
 - **Experiment Tracking**: many logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
 - **Logs**: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
-- **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper), new hyperparameter search can be defined with a single config file (see [#Hyperparameter Search](#hyperparameter-search))
+- **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) (see [#Hyperparameter Search](#hyperparameter-search))
 - **Tests**: unit tests and smoke tests (see [#Tests](#tests))
 - **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
@@ -154,7 +154,7 @@ python run.py +model.new_param="uwu"
 
 
 <details>
-<summary><b>Train on CPU, GPU, TPU or even with DDP and mixed precision</b></summary>
+<summary><b>Train on CPU, GPU, multi-GPU and TPU</b></summary>
 
 > PyTorch Lightning makes it easy to train your models on different hardware.
 ```yaml
@@ -172,8 +172,20 @@ python run.py trainer.gpus=4 +trainer.accelerator='ddp'
 
 # train with DDP (Distributed Data Parallel) (8 GPUs, 2 nodes)
 python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.accelerator='ddp'
+```
 
-# train with mixed precision
+</details>
+
+
+<details>
+<summary><b>Train with mixed precision</b></summary>
+
+```yaml
+# train with mixed precision (Apex level O1)
+python run.py trainer.gpus=1 +trainer.amp_backend="apex" +trainer.precision=16 \
++trainer.amp_level="O1"
+
+# train with mixed precision (Apex level O2)
 python run.py trainer.gpus=1 +trainer.amp_backend="apex" +trainer.precision=16 \
 +trainer.amp_level="O2"
 ```
