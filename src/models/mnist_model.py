@@ -50,13 +50,6 @@ class MNISTLitModel(LightningModule):
         self.val_accuracy = Accuracy()
         self.test_accuracy = Accuracy()
 
-        self.metric_hist = {
-            "train/acc": [],
-            "val/acc": [],
-            "train/loss": [],
-            "val/loss": [],
-        }
-
     def forward(self, x: torch.Tensor):
         return self.model(x)
 
@@ -81,11 +74,9 @@ class MNISTLitModel(LightningModule):
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def training_epoch_end(self, outputs: List[Any]):
-        # log best so far train acc and train loss
-        self.metric_hist["train/acc"].append(self.trainer.callback_metrics["train/acc"])
-        self.metric_hist["train/loss"].append(self.trainer.callback_metrics["train/loss"])
-        self.log("train/acc_best", max(self.metric_hist["train/acc"]), prog_bar=False)
-        self.log("train/loss_best", min(self.metric_hist["train/loss"]), prog_bar=False)
+        # optional method
+        # `outputs` is a list of dicts returned from `training_step`
+        pass
 
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
@@ -98,11 +89,7 @@ class MNISTLitModel(LightningModule):
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        # log best so far val acc and val loss
-        self.metric_hist["val/acc"].append(self.trainer.callback_metrics["val/acc"])
-        self.metric_hist["val/loss"].append(self.trainer.callback_metrics["val/loss"])
-        self.log("val/acc_best", max(self.metric_hist["val/acc"]), prog_bar=False)
-        self.log("val/loss_best", min(self.metric_hist["val/loss"]), prog_bar=False)
+        pass
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)

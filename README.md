@@ -440,11 +440,6 @@ defaults:
 
     - hydra: default.yaml
 
-    # enable color logging
-    - override hydra/hydra_logging: colorlog
-    - override hydra/job_logging: colorlog
-
-
 # path to original working directory
 # hydra hijacks working directory by changing it to the current log directory,
 # so it's useful to have this path as a special variable
@@ -454,13 +449,6 @@ work_dir: ${hydra:runtime.cwd}
 
 # path to folder with data
 data_dir: ${work_dir}/data/
-
-
-# use `python run.py debug=true` for easy debugging!
-# this will run 1 train, val and test loop with only 1 batch
-# equivalent to running `python run.py trainer.fast_dev_run=true`
-# (this is placed here just for easier access from command line)
-debug: False
 
 
 # pretty print config at the start of the run using Rich library
@@ -516,7 +504,7 @@ datamodule:
 
 
 <details>
-<summary><b>Advanced example</b></summary>
+<summary><b>Show advanced example</b></summary>
 
 ```yaml
 # to execute this experiment run:
@@ -697,8 +685,8 @@ hydra:
 
 </details>
 
-Next, you can execute it with: `python run.py hparams_search=hparams_config_name`. <br>
-Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file! You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
+Next, you can execute it with: `python run.py hparams_search=config_name`<br>
+Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file. You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
 <br><br>
 
 
