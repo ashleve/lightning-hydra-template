@@ -435,10 +435,11 @@ defaults:
     - callbacks: default.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
+    - hydra: default.yaml
+
     - experiment: null
     - hparams_search: null
 
-    - hydra: default.yaml
 
 # path to original working directory
 # hydra hijacks working directory by changing it to the current log directory,
@@ -741,18 +742,6 @@ You can run DDP on mnist example with 4 GPUs like this:
 python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 ```
 ⚠️ When using DDP you have to be careful how you write your models - learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
-<!--
-<details>
-<summary><b>Use metrics api objects</b></summary>
-
-Use metrics api objects, e.g. `pytorch_lightning.metrics.classification.Accuracy` when logging metrics in `LightningModule`, to ensure proper reduction over multiple GPUs. You can also use `sync_dist` parameter instead with `self.log(..., sync_dist=True)`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#synchronize-validation-and-test-logging).
-
-</details>
-
-3. Remember `outputs` parameters in hooks like `validation_epoch_end()` will contain only outputs from subset of data processed on given GPU.
-4. Init tensors using `type_as` and `register_buffer`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#init-tensors-using-type-as-and-register-buffer).
-5. Make sure your model is pickable. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#make-models-pickleable).
- -->
 <br>
 
 
@@ -778,28 +767,7 @@ You can easily remove any of those by modifying [run.py](run.py) and [src/train.
 
 
 ## Best Practices
-<!-- <details>
-<summary><b>Write unit tests and smoke tests</b></summary>
-
-Template comes with example tests implemented with pytest library. <br>
-To execute them simply run:
-```yaml
-# run all tests
-pytest
-
-# run tests from specific file
-pytest tests/smoke_tests/test_commands.py
-
-# run all tests except the ones using wandb
-pytest -k "not wandb"
-```
-I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exists to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke_tests](tests/smoke_tests) folder.
-
-You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
-
-</details>
-
-<details>
+<!--<details>
 <summary><b>Use Docker</b></summary>
 
 Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster. You can extend [dockerfiles](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles) provided in the template with your own instructions for building the image.<br>
