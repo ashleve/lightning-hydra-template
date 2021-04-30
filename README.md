@@ -630,7 +630,7 @@ defaults:
 
 
 # choose metric which will be optimized by Optuna
-optimized_metric: "val/acc_best"
+optimized_metric: "val/acc"
 
 
 hydra:
@@ -1039,7 +1039,7 @@ To setup this automation for bash, execute the following line:
 echo "autoenv() { if [ -x .autoenv ]; then source .autoenv ; echo '.autoenv executed' ; fi } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc
 ```
 
-Now you can add any commands to your `.autoenv` file, e.g. activation of virual environment and hydra tab completion:
+Now you can add any commands to your `.autoenv` file, e.g. activation of virtual environment and hydra tab completion:
 ```bash
 # activate conda environment
 conda activate myenv

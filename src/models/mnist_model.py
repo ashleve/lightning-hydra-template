@@ -74,8 +74,7 @@ class MNISTLitModel(LightningModule):
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def training_epoch_end(self, outputs: List[Any]):
-        # optional method
-        # `outputs` is a list of dicts returned from `training_step`
+        # `outputs` is a list of dicts returned from `training_step()`
         pass
 
     def validation_step(self, batch: Any, batch_idx: int):
