@@ -19,7 +19,7 @@ def test_something3(arg1: float):
     assert arg1 > 0
 
 
-# use RunIf to skip execution of some tests when not on windows or when no gpus are available
+# use RunIf to skip execution of some tests, e.g. when not on windows or when no gpus are available
 @RunIf(skip_windows=True, min_gpus=1)
 def test_something4():
     """Some test description."""

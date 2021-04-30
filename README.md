@@ -276,7 +276,7 @@ python run.py trainer.weights_summary="full"
 python run.py +trainer.profiler="simple"
 
 # raise exception, if any of the parameters or the loss are NaN or +/-inf
-python run.py trainer.terminate_on_nan=true
+python run.py +trainer.terminate_on_nan=true
 
 # try overfitting to 1 batch
 python run.py +trainer.overfit_batches=1 trainer.max_epochs=20
@@ -320,7 +320,7 @@ python run.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 <details>
 <summary><b>Create a sweep over hyperparameters with Optuna</b></summary>
 
-> Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a [single config file](configs/config_optuna.yaml)!
+> Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) plugin doesn't require you to code any boilerplate into your pipeline, everything is defined in a [single config file](configs/hparams_search/mnist_optuna.yaml)!
 ```yaml
 # this will run hyperparameter search defined in `configs/hparams_search/mnist_optuna.yaml`
 # over chosen experiment config
@@ -435,14 +435,10 @@ defaults:
     - callbacks: default.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
-    - experiment: null
-    - hparams_search: null
-
     - hydra: default.yaml
 
-    # enable color logging
-    - override hydra/hydra_logging: colorlog
-    - override hydra/job_logging: colorlog
+    - experiment: null
+    - hparams_search: null
 
 
 # path to original working directory
@@ -454,13 +450,6 @@ work_dir: ${hydra:runtime.cwd}
 
 # path to folder with data
 data_dir: ${work_dir}/data/
-
-
-# use `python run.py debug=true` for easy debugging!
-# this will run 1 train, val and test loop with only 1 batch
-# equivalent to running `python run.py trainer.fast_dev_run=true`
-# (this is placed here just for easier access from command line)
-debug: False
 
 
 # pretty print config at the start of the run using Rich library
@@ -516,7 +505,7 @@ datamodule:
 
 
 <details>
-<summary><b>Advanced example</b></summary>
+<summary><b>Show advanced example</b></summary>
 
 ```yaml
 # to execute this experiment run:
@@ -642,7 +631,7 @@ defaults:
 
 
 # choose metric which will be optimized by Optuna
-optimized_metric: "val/acc_best"
+optimized_metric: "val/acc"
 
 
 hydra:
@@ -697,8 +686,8 @@ hydra:
 
 </details>
 
-Next, you can execute it with: `python run.py hparams_search=hparams_config_name`. <br>
-Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file! You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
+Next, you can execute it with: `python run.py -m hparams_search=mnist_optuna`<br>
+Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file. You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
 <br><br>
 
 
@@ -753,18 +742,6 @@ You can run DDP on mnist example with 4 GPUs like this:
 python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 ```
 ⚠️ When using DDP you have to be careful how you write your models - learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
-<!--
-<details>
-<summary><b>Use metrics api objects</b></summary>
-
-Use metrics api objects, e.g. `pytorch_lightning.metrics.classification.Accuracy` when logging metrics in `LightningModule`, to ensure proper reduction over multiple GPUs. You can also use `sync_dist` parameter instead with `self.log(..., sync_dist=True)`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#synchronize-validation-and-test-logging).
-
-</details>
-
-3. Remember `outputs` parameters in hooks like `validation_epoch_end()` will contain only outputs from subset of data processed on given GPU.
-4. Init tensors using `type_as` and `register_buffer`. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#init-tensors-using-type-as-and-register-buffer).
-5. Make sure your model is pickable. Learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html#make-models-pickleable).
- -->
 <br>
 
 
@@ -790,28 +767,7 @@ You can easily remove any of those by modifying [run.py](run.py) and [src/train.
 
 
 ## Best Practices
-<!-- <details>
-<summary><b>Write unit tests and smoke tests</b></summary>
-
-Template comes with example tests implemented with pytest library. <br>
-To execute them simply run:
-```yaml
-# run all tests
-pytest
-
-# run tests from specific file
-pytest tests/smoke_tests/test_commands.py
-
-# run all tests except the ones using wandb
-pytest -k "not wandb"
-```
-I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute simple bash scripts that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exists to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke_tests](tests/smoke_tests) folder.
-
-You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).<br>
-
-</details>
-
-<details>
+<!--<details>
 <summary><b>Use Docker</b></summary>
 
 Docker makes it easy to initialize the whole training environment, e.g. when you want to execute experiments in cloud or on some private computing cluster. You can extend [dockerfiles](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles) provided in the template with your own instructions for building the image.<br>
@@ -1051,7 +1007,7 @@ To setup this automation for bash, execute the following line:
 echo "autoenv() { if [ -x .autoenv ]; then source .autoenv ; echo '.autoenv executed' ; fi } ; cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv" >> ~/.bashrc
 ```
 
-Now you can add any commands to your `.autoenv` file, e.g. activation of virual environment and hydra tab completion:
+Now you can add any commands to your `.autoenv` file, e.g. activation of virtual environment and hydra tab completion:
 ```bash
 # activate conda environment
 conda activate myenv

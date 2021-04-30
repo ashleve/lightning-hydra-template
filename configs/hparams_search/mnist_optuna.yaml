@@ -10,7 +10,7 @@ defaults:
 
 
 # choose metric which will be optimized by Optuna
-optimized_metric: "val/acc_best"
+optimized_metric: "val/acc"
 
 
 hydra:

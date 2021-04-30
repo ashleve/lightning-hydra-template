@@ -2,6 +2,12 @@ from tests.helpers.run_command import run_command
 from tests.helpers.runif import RunIf
 
 
+def test_fast_dev_run():
+    """Run 1 train, val, test batch."""
+    command = ["run.py", "trainer=default", "trainer.fast_dev_run=true"]
+    run_command(command)
+
+
 def test_default_cpu():
     """Test default configuration on CPU."""
     command = ["run.py", "trainer.max_epochs=1", "trainer.gpus=0"]
@@ -17,12 +23,6 @@ def test_default_gpu():
         "trainer.gpus=1",
         "datamodule.pin_memory=True",
     ]
-    run_command(command)
-
-
-def test_fast_dev_run():
-    """Run 1 train, val, test batch."""
-    command = ["run.py", "trainer=default", "trainer.fast_dev_run=true"]
     run_command(command)
 
 
