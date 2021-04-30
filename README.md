@@ -276,7 +276,7 @@ python run.py trainer.weights_summary="full"
 python run.py +trainer.profiler="simple"
 
 # raise exception, if any of the parameters or the loss are NaN or +/-inf
-python run.py trainer.terminate_on_nan=true
+python run.py +trainer.terminate_on_nan=true
 
 # try overfitting to 1 batch
 python run.py +trainer.overfit_batches=1 trainer.max_epochs=20
@@ -686,7 +686,7 @@ hydra:
 
 </details>
 
-Next, you can execute it with: `python run.py hparams_search=config_name`<br>
+Next, you can execute it with: `python run.py -m hparams_search=mnist_optuna`<br>
 Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file. You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
 <br><br>
 
