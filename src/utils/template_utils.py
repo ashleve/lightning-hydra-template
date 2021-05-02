@@ -58,6 +58,8 @@ def extras(config: DictConfig) -> None:
         # Debuggers don't like GPUs or multiprocessing
         if config.trainer.get("gpus"):
             config.trainer.gpus = 0
+        if config.datamodule.get("pin_memory"):
+            config.datamodule.pin_memory = False
         if config.datamodule.get("num_workers"):
             config.datamodule.num_workers = 0
 
