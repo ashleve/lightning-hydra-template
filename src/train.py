@@ -7,9 +7,9 @@ from pytorch_lightning import seed_everything
 import hydra
 from omegaconf import DictConfig
 
-from src.utils import template_utils
+from src.utils import utils
 
-log = template_utils.get_logger(__name__)
+log = utils.get_logger(__name__)
 
 
 def train(config: DictConfig) -> Optional[float]:
@@ -59,7 +59,7 @@ def train(config: DictConfig) -> Optional[float]:
 
     # Send some parameters from config to all lightning loggers
     log.info("Logging hyperparameters!")
-    template_utils.log_hyperparameters(
+    utils.log_hyperparameters(
         config=config,
         model=model,
         datamodule=datamodule,
@@ -79,7 +79,7 @@ def train(config: DictConfig) -> Optional[float]:
 
     # Make sure everything closed properly
     log.info("Finalizing!")
-    template_utils.finish(
+    utils.finish(
         config=config,
         model=model,
         datamodule=datamodule,
@@ -91,7 +91,7 @@ def train(config: DictConfig) -> Optional[float]:
     # Print path to best checkpoint
     log.info(f"Best checkpoint path:\n{trainer.checkpoint_callback.best_model_path}")
 
-    # Return metric score for Optuna optimization
+    # Return metric score for hyperparameter optimization
     optimized_metric = config.get("optimized_metric")
     if optimized_metric:
         return trainer.callback_metrics[optimized_metric]
