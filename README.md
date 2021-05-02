@@ -742,7 +742,7 @@ You can run DDP on mnist example with 4 GPUs like this:
 python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 ```
 ⚠️ When using DDP you have to be careful how you write your models - learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
-<br>
+<br><br>
 
 
 ### Extra Features
