@@ -21,6 +21,7 @@ wandb>=0.10.26
 rich
 python-dotenv
 pytest
+sh
 pre-commit
 scikit-learn
 pandas
