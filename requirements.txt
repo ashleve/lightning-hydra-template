@@ -5,14 +5,14 @@ pytorch-lightning>=1.2.10
 torchmetrics
 
 # --------- hydra --------- #
-hydra-core==1.1.0.dev5
+hydra-core==1.1.0.dev6
 hydra-colorlog==1.1.0.dev1
 hydra-optuna-sweeper==1.1.0.dev1
 # hydra-ray-launcher==0.1.2
 # hydra-submitit-launcher==1.1.0
 
 # --------- loggers --------- #
-wandb>=0.10.26
+wandb>=0.10.28
 # neptune-client
 # comet-ml
 # mlflow
@@ -21,6 +21,7 @@ wandb>=0.10.26
 rich
 python-dotenv
 pytest
+sh
 pre-commit
 scikit-learn
 pandas

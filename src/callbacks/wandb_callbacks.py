@@ -13,6 +13,8 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 
 
 def get_wandb_logger(trainer: Trainer) -> WandbLogger:
+    """Safely get Weights&Biases logger from Trainer."""
+
     if isinstance(trainer.logger, WandbLogger):
         return trainer.logger
 

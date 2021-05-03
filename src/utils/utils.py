@@ -42,7 +42,7 @@ def extras(config: DictConfig) -> None:
     # enable adding new keys to config
     OmegaConf.set_struct(config, False)
 
-    # disable python warnings if <config.disable_warnings=True>
+    # disable python warnings if <config.ignore_warnings=True>
     if config.get("ignore_warnings"):
         log.info(f"Disabling python warnings! <config.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
@@ -58,6 +58,8 @@ def extras(config: DictConfig) -> None:
         # Debuggers don't like GPUs or multiprocessing
         if config.trainer.get("gpus"):
             config.trainer.gpus = 0
+        if config.datamodule.get("pin_memory"):
+            config.datamodule.pin_memory = False
         if config.datamodule.get("num_workers"):
             config.datamodule.num_workers = 0
 
@@ -128,7 +130,6 @@ def log_hyperparameters(
     """This method controls which parameters from Hydra config are saved by Lightning loggers.
 
     Additionaly saves:
-        - sizes of train, val, test dataset
         - number of trainable model parameters
     """
 
@@ -142,16 +143,6 @@ def log_hyperparameters(
         hparams["optimizer"] = config["optimizer"]
     if "callbacks" in config:
         hparams["callbacks"] = config["callbacks"]
-
-    # save sizes of each dataset
-    # (requires calling `datamodule.setup()` first to initialize datasets)
-    # datamodule.setup()
-    # if hasattr(datamodule, "data_train") and datamodule.data_train:
-    #     hparams["datamodule/train_size"] = len(datamodule.data_train)
-    # if hasattr(datamodule, "data_val") and datamodule.data_val:
-    #     hparams["datamodule/val_size"] = len(datamodule.data_val)
-    # if hasattr(datamodule, "data_test") and datamodule.data_test:
-    #     hparams["datamodule/test_size"] = len(datamodule.data_test)
 
     # save number of model parameters
     hparams["model/params_total"] = sum(p.numel() for p in model.parameters())

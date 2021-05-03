@@ -96,7 +96,7 @@ The directory structure of new project looks like this:
 │   ├── models                  <- Lightning models
 │   ├── utils                   <- Utility scripts
 │   │   ├── inference_example.py    <- Example of inference with trained model
-│   │   └── template_utils.py       <- Extra features for the template
+│   │   └── utils.py                <- Extra features for the template
 │   │
 │   └── train.py                <- Training pipeline
 │
@@ -742,7 +742,7 @@ You can run DDP on mnist example with 4 GPUs like this:
 python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 ```
 ⚠️ When using DDP you have to be careful how you write your models - learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
-<br>
+<br><br>
 
 
 ### Extra Features
@@ -1062,7 +1062,7 @@ some_parameter: ${datamodule: some_param}
 ```
 When later accessing this field, say in your lightning model, it will get automatically resolved based on all resolvers that are registered. Remember not to access this field before datamodule is initialized. **You also need to set resolve to false in print_config() in [run.py](run.py) method or it will throw errors!**
 ```python
-template_utils.print_config(config, resolve=False)
+utils.print_config(config, resolve=False)
 ```
 
 </details>
