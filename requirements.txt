@@ -1,13 +1,14 @@
 # --------- pytorch --------- #
 torch==1.8.1
 torchvision==0.9.1
-pytorch-lightning>=1.2.10
+pytorch-lightning>=1.3.0
 torchmetrics
 
 # --------- hydra --------- #
 hydra-core==1.1.0.dev6
 hydra-colorlog==1.1.0.dev1
 hydra-optuna-sweeper==1.1.0.dev1
+# hydra-ax-sweeper==1.1.0
 # hydra-ray-launcher==0.1.2
 # hydra-submitit-launcher==1.1.0
 
@@ -16,6 +17,15 @@ wandb>=0.10.28
 # neptune-client
 # comet-ml
 # mlflow
+# torch_tb_profiler
+# aim
+# clearml
+
+# --------- linters --------- #
+black
+isort
+flake8
+
 
 # --------- others --------- #
 rich

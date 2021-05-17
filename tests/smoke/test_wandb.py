@@ -7,7 +7,6 @@ Use the following command to skip wandb tests:
     pytest -k "not wandb"
 """
 
-
 # @pytest.mark.wandb
 # def test_wandb_optuna_sweep():
 #     """Test wandb logging with Optuna sweep."""
@@ -24,7 +23,6 @@ Use the following command to skip wandb tests:
 #         "hydra.sweeper.n_trials=5",
 #     ]
 #     run_command(command)
-
 
 # @pytest.mark.wandb
 # def test_wandb_callbacks():

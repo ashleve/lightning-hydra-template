@@ -30,13 +30,11 @@ log = get_logger()
 
 
 def extras(config: DictConfig) -> None:
-    """A couple of optional utilities, controlled by main config file.
-        - disabling warnings
-        - easier access to debug mode
-        - forcing debug friendly configuration
-        - forcing multi-gpu friendly configuration
-    Args:
-        config (DictConfig): [description]
+    """A couple of optional utilities, controlled by main config file:
+    - disabling warnings
+    - easier access to debug mode
+    - forcing debug friendly configuration
+    - forcing multi-gpu friendly configuration
     """
 
     # enable adding new keys to config
@@ -44,7 +42,7 @@ def extras(config: DictConfig) -> None:
 
     # disable python warnings if <config.ignore_warnings=True>
     if config.get("ignore_warnings"):
-        log.info(f"Disabling python warnings! <config.ignore_warnings=True>")
+        log.info("Disabling python warnings! <config.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
 
     # set <config.trainer.fast_dev_run=True> if <config.debug=True>
@@ -66,7 +64,6 @@ def extras(config: DictConfig) -> None:
     # force multi-gpu friendly configuration if <config.trainer.accelerator=ddp>
     if config.trainer.get("accelerator") in ["ddp", "ddp_spawn", "dp", "ddp2"]:
         log.info("Forcing ddp friendly configuration! <config.trainer.accelerator=ddp>")
-        # ddp doesn't like num_workers>0 or pin_memory=True
         if config.datamodule.get("num_workers"):
             config.datamodule.num_workers = 0
         if config.datamodule.get("pin_memory"):
@@ -93,13 +90,13 @@ def print_config(
 
     Args:
         config (DictConfig): Config.
-        fields (Sequence[str], optional): Determines which main fields from config will be printed
-        and in what order.
+        fields (Sequence[str], optional): Determines which main fields from config will
+        be printed and in what order.
         resolve (bool, optional): Whether to resolve reference fields of DictConfig.
     """
 
     style = "dim"
-    tree = Tree(f":gear: CONFIG", style=style, guide_style=style)
+    tree = Tree(":gear: CONFIG", style=style, guide_style=style)
 
     for field in fields:
         branch = tree.add(field, style=style, guide_style=style)
@@ -157,7 +154,8 @@ def log_hyperparameters(
     trainer.logger.log_hyperparams(hparams)
 
     # disable logging any more hyperparameters for all loggers
-    # (this is just a trick to prevent trainer from logging hparams of model, since we already did that above)
+    # this is just a trick to prevent trainer from logging hparams of model,
+    # since we already did that above
     trainer.logger.log_hyperparams = empty
 
 
