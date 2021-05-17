@@ -1,11 +1,15 @@
 from typing import List, Optional
 
-from pytorch_lightning import LightningModule, LightningDataModule, Callback, Trainer
-from pytorch_lightning.loggers import LightningLoggerBase
-from pytorch_lightning import seed_everything
-
 import hydra
 from omegaconf import DictConfig
+from pytorch_lightning import (
+    Callback,
+    LightningDataModule,
+    LightningModule,
+    Trainer,
+    seed_everything,
+)
+from pytorch_lightning.loggers import LightningLoggerBase
 
 from src.utils import utils
 
