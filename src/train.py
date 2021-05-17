@@ -25,7 +25,7 @@ def train(config: DictConfig) -> Optional[float]:
 
     # Set seed for random number generators in pytorch, numpy and python.random
     if "seed" in config:
-        seed_everything(config.seed)
+        seed_everything(config.seed, workers=True)
 
     # Init Lightning datamodule
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
