@@ -87,8 +87,8 @@ The directory structure of new project looks like this:
 │                              `1.0-jqp-initial-data-exploration.ipynb`.
 │
 ├── tests                   <- Tests of any kind
-│   ├── smoke_tests
-│   └── unit_tests
+│   ├── smoke
+│   └── unit
 │
 ├── src
 │   ├── callbacks               <- Lightning callbacks
