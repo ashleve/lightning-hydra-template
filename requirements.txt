@@ -1,19 +1,19 @@
 # --------- pytorch --------- #
 torch==1.8.1
 torchvision==0.9.1
-pytorch-lightning>=1.3.0
+pytorch-lightning>=1.3.1
 torchmetrics
 
 # --------- hydra --------- #
-hydra-core==1.1.0.dev6
+hydra-core==1.1.0.rc1
 hydra-colorlog==1.1.0.dev1
-hydra-optuna-sweeper==1.1.0.dev1
+hydra-optuna-sweeper==1.1.0.dev2
 # hydra-ax-sweeper==1.1.0
 # hydra-ray-launcher==0.1.2
 # hydra-submitit-launcher==1.1.0
 
 # --------- loggers --------- #
-wandb>=0.10.28
+wandb>=0.10.30
 # neptune-client
 # comet-ml
 # mlflow
@@ -22,17 +22,16 @@ wandb>=0.10.28
 # clearml
 
 # --------- linters --------- #
+pre-commit
 black
 isort
 flake8
-
 
 # --------- others --------- #
 rich
 python-dotenv
 pytest
 sh
-pre-commit
 scikit-learn
 pandas
 matplotlib

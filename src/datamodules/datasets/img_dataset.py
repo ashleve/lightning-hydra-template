@@ -8,9 +8,9 @@ from torch.utils.data import Dataset
 class ImgDataset(Dataset):
     """Example dataset class for loading images from folder."""
 
-    def __init__(self, dir: str, transform: Optional[Callable] = None):
+    def __init__(self, data_dir: str, transform: Optional[Callable] = None):
         self.transform = transform
-        self.images = [os.path.join(dir, fname) for fname in os.listdir(dir)]
+        self.images = [os.path.join(data_dir, fname) for fname in os.listdir(data_dir)]
 
     def __getitem__(self, idx: int):
         image = Image.open(self.images[idx]).convert("L")  # convert to black and white

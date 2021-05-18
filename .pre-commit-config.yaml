@@ -28,8 +28,3 @@ repos:
     rev: 3.9.2
     hooks:
       - id: flake8
-
-  # - repo: https://github.com/pycqa/pylint
-  #   rev: pylint-2.8.1
-  #   hooks:
-  #   -   id: pylint
