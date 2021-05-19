@@ -1,7 +1,15 @@
+# this is example of the file that can be used for automatic execution of bash commands when entering folder
+# create a file named .autoenv (by default .autoenv will be excluded from version control)
+# to execute it manually use command: source .autoenv
+
 conda activate myenv
+
+# activate hydra tab completion
 eval "$(python run.py -sc install=bash)"
+
+# enable aliases for debugging
 alias test='pytest'
 alias debug1='python run.py debug=true'
-alias debug2='python run.py trainer.gpus=1 trainer.max_epochs=1 +trainer.limit_train_batches=0.25'
-alias debug3='python run.py trainer.gpus=1 trainer.max_epochs=1'
-alias debug_wandb='python run.py trainer.gpus=1 trainer.max_epochs=2 logger=wandb logger.wandb.project=tests'
+alias debug2='python run.py trainer.gpus=1 trainer.max_epochs=1'
+alias debug3='python run.py trainer.gpus=1 trainer.max_epochs=1 +trainer.limit_train_batches=0.1'
+alias debug_wandb='python run.py trainer.gpus=1 trainer.max_epochs=1 logger=wandb logger.wandb.project=tests'
