@@ -3,11 +3,12 @@ import pytest
 from tests.helpers.run_command import run_command
 
 """
-Use the following command to skip wandb tests:
-    pytest -k "not wandb"
+Use the following command to skip slow tests:
+    pytest -k "not slow"
 """
 
-# @pytest.mark.wandb
+
+# @pytest.mark.slow
 # def test_wandb_optuna_sweep():
 #     """Test wandb logging with Optuna sweep."""
 #     command = [
@@ -24,7 +25,8 @@ Use the following command to skip wandb tests:
 #     ]
 #     run_command(command)
 
-# @pytest.mark.wandb
+
+# @pytest.mark.slow
 # def test_wandb_callbacks():
 #     """Test wandb callbacks."""
 #     command = [

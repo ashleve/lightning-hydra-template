@@ -766,8 +766,8 @@ pytest
 # run tests from specific file
 pytest tests/smoke_tests/test_commands.py
 
-# run all tests except the ones using wandb
-pytest -k "not wandb"
+# run all tests except the ones marked as slow
+pytest -k "not slow"
 ```
 I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute tests that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exist to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke_tests](tests/smoke_tests) folder.
 
