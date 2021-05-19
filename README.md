@@ -786,7 +786,7 @@ To support reproducibility:
 To provide examples of logging custom visualisations with callbacks only:
 - **LogConfusionMatrix**
 - **LogF1PrecRecHeatmap**
-- **ImagePredictionLogger**
+- **LogImagePredictions**
 <br>
 
 

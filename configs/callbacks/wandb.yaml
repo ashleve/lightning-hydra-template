@@ -3,30 +3,30 @@ defaults:
 
 
 watch_model:
-    _target_: src.callbacks.wandb_callbacks.WatchModelWithWandb
+    _target_: src.callbacks.wandb_callbacks.WatchModel
     log: "all"
     log_freq: 100
 
 
 upload_code_as_artifact:
-    _target_: src.callbacks.wandb_callbacks.UploadCodeToWandbAsArtifact
+    _target_: src.callbacks.wandb_callbacks.UploadCodeAsArtifact
     code_dir: ${work_dir}/src
 
 
 upload_ckpts_as_artifact:
-    _target_: src.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact
+    _target_: src.callbacks.wandb_callbacks.UploadCheckpointsAsArtifact
     ckpt_dir: "checkpoints/"
     upload_best_only: True
 
 
 log_f1_precision_recall_heatmap:
-    _target_: src.callbacks.wandb_callbacks.LogF1PrecRecHeatmapToWandb
+    _target_: src.callbacks.wandb_callbacks.LogF1PrecRecHeatmap
 
 
 log_confusion_matrix:
-    _target_: src.callbacks.wandb_callbacks.LogConfusionMatrixToWandb
+    _target_: src.callbacks.wandb_callbacks.LogConfusionMatrix
 
 
-log_images_with_predictions:
-    _target_: src.callbacks.wandb_callbacks.ImagePredictionLogger
+log_image_predictions:
+    _target_: src.callbacks.wandb_callbacks.LogImagePredictions
     num_samples: 8
