@@ -32,6 +32,8 @@ rich
 python-dotenv
 pytest
 sh
+notebook
+ipython
 scikit-learn
 pandas
 matplotlib
