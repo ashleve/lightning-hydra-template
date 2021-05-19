@@ -1,8 +1,8 @@
 # --------- pytorch --------- #
-torch>=1.8.1
-torchvision>=0.9.1
+torch==1.8.1
+torchvision==0.9.1
 pytorch-lightning>=1.3.1
-torchmetrics
+torchmetrics>=0.3.2
 
 # --------- hydra --------- #
 hydra-core==1.1.0.rc1
@@ -15,11 +15,11 @@ hydra-optuna-sweeper==1.1.0.dev2
 # --------- loggers --------- #
 wandb>=0.10.30
 # neptune-client
-# comet-ml
 # mlflow
-# torch_tb_profiler
 # aim
+# comet-ml
 # clearml
+# torch_tb_profiler
 
 # --------- linters --------- #
 pre-commit
@@ -28,15 +28,12 @@ isort
 flake8
 
 # --------- others --------- #
-rich
+jupyterlab
 python-dotenv
+rich
 pytest
 sh
-notebook
-ipython
 scikit-learn
-pandas
-matplotlib
 seaborn
-# pudb
+pudb
 # dvc

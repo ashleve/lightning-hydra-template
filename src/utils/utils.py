@@ -3,7 +3,8 @@ import warnings
 from typing import List, Sequence
 
 import pytorch_lightning as pl
-import rich
+import rich.syntax
+import rich.tree
 import wandb
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.loggers.wandb import WandbLogger
