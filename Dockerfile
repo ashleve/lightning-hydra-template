@@ -1,6 +1,5 @@
-# Build commands:
-# docker build -t project_name .
-# docker run --gpus all -it --rm project_name
+# Build: docker build -t project_name .
+# Run: docker run --gpus all -it --rm project_name
 
 # Build from official Nvidia PyTorch image
 # GPU-ready with built in Apex mixed-precision support
@@ -9,7 +8,8 @@ FROM nvcr.io/nvidia/pytorch:21.04-py3
 
 
 # Copy all files
-COPY . workspace/
+ADD . /workspace/
+WORKDIR /workspace/
 
 
 # Install requirements
