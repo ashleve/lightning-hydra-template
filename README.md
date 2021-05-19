@@ -3,7 +3,7 @@
 # Lightning-Hydra-Template
 
 
-<a href="https://pytorch.org/get-started/locally/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7 | 3.8 | 3.9-224daa?style=for-the-badge&logo=python&logoColor=white"></a>
+<a href="https://pytorch.org/get-started/locally/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7 | 3.8 | 3.9-2656bf?style=for-the-badge&logo=python&logoColor=white"></a>
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?style=for-the-badge&logo=pytorch-lightning&logoColor=white"></a>
 <a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-89b8cd?style=for-the-badge&labelColor=gray"></a>
@@ -100,7 +100,6 @@ The directory structure of new project looks like this:
 ├── run.py                  <- Run any pipeline with chosen experiment configuration
 │
 ├── .env.example            <- Template of the file for storing private environment variables
-├── .autoenv.example        <- Template of the file for auto execution of bash commands
 ├── .gitignore              <- List of files/folders ignored by git
 ├── .pre-commit-config.yaml <- Configuration of automatic code formatting
 ├── conda_env_gpu.yaml      <- File for installing conda environment
@@ -1064,8 +1063,15 @@ Now you can add any commands to your `.autoenv` file, e.g. activation of virtual
 # activate conda environment
 conda activate myenv
 
-# initialize hydra tab completion for bash
+# activate hydra tab completion for bash
 eval "$(python run.py -sc install=bash)"
+
+# enable aliases for debugging
+alias test='pytest'
+alias debug1='python run.py debug=true'
+alias debug2='python run.py trainer.gpus=1 trainer.max_epochs=1'
+alias debug3='python run.py trainer.gpus=1 trainer.max_epochs=1 +trainer.limit_train_batches=0.1'
+alias debug_wandb='python run.py trainer.gpus=1 trainer.max_epochs=1 logger=wandb logger.wandb.project=tests'
 ```
 (these commands will be executed whenever you're openning or switching terminal to folder containing `.autoenv` file)
 
