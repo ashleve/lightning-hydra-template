@@ -787,6 +787,8 @@ To provide examples of logging custom visualisations with callbacks only:
 - **LogConfusionMatrix**
 - **LogF1PrecRecHeatmap**
 - **LogImagePredictions**
+
+To see the result of all the callbacks attached, take a look at [this experiment dashboard](https://wandb.ai/hobglob/template-tests/runs/3rw7q70h).
 <br>
 
 
