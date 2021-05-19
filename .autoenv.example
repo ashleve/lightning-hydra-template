@@ -1,0 +1,7 @@
+conda activate myenv
+eval "$(python run.py -sc install=bash)"
+alias test='pytest'
+alias debug1='python run.py debug=true'
+alias debug2='python run.py trainer.gpus=1 trainer.max_epochs=1 +trainer.limit_train_batches=0.25'
+alias debug3='python run.py trainer.gpus=1 trainer.max_epochs=1'
+alias debug_wandb='python run.py trainer.gpus=1 trainer.max_epochs=2 logger=wandb logger.wandb.project=tests'

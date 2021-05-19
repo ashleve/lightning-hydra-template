@@ -3,7 +3,7 @@
 # Lightning-Hydra-Template
 
 
-<a href="https://pytorch.org/get-started/locally/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7 | 3.8 | 3.9-2048a0?style=for-the-badge&logo=python&logoColor=white"></a>
+<a href="https://pytorch.org/get-started/locally/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7 | 3.8 | 3.9-214ba5?style=for-the-badge&logo=python&logoColor=white"></a>
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?style=for-the-badge&logo=pytorch-lightning&logoColor=white"></a>
 <a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-89b8cd?style=for-the-badge&labelColor=gray"></a>
@@ -93,19 +93,20 @@ The directory structure of new project looks like this:
 │   ├── callbacks               <- Lightning callbacks
 │   ├── datamodules             <- Lightning datamodules
 │   ├── models                  <- Lightning models
-│   ├── common                  <- Common files
-│   │   ├── inference_example.py    <- Example of inference with trained model
-│   │   └── utils.py                <- Extra features for the template
+│   ├── utils                   <- Utility scripts
 │   │
 │   └── train.py                <- Training pipeline
 │
 ├── run.py                  <- Run any pipeline with chosen experiment configuration
 │
-├── .env.template           <- Template of file for storing private environment variables
+├── .env.example            <- Template of the file for storing private environment variables
+├── .autoenv.example        <- Template of the file for auto execution of bash commands
 ├── .gitignore              <- List of files/folders ignored by git
 ├── .pre-commit-config.yaml <- Configuration of automatic code formatting
 ├── conda_env_gpu.yaml      <- File for installing conda environment
+├── Dockerfile              <- File for building docker container
 ├── requirements.txt        <- File for installing python dependencies
+├── setup.cgf               <- Configurations of linters and pytest
 ├── LICENSE
 └── README.md
 ```
