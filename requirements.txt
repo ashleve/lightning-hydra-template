@@ -16,9 +16,8 @@ hydra-optuna-sweeper==1.1.0.dev2
 wandb>=0.10.30
 # neptune-client
 # mlflow
-# aim
 # comet-ml
-# clearml
+# aim
 # torch_tb_profiler
 
 # --------- linters --------- #

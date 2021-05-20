@@ -1,10 +1,15 @@
-# https://wandb.ai (Weights&Biases)
+# https://wandb.ai
 
 wandb:
-    _target_: pytorch_lightning.loggers.wandb.WandbLogger
-    project: "template-tests"
-    # entity: ""  # set to name of your wandb team or just remove it
-    # offline: False  # set True to store all logs only locally
-    job_type: "train"
-    group: ""
-    save_dir: "."
+  _target_: pytorch_lightning.loggers.wandb.WandbLogger
+  project: "template-tests"
+  name: null
+  save_dir: "."
+  offline: False # set True to store all logs only locally
+  id: null # pass correct id to resume experiment!
+  # entity: ""  # set to name of your wandb team or just remove it
+  log_model: False
+  prefix: ""
+  job_type: "train"
+  group: ""
+  tags: []

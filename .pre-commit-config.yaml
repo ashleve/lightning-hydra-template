@@ -1,5 +1,5 @@
 default_language_version:
-    python: python3.8
+  python: python3.8
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -13,17 +13,26 @@ repos:
       - id: debug-statements
       - id: detect-private-key
 
+  # python code formatting
   - repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:
       - id: black
         args: [--line-length, "99"]
 
+  # python import sorting
   - repo: https://github.com/PyCQA/isort
     rev: 5.8.0
     hooks:
       - id: isort
 
+  # yaml formatting
+  - repo: https://github.com/prettier/pre-commit
+    rev: main
+    hooks:
+      - id: prettier
+
+  # python code analysis
   - repo: https://github.com/PyCQA/flake8
     rev: 3.9.2
     hooks:

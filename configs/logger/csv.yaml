@@ -1,6 +1,8 @@
-# CSVLogger built in PyTorch Lightning
+# csv logger built in lightning
 
 csv:
-    _target_: pytorch_lightning.loggers.csv_logs.CSVLogger
-    save_dir: "."
-    name: "csv/"
+  _target_: pytorch_lightning.loggers.csv_logs.CSVLogger
+  save_dir: "."
+  name: "csv/"
+  version: null
+  prefix: ""
