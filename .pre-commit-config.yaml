@@ -26,11 +26,12 @@ repos:
     hooks:
       - id: isort
 
-  # yaml and markdown formatting
-  - repo: https://github.com/prettier/pre-commit
-    rev: main
+  # yaml formatting
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.3.0
     hooks:
       - id: prettier
+        types: [yaml]
 
   # python code analysis
   - repo: https://github.com/PyCQA/flake8
