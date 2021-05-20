@@ -743,8 +743,7 @@ if __name__ == "__main__":
 ```
 
 </details>
-
-<br><br>
+<br>
 
 
 
