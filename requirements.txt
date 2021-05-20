@@ -25,6 +25,7 @@ pre-commit
 black
 isort
 flake8
+prettier
 
 # --------- others --------- #
 jupyterlab
