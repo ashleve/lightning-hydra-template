@@ -363,13 +363,14 @@ python run.py -m 'experiment=glob(*)'
 
 
 ## 🐳&nbsp;&nbsp;Docker
-I recommend the official [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags) (size: 6GB, it comes with installed Apex for mixed-precision training).To build the container from provided Dockerfile use:
+I recommend the official [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags).
+To build the container from provided Dockerfile use:
 ```yaml
 docker build -t project_name .
 docker run --gpus all -it --rm project_name
 ```
 
-Other custom dockerfiles for the template are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building more complicated images.
+Others dockerfiles are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building more complicated images.
 <br><br><br>
 
 

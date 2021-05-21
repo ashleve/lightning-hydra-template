@@ -2,15 +2,21 @@
 # Run: docker run --gpus all -it --rm project_name
 
 # Build from official Nvidia PyTorch image
-# GPU-ready with built in Apex mixed-precision support
+# GPU-ready with Apex for mixed-precision support
 # https://ngc.nvidia.com/catalog/containers/nvidia:pytorch
-FROM nvcr.io/nvidia/pytorch:21.04-py3
+# https://docs.nvidia.com/deeplearning/frameworks/support-matrix/
+FROM nvcr.io/nvidia/pytorch:21.02-py3
 
 
 # Copy all files
-ADD . /workspace/
-WORKDIR /workspace/
+ADD . /workspace/project
+WORKDIR /workspace/project
 
 
-# Install requirements
-RUN pip install -r requirements.txt
+# Install env
+RUN conda env create -f conda_env_gpu.yaml -n myenv
+RUN conda init bash
+
+
+# Set myenv to default virutal environment
+RUN echo "source activate myenv" >> ~/.bashrc
