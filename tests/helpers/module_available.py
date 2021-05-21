@@ -8,8 +8,7 @@ Adapted from:
 
 
 def _module_available(module_path: str) -> bool:
-    """
-    Check if a path is available in your environment.
+    """Check if a path is available in your environment.
 
     >>> _module_available('os')
     True

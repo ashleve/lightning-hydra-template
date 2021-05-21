@@ -4,11 +4,11 @@
 # python run.py experiment=example_simple.yaml
 
 defaults:
-    - override /trainer: minimal.yaml  # choose trainer from 'configs/trainer/'
-    - override /model: mnist_model.yaml
-    - override /datamodule: mnist_datamodule.yaml
-    - override /callbacks: default.yaml
-    - override /logger: null
+  - override /trainer: minimal.yaml # choose trainer from 'configs/trainer/'
+  - override /model: mnist_model.yaml
+  - override /datamodule: mnist_datamodule.yaml
+  - override /callbacks: default.yaml
+  - override /logger: null
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
@@ -16,16 +16,16 @@ defaults:
 seed: 12345
 
 trainer:
-    min_epochs: 1
-    max_epochs: 10
-    gradient_clip_val: 0.5
+  min_epochs: 1
+  max_epochs: 10
+  gradient_clip_val: 0.5
 
 model:
-    lin1_size: 128
-    lin2_size: 256
-    lin3_size: 64
-    lr: 0.002
+  lin1_size: 128
+  lin2_size: 256
+  lin3_size: 64
+  lr: 0.002
 
 datamodule:
-    batch_size: 64
-    train_val_test_split: [55_000, 5_000, 10_000]
+  batch_size: 64
+  train_val_test_split: [55_000, 5_000, 10_000]

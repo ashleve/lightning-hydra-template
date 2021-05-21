@@ -28,8 +28,8 @@ def get_wandb_logger(trainer: Trainer) -> WandbLogger:
     )
 
 
-class WatchModelWithWandb(Callback):
-    """Make WandbLogger watch model at the beginning of the run."""
+class WatchModel(Callback):
+    """Make wandb watch model at the beginning of the run."""
 
     def __init__(self, log: str = "gradients", log_freq: int = 100):
         self.log = log
@@ -40,7 +40,7 @@ class WatchModelWithWandb(Callback):
         logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq)
 
 
-class UploadCodeToWandbAsArtifact(Callback):
+class UploadCodeAsArtifact(Callback):
     """Upload all *.py files to wandb as an artifact, at the beginning of the run."""
 
     def __init__(self, code_dir: str):
@@ -57,7 +57,7 @@ class UploadCodeToWandbAsArtifact(Callback):
         experiment.use_artifact(code)
 
 
-class UploadCheckpointsToWandbAsArtifact(Callback):
+class UploadCheckpointsAsArtifact(Callback):
     """Upload checkpoints to wandb as an artifact, at the end of run."""
 
     def __init__(self, ckpt_dir: str = "checkpoints/", upload_best_only: bool = False):
@@ -79,7 +79,7 @@ class UploadCheckpointsToWandbAsArtifact(Callback):
         experiment.use_artifact(ckpts)
 
 
-class LogConfusionMatrixToWandb(Callback):
+class LogConfusionMatrix(Callback):
     """Generate confusion matrix every epoch and send it to wandb.
     Expects validation step to return predictions and targets.
     """
@@ -137,7 +137,7 @@ class LogConfusionMatrixToWandb(Callback):
             self.targets.clear()
 
 
-class LogF1PrecRecHeatmapToWandb(Callback):
+class LogF1PrecRecHeatmap(Callback):
     """Generate f1, precision, recall heatmap every epoch and send it to wandb.
     Expects validation step to return predictions and targets.
     """
@@ -200,7 +200,7 @@ class LogF1PrecRecHeatmapToWandb(Callback):
             self.targets.clear()
 
 
-class ImagePredictionLogger(Callback):
+class LogImagePredictions(Callback):
     """Logs a validation batch and their predictions to wandb.
     Example adapted from:
         https://wandb.ai/wandb/wandb-lightning/reports/Image-Classification-using-PyTorch-Lightning--VmlldzoyODk1NzY

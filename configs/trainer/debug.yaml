@@ -3,7 +3,7 @@ _target_: pytorch_lightning.Trainer
 gpus: 0
 
 min_epochs: 1
-max_epochs: 3
+max_epochs: 2
 
 # prints
 progress_bar_refresh_rate: null

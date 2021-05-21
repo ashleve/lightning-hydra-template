@@ -30,7 +30,7 @@ log_every_n_steps: 50
 accelerator: null
 sync_batchnorm: False
 precision: 32
-weights_summary: 'top'
+weights_summary: "top"
 weights_save_path: null
 num_sanity_val_steps: 2
 truncated_bptt_steps: null
@@ -45,6 +45,6 @@ terminate_on_nan: False
 auto_scale_batch_size: False
 prepare_data_per_node: True
 plugins: null
-amp_backend: 'native'
-amp_level: 'O2'
+amp_backend: "native"
+amp_level: "O2"
 move_metrics_to_cpu: False

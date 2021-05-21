@@ -1,11 +1,15 @@
 from typing import List, Optional
 
-from pytorch_lightning import LightningModule, LightningDataModule, Callback, Trainer
-from pytorch_lightning.loggers import LightningLoggerBase
-from pytorch_lightning import seed_everything
-
 import hydra
 from omegaconf import DictConfig
+from pytorch_lightning import (
+    Callback,
+    LightningDataModule,
+    LightningModule,
+    Trainer,
+    seed_everything,
+)
+from pytorch_lightning.loggers import LightningLoggerBase
 
 from src.utils import utils
 
@@ -25,7 +29,7 @@ def train(config: DictConfig) -> Optional[float]:
 
     # Set seed for random number generators in pytorch, numpy and python.random
     if "seed" in config:
-        seed_everything(config.seed)
+        seed_everything(config.seed, workers=True)
 
     # Init Lightning datamodule
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")

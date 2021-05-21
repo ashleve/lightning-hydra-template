@@ -2,21 +2,20 @@
 
 # specify here default training configuration
 defaults:
-    - trainer: minimal.yaml
-    - model: mnist_model.yaml
-    - datamodule: mnist_datamodule.yaml
-    - callbacks: default.yaml  # set this to null if you don't want to use callbacks
-    - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
+  - trainer: minimal.yaml
+  - model: mnist_model.yaml
+  - datamodule: mnist_datamodule.yaml
+  - callbacks: default.yaml # set this to null if you don't want to use callbacks
+  - logger: null # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
-    - experiment: null
-    - hparams_search: null
+  - experiment: null
+  - hparams_search: null
 
-    - hydra: default.yaml
+  - hydra: default.yaml
 
-    # enable color logging
-    - override hydra/hydra_logging: colorlog
-    - override hydra/job_logging: colorlog
-
+  # enable color logging
+  - override hydra/hydra_logging: colorlog
+  - override hydra/job_logging: colorlog
 
 # path to original working directory
 # hydra hijacks working directory by changing it to the current log directory,
@@ -24,10 +23,8 @@ defaults:
 # learn more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 work_dir: ${hydra:runtime.cwd}
 
-
 # path to folder with data
 data_dir: ${work_dir}/data/
-
 
 # use `python run.py debug=true` for easy debugging!
 # this will run 1 train, val and test loop with only 1 batch
@@ -35,10 +32,8 @@ data_dir: ${work_dir}/data/
 # (this is placed here just for easier access from command line)
 debug: False
 
-
 # pretty print config at the start of the run using Rich library
 print_config: True
-
 
 # disable python warnings if they annoy you
 ignore_warnings: True

@@ -2,14 +2,13 @@
 
 # Lightning-Hydra-Template
 
-<!--
-<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue?logo=python&logoColor=white&style=for-the-badge"></a>
- -->
-<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
-<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?style=for-the-badge"></a>
-<a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-89b8cd?style=for-the-badge"></a>
-<a href="https://hub.docker.com/r/ashlev/lightning-hydra"><img alt="Docker" src="https://img.shields.io/badge/docker-257bd6?style=for-the-badge&logo=docker&logoColor=white"></a>
-<a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge"></a>
+
+<a href="https://pytorch.org/get-started/locally/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7--3.9-blue?style=for-the-badge&logo=python&logoColor=white"></a>
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch 1.8+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
+<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?style=for-the-badge&logo=pytorchlightning&logoColor=white"></a>
+<a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-89b8cd?style=for-the-badge&labelColor=gray"></a>
+<a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge&labelColor=gray"></a>
+<!-- <a href="https://hub.docker.com/r/ashlev/lightning-hydra"><img alt="Docker" src="https://img.shields.io/badge/docker-257bd6?style=for-the-badge&logo=docker&logoColor=white"></a> -->
 
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/ashleve/lightning-hydra-template/generate) to initialize new repository.
@@ -87,26 +86,26 @@ The directory structure of new project looks like this:
 │                              `1.0-jqp-initial-data-exploration.ipynb`.
 │
 ├── tests                   <- Tests of any kind
-│   ├── smoke_tests
-│   └── unit_tests
+│   ├── smoke
+│   └── unit
 │
 ├── src
 │   ├── callbacks               <- Lightning callbacks
 │   ├── datamodules             <- Lightning datamodules
 │   ├── models                  <- Lightning models
 │   ├── utils                   <- Utility scripts
-│   │   ├── inference_example.py    <- Example of inference with trained model
-│   │   └── utils.py                <- Extra features for the template
 │   │
 │   └── train.py                <- Training pipeline
 │
 ├── run.py                  <- Run any pipeline with chosen experiment configuration
 │
-├── .env.template           <- Template of file for storing private environment variables
+├── .env.example            <- Template of the file for storing private environment variables
 ├── .gitignore              <- List of files/folders ignored by git
 ├── .pre-commit-config.yaml <- Configuration of automatic code formatting
 ├── conda_env_gpu.yaml      <- File for installing conda environment
+├── Dockerfile              <- File for building docker container
 ├── requirements.txt        <- File for installing python dependencies
+├── setup.cgf               <- Configurations of linters and pytest
 ├── LICENSE
 └── README.md
 ```
@@ -364,21 +363,15 @@ python run.py -m 'experiment=glob(*)'
 
 
 ## 🐳&nbsp;&nbsp;Docker
-I recommend the official [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags) (size: 6GB, it comes with installed Apex for mixed-precision training), or "devel" version of [pytorch/pytorch](https://hub.docker.com/r/pytorch/pytorch).
-
-Custom dockerfiles for the template are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building your own images.
+I recommend the official [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags).
+To build the container from provided Dockerfile use:
 ```yaml
-# download image
-docker pull nvcr.io/nvidia/pytorch:21.03-py3
-
-# run container from image with GPUs enabled
-docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
+docker build -t project_name .
+docker run --gpus all -it --rm project_name
 ```
-<!--
-# run container with mounted volume
-docker run --gpus all -it --rm nvcr.io/nvidia/pytorch:21.03-py3
- -->
-<br><br>
+
+Others dockerfiles are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building more complicated images.
+<br><br><br>
 
 
 
@@ -693,9 +686,65 @@ Using this approach doesn't require you to add any boilerplate into your pipelin
 
 
 ### Inference
-Template contains simple example of loading model from checkpoint and running predictions.<br>
-Take a look at [inference_example.py](src/utils/inference_example.py).
-<br><br>
+The following is example of loading model from checkpoint and running predictions.<br>
+<details>
+<summary><b>Show inference example</b></summary>
+
+```python
+from PIL import Image
+from torchvision import transforms
+
+from src.models.mnist_model import MNISTLitModel
+
+
+def predict():
+    """Example of inference with trained model.
+    It loads trained image classification model from checkpoint.
+    Then it loads example image and predicts its label.
+    """
+
+    # ckpt can be also a URL!
+    CKPT_PATH = "last.ckpt"
+
+    # load model from checkpoint
+    # model __init__ parameters will be loaded from ckpt automatically
+    # you can also pass some parameter explicitly to override it
+    trained_model = MNISTLitModel.load_from_checkpoint(checkpoint_path=CKPT_PATH)
+
+    # print model hyperparameters
+    print(trained_model.hparams)
+
+    # switch to evaluation mode
+    trained_model.eval()
+    trained_model.freeze()
+
+    # load data
+    img = Image.open("data/example_img.png").convert("L")  # convert to black and white
+    # img = Image.open("data/example_img.png").convert("RGB")  # convert to RGB
+
+    # preprocess
+    mnist_transforms = transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Resize((28, 28)),
+            transforms.Normalize((0.1307,), (0.3081,)),
+        ]
+    )
+    img = mnist_transforms(img)
+    img = img.reshape((1, *img.size()))  # reshape to form batch of size 1
+
+    # inference
+    output = trained_model(img)
+    print(output)
+
+
+if __name__ == "__main__":
+    predict()
+
+```
+
+</details>
+<br>
 
 
 
@@ -709,8 +758,8 @@ pytest
 # run tests from specific file
 pytest tests/smoke_tests/test_commands.py
 
-# run all tests except the ones using wandb
-pytest -k "not wandb"
+# run all tests except the ones marked as slow
+pytest -k "not slow"
 ```
 I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute tests that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exist to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke_tests](tests/smoke_tests) folder.
 
@@ -729,8 +778,11 @@ To support reproducibility:
 To provide examples of logging custom visualisations with callbacks only:
 - **LogConfusionMatrix**
 - **LogF1PrecRecHeatmap**
-- **ImagePredictionLogger**
-<br>
+- **LogImagePredictions**
+
+To see the result of all the callbacks attached, take a look at [this experiment dashboard](https://wandb.ai/hobglob/template-tests/runs/3rw7q70h).
+<br><br>
+
 
 
 ### Multi-GPU Training
@@ -1012,8 +1064,15 @@ Now you can add any commands to your `.autoenv` file, e.g. activation of virtual
 # activate conda environment
 conda activate myenv
 
-# initialize hydra tab completion for bash
+# activate hydra tab completion for bash
 eval "$(python run.py -sc install=bash)"
+
+# enable aliases for debugging
+alias test='pytest'
+alias debug1='python run.py debug=true'
+alias debug2='python run.py trainer.gpus=1 trainer.max_epochs=1'
+alias debug3='python run.py trainer.gpus=1 trainer.max_epochs=1 +trainer.limit_train_batches=0.1'
+alias debug_wandb='python run.py trainer.gpus=1 trainer.max_epochs=1 logger=wandb logger.wandb.project=tests'
 ```
 (these commands will be executed whenever you're openning or switching terminal to folder containing `.autoenv` file)
 

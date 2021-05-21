@@ -11,7 +11,6 @@ Adapted from:
     https://github.com/PyTorchLightning/pytorch-lightning/blob/master/tests/helpers/runif.py
 """
 
-
 from tests.helpers.module_available import (
     _APEX_AVAILABLE,
     _DEEPSPEED_AVAILABLE,
@@ -23,12 +22,16 @@ from tests.helpers.module_available import (
 
 class RunIf:
     """
-    RunIf wrapper for simple marking specific cases, fully compatible with pytest.mark::
+    RunIf wrapper for conditional skipping of tests.
+    Fully compatible with `@pytest.mark`.
 
-        @RunIf(min_torch="0.0")
-        @pytest.mark.parametrize("arg1", [1, 2.0])
+    Example:
+
+        @RunIf(min_torch="1.8")
+        @pytest.mark.parametrize("arg1", [1.0, 2.0])
         def test_wrapper(arg1):
-            assert arg1 > 0.0
+            assert arg1 > 0
+
     """
 
     def __new__(
@@ -51,7 +54,7 @@ class RunIf:
             max_torch: maximum pytorch version to run test
             min_python: minimum python version required to run test
             amp_apex: NVIDIA Apex is installed
-            skip_windows: skip test for Windows platform (typically fo some limited torch functionality)
+            skip_windows: skip test for Windows platform
             rpc: requires Remote Procedure Call (RPC)
             fairscale: if `fairscale` module is required to run the test
             deepspeed: if `deepspeed` module is required to run the test
@@ -107,14 +110,3 @@ class RunIf:
             reason=f"Requires: [{' + '.join(reasons)}]",
             **kwargs,
         )
-
-
-@RunIf(min_torch="99")
-def test_always_skip():
-    exit(1)
-
-
-@pytest.mark.parametrize("arg1", [0.5, 1.0, 2.0])
-@RunIf(min_torch="0.0")
-def test_wrapper(arg1: float):
-    assert arg1 > 0.0
