@@ -1,5 +1,6 @@
-import glob
-import os
+from pathlib import Path
+import subprocess
+from pytorch_lightning.utilities import rank_zero_only
 from typing import List
 
 import matplotlib.pyplot as plt
@@ -41,18 +42,38 @@ class WatchModel(Callback):
 
 
 class UploadCodeAsArtifact(Callback):
-    """Upload all *.py files to wandb as an artifact, at the beginning of the run."""
+    """Upload all code files to wandb as an artifact, at the beginning of the run."""
 
-    def __init__(self, code_dir: str):
+    def __init__(self, code_dir: str, use_git: bool = True):
+        """
+
+        :param code_dir:
+        :param use_git: if using git, then upload all files that are not ignored by git. if not using git, then upload all '*.py' file
+        """
         self.code_dir = code_dir
+        self.use_git = use_git
 
+    @rank_zero_only
     def on_train_start(self, trainer, pl_module):
         logger = get_wandb_logger(trainer=trainer)
         experiment = logger.experiment
 
         code = wandb.Artifact("project-source", type="code")
-        for path in glob.glob(os.path.join(self.code_dir, "**/*.py"), recursive=True):
-            code.add_file(path)
+
+        if self.use_git:
+            # get .git folder
+            # https://alexwlchan.net/2020/11/a-python-function-to-ignore-a-path-with-git-info-exclude/
+            git_dir_path = Path(subprocess.check_output(["git", "rev-parse", "--git-dir"]).strip().decode("utf8")).resolve()
+
+            for path in Path(self.code_dir).rglob('*'):
+                if (path.is_file()
+                        and (not path.is_relative_to(git_dir_path))  # ignore files in .git
+                        and (subprocess.run(['git', 'check-ignore', '-q', str(path)]).returncode == 1)):  # ignore files ignored by git
+                    code.add_file(str(path), name=str(path.relative_to(self.code_dir)))
+
+        else:
+            for path in Path(self.code_dir).rglob('*.py'):
+                code.add_file(str(path), name=str(path.relative_to(self.code_dir)))
 
         experiment.use_artifact(code)
 
@@ -64,6 +85,7 @@ class UploadCheckpointsAsArtifact(Callback):
         self.ckpt_dir = ckpt_dir
         self.upload_best_only = upload_best_only
 
+    @rank_zero_only
     def on_train_end(self, trainer, pl_module):
         logger = get_wandb_logger(trainer=trainer)
         experiment = logger.experiment
@@ -73,10 +95,10 @@ class UploadCheckpointsAsArtifact(Callback):
         if self.upload_best_only:
             ckpts.add_file(trainer.checkpoint_callback.best_model_path)
         else:
-            for path in glob.glob(os.path.join(self.ckpt_dir, "**/*.ckpt"), recursive=True):
-                ckpts.add_file(path)
+            for path in Path(self.ckpt_dir).rglob('*.ckpt'):
+                ckpts.add_file(str(path))
 
-        experiment.use_artifact(ckpts)
+        experiment.log_artifact(ckpts)
 
 
 class LogConfusionMatrix(Callback):
