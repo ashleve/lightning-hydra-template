@@ -1,23 +1,36 @@
 # Build: docker build -t project_name .
 # Run: docker run -v $(pwd):/workspace/project --gpus all -it --rm project_name
 
-# Build from official Nvidia PyTorch image
-# GPU-ready with Apex for mixed-precision support
-# https://ngc.nvidia.com/catalog/containers/nvidia:pytorch
-# https://docs.nvidia.com/deeplearning/frameworks/support-matrix/
-FROM nvcr.io/nvidia/pytorch:21.05-py3
+FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+
+
+# Basic setup
+RUN apt update && \
+    apt install -y bash \
+                   build-essential \
+                   git \
+                   curl \
+                   ca-certificates \
+                   python3 \
+                   python3-pip && \
+    rm -rf /var/lib/apt/lists
+
 
 # Set working directory
 WORKDIR /workspace/project
 
 
-# Copy files to create conda environment
-COPY conda_env_gpu.yaml requirements.txt ./
+# Install requirements
+RUN cd /workspace/project && \
+    pip install -r requirements
 
 
-# Create myenv
-RUN conda env create -f conda_env_gpu.yaml -n myenv \
-    && conda init bash
+# Install Apex for mixed-precision training
+RUN cd .. \
+    git clone https://github.com/NVIDIA/apex
+RUN cd apex && \
+    python3 setup.py install && \
+    pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
 
-# Set myenv to default virtual environment
-RUN echo "source activate myenv" >> ~/.bashrc
+
+CMD ["/bin/bash"]

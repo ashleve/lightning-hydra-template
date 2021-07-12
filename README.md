@@ -363,8 +363,6 @@ python run.py -m 'experiment=glob(*)'
 
 
 ## 🐳&nbsp;&nbsp;Docker
-I recommend the official [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags).
-
 To build the container from provided Dockerfile use:
 ```bash
 docker build -t <project_name> .
@@ -373,8 +371,8 @@ To mount the project to the container use:
 ```bash
 docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
 ```
+Supports GPU and mixed-precision training.
 
-Others dockerfiles are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building more complicated images.
 <br><br><br>
 
 
