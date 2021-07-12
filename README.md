@@ -13,7 +13,7 @@
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/ashleve/lightning-hydra-template/generate) to initialize new repository.
 
-*Currently uses dev version of Hydra.<br>Suggestions are always welcome!*
+*Suggestions are always welcome!*
 
 </div>
 <br><br>
@@ -840,10 +840,9 @@ Example installation:
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
-Create environment from file provided in the template:
+Create environment using bash script provided in the template:
 ```yaml
-conda env create -f conda_env_gpu.yaml -n myenv
-conda activate myenv
+bash bash/conda_setup.sh
 ```
 
 </details>

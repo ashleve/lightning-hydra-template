@@ -5,12 +5,11 @@ from typing import List
 import matplotlib.pyplot as plt
 import seaborn as sn
 import torch
+import wandb
 from pytorch_lightning import Callback, Trainer
 from pytorch_lightning.loggers import LoggerCollection, WandbLogger
 from sklearn import metrics
 from sklearn.metrics import f1_score, precision_score, recall_score
-
-import wandb
 
 
 def get_wandb_logger(trainer: Trainer) -> WandbLogger:
