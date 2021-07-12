@@ -28,7 +28,7 @@ flake8
 # --------- others --------- #
 jupyterlab      # better jupyter notebooks
 python-dotenv   # loading env variables from .env file
-rich            # pretty printing in terminal
+rich            # beautiful text formatting in terminal
 pytest          # tests
 sh              # running bash commands in some tests
 scikit-learn    # used in some callbacks

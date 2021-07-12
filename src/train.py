@@ -42,7 +42,7 @@ def train(config: DictConfig) -> Optional[float]:
     # Init Lightning callbacks
     callbacks: List[Callback] = []
     if "callbacks" in config:
-        for _, cb_conf in config["callbacks"].items():
+        for _, cb_conf in config.callbacks.items():
             if "_target_" in cb_conf:
                 log.info(f"Instantiating callback <{cb_conf._target_}>")
                 callbacks.append(hydra.utils.instantiate(cb_conf))
@@ -50,7 +50,7 @@ def train(config: DictConfig) -> Optional[float]:
     # Init Lightning loggers
     logger: List[LightningLoggerBase] = []
     if "logger" in config:
-        for _, lg_conf in config["logger"].items():
+        for _, lg_conf in config.logger.items():
             if "_target_" in lg_conf:
                 log.info(f"Instantiating logger <{lg_conf._target_}>")
                 logger.append(hydra.utils.instantiate(lg_conf))

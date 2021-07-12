@@ -801,7 +801,7 @@ python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 
 ### Extra Features
 List of extra utilities available in the template:
-- loading environment variables from [.env](.env.template) file
+- loading environment variables from [.env](.env.example) file
 - pretty printing config with [Rich](https://github.com/willmcgugan/rich) library
 - disabling python warnings
 - easier access to debug mode
@@ -873,7 +873,7 @@ pre-commit run -a
 
 System specific variables (e.g. absolute paths to datasets) should not be under version control or it will result in conflict between different users. Your private keys also shouldn't be versioned since you don't want them to be leaked.<br>
 
-Template contains `.env.template` file, which serves as an example. Create a new file called `.env` (this name is excluded from version control in .gitignore).
+Template contains `.env.example` file, which serves as an example. Create a new file called `.env` (this name is excluded from version control in .gitignore).
 You should use it for storing environment variables like this:
 ```yaml
 MY_VAR=/home/user/my_system_path
