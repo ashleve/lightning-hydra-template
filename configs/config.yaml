@@ -2,7 +2,7 @@
 
 # specify here default training configuration
 defaults:
-  - trainer: minimal.yaml
+  - trainer: default.yaml
   - model: mnist_model.yaml
   - datamodule: mnist_datamodule.yaml
   - callbacks: default.yaml # set this to null if you don't want to use callbacks

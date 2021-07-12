@@ -1,4 +1,5 @@
-_target_: pytorch_lightning.Trainer
+defaults:
+  - default.yaml
 
 gpus: 0
 
