@@ -22,7 +22,8 @@ WORKDIR /workspace/project
 
 # Install requirements
 RUN cd /workspace/project && \
-    pip install -r requirements
+    python3 -m pip install --no-cache-dir --upgrade pip && \
+    python3 -m pip install --no-cache-dir -r requirements
 
 
 # Install Apex for mixed-precision training
