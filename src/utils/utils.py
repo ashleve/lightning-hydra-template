@@ -140,6 +140,8 @@ def log_hyperparameters(
     hparams["trainer"] = config["trainer"]
     hparams["model"] = config["model"]
     hparams["datamodule"] = config["datamodule"]
+    if "seed" in config:
+        hparams["seed"] = config["seed"]
     if "callbacks" in config:
         hparams["callbacks"] = config["callbacks"]
 
