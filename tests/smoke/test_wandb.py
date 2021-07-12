@@ -2,12 +2,6 @@ import pytest
 
 from tests.helpers.run_command import run_command
 
-"""
-Use the following command to skip slow tests:
-    pytest -k "not slow"
-"""
-
-
 # @pytest.mark.slow
 # def test_wandb_optuna_sweep():
 #     """Test wandb logging with Optuna sweep."""
@@ -16,8 +10,8 @@ Use the following command to skip slow tests:
 #         "-m",
 #         "hparams_search=mnist_optuna",
 #         "trainer=default",
-#         "trainer.max_epochs=10",
-#         "trainer.limit_train_batches=20",
+#         "++trainer.max_epochs=10",
+#         "++trainer.limit_train_batches=20",
 #         "logger=wandb",
 #         "logger.wandb.project=template-tests",
 #         "logger.wandb.group=Optuna_SimpleDenseNet_MNIST",
@@ -32,7 +26,7 @@ Use the following command to skip slow tests:
 #     command = [
 #         "run.py",
 #         "trainer=default",
-#         "trainer.max_epochs=3",
+#         "++trainer.max_epochs=3",
 #         "logger=wandb",
 #         "logger.wandb.project=template-tests",
 #         "callbacks=wandb",
