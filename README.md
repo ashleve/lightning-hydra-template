@@ -65,6 +65,10 @@ It makes your code neatly organized and provides lots of useful features, like a
 ## Project Structure
 The directory structure of new project looks like this:
 ```
+├── bash                    <- Bash scripts
+│   ├── conda_setup.sh          <- Setup conda environment
+│   └── schedule_runs.sh        <- Schedule execution of many runs
+│
 ├── configs                 <- Hydra configuration files
 │   ├── callbacks               <- Callbacks configs
 │   ├── datamodule              <- Datamodule configs
@@ -86,8 +90,8 @@ The directory structure of new project looks like this:
 │                              `1.0-jqp-initial-data-exploration.ipynb`.
 │
 ├── tests                   <- Tests of any kind
-│   ├── smoke
-│   └── unit
+│   ├── smoke                   <- Command line based tests
+│   └── unit                    <- Unit tests
 │
 ├── src
 │   ├── callbacks               <- Lightning callbacks
@@ -102,10 +106,9 @@ The directory structure of new project looks like this:
 ├── .env.example            <- Template of the file for storing private environment variables
 ├── .gitignore              <- List of files/folders ignored by git
 ├── .pre-commit-config.yaml <- Configuration of automatic code formatting
-├── conda_env_gpu.yaml      <- File for installing conda environment
+├── setup.cfg               <- Configurations of linters and pytest
 ├── Dockerfile              <- File for building docker container
 ├── requirements.txt        <- File for installing python dependencies
-├── setup.cgf               <- Configurations of linters and pytest
 ├── LICENSE
 └── README.md
 ```
