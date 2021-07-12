@@ -1,5 +1,5 @@
 #!/bin/bash
-# shedule execution of many runs
+# Shedule execution of many runs
 # Run from root folder with: bash bash/schedule.sh
 
 python run.py trainer.max_epochs=5
