@@ -374,8 +374,7 @@ To mount the project to the container use:
 docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
 ```
 Supports GPU and mixed-precision training.
-
-<br><br><br>
+<br><br>
 
 
 
@@ -859,7 +858,7 @@ Next, install hooks from [.pre-commit-config.yaml](.pre-commit-config.yaml):
 pre-commit install
 ```
 After that your code will be automatically reformatted on every new commit.<br>
-Currently template contains configurations of **Black** (python code formatting) and **Isort** (python import sorting). You can exclude chosen files from automatic formatting, by modifying [.pre-commit-config.yaml](.pre-commit-config.yaml).<br>
+Currently template contains configurations of **black** (python code formatting), **isort** (python import sorting), **flake8** (python code analysis) and **prettier** (yaml formating). You can exclude chosen files from automatic formatting, by modifying [.pre-commit-config.yaml](.pre-commit-config.yaml).<br>
 
 To reformat all files in the project use command:
 ```yaml

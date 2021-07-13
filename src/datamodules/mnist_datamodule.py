@@ -18,7 +18,7 @@ class MNISTDataModule(LightningDataModule):
         - test_dataloader (the test dataloader(s))
 
     This allows you to share a full dataset without explaining how to download,
-    split, transform and process the data
+    split, transform and process the data.
 
     Read the docs:
         https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html
