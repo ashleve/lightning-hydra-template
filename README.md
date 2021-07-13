@@ -426,7 +426,7 @@ It also specifies everything that shouldn't be managed by experiment configurati
 ```yaml
 # specify here default training configuration
 defaults:
-    - trainer: minimal.yaml
+    - trainer: default.yaml
     - model: mnist_model.yaml
     - datamodule: mnist_datamodule.yaml
     - callbacks: default.yaml  # set this to null if you don't want to use callbacks
@@ -473,7 +473,7 @@ Experiment configurations allow you to overwrite parameters from main project co
 # python run.py experiment=example_simple
 
 defaults:
-    - override /trainer: minimal.yaml
+    - override /trainer: default.yaml
     - override /model: mnist_model.yaml
     - override /datamodule: mnist_datamodule.yaml
     - override /callbacks: default.yaml
@@ -760,12 +760,12 @@ To execute them simply run:
 pytest
 
 # run tests from specific file
-pytest tests/smoke_tests/test_commands.py
+pytest tests/smoke/test_commands.py
 
 # run all tests except the ones marked as slow
 pytest -k "not slow"
 ```
-I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute tests that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exist to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke_tests](tests/smoke_tests) folder.
+I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute tests that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exist to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke](tests/smoke) folder.
 
 You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).
 <br><br>
@@ -809,7 +809,6 @@ List of extra utilities available in the template:
 - easier access to debug mode
 - forcing debug friendly configuration
 - forcing multi-gpu friendly configuration
-- method for logging hyperparameters to loggers
 <!-- - (TODO) resuming latest run -->
 
 You can easily remove any of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
@@ -1159,14 +1158,12 @@ This template was inspired by:
 
 </details>
 
-<details>
+<!-- <details>
 <summary><b>List of repositories using this template</b></summary>
 
 - [ashleve/graph_classification](https://github.com/ashleve/graph_classification) - benchmarking graph neural network architectures on graph classification datasets (Open Graph Benchmarks and image classification from superpixels)
 
-> if you'd like to share your project and add it to the list, feel free to make a PR!
-
-</details>
+</details> -->
 
 
 <!-- ## :star:&nbsp; Stargazers Over Time
