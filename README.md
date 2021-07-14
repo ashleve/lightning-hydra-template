@@ -1042,6 +1042,12 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
 
 </details>
+
+<summary><b>Make notebooks independent from other files</b></summary>
+
+It's a good practice for jupyter notebooks to be portable. Try to make them independent from src files. If you need to access external code, try to embed it inside the notebook.
+
+</details>
 <br>
 
 
