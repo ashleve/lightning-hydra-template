@@ -66,7 +66,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 The directory structure of new project looks like this:
 ```
 ├── bash                    <- Bash scripts
-│   ├── conda_setup.sh          <- Setup conda environment
+│   ├── setup_conda.sh          <- Setup conda environment
 │   └── schedule_runs.sh        <- Schedule execution of many runs
 │
 ├── configs                 <- Hydra configuration files
@@ -122,7 +122,7 @@ git clone https://github.com/ashleve/lightning-hydra-template
 cd lightning-hydra-template
 
 # [OPTIONAL] create conda environment
-bash bash/conda_setup.sh
+bash bash/setup_conda.sh
 
 # install requirements
 pip install -r requirements.txt
@@ -840,7 +840,7 @@ bash Miniconda3-latest-Linux-x86_64.sh
 ```
 Create environment using bash script provided in the template:
 ```yaml
-bash bash/conda_setup.sh
+bash bash/setup_conda.sh
 ```
 
 </details>
@@ -1213,7 +1213,7 @@ git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
 # [OPTIONAL] create conda environment
-bash bash/conda_setup.sh
+bash bash/setup_conda.sh
 
 # install requirements
 pip install -r requirements.txt
