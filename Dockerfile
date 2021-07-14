@@ -21,17 +21,17 @@ WORKDIR /workspace/project
 
 
 # Install requirements
-RUN cd /workspace/project && \
-    python3 -m pip install --no-cache-dir --upgrade pip && \
-    python3 -m pip install --no-cache-dir -r requirements
+# RUN cd /workspace/project && \
+#     python3 -m pip install --no-cache-dir --upgrade pip && \
+#     python3 -m pip install --no-cache-dir -r requirements
 
 
 # Install Apex for mixed-precision training
-RUN cd .. \
-    git clone https://github.com/NVIDIA/apex
-RUN cd apex && \
-    python3 setup.py install && \
-    pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+# RUN cd .. \
+#     git clone https://github.com/NVIDIA/apex
+# RUN cd apex && \
+#     python3 setup.py install && \
+#     pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
 
 
 CMD ["/bin/bash"]
