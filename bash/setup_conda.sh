@@ -13,8 +13,9 @@ source ~/miniconda3/etc/profile.d/conda.sh
 
 # Configure conda env
 read -rp "Enter environment name: " env_name
-read -rp "Enter python version (at least '3.7') " python_version
-read -rp "Enter cuda version (e.g. '10.2', '11.1'  or 'none' to avoid installing cuda support): " cuda_version
+read -rp "Enter python version (recommended '3.8') " python_version
+read -rp "Enter cuda version (recommended '10.2', or 'none' for CPU only): " cuda_version
+read -rp "Enter pytorch version (recommended '1.9'): " pytorch_version
 
 # Create conda env
 conda create -y -n "$env_name" python="$python_version"
@@ -22,8 +23,11 @@ conda activate "$env_name"
 
 # Install pytorch
 if [ "$cuda_version" == "none" ]; then
-    conda install -y pytorch torchvision cpuonly -c pytorch
+    conda install -y pytorch=$pytorch_version torchvision torchaudio cpuonly -c pytorch
 else
-    conda install -y pytorch torchvision torchaudio cudatoolkit -c pytorch -c nvidia
+    conda install -y pytorch=$pytorch_version torchvision torchaudio cudatoolkit=$cuda_version -c pytorch
 fi
 
+echo "\n"
+echo "To activate this environment, use:"
+echo "conda activate $env_name"
