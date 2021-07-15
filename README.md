@@ -90,6 +90,7 @@ The directory structure of new project looks like this:
 │                              `1.0-jqp-initial-data-exploration.ipynb`.
 │
 ├── tests                   <- Tests of any kind
+│   ├── helpers                 <- A couple of testing utilities
 │   ├── smoke                   <- Command line based tests
 │   └── unit                    <- Unit tests
 │
