@@ -375,7 +375,7 @@ To mount the project to the container use:
 docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
 ```
 Supports GPU and mixed-precision training.
-<br><br>
+<br><br><br>
 
 
 
