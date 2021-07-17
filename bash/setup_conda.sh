@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run from root folder with: bash bash/setup.sh
+# Run from root folder with: bash bash/setup_conda.sh
 
 # check if conda is installed
 if ! command -v conda &> /dev/null
