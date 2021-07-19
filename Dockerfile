@@ -1,5 +1,7 @@
 # Build: docker build -t project_name .
+# Build: docker build -t myenv .
 # Run: docker run -v $(pwd):/workspace/project --gpus all -it --rm project_name
+# Run: docker run -v $(pwd):/workspace/project --gpus all -it --rm myenv
 
 FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
 
@@ -11,7 +13,7 @@ RUN apt update && \
                    git \
                    curl \
                    ca-certificates \
-                   python3 \
+                   python3.8 \
                    python3-pip && \
     rm -rf /var/lib/apt/lists
 
@@ -23,7 +25,7 @@ WORKDIR /workspace/project
 # Install requirements
 RUN cd /workspace/project
 COPY requirements.txt ./
-RUN python3 -m pip install -r requirements.txt
+RUN python3 -m pip3 install -r requirements.txt
 
 
 # Install Apex for mixed-precision training
