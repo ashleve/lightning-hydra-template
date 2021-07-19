@@ -29,11 +29,11 @@ RUN python3 -m pip3 install -r requirements.txt
 
 
 # Install Apex for mixed-precision training
-RUN cd .. \
-    git clone https://github.com/NVIDIA/apex
-RUN cd apex && \
-    python3 setup.py install && \
-    pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+# RUN cd .. \
+#     git clone https://github.com/NVIDIA/apex
+# RUN cd apex && \
+#     python3 setup.py install && \
+#     pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
 
 
 CMD ["/bin/bash"]
