@@ -1,9 +1,9 @@
 model_checkpoint:
   _target_: pytorch_lightning.callbacks.ModelCheckpoint
   monitor: "val/acc" # name of the logged metric which determines when model is improving
+  mode: "max" # can be "max" or "min"
   save_top_k: 1 # save k best models (determined by above metric)
   save_last: True # additionaly always save model from last epoch
-  mode: "max" # can be "max" or "min"
   verbose: False
   dirpath: "checkpoints/"
   filename: "{epoch:02d}"
@@ -11,6 +11,6 @@ model_checkpoint:
 early_stopping:
   _target_: pytorch_lightning.callbacks.EarlyStopping
   monitor: "val/acc" # name of the logged metric which determines when model is improving
-  patience: 100 # how many epochs of not improving until training stops
   mode: "max" # can be "max" or "min"
+  patience: 100 # how many epochs of not improving until training stops
   min_delta: 0 # minimum change in the monitored metric needed to qualify as an improvement

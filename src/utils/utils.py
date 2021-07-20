@@ -1,4 +1,5 @@
 import logging
+import os
 import warnings
 from typing import List, Sequence
 
@@ -111,6 +112,9 @@ def print_config(
         branch.add(rich.syntax.Syntax(branch_content, "yaml"))
 
     rich.print(tree)
+
+    with open("config_tree.txt", "w") as fp:
+        rich.print(tree, file=fp)
 
 
 def empty(*args, **kwargs):
