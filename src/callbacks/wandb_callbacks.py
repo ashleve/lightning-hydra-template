@@ -54,7 +54,7 @@ class UploadCodeAsArtifact(Callback):
         for path in glob.glob(os.path.join(self.code_dir, "**/*.py"), recursive=True):
             code.add_file(path)
 
-        experiment.use_artifact(code)
+        experiment.log_artifact(code)
 
 
 class UploadCheckpointsAsArtifact(Callback):
@@ -76,7 +76,7 @@ class UploadCheckpointsAsArtifact(Callback):
             for path in glob.glob(os.path.join(self.ckpt_dir, "**/*.ckpt"), recursive=True):
                 ckpts.add_file(path)
 
-        experiment.use_artifact(ckpts)
+        experiment.log_artifact(ckpts)
 
 
 class LogConfusionMatrix(Callback):
