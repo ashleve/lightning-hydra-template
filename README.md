@@ -6,7 +6,7 @@
 <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.6--3.9-blue?style=for-the-badge&logo=python&logoColor=white"></a>
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch 1.8+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning 1.3+-792ee5?style=for-the-badge&logo=pytorchlightning&logoColor=white"></a>
-<a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra 1.1+-89b8cd?style=for-the-badge&labelColor=gray"></a>
+<a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra 1.1-89b8cd?style=for-the-badge&labelColor=gray"></a>
 <a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge&labelColor=gray"></a>
 <!-- <a href="https://hub.docker.com/r/ashlev/lightning-hydra"><img alt="Docker" src="https://img.shields.io/badge/docker-257bd6?style=for-the-badge&logo=docker&logoColor=white"></a> -->
 
@@ -91,7 +91,7 @@ The directory structure of new project looks like this:
 │
 ├── tests                   <- Tests of any kind
 │   ├── helpers                 <- A couple of testing utilities
-│   ├── shell                   <- Shell command based tests
+│   ├── shell                   <- Shell/command based tests
 │   └── unit                    <- Unit tests
 │
 ├── src
@@ -102,7 +102,7 @@ The directory structure of new project looks like this:
 │   │
 │   └── train.py                <- Training pipeline
 │
-├── run.py                  <- Run any pipeline with chosen experiment configuration
+├── run.py                  <- Run pipeline with chosen experiment configuration
 │
 ├── .env.example            <- Template of the file for storing private environment variables
 ├── .gitignore              <- List of files/folders ignored by git
@@ -390,7 +390,7 @@ Have a question? Found a bug? Missing a specific feature? Ran into a problem? Fe
 
 ### How To Get Started
 - First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
-- Next, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
+- Next, go through [Hydra quick start guide](https://hydra.cc/docs/intro/) and [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/)
 <br>
 
 
@@ -456,7 +456,6 @@ print_config: True
 
 # disable python warnings if they annoy you
 ignore_warnings: True
-
 ```
 
 </details>
@@ -860,7 +859,7 @@ Next, install hooks from [.pre-commit-config.yaml](.pre-commit-config.yaml):
 pre-commit install
 ```
 After that your code will be automatically reformatted on every new commit.<br>
-Currently template contains configurations of **black** (python code formatting), **isort** (python import sorting), **flake8** (python code analysis) and **prettier** (yaml formating). You can exclude chosen files from automatic formatting, by modifying [.pre-commit-config.yaml](.pre-commit-config.yaml).<br>
+Currently template contains configurations of **black** (python code formatting), **isort** (python import sorting), **flake8** (python code analysis) and **prettier** (yaml formating). <br>
 
 To reformat all files in the project use command:
 ```yaml
@@ -1045,12 +1044,12 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 
 </details>
 
-<details>
+<!-- <details>
 <summary><b>Make notebooks independent from other files</b></summary>
 
 It's a good practice for jupyter notebooks to be portable. Try to make them independent from src files. If you need to access external code, try to embed it inside the notebook.
 
-</details>
+</details> -->
 <br>
 
 
@@ -1118,7 +1117,7 @@ from omegaconf import OmegaConf
 
 # you can place this snippet in your datamodule __init__()
 resolver_name = "datamodule"
-OmegaConf.register_resolver(
+OmegaConf.register_new_resolver(
     resolver_name,
     lambda name: getattr(self, name),
     use_cache=False
