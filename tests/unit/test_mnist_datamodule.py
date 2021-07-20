@@ -1,7 +1,9 @@
 import os
-import torch
-from src.datamodules.mnist_datamodule import MNISTDataModule
+
 import pytest
+import torch
+
+from src.datamodules.mnist_datamodule import MNISTDataModule
 
 
 @pytest.mark.parametrize("batch_size", [32, 128])
@@ -17,7 +19,9 @@ def test_mnist_datamodule(batch_size):
     datamodule.setup()
 
     assert datamodule.data_train and datamodule.data_val and datamodule.data_test
-    assert len(datamodule.data_train) + len(datamodule.data_val) + len(datamodule.data_test) == 70_000
+    assert (
+        len(datamodule.data_train) + len(datamodule.data_val) + len(datamodule.data_test) == 70_000
+    )
 
     assert datamodule.train_dataloader()
     assert datamodule.val_dataloader()
