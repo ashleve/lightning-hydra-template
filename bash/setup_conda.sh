@@ -15,7 +15,7 @@ source ~/miniconda3/etc/profile.d/conda.sh
 read -rp "Enter environment name: " env_name
 read -rp "Enter python version (recommended '3.8') " python_version
 read -rp "Enter cuda version (recommended '10.2', or 'none' for CPU only): " cuda_version
-read -rp "Enter pytorch version (recommended '1.9'): " pytorch_version
+read -rp "Enter pytorch version (recommended '1.8.1'): " pytorch_version
 
 # Create conda env
 conda create -y -n "$env_name" python="$python_version"

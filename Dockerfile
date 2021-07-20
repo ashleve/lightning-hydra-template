@@ -44,7 +44,7 @@ RUN source activate ${CONDA_ENV_NAME} \
     && rm requirements.txt
 
 
-# Uncomment this to install Apex for mixed-precision training
+# Uncomment this to install Apex for mixed-precision support
 # RUN source activate ${CONDA_ENV_NAME} \
 #     && git clone https://github.com/NVIDIA/apex \
 #     && cd apex  \
