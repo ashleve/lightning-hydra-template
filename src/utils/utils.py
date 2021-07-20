@@ -100,7 +100,7 @@ def print_config(
     """
 
     style = "dim"
-    tree = rich.tree.Tree(":gear: CONFIG", style=style, guide_style=style)
+    tree = rich.tree.Tree("CONFIG", style=style, guide_style=style)
 
     for field in fields:
         branch = tree.add(field, style=style, guide_style=style)
