@@ -1,6 +1,7 @@
 from typing import Optional, Tuple
 
 from pytorch_lightning import LightningDataModule
+from torch import Generator
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
 from torchvision.datasets import MNIST
 from torchvision.transforms import transforms
@@ -68,7 +69,7 @@ class MNISTDataModule(LightningDataModule):
         testset = MNIST(self.data_dir, train=False, transform=self.transforms)
         dataset = ConcatDataset(datasets=[trainset, testset])
         self.data_train, self.data_val, self.data_test = random_split(
-            dataset, self.train_val_test_split
+            dataset, self.train_val_test_split, generator=Generator().manual_seed(self.split_seed)
         )
 
     def train_dataloader(self):
