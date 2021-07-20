@@ -16,6 +16,7 @@ def test_default_cpu():
     run_command(command)
 
 
+# use RunIf to skip execution of some tests, e.g. when no gpus are available
 @RunIf(min_gpus=1)
 def test_default_gpu():
     """Test default config on GPU."""

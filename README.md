@@ -366,6 +366,7 @@ python run.py -m 'experiment=glob(*)'
 
 
 ## 🐳&nbsp;&nbsp;Docker
+First you will need to [install Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to enable GPU  support. <br>
 To build the container from provided Dockerfile use:
 ```bash
 docker build -t <project_name> .
@@ -374,7 +375,7 @@ To mount the project to the container use:
 ```bash
 docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
 ```
-Supports GPU and mixed-precision training.
+Uncomment Apex in Dockerfile for mixed-precision support.
 <br><br><br>
 
 

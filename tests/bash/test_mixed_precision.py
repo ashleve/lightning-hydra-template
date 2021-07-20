@@ -3,7 +3,7 @@ from tests.helpers.runif import RunIf
 
 
 @RunIf(amp_apex=True)
-def test_apex_01():
+def test_apex_O1():
     """Test mixed-precision level O1."""
     command = [
         "run.py",
@@ -18,7 +18,7 @@ def test_apex_01():
 
 
 @RunIf(amp_apex=True)
-def test_apex_02():
+def test_apex_O2():
     """Test mixed-precision level O2."""
     command = [
         "run.py",
@@ -33,7 +33,7 @@ def test_apex_02():
 
 
 @RunIf(amp_apex=True)
-def test_apex_03():
+def test_apex_O3():
     """Test mixed-precision level O3."""
     command = [
         "run.py",

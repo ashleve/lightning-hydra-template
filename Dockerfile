@@ -44,13 +44,13 @@ RUN source activate ${CONDA_ENV_NAME} \
     && rm requirements.txt
 
 
-# Install Apex for mixed-precision training
-RUN source activate ${CONDA_ENV_NAME} \
-    && git clone https://github.com/NVIDIA/apex \
-    && cd apex  \
-    && pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./ \
-    && cd .. \
-    && rm -r apex
+# Uncomment this to install Apex for mixed-precision training
+# RUN source activate ${CONDA_ENV_NAME} \
+#     && git clone https://github.com/NVIDIA/apex \
+#     && cd apex  \
+#     && pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./ \
+#     && cd .. \
+#     && rm -r apex
 
 
 # Set ${CONDA_ENV_NAME} to default virutal environment
