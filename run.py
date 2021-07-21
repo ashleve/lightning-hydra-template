@@ -19,7 +19,6 @@ def main(config: DictConfig):
     # - disabling python warnings
     # - easier access to debug mode
     # - forcing debug friendly configuration
-    # - forcing multi-gpu friendly configuration
     # You can safely get rid of this line if you don't want those
     utils.extras(config)
 

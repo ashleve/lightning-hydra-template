@@ -29,7 +29,6 @@ def extras(config: DictConfig) -> None:
     - disabling warnings
     - easier access to debug mode
     - forcing debug friendly configuration
-    - forcing multi-gpu friendly configuration
 
     Modifies DictConfig in place.
 
