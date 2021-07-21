@@ -31,7 +31,6 @@ class MNISTDataModule(LightningDataModule):
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
-        **kwargs,
     ):
         super().__init__()
 

@@ -806,9 +806,7 @@ List of extra utilities available in the template:
 - loading environment variables from [.env](.env.example) file
 - pretty printing config with [Rich](https://github.com/willmcgugan/rich) library
 - disabling python warnings
-- easier access to debug mode
-- forcing debug friendly configuration
-- forcing multi-gpu friendly configuration
+- debug mode
 <!-- - (TODO) resuming latest run -->
 
 You can easily remove any of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
