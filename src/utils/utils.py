@@ -64,13 +64,13 @@ def extras(config: DictConfig) -> None:
             config.datamodule.num_workers = 0
 
     # force multi-gpu friendly configuration if <config.trainer.accelerator=ddp>
-    accelerator = config.trainer.get("accelerator")
-    if accelerator in ["ddp", "ddp_spawn", "dp", "ddp2"]:
-        log.info(f"Forcing ddp friendly configuration! <config.trainer.accelerator={accelerator}>")
-        if config.datamodule.get("num_workers"):
-            config.datamodule.num_workers = 0
-        if config.datamodule.get("pin_memory"):
-            config.datamodule.pin_memory = False
+    # accelerator = config.trainer.get("accelerator")
+    # if accelerator in ["ddp", "ddp_spawn", "dp", "ddp2"]:
+    #     log.info(f"Forcing ddp friendly configuration! <config.trainer.accelerator={accelerator}>")
+    #     if config.datamodule.get("num_workers"):
+    #         config.datamodule.num_workers = 0
+    #     if config.datamodule.get("pin_memory"):
+    #         config.datamodule.pin_memory = False
 
     # disable adding new keys to config
     OmegaConf.set_struct(config, True)
