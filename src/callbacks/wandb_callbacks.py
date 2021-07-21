@@ -12,7 +12,16 @@ from pytorch_lightning.loggers import LoggerCollection, WandbLogger
 from sklearn import metrics
 from sklearn.metrics import f1_score, precision_score, recall_score
 
+def is_relative_to(p: Path, *other):
+    """Return True if the path is relative to another path or False. (For compatibility below Python 3.9)
+    """
+    try:
+        p.relative_to(*other)
+        return True
+    except ValueError:
+        return False
 
+    
 def get_wandb_logger(trainer: Trainer) -> WandbLogger:
     """Safely get Weights&Biases logger from Trainer."""
 
@@ -67,7 +76,7 @@ class UploadCodeAsArtifact(Callback):
 
             for path in Path(self.code_dir).rglob('*'):
                 if (path.is_file()
-                        and (not path.is_relative_to(git_dir_path))  # ignore files in .git
+                        and (not is_relative_to(path, git_dir_path))  # ignore files in .git
                         and (subprocess.run(['git', 'check-ignore', '-q', str(path)]).returncode == 1)):  # ignore files ignored by git
                     code.add_file(str(path), name=str(path.relative_to(self.code_dir)))
 
