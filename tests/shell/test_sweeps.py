@@ -17,7 +17,7 @@ def test_default_sweep():
         "datamodule.batch_size=64,128",
         "model.lr=0.01,0.02",
         "trainer=default",
-        "trainer.fast_dev_run=true",
+        "++trainer.fast_dev_run=true",
     ]
     run_command(command)
 
@@ -30,14 +30,6 @@ def test_optuna_sweep():
         "-m",
         "hparams_search=mnist_optuna",
         "trainer=default",
-        "trainer.fast_dev_run=true",
+        "++trainer.fast_dev_run=true",
     ]
-    run_command(command)
-
-
-@pytest.mark.skip(reason="TODO: Add Ax sweep config.")
-@pytest.mark.slow
-def test_ax_sweep():
-    """Test Ax sweeper."""
-    command = ["run.py", "-m", "hparams_search=mnist_ax", "trainer.fast_dev_run=true"]
     run_command(command)
