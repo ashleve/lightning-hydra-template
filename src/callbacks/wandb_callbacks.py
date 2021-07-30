@@ -1,6 +1,5 @@
-from pathlib import Path
 import subprocess
-from pytorch_lightning.utilities import rank_zero_only
+from pathlib import Path
 from typing import List
 
 import matplotlib.pyplot as plt
@@ -9,19 +8,21 @@ import torch
 import wandb
 from pytorch_lightning import Callback, Trainer
 from pytorch_lightning.loggers import LoggerCollection, WandbLogger
+from pytorch_lightning.utilities import rank_zero_only
 from sklearn import metrics
 from sklearn.metrics import f1_score, precision_score, recall_score
 
+
 def is_relative_to(p: Path, *other):
-    """Return True if the path is relative to another path or False. (For compatibility below Python 3.9)
-    """
+    """Return True if the path is relative to another path or False.
+    (For compatibility below Python 3.9)"""
     try:
         p.relative_to(*other)
         return True
     except ValueError:
         return False
 
-    
+
 def get_wandb_logger(trainer: Trainer) -> WandbLogger:
     """Safely get Weights&Biases logger from Trainer."""
 
@@ -56,8 +57,10 @@ class UploadCodeAsArtifact(Callback):
     def __init__(self, code_dir: str, use_git: bool = True):
         """
 
-        :param code_dir:
-        :param use_git: if using git, then upload all files that are not ignored by git. if not using git, then upload all '*.py' file
+        Args:
+            code_dir: the code directory
+            use_git: if using git, then upload all files that are not ignored by git.
+            if not using git, then upload all '*.py' file
         """
         self.code_dir = code_dir
         self.use_git = use_git
@@ -72,16 +75,24 @@ class UploadCodeAsArtifact(Callback):
         if self.use_git:
             # get .git folder
             # https://alexwlchan.net/2020/11/a-python-function-to-ignore-a-path-with-git-info-exclude/
-            git_dir_path = Path(subprocess.check_output(["git", "rev-parse", "--git-dir"]).strip().decode("utf8")).resolve()
+            git_dir_path = Path(
+                subprocess.check_output(["git", "rev-parse", "--git-dir"]).strip().decode("utf8")
+            ).resolve()
 
-            for path in Path(self.code_dir).rglob('*'):
-                if (path.is_file()
-                        and (not is_relative_to(path, git_dir_path))  # ignore files in .git
-                        and (subprocess.run(['git', 'check-ignore', '-q', str(path)]).returncode == 1)):  # ignore files ignored by git
+            for path in Path(self.code_dir).rglob("*"):
+                if (
+                    path.is_file()
+                    # ignore files in .git
+                    and (not is_relative_to(path, git_dir_path))  # noqa: W503
+                    # ignore files ignored by git
+                    and (  # noqa: W503
+                        subprocess.run(["git", "check-ignore", "-q", str(path)]).returncode == 1
+                    )
+                ):
                     code.add_file(str(path), name=str(path.relative_to(self.code_dir)))
 
         else:
-            for path in Path(self.code_dir).rglob('*.py'):
+            for path in Path(self.code_dir).rglob("*.py"):
                 code.add_file(str(path), name=str(path.relative_to(self.code_dir)))
 
         experiment.use_artifact(code)
@@ -104,7 +115,7 @@ class UploadCheckpointsAsArtifact(Callback):
         if self.upload_best_only:
             ckpts.add_file(trainer.checkpoint_callback.best_model_path)
         else:
-            for path in Path(self.ckpt_dir).rglob('*.ckpt'):
+            for path in Path(self.ckpt_dir).rglob("*.ckpt"):
                 ckpts.add_file(str(path))
 
         experiment.log_artifact(ckpts)
