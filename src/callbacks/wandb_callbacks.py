@@ -46,6 +46,7 @@ class WatchModel(Callback):
         self.log = log
         self.log_freq = log_freq
 
+    @rank_zero_only
     def on_train_start(self, trainer, pl_module):
         logger = get_wandb_logger(trainer=trainer)
         logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq)
@@ -104,6 +105,10 @@ class UploadCheckpointsAsArtifact(Callback):
     def __init__(self, ckpt_dir: str = "checkpoints/", upload_best_only: bool = False):
         self.ckpt_dir = ckpt_dir
         self.upload_best_only = upload_best_only
+
+    @rank_zero_only
+    def on_keyboard_interrupt(self, trainer, pl_module):
+        self.on_train_end(trainer, pl_module)
 
     @rank_zero_only
     def on_train_end(self, trainer, pl_module):
