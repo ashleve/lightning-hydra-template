@@ -3,17 +3,17 @@
 # Lightning-Hydra-Template
 
 
-<a href="https://pytorch.org/get-started/locally/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7--3.9-blue?style=for-the-badge&logo=python&logoColor=white"></a>
+<a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7--3.9-blue?style=for-the-badge&logo=python&logoColor=white"></a>
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch 1.8+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
-<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?style=for-the-badge&logo=pytorchlightning&logoColor=white"></a>
-<a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra-89b8cd?style=for-the-badge&labelColor=gray"></a>
+<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning 1.3+-792ee5?style=for-the-badge&logo=pytorchlightning&logoColor=white"></a>
+<a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra 1.1-89b8cd?style=for-the-badge&labelColor=gray"></a>
 <a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge&labelColor=gray"></a>
 <!-- <a href="https://hub.docker.com/r/ashlev/lightning-hydra"><img alt="Docker" src="https://img.shields.io/badge/docker-257bd6?style=for-the-badge&logo=docker&logoColor=white"></a> -->
 
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/ashleve/lightning-hydra-template/generate) to initialize new repository.
 
-*Currently uses dev version of Hydra.<br>Suggestions are always welcome!*
+*Suggestions are always welcome!*
 
 </div>
 <br><br>
@@ -56,7 +56,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Experiment Tracking**: many logging frameworks can be easily integrated! (see [#Experiment Tracking](#experiment-tracking))
 - **Logs**: all logs (checkpoints, data from loggers, chosen hparams, etc.) are stored in a convenient folder structure imposed by Hydra (see [#Logs](#logs))
 - **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) (see [#Hyperparameter Search](#hyperparameter-search))
-- **Tests**: unit tests and smoke tests (see [#Tests](#tests))
+- **Tests**: unit tests and command based tests (see [#Tests](#tests))
 - **Extra Features**: optional utilities to make your life easier (see [#Extra Features](#extra-features))
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
 <br>
@@ -65,6 +65,10 @@ It makes your code neatly organized and provides lots of useful features, like a
 ## Project Structure
 The directory structure of new project looks like this:
 ```
+├── bash                    <- Bash scripts
+│   ├── setup_conda.sh          <- Setup conda environment
+│   └── schedule.sh             <- Schedule execution of many runs
+│
 ├── configs                 <- Hydra configuration files
 │   ├── callbacks               <- Callbacks configs
 │   ├── datamodule              <- Datamodule configs
@@ -86,8 +90,9 @@ The directory structure of new project looks like this:
 │                              `1.0-jqp-initial-data-exploration.ipynb`.
 │
 ├── tests                   <- Tests of any kind
-│   ├── smoke
-│   └── unit
+│   ├── helpers                 <- A couple of testing utilities
+│   ├── shell                   <- Shell/command based tests
+│   └── unit                    <- Unit tests
 │
 ├── src
 │   ├── callbacks               <- Lightning callbacks
@@ -97,15 +102,14 @@ The directory structure of new project looks like this:
 │   │
 │   └── train.py                <- Training pipeline
 │
-├── run.py                  <- Run any pipeline with chosen experiment configuration
+├── run.py                  <- Run pipeline with chosen experiment configuration
 │
 ├── .env.example            <- Template of the file for storing private environment variables
 ├── .gitignore              <- List of files/folders ignored by git
 ├── .pre-commit-config.yaml <- Configuration of automatic code formatting
-├── conda_env_gpu.yaml      <- File for installing conda environment
+├── setup.cfg               <- Configurations of linters and pytest
 ├── Dockerfile              <- File for building docker container
 ├── requirements.txt        <- File for installing python dependencies
-├── setup.cgf               <- Configurations of linters and pytest
 ├── LICENSE
 └── README.md
 ```
@@ -119,8 +123,7 @@ git clone https://github.com/ashleve/lightning-hydra-template
 cd lightning-hydra-template
 
 # [OPTIONAL] create conda environment
-conda env create -f conda_env_gpu.yaml -n myenv
-conda activate myenv
+bash bash/setup_conda.sh
 
 # install requirements
 pip install -r requirements.txt
@@ -363,8 +366,7 @@ python run.py -m 'experiment=glob(*)'
 
 
 ## 🐳&nbsp;&nbsp;Docker
-I recommend the official [nvidia ngc pytorch container](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags).
-
+First you will need to [install Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to enable GPU  support. <br>
 To build the container from provided Dockerfile use:
 ```bash
 docker build -t <project_name> .
@@ -373,8 +375,7 @@ To mount the project to the container use:
 ```bash
 docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
 ```
-
-Others dockerfiles are provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). You can use them as a starting point for building more complicated images.
+Uncomment Apex in Dockerfile for mixed-precision support.
 <br><br><br>
 
 
@@ -389,7 +390,7 @@ Have a question? Found a bug? Missing a specific feature? Ran into a problem? Fe
 
 ### How To Get Started
 - First, you should probably get familiar with [PyTorch Lightning](https://www.pytorchlightning.ai)
-- Next, go through [Hydra quick start guide](https://hydra.cc/docs/intro/), [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/) and [docs about instantiating objects with Hydra](https://hydra.cc/docs/patterns/instantiate_objects/overview)
+- Next, go through [Hydra quick start guide](https://hydra.cc/docs/intro/) and [basic Hydra tutorial](https://hydra.cc/docs/tutorials/basic/your_first_app/simple_cli/)
 <br>
 
 
@@ -426,7 +427,7 @@ It also specifies everything that shouldn't be managed by experiment configurati
 ```yaml
 # specify here default training configuration
 defaults:
-    - trainer: minimal.yaml
+    - trainer: default.yaml
     - model: mnist_model.yaml
     - datamodule: mnist_datamodule.yaml
     - callbacks: default.yaml  # set this to null if you don't want to use callbacks
@@ -455,7 +456,6 @@ print_config: True
 
 # disable python warnings if they annoy you
 ignore_warnings: True
-
 ```
 
 </details>
@@ -473,7 +473,7 @@ Experiment configurations allow you to overwrite parameters from main project co
 # python run.py experiment=example_simple
 
 defaults:
-    - override /trainer: minimal.yaml
+    - override /trainer: default.yaml
     - override /model: mnist_model.yaml
     - override /datamodule: mnist_datamodule.yaml
     - override /callbacks: default.yaml
@@ -760,12 +760,12 @@ To execute them simply run:
 pytest
 
 # run tests from specific file
-pytest tests/smoke_tests/test_commands.py
+pytest tests/shell/test_basic_commands.py
 
 # run all tests except the ones marked as slow
 pytest -k "not slow"
 ```
-I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute tests that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exist to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/smoke_tests](tests/smoke_tests) folder.
+I often find myself running into bugs that come out only in edge cases or on some specific hardware/environment. To speed up the development, I usually constantly execute tests that run a couple of quick 1 epoch experiments, like overfitting to 10 batches, training on 25% of data, etc. Those kind of tests don't check for any specific output - they exist to simply verify that executing some commands doesn't end up in throwing exceptions. You can find them implemented in [tests/shell](tests/shell) folder.
 
 You can easily modify the commands in the scripts for your use case. If even 1 epoch is too much for your model, then you can make it run for a couple of batches instead (by using the right trainer flags).
 <br><br>
@@ -803,13 +803,10 @@ python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 
 ### Extra Features
 List of extra utilities available in the template:
-- loading environment variables from [.env](.env.template) file
+- loading environment variables from [.env](.env.example) file
 - pretty printing config with [Rich](https://github.com/willmcgugan/rich) library
 - disabling python warnings
-- easier access to debug mode
-- forcing debug friendly configuration
-- forcing multi-gpu friendly configuration
-- method for logging hyperparameters to loggers
+- debug mode
 <!-- - (TODO) resuming latest run -->
 
 You can easily remove any of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
@@ -840,10 +837,9 @@ Example installation:
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
-Create environment from file provided in the template:
+Create environment using bash script provided in the template:
 ```yaml
-conda env create -f conda_env_gpu.yaml -n myenv
-conda activate myenv
+bash bash/setup_conda.sh
 ```
 
 </details>
@@ -861,7 +857,7 @@ Next, install hooks from [.pre-commit-config.yaml](.pre-commit-config.yaml):
 pre-commit install
 ```
 After that your code will be automatically reformatted on every new commit.<br>
-Currently template contains configurations of **Black** (python code formatting) and **Isort** (python import sorting). You can exclude chosen files from automatic formatting, by modifying [.pre-commit-config.yaml](.pre-commit-config.yaml).<br>
+Currently template contains configurations of **black** (python code formatting), **isort** (python import sorting), **flake8** (python code analysis) and **prettier** (yaml formating). <br>
 
 To reformat all files in the project use command:
 ```yaml
@@ -875,7 +871,7 @@ pre-commit run -a
 
 System specific variables (e.g. absolute paths to datasets) should not be under version control or it will result in conflict between different users. Your private keys also shouldn't be versioned since you don't want them to be leaked.<br>
 
-Template contains `.env.template` file, which serves as an example. Create a new file called `.env` (this name is excluded from version control in .gitignore).
+Template contains `.env.example` file, which serves as an example. Create a new file called `.env` (this name is excluded from version control in .gitignore).
 You should use it for storing environment variables like this:
 ```yaml
 MY_VAR=/home/user/my_system_path
@@ -1045,6 +1041,13 @@ from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
 
 </details>
+
+<!-- <details>
+<summary><b>Make notebooks independent from other files</b></summary>
+
+It's a good practice for jupyter notebooks to be portable. Try to make them independent from src files. If you need to access external code, try to embed it inside the notebook.
+
+</details> -->
 <br>
 
 
@@ -1112,7 +1115,7 @@ from omegaconf import OmegaConf
 
 # you can place this snippet in your datamodule __init__()
 resolver_name = "datamodule"
-OmegaConf.register_resolver(
+OmegaConf.register_new_resolver(
     resolver_name,
     lambda name: getattr(self, name),
     use_cache=False
@@ -1160,14 +1163,12 @@ This template was inspired by:
 
 </details>
 
-<details>
+<!-- <details>
 <summary><b>List of repositories using this template</b></summary>
 
 - [ashleve/graph_classification](https://github.com/ashleve/graph_classification) - benchmarking graph neural network architectures on graph classification datasets (Open Graph Benchmarks and image classification from superpixels)
 
-> if you'd like to share your project and add it to the list, feel free to make a PR!
-
-</details>
+</details> -->
 
 
 <!-- ## :star:&nbsp; Stargazers Over Time
@@ -1192,7 +1193,7 @@ This template was inspired by:
 # Your Project Name
 
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
-<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5"></a>
+<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?logo=pytorchlightning&logoColor=white"></a>
 <a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-89b8cd"></a>
 <a href="https://github.com/ashleve/lightning-hydra-template"><img alt="Template" src="https://img.shields.io/badge/-Lightning--Hydra--Template-017F2F?style=flat&logo=github&labelColor=gray"></a><br>
 [![Paper](http://img.shields.io/badge/paper-arxiv.1001.2234-B31B1B.svg)](https://www.nature.com/articles/nature14539)
@@ -1211,8 +1212,7 @@ git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
 # [OPTIONAL] create conda environment
-conda env create -f conda_env_gpu.yaml -n myenv
-conda activate myenv
+bash bash/setup_conda.sh
 
 # install requirements
 pip install -r requirements.txt

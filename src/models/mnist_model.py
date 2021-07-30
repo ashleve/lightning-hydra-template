@@ -31,7 +31,6 @@ class MNISTLitModel(LightningModule):
         output_size: int = 10,
         lr: float = 0.001,
         weight_decay: float = 0.0005,
-        **kwargs
     ):
         super().__init__()
 

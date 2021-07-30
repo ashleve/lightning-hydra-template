@@ -96,7 +96,7 @@ class UploadCodeAsArtifact(Callback):
             for path in Path(self.code_dir).rglob("*.py"):
                 code.add_file(str(path), name=str(path.relative_to(self.code_dir)))
 
-        experiment.use_artifact(code)
+        experiment.log_artifact(code)
 
 
 class UploadCheckpointsAsArtifact(Callback):

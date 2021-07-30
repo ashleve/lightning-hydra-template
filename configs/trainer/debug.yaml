@@ -1,4 +1,5 @@
-_target_: pytorch_lightning.Trainer
+defaults:
+  - default.yaml
 
 gpus: 0
 
@@ -11,8 +12,8 @@ weights_summary: null
 profiler: null
 
 # debugs
-num_sanity_val_steps: 2
 fast_dev_run: False
+num_sanity_val_steps: 2
 overfit_batches: 0
 limit_train_batches: 1.0
 limit_val_batches: 1.0
