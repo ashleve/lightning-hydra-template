@@ -70,6 +70,7 @@ def train(config: DictConfig) -> Optional[float]:
         trainer=trainer,
         callbacks=callbacks,
         logger=logger,
+        metrics=getattr(model, 'get_hparam_metrics', None)
     )
 
     # Train the model

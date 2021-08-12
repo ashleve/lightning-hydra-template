@@ -1,7 +1,7 @@
 import logging
 import os
 import warnings
-from typing import List, Sequence
+from typing import Dict, List, Optional, Sequence
 
 import pytorch_lightning as pl
 import rich.syntax
@@ -119,6 +119,7 @@ def log_hyperparameters(
     trainer: pl.Trainer,
     callbacks: List[pl.Callback],
     logger: List[pl.loggers.LightningLoggerBase],
+    metrics: Optional[Dict] = None
 ) -> None:
     """This method controls which parameters from Hydra config are saved by Lightning loggers.
 
@@ -146,8 +147,16 @@ def log_hyperparameters(
         p.numel() for p in model.parameters() if not p.requires_grad
     )
 
-    # send hparams to all loggers
-    trainer.logger.log_hyperparams(hparams)
+    # send hparams to all loggers, saving tracked metrics if applicable
+    if metrics:
+        for logger in trainer.logger:
+            # Currently only works with TensorBoardLogger
+            if isinstance(logger, pl.loggers.tensorboard.TensorBoardLogger):
+                logger.log_hyperparams(hparams, metrics=metrics)
+            else:
+                logger.log_hyperparams(hparams)
+    else:
+        trainer.logger.log_hyperparams(hparams)
 
     # disable logging any more hyperparameters for all loggers
     # this is just a trick to prevent trainer from logging hparams of model,

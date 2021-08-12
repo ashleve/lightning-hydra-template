@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, Dict, List
 
 import torch
 from pytorch_lightning import LightningModule
@@ -112,3 +112,14 @@ class MNISTLitModel(LightningModule):
         return torch.optim.Adam(
             params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay
         )
+
+    @property
+    def get_hparam_metrics(self) -> Dict:
+        """Return a dictionary of the metrics you wish to use for hparam comparison.
+        For example, this would appear on the `HPARAMS` tab of TensorBoard.
+        """
+
+        return {
+            'test/acc': 0,
+            'test/loss': 0
+        }
