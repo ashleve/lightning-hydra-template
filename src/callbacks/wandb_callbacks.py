@@ -70,7 +70,7 @@ class UploadCodeAsArtifact(Callback):
                 subprocess.check_output(["git", "rev-parse", "--git-dir"]).strip().decode("utf8")
             ).resolve()
 
-            for path in Path(self.code_dir).rglob("*"):
+            for path in Path(self.code_dir).resolve().rglob("*"):
                 if (
                     path.is_file()
                     # ignore files in .git
@@ -83,7 +83,7 @@ class UploadCodeAsArtifact(Callback):
                     code.add_file(str(path), name=str(path.relative_to(self.code_dir)))
 
         else:
-            for path in Path(self.code_dir).rglob("*.py"):
+            for path in Path(self.code_dir).resolve().rglob("*.py"):
                 code.add_file(str(path), name=str(path.relative_to(self.code_dir)))
 
         experiment.log_artifact(code)
