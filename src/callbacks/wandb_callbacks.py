@@ -13,16 +13,6 @@ from sklearn import metrics
 from sklearn.metrics import f1_score, precision_score, recall_score
 
 
-def is_relative_to(p: Path, *other):
-    """Return True if the path is relative to another path or False.
-    (For compatibility below Python 3.9)"""
-    try:
-        p.relative_to(*other)
-        return True
-    except ValueError:
-        return False
-
-
 def get_wandb_logger(trainer: Trainer) -> WandbLogger:
     """Safely get Weights&Biases logger from Trainer."""
 
@@ -84,7 +74,7 @@ class UploadCodeAsArtifact(Callback):
                 if (
                     path.is_file()
                     # ignore files in .git
-                    and (not is_relative_to(path, git_dir_path))  # noqa: W503
+                    and not str(path).startswith(str(git_dir_path))  # noqa: W503
                     # ignore files ignored by git
                     and (  # noqa: W503
                         subprocess.run(["git", "check-ignore", "-q", str(path)]).returncode == 1
