@@ -2,6 +2,7 @@
 
 # specify here default training configuration
 defaults:
+  - _self_
   - trainer: default.yaml
   - model: mnist_model.yaml
   - datamodule: mnist_datamodule.yaml
@@ -41,3 +42,5 @@ ignore_warnings: True
 # check performance on test set, using the best model achieved during training
 # lightning chooses best model based on metric specified in checkpoint callback
 test_after_training: True
+
+seed: null
