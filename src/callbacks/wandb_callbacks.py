@@ -272,7 +272,7 @@ class LogImagePredictions(Callback):
             # run the batch through the network
             val_imgs = val_imgs.to(device=pl_module.device)
             logits = pl_module(val_imgs)
-            preds = torch.argmax(logits, axis=-1)
+            preds = torch.argmax(logits, dim=-1)
 
             # log the images as wandb Image
             experiment.log(
