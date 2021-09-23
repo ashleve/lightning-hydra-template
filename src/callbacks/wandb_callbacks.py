@@ -16,6 +16,11 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 def get_wandb_logger(trainer: Trainer) -> WandbLogger:
     """Safely get Weights&Biases logger from Trainer."""
 
+    if trainer.fast_dev_run:
+        raise Exception(
+            "Cannot use wandb callbacks since pytorch lightning disables loggers in debug mode."
+        )
+
     if isinstance(trainer.logger, WandbLogger):
         return trainer.logger
 
