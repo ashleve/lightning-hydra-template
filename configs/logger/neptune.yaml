@@ -6,6 +6,6 @@ neptune:
   project_name: your_name/template-tests
   close_after_fit: True
   offline_mode: False
-  experiment_name: null
+  experiment_name: ${name}
   experiment_id: null
   prefix: ""

@@ -1,0 +1,11 @@
+# @package _global_
+
+# default running mode
+
+# default output paths for hydra logs
+hydra:
+  run:
+    dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${hydra.job.num}

@@ -4,7 +4,7 @@
 # python run.py experiment=example_simple.yaml
 
 defaults:
-  - override /trainer: default.yaml # choose trainer from 'configs/trainer/'
+  - override /trainer: default.yaml
   - override /model: mnist_model.yaml
   - override /datamodule: mnist_datamodule.yaml
   - override /callbacks: default.yaml

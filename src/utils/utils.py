@@ -46,10 +46,13 @@ def extras(config: DictConfig) -> None:
         log.info("Disabling python warnings! <config.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
 
-    # set <config.trainer.fast_dev_run=True> if <config.debug=True>
+    # if <config.debug=True>
     if config.get("debug"):
         log.info("Running in debug mode! <config.debug=True>")
-        config.trainer.fast_dev_run = True
+
+    # if <config.name=...>
+    if config.get("name"):
+        log.info("Running in experiment mode! Name: {}".format(config.name))
 
     # force debugger friendly configuration if <config.trainer.fast_dev_run=True>
     if config.trainer.get("fast_dev_run"):
@@ -75,7 +78,9 @@ def print_config(
         "datamodule",
         "callbacks",
         "logger",
+        "test_after_training",
         "seed",
+        "name",
     ),
     resolve: bool = True,
 ) -> None:
