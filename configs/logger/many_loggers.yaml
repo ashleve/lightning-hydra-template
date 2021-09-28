@@ -1,7 +1,6 @@
 # train with many loggers at once
 
 defaults:
-  # - aim.yaml
   # - comet.yaml
   - csv.yaml
   # - mlflow.yaml
