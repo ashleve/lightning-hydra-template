@@ -40,5 +40,5 @@ test_after_training: True
 # seed for random number generators in pytorch, numpy and python.random
 seed: null
 
-# name of the experiment
+# name of the run, accessed by loggers
 name: null

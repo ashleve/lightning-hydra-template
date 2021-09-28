@@ -74,7 +74,7 @@ The directory structure of new project looks like this:
 │   ├── datamodule              <- Datamodule configs
 │   ├── experiment              <- Experiment configs
 │   ├── hparams_search          <- Hyperparameter search configs
-│   ├── hydra                   <- Hydra related configs
+│   ├── mode                    <- Running mode configs
 │   ├── logger                  <- Logger configs
 │   ├── model                   <- Model configs
 │   ├── trainer                 <- Trainer configs
@@ -447,7 +447,7 @@ defaults:
     - callbacks: default.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
-    - hydra: default.yaml
+    - mode: default.yaml
 
     - experiment: null
     - hparams_search: null
@@ -612,7 +612,7 @@ By default, logs have the following structure:
 │
 ```
 
-You can change this structure by modifying paths in [hydra configuration](configs/hydra/default.yaml).
+You can change this structure by modifying paths in [hydra configuration](configs/mode).
 <br><br>
 
 
