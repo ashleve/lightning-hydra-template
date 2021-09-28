@@ -604,7 +604,7 @@ You can change this structure by modifying paths in [hydra configuration](config
 
 ### Experiment Tracking
 PyTorch Lightning supports the most popular logging frameworks:<br>
-**[Weights&Biases](https://www.wandb.com/) · [Neptune](https://neptune.ai/) · [Comet](https://www.comet.ml/) · [MLFlow](https://mlflow.org) · [Aim](https://github.com/aimhubio/aim) · [Tensorboard](https://www.tensorflow.org/tensorboard/)**
+**[Weights&Biases](https://www.wandb.com/) · [Neptune](https://neptune.ai/) · [Comet](https://www.comet.ml/) · [MLFlow](https://mlflow.org) · [Tensorboard](https://www.tensorflow.org/tensorboard/)**
 
 These tools help you keep track of hyperparameters and output metrics and allow you to compare and visualize results. To use one of them simply complete its configuration in [configs/logger](configs/logger) and run:
  ```yaml
@@ -684,7 +684,7 @@ hydra:
 </details>
 
 Next, you can execute it with: `python run.py -m hparams_search=mnist_optuna`<br>
-Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file. You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
+Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file. You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad. The `optimization_results.yaml` will be available under `logs/multirun` folder.
 <br><br>
 
 
@@ -798,6 +798,15 @@ You can run DDP on mnist example with 4 GPUs like this:
 python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 ```
 ⚠️ When using DDP you have to be careful how you write your models - learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
+<br><br>
+
+
+### Reproducibility
+To reproduce previous experiment, simply load its config from logs:
+```yaml
+python run.py --config-path /logs/runs/.../.hydra/ --config-name config.yaml 
+```
+The `config.yaml` from `.hydra` folder contains all overriden parameters and sections.
 <br><br>
 
 
