@@ -16,6 +16,11 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 def get_wandb_logger(trainer: Trainer) -> WandbLogger:
     """Safely get Weights&Biases logger from Trainer."""
 
+    if trainer.fast_dev_run:
+        raise Exception(
+            "Cannot use wandb callbacks since pytorch lightning disables loggers in `fast_dev_run=true` mode."
+        )
+
     if isinstance(trainer.logger, WandbLogger):
         return trainer.logger
 
@@ -207,9 +212,9 @@ class LogF1PrecRecHeatmap(Callback):
 
             preds = torch.cat(self.preds).cpu().numpy()
             targets = torch.cat(self.targets).cpu().numpy()
-            f1 = f1_score(preds, targets, average=None)
-            r = recall_score(preds, targets, average=None)
-            p = precision_score(preds, targets, average=None)
+            f1 = f1_score(targets, preds, average=None)
+            r = recall_score(targets, preds, average=None)
+            p = precision_score(targets, preds, average=None)
             data = [f1, p, r]
 
             # set figure size
@@ -267,7 +272,7 @@ class LogImagePredictions(Callback):
             # run the batch through the network
             val_imgs = val_imgs.to(device=pl_module.device)
             logits = pl_module(val_imgs)
-            preds = torch.argmax(logits, axis=-1)
+            preds = torch.argmax(logits, dim=-1)
 
             # log the images as wandb Image
             experiment.log(

@@ -3,7 +3,6 @@
 # example hyperparameter optimization of some experiment with Optuna:
 # python run.py -m hparams_search=mnist_optuna experiment=example_simple
 # python run.py -m hparams_search=mnist_optuna experiment=example_simple hydra.sweeper.n_trials=30
-# python run.py -m hparams_search=mnist_optuna experiment=example_simple logger=wandb
 
 defaults:
   - override /hydra/sweeper: optuna

@@ -1,0 +1,15 @@
+# @package _global_
+
+# run in debug mode with:
+# `python run.py mode=debug`
+
+# this flag doesn't really do anything
+debug: true
+
+# output paths for debug mode
+hydra:
+  run:
+    dir: logs/debug/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: logs/debug/multirun_${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${hydra.job.num}

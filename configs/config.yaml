@@ -2,16 +2,17 @@
 
 # specify here default training configuration
 defaults:
+  - _self_
   - trainer: default.yaml
   - model: mnist_model.yaml
   - datamodule: mnist_datamodule.yaml
-  - callbacks: default.yaml # set this to null if you don't want to use callbacks
+  - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python run.py logger=wandb`)
+
+  - mode: default.yaml
 
   - experiment: null
   - hparams_search: null
-
-  - hydra: default.yaml
 
   # enable color logging
   - override hydra/hydra_logging: colorlog
@@ -26,12 +27,6 @@ work_dir: ${hydra:runtime.cwd}
 # path to folder with data
 data_dir: ${work_dir}/data/
 
-# use `python run.py debug=true` for easy debugging!
-# this will run 1 train, val and test loop with only 1 batch
-# equivalent to running `python run.py trainer.fast_dev_run=true`
-# (this is placed here just for easier access from command line)
-debug: False
-
 # pretty print config at the start of the run using Rich library
 print_config: True
 
@@ -41,3 +36,9 @@ ignore_warnings: True
 # check performance on test set, using the best model achieved during training
 # lightning chooses best model based on metric specified in checkpoint callback
 test_after_training: True
+
+# seed for random number generators in pytorch, numpy and python.random
+seed: null
+
+# name of the run, accessed by loggers
+name: null

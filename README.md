@@ -74,7 +74,7 @@ The directory structure of new project looks like this:
 │   ├── datamodule              <- Datamodule configs
 │   ├── experiment              <- Experiment configs
 │   ├── hparams_search          <- Hyperparameter search configs
-│   ├── hydra                   <- Hydra related configs
+│   ├── mode                    <- Running mode configs
 │   ├── logger                  <- Logger configs
 │   ├── model                   <- Model configs
 │   ├── trainer                 <- Trainer configs
@@ -150,7 +150,6 @@ python run.py trainer.max_epochs=20 model.lr=1e-4
 > You can also add new parameters with `+` sign.
 ```yaml
 python run.py +model.new_param="uwu"
-
 ```
 
 </details>
@@ -218,6 +217,21 @@ python run.py logger=wandb
 
 
 <details>
+<summary><b>Use different logging modes</b></summary>
+
+```yaml
+# debug mode changes logging folder to `logs/debug/`
+python run.py mode=debug
+
+# experiment mode changes logging folder to `logs/experiments/name_of_your_experiment/`
+# also sets custom experiment name in the logger
+python run.py mode=exp name='my_new_experiment_253'
+```
+
+</details>
+
+
+<details>
 <summary><b>Train model with chosen experiment config</b></summary>
 
 > Experiment configurations are placed in [configs/experiment/](configs/experiment/).
@@ -269,7 +283,7 @@ python run.py +trainer.max_time="00:12:00:00"
 
 ```yaml
 # run 1 train, val and test loop, using only 1 batch
-python run.py debug=true
+python run.py trainer.fast_dev_run=true
 
 # print full weight summary of all PyTorch modules
 python run.py trainer.weights_summary="full"
@@ -348,12 +362,12 @@ python run.py -m 'experiment=glob(*)'
 
 </details>
 
-<details>
+<!-- <details>
 <summary><b>Execute sweep on a SLURM cluster</b></summary>
 
 > This should be achievable with either [the right lightning trainer flags](https://pytorch-lightning.readthedocs.io/en/latest/clouds/cluster.html?highlight=SLURM#slurm-managed-cluster) or simple config using [Submitit launcher for Hydra](https://hydra.cc/docs/plugins/submitit_launcher). Example is not yet implemented in this template.
 
-</details>
+</details> -->
 
 
 <details>
@@ -433,7 +447,7 @@ defaults:
     - callbacks: default.yaml  # set this to null if you don't want to use callbacks
     - logger: null  # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
-    - hydra: default.yaml
+    - mode: default.yaml
 
     - experiment: null
     - hparams_search: null
@@ -598,13 +612,13 @@ By default, logs have the following structure:
 │
 ```
 
-You can change this structure by modifying paths in [hydra configuration](configs/hydra/default.yaml).
+You can change this structure by modifying paths in [hydra configuration](configs/mode).
 <br><br>
 
 
 ### Experiment Tracking
 PyTorch Lightning supports the most popular logging frameworks:<br>
-**[Weights&Biases](https://www.wandb.com/) · [Neptune](https://neptune.ai/) · [Comet](https://www.comet.ml/) · [MLFlow](https://mlflow.org) · [Aim](https://github.com/aimhubio/aim) · [Tensorboard](https://www.tensorflow.org/tensorboard/)**
+**[Weights&Biases](https://www.wandb.com/) · [Neptune](https://neptune.ai/) · [Comet](https://www.comet.ml/) · [MLFlow](https://mlflow.org) · [Tensorboard](https://www.tensorflow.org/tensorboard/)**
 
 These tools help you keep track of hyperparameters and output metrics and allow you to compare and visualize results. To use one of them simply complete its configuration in [configs/logger](configs/logger) and run:
  ```yaml
@@ -684,7 +698,7 @@ hydra:
 </details>
 
 Next, you can execute it with: `python run.py -m hparams_search=mnist_optuna`<br>
-Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file. You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
+Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file. You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad. The `optimization_results.yaml` will be available under `logs/multirun` folder.
 <br><br>
 
 
@@ -801,22 +815,13 @@ python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 <br><br>
 
 
-### Extra Features
-List of extra utilities available in the template:
-- loading environment variables from [.env](.env.example) file
-- pretty printing config with [Rich](https://github.com/willmcgugan/rich) library
-- disabling python warnings
-- debug mode
-<!-- - (TODO) resuming latest run -->
-
-You can easily remove any of those by modifying [run.py](run.py) and [src/train.py](src/train.py).
+### Reproducibility
+To reproduce previous experiment, simply load its config from logs:
+```yaml
+python run.py --config-path /logs/runs/.../.hydra/ --config-name config.yaml
+```
+The `config.yaml` from `.hydra` folder contains all overriden parameters and sections.
 <br><br>
-
-<!--
-### Limitations
-(TODO)
-<br><br><br>
- -->
 
 
 ## Best Practices
@@ -1076,10 +1081,10 @@ eval "$(python run.py -sc install=bash)"
 
 # enable aliases for debugging
 alias test='pytest'
-alias debug1='python run.py debug=true'
-alias debug2='python run.py trainer.gpus=1 trainer.max_epochs=1'
-alias debug3='python run.py trainer.gpus=1 trainer.max_epochs=1 +trainer.limit_train_batches=0.1'
-alias debug_wandb='python run.py trainer.gpus=1 trainer.max_epochs=1 logger=wandb logger.wandb.project=tests'
+alias debug1='python run.py mode=debug'
+alias debug2='python run.py mode=debug trainer.fast_dev_run=false trainer.gpus=1 trainer.max_epochs=1'
+alias debug3='python run.py mode=debug trainer.fast_dev_run=false trainer.gpus=1 trainer.max_epochs=1 +trainer.limit_train_batches=0.1'
+alias debug_wandb='python run.py mode=debug trainer.fast_dev_run=false trainer.gpus=1 trainer.max_epochs=1 logger=wandb logger.wandb.project=tests'
 ```
 (these commands will be executed whenever you're openning or switching terminal to folder containing `.autoenv` file)
 
