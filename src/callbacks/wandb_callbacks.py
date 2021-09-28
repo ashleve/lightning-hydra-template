@@ -18,7 +18,7 @@ def get_wandb_logger(trainer: Trainer) -> WandbLogger:
 
     if trainer.fast_dev_run:
         raise Exception(
-            "Cannot use wandb callbacks since pytorch lightning disables loggers in debug mode."
+            "Cannot use wandb callbacks since pytorch lightning disables loggers in `fast_dev_run=true` mode."
         )
 
     if isinstance(trainer.logger, WandbLogger):
