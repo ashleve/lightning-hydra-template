@@ -283,7 +283,7 @@ python run.py +trainer.max_time="00:12:00:00"
 
 ```yaml
 # run 1 train, val and test loop, using only 1 batch
-python run.py trainer.fast_dev_run=true
+python run.py +trainer.fast_dev_run=true
 
 # print full weight summary of all PyTorch modules
 python run.py trainer.weights_summary="full"
@@ -293,6 +293,9 @@ python run.py +trainer.profiler="simple"
 
 # raise exception, if any of the parameters or the loss are NaN or +/-inf
 python run.py +trainer.terminate_on_nan=true
+
+# Quick debug with all the previous options enabled
+python run.py trainer=debug
 
 # try overfitting to 1 batch
 python run.py +trainer.overfit_batches=1 trainer.max_epochs=20

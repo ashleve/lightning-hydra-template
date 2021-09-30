@@ -46,10 +46,6 @@ def extras(config: DictConfig) -> None:
         log.info("Disabling python warnings! <config.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
 
-    # if <config.debug=True>
-    if config.get("debug"):
-        log.info("Running in debug mode! <config.debug=True>")
-
     # if <config.name=...>
     if config.get("name"):
         log.info("Running in experiment mode! Name: {}".format(config.name))
