@@ -110,7 +110,6 @@ The directory structure of new project looks like this:
 ├── setup.cfg               <- Configurations of linters and pytest
 ├── Dockerfile              <- File for building docker container
 ├── requirements.txt        <- File for installing python dependencies
-├── LICENSE
 └── README.md
 ```
 <br>
