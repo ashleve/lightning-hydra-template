@@ -110,7 +110,6 @@ The directory structure of new project looks like this:
 ├── setup.cfg               <- Configurations of linters and pytest
 ├── Dockerfile              <- File for building docker container
 ├── requirements.txt        <- File for installing python dependencies
-├── LICENSE
 └── README.md
 ```
 <br>
@@ -1171,18 +1170,39 @@ This template was inspired by:
 
 </details>
 
-<!-- <details>
-<summary><b>List of repositories using this template</b></summary>
-
-- [ashleve/graph_classification](https://github.com/ashleve/graph_classification) - benchmarking graph neural network architectures on graph classification datasets (Open Graph Benchmarks and image classification from superpixels)
-
-</details> -->
-
 
 <!-- ## :star:&nbsp; Stargazers Over Time
-
 [![Stargazers over time](https://starchart.cc/ashleve/lightning-hydra-template.svg)](https://starchart.cc/ashleve/lightning-hydra-template) -->
 
+
+<br>
+
+
+## License
+This project is licensed under the MIT License.
+```
+MIT License
+
+Copyright (c) 2021 ashleve
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
 
 <br>
