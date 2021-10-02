@@ -1183,11 +1183,7 @@ This template was inspired by:
 [![Stargazers over time](https://starchart.cc/ashleve/lightning-hydra-template.svg)](https://starchart.cc/ashleve/lightning-hydra-template) -->
 
 
-<br>
-
----
-
-<br>
+<br><br>
 
 
 ## License
