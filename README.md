@@ -1170,20 +1170,12 @@ This template was inspired by:
 
 </details>
 
-<!-- <details>
-<summary><b>List of repositories using this template</b></summary>
-
-- [ashleve/graph_classification](https://github.com/ashleve/graph_classification) - benchmarking graph neural network architectures on graph classification datasets (Open Graph Benchmarks and image classification from superpixels)
-
-</details> -->
-
 
 <!-- ## :star:&nbsp; Stargazers Over Time
-
 [![Stargazers over time](https://starchart.cc/ashleve/lightning-hydra-template.svg)](https://starchart.cc/ashleve/lightning-hydra-template) -->
 
 
-<br><br>
+<br>
 
 
 ## License
