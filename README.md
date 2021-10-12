@@ -108,7 +108,6 @@ The directory structure of new project looks like this:
 ├── .gitignore              <- List of files/folders ignored by git
 ├── .pre-commit-config.yaml <- Configuration of automatic code formatting
 ├── setup.cfg               <- Configurations of linters and pytest
-├── Dockerfile              <- File for building docker container
 ├── requirements.txt        <- File for installing python dependencies
 └── README.md
 ```
