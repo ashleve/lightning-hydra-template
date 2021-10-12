@@ -197,7 +197,7 @@ python run.py trainer.gpus=1 +trainer.amp_backend="apex" +trainer.precision=16 \
 <details>
   <summary><b>Train model with any logger available in PyTorch Lightning, like Weights&Biases</b></summary>
 
-> PyTorch Lightning provides convenient integrations with most popular logging frameworks. Read more [here](#experiment-tracking). Using wandb requires you to [setup account](https://www.wandb.com/) first. After that just complete the config as below.<br>
+> PyTorch Lightning provides convenient integrations with most popular logging frameworks, like Tensorboard, Neptune or simple csv files. Read more [here](#experiment-tracking). Using wandb requires you to [setup account](https://www.wandb.com/) first. After that just complete the config as below.<br>
 **Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.**
 ```yaml
 # set project and entity names in `configs/logger/wandb`
@@ -207,8 +207,7 @@ wandb:
 ```
 
 ```yaml
-# train model with Weights&Biases
-# link to wandb dashboard should appear in the terminal
+# train model with Weights&Biases (link to wandb dashboard should appear in the terminal)
 python run.py logger=wandb
 ```
 
@@ -216,14 +215,16 @@ python run.py logger=wandb
 
 
 <details>
-<summary><b>Use different logging modes</b></summary>
+<summary><b>Use different running modes</b></summary>
 
 ```yaml
 # debug mode changes logging folder to `logs/debug/`
+# also enables default trainer debugging options from `configs/trainer/debug.yaml`
+# also sets level of all command line loggers to 'DEBUG'
 python run.py mode=debug
 
 # experiment mode changes logging folder to `logs/experiments/name_of_your_experiment/`
-# also sets custom experiment name in the logger
+# name is also used by experiment loggers (like tensorboard or wandb)
 python run.py mode=exp name='my_new_experiment_253'
 ```
 
@@ -287,14 +288,15 @@ python run.py +trainer.fast_dev_run=true
 # print full weight summary of all PyTorch modules
 python run.py trainer.weights_summary="full"
 
-# print execution time profiling after training ends
-python run.py +trainer.profiler="simple"
-
 # raise exception, if any of the parameters or the loss are NaN or +/-inf
 python run.py +trainer.terminate_on_nan=true
 
-# Quick debug with all the previous options enabled
+# quick debug with all the previous options enabled
+# (this is also enabled when using `python run.py mode=debug`)
 python run.py trainer=debug
+
+# print execution time profiling after training ends
+python run.py +trainer.profiler="simple"
 
 # try overfitting to 1 batch
 python run.py +trainer.overfit_batches=1 trainer.max_epochs=20
@@ -800,6 +802,11 @@ To provide examples of logging custom visualisations with callbacks only:
 - **LogF1PrecRecHeatmap**
 - **LogImagePredictions**
 
+To try all of the callbacks at once, use:
+```yaml
+python run.py logger=wandb callbacks=wandb
+```
+
 To see the result of all the callbacks attached, take a look at [this experiment dashboard](https://wandb.ai/hobglob/template-tests/runs/3rw7q70h).
 <br><br>
 
@@ -1082,11 +1089,10 @@ conda activate myenv
 eval "$(python run.py -sc install=bash)"
 
 # enable aliases for debugging
-alias test='pytest'
-alias debug1='python run.py mode=debug'
-alias debug2='python run.py mode=debug trainer.fast_dev_run=false trainer.gpus=1 trainer.max_epochs=1'
-alias debug3='python run.py mode=debug trainer.fast_dev_run=false trainer.gpus=1 trainer.max_epochs=1 +trainer.limit_train_batches=0.1'
-alias debug_wandb='python run.py mode=debug trainer.fast_dev_run=false trainer.gpus=1 trainer.max_epochs=1 logger=wandb logger.wandb.project=tests'
+alias debug='python run.py mode=debug'
+alias debug2='python run.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=0'
+alias debug3='python run.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=1'
+alias debug_wandb='python run.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=1 logger=wandb logger.wandb.project=tests'
 ```
 (these commands will be executed whenever you're openning or switching terminal to folder containing `.autoenv` file)
 

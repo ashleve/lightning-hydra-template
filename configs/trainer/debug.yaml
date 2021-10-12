@@ -9,7 +9,7 @@ max_epochs: 2
 # prints
 progress_bar_refresh_rate: null
 weights_summary: "full"
-profiler: "simple"
+profiler: null
 
 # debugs
 fast_dev_run: true

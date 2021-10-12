@@ -1,5 +1,4 @@
 import logging
-import os
 import warnings
 from typing import List, Sequence
 
@@ -10,11 +9,10 @@ from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.utilities import rank_zero_only
 
 
-def get_logger(name=__name__, level=logging.INFO) -> logging.Logger:
+def get_logger(name=__name__) -> logging.Logger:
     """Initializes multi-GPU-friendly python logger."""
 
     logger = logging.getLogger(name)
-    logger.setLevel(level)
 
     # this ensures all logging levels get marked with the rank zero decorator
     # otherwise logs would get multiplied for each GPU process in multi-GPU setup
@@ -27,8 +25,8 @@ def get_logger(name=__name__, level=logging.INFO) -> logging.Logger:
 def extras(config: DictConfig) -> None:
     """A couple of optional utilities, controlled by main config file:
     - disabling warnings
-    - easier access to debug mode
     - forcing debug friendly configuration
+    - verifying experiment name is set when running in experiment mode
 
     Modifies DictConfig in place.
 
@@ -36,33 +34,32 @@ def extras(config: DictConfig) -> None:
         config (DictConfig): Configuration composed by Hydra.
     """
 
-    log = get_logger()
-
-    # enable adding new keys to config
-    OmegaConf.set_struct(config, False)
+    log = get_logger(__name__)
 
     # disable python warnings if <config.ignore_warnings=True>
     if config.get("ignore_warnings"):
         log.info("Disabling python warnings! <config.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
 
-    # if <config.name=...>
-    if config.get("name"):
-        log.info("Running in experiment mode! Name: {}".format(config.name))
+    # verify experiment name is set when running in experiment mode
+    if config.get("experiment_mode") and not config.get("name"):
+        log.info(
+            "Running in experiment mode without the experiment name specified! "
+            "Use `python run.py mode=exp name=experiment_name`"
+        )
+        log.info("Exiting...")
+        exit()
 
     # force debugger friendly configuration if <config.trainer.fast_dev_run=True>
+    # debuggers don't like GPUs and multiprocessing
     if config.trainer.get("fast_dev_run"):
         log.info("Forcing debugger friendly configuration! <config.trainer.fast_dev_run=True>")
-        # Debuggers don't like GPUs or multiprocessing
         if config.trainer.get("gpus"):
             config.trainer.gpus = 0
         if config.datamodule.get("pin_memory"):
             config.datamodule.pin_memory = False
         if config.datamodule.get("num_workers"):
             config.datamodule.num_workers = 0
-
-    # disable adding new keys to config
-    OmegaConf.set_struct(config, True)
 
 
 @rank_zero_only

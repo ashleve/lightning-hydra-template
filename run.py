@@ -17,8 +17,8 @@ def main(config: DictConfig):
 
     # A couple of optional utilities:
     # - disabling python warnings
-    # - easier access to debug mode
-    # - forcing debug friendly configuration
+    # - forcing debug-friendly configuration
+    # - verifying experiment name is set when running in experiment mode
     # You can safely get rid of this line if you don't want those
     utils.extras(config)
 

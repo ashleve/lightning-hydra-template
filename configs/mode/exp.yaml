@@ -1,13 +1,15 @@
 # @package _global_
 
 # run in experiment mode with:
-# python run.py mode=exp name='my_new_experiment_23'
+# `python run.py mode=exp name=experiment_name`
+
+experiment_mode: True
 
 # allows for custom naming of the experiment
 name: ???
 
-# output paths for experiment mode
 hydra:
+  # sets output paths for all file logs to `logs/experiment/name'
   run:
     dir: logs/experiments/${name}
   sweep:

@@ -2,8 +2,10 @@
 
 # default running mode
 
-# default output paths for hydra logs
+default_mode: True
+
 hydra:
+  # default output paths for all file logs
   run:
     dir: logs/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:

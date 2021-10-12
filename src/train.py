@@ -93,7 +93,8 @@ def train(config: DictConfig) -> Optional[float]:
     )
 
     # Print path to best checkpoint
-    log.info(f"Best checkpoint path:\n{trainer.checkpoint_callback.best_model_path}")
+    if not config.trainer.get("fast_dev_run"):
+        log.info(f"Best model ckpt: {trainer.checkpoint_callback.best_model_path}")
 
     # Return metric score for hyperparameter optimization
     optimized_metric = config.get("optimized_metric")
