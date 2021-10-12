@@ -385,7 +385,10 @@ python run.py -m 'experiment=glob(*)'
 
 ## 🐳&nbsp;&nbsp;Docker
 First you will need to [install Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to enable GPU  support. <br>
-To build the container from provided Dockerfile use:
+
+The template Dockerfile is provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). Copy it to the template root folder.
+
+To build the container use:
 ```bash
 docker build -t <project_name> .
 ```
