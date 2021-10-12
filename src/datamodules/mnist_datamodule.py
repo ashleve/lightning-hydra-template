@@ -1,5 +1,6 @@
 from typing import Optional, Tuple
 
+import torch
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
 from torchvision.datasets import MNIST
@@ -62,13 +63,18 @@ class MNISTDataModule(LightningDataModule):
         MNIST(self.data_dir, train=False, download=True)
 
     def setup(self, stage: Optional[str] = None):
-        """Load data. Set variables: self.data_train, self.data_val, self.data_test."""
+        """Load data. Set variables: self.data_train, self.data_val, self.data_test.
+        This method is called by lightning separately when using `trainer.fit()` and `trainer.test()`!
+        The `stage` can be used to differentiate whether the `setup()` is called before trainer.fit()` or `trainer.test()`."""
         trainset = MNIST(self.data_dir, train=True, transform=self.transforms)
         testset = MNIST(self.data_dir, train=False, transform=self.transforms)
         dataset = ConcatDataset(datasets=[trainset, testset])
         self.data_train, self.data_val, self.data_test = random_split(
-            dataset, self.train_val_test_split
+            dataset, self.train_val_test_split, generator=torch.Generator().manual_seed(42)
         )
+        # always use generator seed in `random_split()` or else the test data
+        # might leak to train data when `setup()` is called the second time!
+        # alternatively, you can set the test dataset and train dataset separately for each stage
 
     def train_dataloader(self):
         return DataLoader(
