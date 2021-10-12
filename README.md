@@ -1,17 +1,21 @@
-# Dockerfiles
+# Dockerfile
 
-- **simple** - build from official nvidia pytorch image, contains: apex, miniconda
-- **custom** - build from official nvidia cuda image, contains: apex, initialized miniconda environment, ready to run template, allows for specifying dependiecies (versions of cuda, python, pytorch)
-<br>
+This Dockerfile is for GPU only.
 
-
-> Make sure you have installed the NVIDIA driver >= 361.93 and Docker >= 19.03 <br>
+Make sure you have installed the NVIDIA driver >= 361.93 and Docker >= 19.03. <br>
 https://github.com/NVIDIA/nvidia-docker/wiki/Installation-(Native-GPU-Support)#prerequisites
-<br>
 
 
+You will need to [install Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to enable GPU  support. <br>
+
+Copy the Dockerfile to the template root folder.
+
+To build the container use:
 ```bash
-cd simple
-docker build -t lightning-hydra .
-docker run --gpus all -it --rm -v /home/USER/Desktop:/workspace/Desktop lightning-hydra
+docker build -t <project_name> .
 ```
+To mount the project to the container use:
+```bash
+docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
+```
+Uncomment Apex in Dockerfile for mixed-precision support.
