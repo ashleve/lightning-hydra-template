@@ -1156,16 +1156,16 @@ utils.print_config(config, resolve=False)
   
     # Init lightning model
     log.info(f"Instantiating model <{config.model._target_}>")
-    model: LightningModule = hydra.utils.instantiate(config.model, datamodule=config.datamodule)
+    model: LightningModule = hydra.utils.instantiate(config.model, config.datamodule)
 ```
 
-Second, prepare arguments `opt_datamodule` in `__init__()`.
+Second, prepare arguments `DM` in `__init__()`.
 
 ```python
   # ./src/models/my_model.py
   
 class MyLitModel(LightningModule):
-   def __init__(self, datamodule, param1, param2): 
+   def __init__(self, DM, param1, param2): 
         super().__init__()
         self.save_hyperparameters()
 ```
@@ -1174,8 +1174,8 @@ Then, you can reference any datamodule attribute from your config like this:
 
 ```python
         # Accessing datamodule attributes
-        datamodule # Return dict configs.
-        datamodule.batch_size # Return config value.
+        DM            # Return dict style configs.
+        DM.batch_size # Return individual config value.
 ```
 
 
