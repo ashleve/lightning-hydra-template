@@ -1117,14 +1117,15 @@ The mentioned line appends your `.bashrc` file with 2 commands:
 <details>
 <summary><b>Accessing datamodule attributes in model</b></summary>
 
-The simplest way is to pass datamodule attribute directly to model on initialization:
+1. The simplest way is to pass datamodule attribute directly to model on initialization:
 ```python
 datamodule = hydra.utils.instantiate(config.datamodule)
 
 model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
 ```
 This is not a robust solution, since it assumes all your datamodules have `some_param` attribute available (otherwise the run will crash).
-A better solution is to add Omegaconf resolver to your datamodule:
+
+  2.Another solution is to add Omegaconf resolver to your datamodule:
 ```python
 from omegaconf import OmegaConf
 
@@ -1145,6 +1146,38 @@ When later accessing this field, say in your lightning model, it will get automa
 ```python
 utils.print_config(config, resolve=False)
 ```
+  
+3. A better solution is to pass whole datamodule attribute to model on initialization.
+
+   First, pass all datamodule attributes to model.
+  
+```python
+  # ./src/train.py
+  
+    # Init lightning model
+    log.info(f"Instantiating model <{config.model._target_}>")
+    model: LightningModule = hydra.utils.instantiate(config.model, datamodule=config.datamodule)
+```
+
+Second, prepare arguments `opt_datamodule` in `__init__()`.
+
+```python
+  # ./src/models/my_model.py
+  
+class MyLitModel(LightningModule):
+   def __init__(self, datamodule, param1, param2): 
+        super().__init__()
+        self.save_hyperparameters()
+```
+
+Then, you can reference any datamodule attribute from your config like this:
+
+```python
+        # Accessing datamodule attributes
+        datamodule # Return dict configs.
+        datamodule.batch_size # Return config value.
+```
+
 
 </details>
 
