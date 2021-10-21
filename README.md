@@ -1156,7 +1156,7 @@ utils.print_config(config, resolve=False)
   
     # Init lightning model
     log.info(f"Instantiating model <{config.model._target_}>")
-    model: LightningModule = hydra.utils.instantiate(config.model, config.datamodule)
+    model: LightningModule = hydra.utils.instantiate(config.model, DM=config.datamodule)
 ```
 
 Second, prepare arguments `DM` in `__init__()`.
