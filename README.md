@@ -33,7 +33,7 @@ This template tries to be as general as possible - you can easily delete any unw
 
 **Why you should use it:** it allows you to rapidly iterate over new models/datasets and scale your projects from small single experiments to hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most convenient all-in-one technology stack for Deep Learning research. Good starting point for reproducing papers, kaggle competitions or small-team research projects. It's also a collection of best practices for efficient workflow and reproducibility.
 
-**Why you shouldn't use it:** the template is not fitted to be a production environment, should be used more as a fast experimentation tool. What's more, Lightning and Hydra are not yet very mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
+**Why you shouldn't use it:** this template is not fitted to be a production environment, should be used more as a fast experimentation tool. Apart from that, Lightning and Hydra are not yet very mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
 
 ### Why PyTorch Lightning?
 
@@ -853,7 +853,7 @@ python run.py --config-path /logs/runs/.../.hydra/ --config-name config.yaml
 ```
 
 The `config.yaml` from `.hydra` folder contains all overriden parameters and sections.
-<br><br>
+<br><br><br>
 
 ## Useful Tricks
 
@@ -874,7 +874,7 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 
    ```python
    # ./src/train.py
-   model: LightningModule = hydra.utils.instantiate(config.model, dm_conf=config.datamodule)
+   model = hydra.utils.instantiate(config.model, dm_conf=config.datamodule)
    ```
 
    Now you can access any datamodule config part like this:
@@ -882,10 +882,10 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
    ```python
    # ./src/models/my_model.py
    class MyLitModel(LightningModule):
-        def __init__(self, dm_conf, param1, param2):
-            super().__init__()
+   	def __init__(self, dm_conf, param1, param2):
+   		super().__init__()
 
-            batch_size = dm_conf.batch_size
+   		batch_size = dm_conf.batch_size
    ```
 
 3. If you need to access the datamodule object attributes, a little hacky solution is to add Omegaconf resolver to your datamodule:
@@ -895,27 +895,27 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
    from omegaconf import OmegaConf
 
    class MyDataModule(LightningDataModule):
-   def __init__(self, param1, param2):
-        super().__init__()
+   	def __init__(self, param1, param2):
+   		super().__init__()
 
-        self.param1 = param1
+   		self.param1 = param1
 
-        resolver_name = "my_datamodule"
-        OmegaConf.register_new_resolver(
-            resolver_name,
-            lambda name: getattr(self, name),
-            use_cache=False
-        )
+   		resolver_name = "datamodule"
+   		OmegaConf.register_new_resolver(
+   			resolver_name,
+   			lambda name: getattr(self, name),
+   			use_cache=False
+   		)
    ```
 
    This way you can reference any datamodule attribute from your config like this:
 
    ```yaml
-   # this will return attribute 'param1' from  object registered under name "my_datamodule"
-   param1: ${my_datamodule: param1}
+   # this will return attribute 'param1' from datamodule object
+   param1: ${datamodule: param1}
    ```
 
-   When later accessing this field, say in your lightning model, it will get automatically resolved based on all resolvers that are registered. Remember not to access this field before datamodule is initialized or it will crash. **You also need to set resolve to false in print_config() in [run.py](run.py) method or it will throw errors:**
+   When later accessing this field, say in your lightning model, it will get automatically resolved based on all resolvers that are registered. Remember not to access this field before datamodule is initialized or it will crash. **You also need to set `resolve=False` in `print_config()` in [run.py](run.py) or it will throw errors:**
 
    ```python
    # ./src/run.py
