@@ -12,12 +12,12 @@ ENV PYTHON_VERSION=3.8
 # Basic setup
 RUN apt update
 RUN apt install -y bash \
-                   build-essential \
-                   git \
-                   curl \
-                   ca-certificates \
-                   wget \
-                   && rm -rf /var/lib/apt/lists
+    build-essential \
+    git \
+    curl \
+    ca-certificates \
+    wget \
+    && rm -rf /var/lib/apt/lists
 
 
 # Set working directory
@@ -42,15 +42,6 @@ COPY requirements.txt ./
 RUN source activate ${CONDA_ENV_NAME} \
     && pip install --no-cache-dir -r requirements.txt \
     && rm requirements.txt
-
-
-# Uncomment this to install Apex for mixed-precision support
-# RUN source activate ${CONDA_ENV_NAME} \
-#     && git clone https://github.com/NVIDIA/apex \
-#     && cd apex  \
-#     && pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./ \
-#     && cd .. \
-#     && rm -r apex
 
 
 # Set ${CONDA_ENV_NAME} to default virutal environment
