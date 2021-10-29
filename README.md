@@ -60,6 +60,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) (see [#Hyperparameter Search](#hyperparameter-search))
 - **Tests**: unit tests and command based tests (see [#Tests](#tests))
 - **Extra Features**: optional utilities to make your life easier
+- **Reproducibility**: ?
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
   <br>
 

@@ -29,7 +29,9 @@ def get_wandb_logger(trainer: Trainer) -> WandbLogger:
             if isinstance(logger, WandbLogger):
                 return logger
 
-    raise Exception("You are using wandb related callback, but WandbLogger was not found for some reason...")
+    raise Exception(
+        "You are using wandb related callback, but WandbLogger was not found for some reason..."
+    )
 
 
 class WatchModel(Callback):
@@ -67,20 +69,22 @@ class UploadCodeAsArtifact(Callback):
         code = wandb.Artifact("project-source", type="code")
 
         if self.use_git:
-            # get .git folder
-            # https://alexwlchan.net/2020/11/a-python-function-to-ignore-a-path-with-git-info-exclude/
+            # get .git folder path
             git_dir_path = Path(
                 subprocess.check_output(["git", "rev-parse", "--git-dir"]).strip().decode("utf8")
             ).resolve()
 
             for path in Path(self.code_dir).resolve().rglob("*"):
-                if (
-                    path.is_file()
-                    # ignore files in .git
-                    and not str(path).startswith(str(git_dir_path))  # noqa: W503
-                    # ignore files ignored by git
-                    and (subprocess.run(["git", "check-ignore", "-q", str(path)]).returncode == 1)  # noqa: W503
-                ):
+
+                # don't upload files ignored by git
+                # https://alexwlchan.net/2020/11/a-python-function-to-ignore-a-path-with-git-info-exclude/
+                command = ["git", "check-ignore", "-q", str(path)]
+                not_ignored = subprocess.run(command).returncode == 1
+
+                # don't upload files from .git folder
+                not_git = not str(path).startswith(str(git_dir_path))
+
+                if path.is_file() and not_git and not_ignored:
                     code.add_file(str(path), name=str(path.relative_to(self.code_dir)))
 
         else:
@@ -134,7 +138,9 @@ class LogConfusionMatrix(Callback):
         """Start executing this callback only after all validation sanity checks end."""
         self.ready = True
 
-    def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+    def on_validation_batch_end(
+        self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
+    ):
         """Gather data from single batch."""
         if self.ready:
             self.preds.append(outputs["preds"])
@@ -190,7 +196,9 @@ class LogF1PrecRecHeatmap(Callback):
         """Start executing this callback only after all validation sanity checks end."""
         self.ready = True
 
-    def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+    def on_validation_batch_end(
+        self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
+    ):
         """Gather data from single batch."""
         if self.ready:
             self.preds.append(outputs["preds"])

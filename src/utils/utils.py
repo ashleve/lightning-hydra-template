@@ -16,7 +16,15 @@ def get_logger(name=__name__) -> logging.Logger:
 
     # this ensures all logging levels get marked with the rank zero decorator
     # otherwise logs would get multiplied for each GPU process in multi-GPU setup
-    for level in ("debug", "info", "warning", "error", "exception", "fatal", "critical"):
+    for level in (
+        "debug",
+        "info",
+        "warning",
+        "error",
+        "exception",
+        "fatal",
+        "critical",
+    ):
         setattr(logger, level, rank_zero_only(getattr(logger, level)))
 
     return logger
@@ -133,12 +141,13 @@ def log_hyperparameters(
         hparams["callbacks"] = config["callbacks"]
 
     # save number of model parameters
-    params_total = sum(p.numel() for p in model.parameters())
-    params_trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    params_not_trainable = sum(p.numel() for p in model.parameters() if not p.requires_grad)
-    hparams["model/params_total"] = params_total
-    hparams["model/params_trainable"] = params_trainable
-    hparams["model/params_not_trainable"] = params_not_trainable
+    hparams["model/params_total"] = sum(p.numel() for p in model.parameters())
+    hparams["model/params_trainable"] = sum(
+        p.numel() for p in model.parameters() if p.requires_grad
+    )
+    hparams["model/params_not_trainable"] = sum(
+        p.numel() for p in model.parameters() if not p.requires_grad
+    )
 
     # send hparams to all loggers
     trainer.logger.log_hyperparams(hparams)
