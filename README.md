@@ -69,7 +69,6 @@ The directory structure of new project looks like this:
 
 ```
 ├── bash                    <- Bash scripts
-│   ├── setup_conda.sh          <- Setup conda environment
 │   └── schedule.sh             <- Schedule execution of many runs
 │
 ├── configs                 <- Hydra configuration files
@@ -124,8 +123,16 @@ The directory structure of new project looks like this:
 git clone https://github.com/ashleve/lightning-hydra-template
 cd lightning-hydra-template
 
+# [OPTIONAL] install miniconda
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+
 # [OPTIONAL] create conda environment
-bash bash/setup_conda.sh
+conda create -n myenv python=3.8
+conda activate myenv
+
+# install pytorch according to instructions
+# https://pytorch.org/get-started/
 
 # install requirements
 pip install -r requirements.txt
@@ -1319,8 +1326,16 @@ Install dependencies
 git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
+# [OPTIONAL] install miniconda
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+
 # [OPTIONAL] create conda environment
-bash bash/setup_conda.sh
+conda create -n myenv python=3.8
+conda activate myenv
+
+# install pytorch according to instructions
+# https://pytorch.org/get-started/
 
 # install requirements
 pip install -r requirements.txt
@@ -1329,9 +1344,6 @@ pip install -r requirements.txt
 Train model with default configuration
 
 ```yaml
-# default
-python run.py
-
 # train on CPU
 python run.py trainer.gpus=0
 
@@ -1342,7 +1354,7 @@ python run.py trainer.gpus=1
 Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)
 
 ```yaml
-python run.py experiment=experiment_name
+python run.py experiment=experiment_name.yaml
 ```
 
 You can override any parameter from command line like this

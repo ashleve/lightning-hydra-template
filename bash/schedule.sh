@@ -4,6 +4,4 @@
 
 python run.py trainer.max_epochs=5
 
-python run.py trainer.max_epochs=5 experiment=example_simple
-
-python run.py trainer.max_epochs=5 experiment=example_full
+python run.py trainer.max_epochs=10 logger=csv
