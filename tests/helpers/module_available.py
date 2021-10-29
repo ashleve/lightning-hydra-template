@@ -24,7 +24,6 @@ def _module_available(module_path: str) -> bool:
 
 
 _IS_WINDOWS = platform.system() == "Windows"
-_APEX_AVAILABLE = _module_available("apex.amp")
 _DEEPSPEED_AVAILABLE = not _IS_WINDOWS and _module_available("deepspeed")
 _FAIRSCALE_AVAILABLE = not _IS_WINDOWS and _module_available("fairscale.nn")
 _RPC_AVAILABLE = not _IS_WINDOWS and _module_available("torch.distributed.rpc")

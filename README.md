@@ -189,19 +189,14 @@ python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.accelerator='ddp'
 <summary><b>Train with mixed precision</b></summary>
 
 ```yaml
-# train with mixed precision (Apex level O1)
-python run.py trainer.gpus=1 +trainer.amp_backend="apex" +trainer.precision=16 \
-+trainer.amp_level="O1"
-
-# train with mixed precision (Apex level O2)
-python run.py trainer.gpus=1 +trainer.amp_backend="apex" +trainer.precision=16 \
-+trainer.amp_level="O2"
+# train with native pytorch mixed precision
+python run.py trainer.gpus=1 +trainer.precision=16
 ```
 
 </details>
 
 <details>
-  <summary><b>Train model with any logger available in PyTorch Lightning, like Weights&Biases</b></summary>
+<summary><b>Train model with any logger available in PyTorch Lightning, like Weights&Biases or Tensorboard</b></summary>
 
 > PyTorch Lightning provides convenient integrations with most popular logging frameworks, like Tensorboard, Neptune or simple csv files. Read more [here](#experiment-tracking). Using wandb requires you to [setup account](https://www.wandb.com/) first. After that just complete the config as below.<br> > **Click [here](https://wandb.ai/hobglob/template-dashboard/) to see example wandb dashboard generated with this template.**
 
@@ -407,8 +402,7 @@ To mount the project to the container use:
 docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
 ```
 
-Uncomment Apex in Dockerfile for mixed-precision support.
-<br><br><br>
+<br><br>
 
 ## ❤️&nbsp;&nbsp;Contributions
 
