@@ -15,7 +15,7 @@ repos:
     rev: 20.8b1
     hooks:
       - id: black
-        args: [--line-length, "119"]
+        args: [--line-length, "99"]
 
   # python import sorting
   - repo: https://github.com/PyCQA/isort

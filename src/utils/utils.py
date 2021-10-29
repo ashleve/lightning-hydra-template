@@ -105,10 +105,6 @@ def print_config(
         rich.print(tree, file=fp)
 
 
-def empty(*args, **kwargs):
-    pass
-
-
 @rank_zero_only
 def log_hyperparameters(
     config: DictConfig,
@@ -121,7 +117,7 @@ def log_hyperparameters(
     """This method controls which parameters from Hydra config are saved by Lightning loggers.
 
     Additionaly saves:
-        - number of trainable model parameters
+        - number of model parameters
     """
 
     hparams = {}
@@ -130,23 +126,22 @@ def log_hyperparameters(
     hparams["trainer"] = config["trainer"]
     hparams["model"] = config["model"]
     hparams["datamodule"] = config["datamodule"]
+
     if "seed" in config:
         hparams["seed"] = config["seed"]
     if "callbacks" in config:
         hparams["callbacks"] = config["callbacks"]
 
     # save number of model parameters
-    hparams["model/params_total"] = sum(p.numel() for p in model.parameters())
-    hparams["model/params_trainable"] = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    hparams["model/params_not_trainable"] = sum(p.numel() for p in model.parameters() if not p.requires_grad)
+    params_total = sum(p.numel() for p in model.parameters())
+    params_trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    params_not_trainable = sum(p.numel() for p in model.parameters() if not p.requires_grad)
+    hparams["model/params_total"] = params_total
+    hparams["model/params_trainable"] = params_trainable
+    hparams["model/params_not_trainable"] = params_not_trainable
 
     # send hparams to all loggers
     trainer.logger.log_hyperparams(hparams)
-
-    # disable logging any more hyperparameters for all loggers
-    # this is just a trick to prevent trainer from logging hparams of model,
-    # since we already did that above
-    trainer.logger.log_hyperparams = empty
 
 
 def finish(

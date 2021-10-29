@@ -34,9 +34,9 @@ class MNISTLitModel(LightningModule):
     ):
         super().__init__()
 
-        # this line ensures params passed to LightningModule will be saved to ckpt
-        # it also allows to access params with 'self.hparams' attribute
-        self.save_hyperparameters()
+        # this line allows to access init params with 'self.hparams' attribute
+        # it also ensures init params will be stored in ckpt
+        self.save_hyperparameters(logger=False)
 
         self.model = SimpleDenseNet(hparams=self.hparams)
 
@@ -109,4 +109,6 @@ class MNISTLitModel(LightningModule):
         See examples here:
             https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
         """
-        return torch.optim.Adam(params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay)
+        return torch.optim.Adam(
+            params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay
+        )
