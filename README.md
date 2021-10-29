@@ -76,8 +76,8 @@ The directory structure of new project looks like this:
 │   ├── datamodule              <- Datamodule configs
 │   ├── experiment              <- Experiment configs
 │   ├── hparams_search          <- Hyperparameter search configs
-│   ├── mode                    <- Running mode configs
 │   ├── logger                  <- Logger configs
+│   ├── mode                    <- Running mode configs
 │   ├── model                   <- Model configs
 │   ├── trainer                 <- Trainer configs
 │   │
@@ -477,7 +477,7 @@ defaults:
 # path to original working directory
 # hydra hijacks working directory by changing it to the current log directory,
 # so it's useful to have this path as a special variable
-# learn more here: https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
+# https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 work_dir: ${hydra:runtime.cwd}
 
 # path to folder with data
@@ -597,7 +597,8 @@ logger:
 2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
 3. Write your experiment config, containing paths to your model and datamodule
 4. Run training with chosen experiment config: `python run.py experiment=experiment_name`
-   <br>
+
+<br>
 
 ### Logs
 
@@ -967,6 +968,13 @@ The mentioned line appends your `.bashrc` file with 2 commands:
 
 1. `autoenv() { if [ -x .autoenv ]; then source .autoenv ; echo '.autoenv executed' ; fi }` - this declares the `autoenv()` function, which executes `.autoenv` file if it exists in current work dir and has execution previligies
 2. `cd() { builtin cd \"\$@\" ; autoenv ; } ; autoenv` - this extends behaviour of `cd` command, to make it execute `autoenv()` function each time you change folder in terminal or open new terminal
+
+</details>
+
+<details>
+<summary><b>Making sweeps failure resistant</b></summary>
+
+TODO
 
 </details>
 
