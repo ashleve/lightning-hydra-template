@@ -3,7 +3,7 @@ import pytest
 from tests.helpers.run_command import run_command
 
 """
-A couple of tests executing hydra sweeps. 
+A couple of tests executing hydra sweeps.
 
 Use the following command to skip slow tests:
     pytest -k "not slow"

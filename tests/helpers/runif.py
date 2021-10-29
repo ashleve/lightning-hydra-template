@@ -11,12 +11,7 @@ Adapted from:
     https://github.com/PyTorchLightning/pytorch-lightning/blob/master/tests/helpers/runif.py
 """
 
-from tests.helpers.module_available import (
-    _DEEPSPEED_AVAILABLE,
-    _FAIRSCALE_AVAILABLE,
-    _IS_WINDOWS,
-    _RPC_AVAILABLE,
-)
+from tests.helpers.module_available import _DEEPSPEED_AVAILABLE, _FAIRSCALE_AVAILABLE, _IS_WINDOWS, _RPC_AVAILABLE
 
 
 class RunIf:
