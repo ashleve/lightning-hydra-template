@@ -124,10 +124,6 @@ The directory structure of new project looks like this:
 git clone https://github.com/ashleve/lightning-hydra-template
 cd lightning-hydra-template
 
-# [OPTIONAL] install miniconda
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
-
 # [OPTIONAL] create conda environment
 conda create -n myenv python=3.8
 conda activate myenv
@@ -872,7 +868,7 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 ### Limitations
 
 - Pytorch Lightning doesn't currently support k-fold cross validation
-- Pytorch Lightning is not the best choice for scalable Reinforcement Learning since it doesn't go well with multiple concurrent environments, for that it might be a better choice to use something like [Ray](https://github.com/ray-project/ray)
+- Pytorch Lightning is not the best choice for scalable Reinforcement Learning since it doesn't go well with multiple concurrent environments. For that, it might be better to use something like [Ray](https://github.com/ray-project/ray)
 - ?
   <br><br>
 
@@ -1000,7 +996,7 @@ TODO
 <details>
 <summary><b>Implementing k-fold cross validation</b></summary>
 
-Currently, pytorch lightning doesn't support k-fold cross validation. That being said, one way implement it could be by preparing a datamodule which accepts the fold number as an init parameter. Example of such datamodule can be found [here](https://gist.github.com/ashleve/ac511f08c0d29e74566900fd3efbb3ec). Using it would require rewriting the template training pipeline, and it's not obvious how to make it work with loggers, since each fold training would spawn a separete logger experiment.
+Currently, pytorch lightning doesn't support k-fold cross validation. That being said, one way implement it could be by preparing a datamodule which accepts the fold number as an init parameter. Example of such datamodule can be found [here](https://gist.github.com/ashleve/ac511f08c0d29e74566900fd3efbb3ec). Using it would require rewriting the template training pipeline, and it's not obvious how to make it work with loggers, since each fold training would spawn a separate logger experiment.
 
 </details>
 
@@ -1364,9 +1360,6 @@ Install dependencies
 git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
-# [OPTIONAL] install miniconda
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
 
 # [OPTIONAL] create conda environment
 conda create -n myenv python=3.8
