@@ -63,17 +63,17 @@ class MNISTDataModule(LightningDataModule):
 
     def setup(self, stage: Optional[str] = None):
         """Load data. Set variables: `self.data_train`, `self.data_val`, `self.data_test`.
-        This method is called by lightning twice for `trainer.fit()` and `trainer.test()`, so be careful if you do random split!
+        This method is called by lightning twice for `trainer.fit()` and `trainer.test()`, so be careful if you do a random split!
         The `stage` can be used to differentiate whether it's called before trainer.fit()` or `trainer.test()`."""
 
-        # load datasets only if their not loaded already
+        # load datasets only if they're not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
             trainset = MNIST(self.hparams.data_dir, train=True, transform=self.transforms)
             testset = MNIST(self.hparams.data_dir, train=False, transform=self.transforms)
             dataset = ConcatDataset(datasets=[trainset, testset])
             self.data_train, self.data_val, self.data_test = random_split(
-                dataset,
-                self.hparams.train_val_test_split,
+                dataset=dataset,
+                lengths=self.hparams.train_val_test_split,
                 generator=torch.Generator().manual_seed(42),
             )
 

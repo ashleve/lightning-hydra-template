@@ -2,6 +2,7 @@ from typing import Any, List
 
 import torch
 from pytorch_lightning import LightningModule
+from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
 
 from src.models.modules.simple_dense_net import SimpleDenseNet
@@ -45,9 +46,12 @@ class MNISTLitModel(LightningModule):
 
         # use separate metric instance for train, val and test step
         # to ensure a proper reduction over the epoch
-        self.train_accuracy = Accuracy()
-        self.val_accuracy = Accuracy()
-        self.test_accuracy = Accuracy()
+        self.train_acc = Accuracy()
+        self.val_acc = Accuracy()
+        self.test_acc = Accuracy()
+
+        # for logging best accuracy achieved so far
+        self.val_acc_best = MaxMetric()
 
     def forward(self, x: torch.Tensor):
         return self.model(x)
@@ -63,7 +67,7 @@ class MNISTLitModel(LightningModule):
         loss, preds, targets = self.step(batch)
 
         # log train metrics
-        acc = self.train_accuracy(preds, targets)
+        acc = self.train_acc(preds, targets)
         self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
         self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
@@ -80,20 +84,25 @@ class MNISTLitModel(LightningModule):
         loss, preds, targets = self.step(batch)
 
         # log val metrics
-        acc = self.val_accuracy(preds, targets)
+        acc = self.val_acc(preds, targets)
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
         self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        pass
+        # get val accuracy from current epoch
+        acc = self.val_acc.compute()
+
+        # compute and log best so far val accuracy
+        self.val_acc_best.update(acc)
+        self.log("val/acc_max", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
 
         # log test metrics
-        acc = self.test_accuracy(preds, targets)
+        acc = self.test_acc(preds, targets)
         self.log("test/loss", loss, on_step=False, on_epoch=True)
         self.log("test/acc", acc, on_step=False, on_epoch=True)
 

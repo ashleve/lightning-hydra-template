@@ -33,7 +33,7 @@ This template tries to be as general as possible - you can easily delete any unw
 
 **Why you should use it:** it allows you to rapidly iterate over new models/datasets and scale your projects from small single experiments to hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most convenient all-in-one technology stack for Deep Learning research. Good starting point for reproducing papers, kaggle competitions or small-team research projects. It's also a collection of best practices for efficient workflow and reproducibility.
 
-**Why you shouldn't use it:** this template is not fitted to be a production environment, should be used more as a fast experimentation tool. Apart from that, Lightning and Hydra are not yet very mature, which means you might run into some bugs sooner or later. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task.
+**Why you shouldn't use it:** this template is not fitted to be a production environment, should be used more as a fast experimentation tool. Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task. See [#Limitations](#limitations) for more.
 
 ### Why PyTorch Lightning?
 
@@ -111,7 +111,6 @@ The directory structure of new project looks like this:
 ├── .gitignore              <- List of files/folders ignored by git
 ├── .pre-commit-config.yaml <- Configuration of automatic code formatting
 ├── setup.cfg               <- Configurations of linters and pytest
-├── setup.py                <- File for installing project as a package
 ├── requirements.txt        <- File for installing python dependencies
 └── README.md
 ```
@@ -870,6 +869,13 @@ python run.py --config-path /logs/runs/.../.hydra/ --config-name config.yaml
 The `config.yaml` from `.hydra` folder contains all overriden parameters and sections.
 <br><br><br>
 
+### Limitations
+
+- Pytorch Lightning doesn't currently support k-fold cross validation
+- Pytorch Lightning is not the best choice for scalable Reinforcement Learning since it doesn't go well with multiple concurrent environments, for that it might be a better choice to use something like [Ray](https://github.com/ray-project/ray)
+- ?
+  <br><br>
+
 ## Useful Tricks
 
 <details>
@@ -988,6 +994,13 @@ The mentioned line appends your `.bashrc` file with 2 commands:
 <summary><b>Making sweeps failure resistant</b></summary>
 
 TODO
+
+</details>
+
+<details>
+<summary><b>Implementing k-fold cross validation</b></summary>
+
+Currently, pytorch lightning doesn't support k-fold cross validation. That being said, one way implement it could be by preparing a datamodule which accepts the fold number as an init parameter. Example of such datamodule can be found [here](https://gist.github.com/ashleve/ac511f08c0d29e74566900fd3efbb3ec). Using it would require rewriting the template training pipeline, and it's not obvious how to make it work with loggers, since each fold training would spawn a separete logger experiment.
 
 </details>
 
@@ -1212,15 +1225,19 @@ Change name of the `src` folder to your project name and add `setup.py` file:
 ```python
 from setuptools import find_packages, setup
 
+
 setup(
-    name="src",  # you should change "src" to your project name
+    name="src",  # change "src" folder name to your project name
     version="0.0.0",
     description="Describe Your Cool Project",
-    author="",
-    author_email="",
-    # replace with your own github project link
-    url="https://github.com/ashleve/lightning-hydra-template",
-    install_requires=["pytorch-lightning>=1.2.0", "hydra-core>=1.0.6"],
+    author="...",
+    author_email="...",
+    url="https://github.com/ashleve/lightning-hydra-template",  # replace with your own github project link
+    install_requires=[
+        "pytorch>=1.10.0",
+        "pytorch-lightning>=1.4.0",
+        "hydra-core==1.1.0",
+    ],
     packages=find_packages(),
 )
 ```
