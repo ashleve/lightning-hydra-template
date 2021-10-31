@@ -1232,7 +1232,7 @@ setup(
     install_requires=[
         "pytorch>=1.10.0",
         "pytorch-lightning>=1.4.0",
-        "hydra-core==1.1.0",
+        "hydra-core>=1.1.0",
     ],
     packages=find_packages(),
 )
@@ -1359,7 +1359,6 @@ Install dependencies
 # clone project
 git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
-
 
 # [OPTIONAL] create conda environment
 conda create -n myenv python=3.8
