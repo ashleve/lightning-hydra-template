@@ -699,7 +699,7 @@ defaults:
   - override /hydra/sweeper: optuna
 
 # choose metric which will be optimized by Optuna
-optimized_metric: "val/acc"
+optimized_metric: "val/acc_best"
 
 hydra:
   # here we define Optuna hyperparameter search
@@ -893,8 +893,8 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 ### Limitations
 
 - Template doesn't support k-fold cross validation, but it's possible to achieve it with Lightning Loop interface. See the [official example](https://github.com/PyTorchLightning/pytorch-lightning/blob/master/pl_examples/loop_examples/kfold.py). Implementing it requires rewriting the training pipeline.
-- Pytorch Lightning is not the best choice for scalable Reinforcement Learning, for that it might be better to use something like [Ray](https://github.com/ray-project/ray).
-- Currently hyperparameter search with Hydra Optuna plugin doesn't support prunning.
+- Pytorch Lightning might not the best choice for scalable reinforcement learning, it's better to use something like [Ray](https://github.com/ray-project/ray).
+- Currently hyperparameter search with Hydra Optuna Plugin doesn't support prunning.
 
 <br><br>
 
@@ -1012,19 +1012,14 @@ The mentioned line appends your `.bashrc` file with 2 commands:
 
 </details>
 
+<!--
 <details>
 <summary><b>Making sweeps failure resistant</b></summary>
 
 TODO
 
 </details>
-
-<details>
-<summary><b>Implementing k-fold cross validation</b></summary>
-
-Currently, pytorch lightning doesn't support k-fold cross validation. That being said, one way implement it could be by preparing a datamodule which accepts the fold number as an init parameter. Example of such datamodule can be found [here](https://gist.github.com/ashleve/ac511f08c0d29e74566900fd3efbb3ec). Using it would require rewriting the template training pipeline, and it's not obvious how to make it work with loggers, since each fold training would spawn a separate logger experiment.
-
-</details>
+ -->
 
 <br>
 
