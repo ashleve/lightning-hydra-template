@@ -181,10 +181,10 @@ python run.py trainer.gpus=1
 python run.py +trainer.tpu_cores=8
 
 # train with DDP (Distributed Data Parallel) (4 GPUs)
-python run.py trainer.gpus=4 +trainer.accelerator='ddp'
+python run.py trainer.gpus=4 +trainer.accelerator=ddp
 
 # train with DDP (Distributed Data Parallel) (8 GPUs, 2 nodes)
-python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.accelerator='ddp'
+python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.accelerator=ddp
 ```
 
 </details>
@@ -193,8 +193,11 @@ python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.accelerator='ddp'
 <summary><b>Train with mixed precision</b></summary>
 
 ```yaml
-# train with native pytorch mixed precision
+# train with pytorch native automatic mixed precision (AMP)
 python run.py trainer.gpus=1 +trainer.precision=16
+
+# train with pytorch bf16
+python run.py trainer.gpus=1 +trainer.precision=bf16
 ```
 
 </details>
@@ -296,18 +299,20 @@ python run.py +trainer.max_time="00:12:00:00"
 <summary><b>Easily debug</b></summary>
 
 ```yaml
+# run in debug mode
+# changes logging folder to `logs/debug/...`
+# enables trainer debugging options specified in `configs/trainer/debug.yaml`
+# sets level of all command line loggers to 'DEBUG'
+python run.py mode=debug
+
+# enable trainer debugging options specified in `configs/trainer/debug.yaml`
+python run.py trainer=debug
+
 # run 1 train, val and test loop, using only 1 batch
 python run.py +trainer.fast_dev_run=true
 
-# print full weight summary of all PyTorch modules
-python run.py trainer.weights_summary="full"
-
 # raise exception, if any of the parameters or the loss are NaN or +/-inf
-python run.py +trainer.terminate_on_nan=true
-
-# quick debug with all the previous options enabled
-# (this is also enabled when using `python run.py mode=debug`)
-python run.py trainer=debug
+python run.py +trainer.detect_anomaly=true
 
 # print execution time profiling after training ends
 python run.py +trainer.profiler="simple"
