@@ -91,12 +91,13 @@ class MNISTLitModel(LightningModule):
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        # get val accuracy from current epoch
-        acc = self.val_acc.compute()
+        acc = self.val_acc.compute()  # get val accuracy from current epoch
 
         # compute and log best so far val accuracy
         self.val_acc_best.update(acc)
-        self.log("val/acc_max", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
+        self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
+
+        self.val_acc.reset()
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
