@@ -4,7 +4,8 @@
 # python run.py experiment=example_full.yaml
 
 defaults:
-  - override /trainer: null # override trainer to null so it's not loaded from main config defaults...
+  - override /mode: exp.yaml
+  - override /trainer: null
   - override /model: null
   - override /datamodule: null
   - override /callbacks: null
@@ -13,6 +14,10 @@ defaults:
 # we override default configurations with nulls to prevent them from loading at all
 # instead we define all modules and their paths directly in this config,
 # so everything is stored in one place
+
+# name of the run determines folder name in logs
+# it's also accessed by loggers
+name: "example_full"
 
 seed: 12345
 
@@ -23,18 +28,18 @@ trainer:
   max_epochs: 10
   gradient_clip_val: 0.5
   accumulate_grad_batches: 2
-  weights_summary: null
-  # resume_from_checkpoint: ${work_dir}/last.ckpt
+  weights_summary: "full"
+  num_sanity_val_steps: 0
 
 model:
   _target_: src.models.mnist_model.MNISTLitModel
-  lr: 0.001
-  weight_decay: 0.00005
   input_size: 784
   lin1_size: 256
   lin2_size: 256
   lin3_size: 128
   output_size: 10
+  lr: 0.001
+  weight_decay: 0.0005
 
 datamodule:
   _target_: src.datamodules.mnist_datamodule.MNISTDataModule
@@ -48,22 +53,24 @@ callbacks:
   model_checkpoint:
     _target_: pytorch_lightning.callbacks.ModelCheckpoint
     monitor: "val/acc"
-    save_top_k: 2
-    save_last: True
     mode: "max"
+    save_top_k: 1
+    save_last: True
+    verbose: False
     dirpath: "checkpoints/"
-    filename: "sample-mnist-{epoch:02d}"
+    filename: "epoch_{epoch:03d}"
+    auto_insert_metric_name: False
   early_stopping:
     _target_: pytorch_lightning.callbacks.EarlyStopping
     monitor: "val/acc"
-    patience: 10
     mode: "max"
+    patience: 5
+    min_delta: 0
+  rich_progress_bar:
+    _target_: pytorch_lightning.callbacks.RichProgressBar
 
 logger:
   wandb:
-    tags: ["best_model", "uwu"]
+    name: ${name}_${now:%Y-%m-%d_%H-%M-%S}
+    tags: ["best_model", "mnist"]
     notes: "Description of this model."
-  neptune:
-    tags: ["best_model"]
-  csv_logger:
-    save_dir: "."

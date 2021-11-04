@@ -76,7 +76,7 @@ def train(config: DictConfig) -> Optional[float]:
     log.info("Starting training!")
     trainer.fit(model=model, datamodule=datamodule)
 
-    # Evaluate on test set, using the best model weights achieved during training
+    # Evaluate on test set, using best model weights achieved during training
     if config.get("test_after_training") and not config.trainer.get("fast_dev_run"):
         log.info("Starting testing!")
         trainer.test(model=model, datamodule=datamodule, ckpt_path="best")

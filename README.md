@@ -311,6 +311,9 @@ python run.py +trainer.fast_dev_run=true
 # raise exception, if any of the parameters or the loss are NaN or +/-inf
 python run.py +trainer.detect_anomaly=true
 
+# print full weight summary of all PyTorch modules
+python run.py trainer.weights_summary="full"
+
 # print execution time profiling after training ends
 python run.py +trainer.profiler="simple"
 
@@ -516,6 +519,7 @@ Experiment configurations allow you to overwrite parameters from main project co
 # python run.py experiment=example_simple
 
 defaults:
+  - override /mode: exp.yaml
   - override /trainer: default.yaml
   - override /model: mnist_model.yaml
   - override /datamodule: mnist_datamodule.yaml
@@ -524,6 +528,10 @@ defaults:
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
+
+# name of the run determines folder name in logs
+# it's also accessed by loggers
+name: "example_simple"
 
 seed: 12345
 
@@ -552,6 +560,7 @@ datamodule:
 # python run.py experiment=example_full
 
 defaults:
+  - override /mode: exp.yaml
   - override /trainer: null
   - override /model: null
   - override /datamodule: null
@@ -561,6 +570,10 @@ defaults:
 # we override default configurations with nulls to prevent them from loading at all
 # instead we define all modules and their paths directly in this config,
 # so everything is stored in one place
+
+# name of the run determines folder name in logs
+# it's also accessed by loggers
+name: "example_full"
 
 seed: 12345
 
@@ -593,7 +606,8 @@ logger:
   wandb:
     _target_: pytorch_lightning.loggers.wandb.WandbLogger
     project: "lightning-hydra-template"
-    tags: ["best_model", "uwu"]
+    name: ${name}
+    tags: ["best_model", "mnist"]
     notes: "Description of this model."
 ```
 
