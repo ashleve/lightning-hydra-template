@@ -8,7 +8,7 @@ defaults:
   - override /hydra/sweeper: optuna
 
 # choose metric which will be optimized by Optuna
-optimized_metric: "val/acc"
+optimized_metric: "val/acc_best"
 
 hydra:
   # here we define Optuna hyperparameter search

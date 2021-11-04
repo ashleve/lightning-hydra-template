@@ -4,7 +4,7 @@
 
 <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7+-blue?style=for-the-badge&logo=python&logoColor=white"></a>
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch 1.10+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
-<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning 1.4+-792ee5?style=for-the-badge&logo=pytorchlightning&logoColor=white"></a>
+<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning 1.5+-792ee5?style=for-the-badge&logo=pytorchlightning&logoColor=white"></a>
 <a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra 1.1-89b8cd?style=for-the-badge&labelColor=gray"></a>
 <a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge&labelColor=gray"></a>
 
@@ -239,7 +239,7 @@ python run.py logger=wandb
 python run.py mode=debug
 
 # experiment mode changes logging folder to `logs/experiments/name_of_your_experiment/`
-# name is also used by experiment loggers (like tensorboard or wandb)
+# name is also used by loggers
 python run.py mode=exp name='my_new_experiment_253'
 ```
 
@@ -308,7 +308,7 @@ python run.py trainer=debug
 # run 1 train, val and test loop, using only 1 batch
 python run.py +trainer.fast_dev_run=true
 
-# raise exception, if any of the parameters or the loss are NaN or +/-inf
+# raise exception if there are any numerical anomalies in tensors, like NaN or +/-inf
 python run.py +trainer.detect_anomaly=true
 
 # print full weight summary of all PyTorch modules
@@ -883,10 +883,11 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 
 ### Limitations
 
-- Pytorch Lightning doesn't currently support k-fold cross validation
-- Pytorch Lightning is not the best choice for scalable Reinforcement Learning since it doesn't go well with multiple concurrent environments. For that, it might be better to use something like [Ray](https://github.com/ray-project/ray)
-- ?
-  <br><br>
+- Template doesn't support k-fold cross validation, but it's possible to achieve it with Lightning Loop interface. See the [official example](https://github.com/PyTorchLightning/pytorch-lightning/blob/master/pl_examples/loop_examples/kfold.py). Implementing it requires rewriting the training pipeline.
+- Pytorch Lightning is not the best choice for scalable Reinforcement Learning, for that it might be better to use something like [Ray](https://github.com/ray-project/ray).
+- Currently hyperparameter search with Hydra Optuna plugin doesn't support prunning.
+
+<br><br>
 
 ## Useful Tricks
 
