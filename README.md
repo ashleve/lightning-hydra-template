@@ -195,9 +195,6 @@ python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.accelerator=ddp
 ```yaml
 # train with pytorch native automatic mixed precision (AMP)
 python run.py trainer.gpus=1 +trainer.precision=16
-
-# train with pytorch bf16
-python run.py trainer.gpus=1 +trainer.precision=bf16
 ```
 
 </details>

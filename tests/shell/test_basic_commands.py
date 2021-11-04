@@ -32,7 +32,7 @@ def test_gpu():
 
 @RunIf(min_gpus=1)
 def test_mixed_precision():
-    """Test running 1 epoch with native pytorch mixed precision."""
+    """Test running 1 epoch with pytorch native automatic mixed precision (AMP)."""
     command = [
         "run.py",
         "++trainer.max_epochs=1",

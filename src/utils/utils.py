@@ -109,7 +109,7 @@ def print_config(
 
     rich.print(tree)
 
-    with open("config_tree.txt", "w") as fp:
+    with open("config_tree.log", "w") as fp:
         rich.print(tree, file=fp)
 
 
@@ -141,11 +141,11 @@ def log_hyperparameters(
         hparams["callbacks"] = config["callbacks"]
 
     # save number of model parameters
-    hparams["model/params_total"] = sum(p.numel() for p in model.parameters())
-    hparams["model/params_trainable"] = sum(
+    hparams["model/params/total"] = sum(p.numel() for p in model.parameters())
+    hparams["model/params/trainable"] = sum(
         p.numel() for p in model.parameters() if p.requires_grad
     )
-    hparams["model/params_not_trainable"] = sum(
+    hparams["model/params/non_trainable"] = sum(
         p.numel() for p in model.parameters() if not p.requires_grad
     )
 
