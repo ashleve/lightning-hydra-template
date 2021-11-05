@@ -60,7 +60,7 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Hyperparameter Search**: made easier with Hydra built in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) (see [#Hyperparameter Search](#hyperparameter-search))
 - **Tests**: unit tests and command based tests (see [#Tests](#tests))
 - **Extra Features**: optional utilities to make your life easier
-- **Reproducibility**: ?
+<!-- - **Reproducibility**: ? -->
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility (see [#Best Practices](#best-practices))
   <br>
 
@@ -623,7 +623,7 @@ logger:
 
 ### Logs
 
-Hydra creates new working directory for every executed run. <br>
+**Hydra creates new working directory for every executed run.** <br>
 By default, logs have the following structure:
 
 ```
@@ -682,8 +682,10 @@ These tools help you keep track of hyperparameters and output metrics and allow 
 python run.py logger=logger_name
 ```
 
-You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).<br>
-You can also write your own logger.<br>
+You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).
+
+You can also write your own logger.
+
 Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_model.py).
 <br><br>
 
@@ -879,6 +881,7 @@ python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 ⚠️ When using DDP you have to be careful how you write your models - learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
 <br><br>
 
+<!--
 ### Reproducibility
 
 To reproduce previous experiment, simply load its config from logs:
@@ -889,11 +892,12 @@ python run.py --config-path /logs/runs/.../.hydra/ --config-name config.yaml
 
 The `config.yaml` from `.hydra` folder contains all overriden parameters and sections.
 <br><br><br>
+-->
 
 ### Limitations
 
-- Template doesn't support k-fold cross validation, but it's possible to achieve it with Lightning Loop interface. See the [official example](https://github.com/PyTorchLightning/pytorch-lightning/blob/master/pl_examples/loop_examples/kfold.py). Implementing it requires rewriting the training pipeline.
-- Pytorch Lightning might not the best choice for scalable reinforcement learning, it's better to use something like [Ray](https://github.com/ray-project/ray).
+- Currently, template doesn't support k-fold cross validation, but it's possible to achieve it with Lightning Loop interface. See the [official example](https://github.com/PyTorchLightning/pytorch-lightning/blob/master/pl_examples/loop_examples/kfold.py). Implementing it requires rewriting the training pipeline.
+- Pytorch Lightning might not the best choice for scalable reinforcement learning, it's probably better to use something like [Ray](https://github.com/ray-project/ray).
 - Currently hyperparameter search with Hydra Optuna Plugin doesn't support prunning.
 
 <br><br>
