@@ -4,6 +4,7 @@
 # python run.py experiment=example_simple.yaml
 
 defaults:
+  - override /mode: exp.yaml
   - override /trainer: default.yaml
   - override /model: mnist_model.yaml
   - override /datamodule: mnist_datamodule.yaml
@@ -12,6 +13,10 @@ defaults:
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
+
+# name of the run determines folder name in logs
+# it's also accessed by loggers
+name: "example_simple"
 
 seed: 12345
 

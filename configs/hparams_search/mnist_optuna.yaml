@@ -1,14 +1,13 @@
 # @package _global_
 
 # example hyperparameter optimization of some experiment with Optuna:
-# python run.py -m hparams_search=mnist_optuna experiment=example_simple
 # python run.py -m hparams_search=mnist_optuna experiment=example_simple hydra.sweeper.n_trials=30
 
 defaults:
   - override /hydra/sweeper: optuna
 
 # choose metric which will be optimized by Optuna
-optimized_metric: "val/acc"
+optimized_metric: "val/acc_best"
 
 hydra:
   # here we define Optuna hyperparameter search

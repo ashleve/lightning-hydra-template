@@ -3,9 +3,18 @@ import pytest
 from tests.helpers.run_command import run_command
 
 """
+A couple of tests executing hydra sweeps.
+
 Use the following command to skip slow tests:
     pytest -k "not slow"
 """
+
+
+@pytest.mark.slow
+def test_experiments():
+    """Test running all available experiment configs for 1 epoch."""
+    command = ["run.py", "-m", "experiment=glob(*)", "++trainer.max_epochs=1"]
+    run_command(command)
 
 
 @pytest.mark.slow

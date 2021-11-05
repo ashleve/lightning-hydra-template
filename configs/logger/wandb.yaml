@@ -7,7 +7,7 @@ wandb:
   save_dir: "."
   offline: False # set True to store all logs only locally
   id: null # pass correct id to resume experiment!
-  # entity: ""  # set to name of your wandb team or just remove it
+  # entity: ""  # set to name of your wandb team
   log_model: False
   prefix: ""
   job_type: "train"

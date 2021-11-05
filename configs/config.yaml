@@ -33,12 +33,13 @@ print_config: True
 # disable python warnings if they annoy you
 ignore_warnings: True
 
-# check performance on test set, using the best model achieved during training
-# lightning chooses best model based on metric specified in checkpoint callback
+# evaluate on test set, using best model weights achieved during training
+# lightning chooses best weights based on metric specified in checkpoint callback
 test_after_training: True
 
 # seed for random number generators in pytorch, numpy and python.random
 seed: null
 
-# name of the run, accessed by loggers
+# name of the run is accessed by loggers
+# should be used along with experiment mode
 name: null

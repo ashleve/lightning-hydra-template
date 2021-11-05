@@ -12,7 +12,6 @@ Adapted from:
 """
 
 from tests.helpers.module_available import (
-    _APEX_AVAILABLE,
     _DEEPSPEED_AVAILABLE,
     _FAIRSCALE_AVAILABLE,
     _IS_WINDOWS,
@@ -40,7 +39,6 @@ class RunIf:
         min_torch: Optional[str] = None,
         max_torch: Optional[str] = None,
         min_python: Optional[str] = None,
-        amp_apex: bool = False,
         skip_windows: bool = False,
         rpc: bool = False,
         fairscale: bool = False,
@@ -53,7 +51,6 @@ class RunIf:
             min_torch: minimum pytorch version to run test
             max_torch: maximum pytorch version to run test
             min_python: minimum python version required to run test
-            amp_apex: NVIDIA Apex is installed
             skip_windows: skip test for Windows platform
             rpc: requires Remote Procedure Call (RPC)
             fairscale: if `fairscale` module is required to run the test
@@ -83,10 +80,6 @@ class RunIf:
             )
             conditions.append(Version(py_version) < Version(min_python))
             reasons.append(f"python>={min_python}")
-
-        if amp_apex:
-            conditions.append(not _APEX_AVAILABLE)
-            reasons.append("NVIDIA Apex")
 
         if skip_windows:
             conditions.append(_IS_WINDOWS)

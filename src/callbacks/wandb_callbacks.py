@@ -44,7 +44,7 @@ class WatchModel(Callback):
     @rank_zero_only
     def on_train_start(self, trainer, pl_module):
         logger = get_wandb_logger(trainer=trainer)
-        logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq)
+        logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq, log_graph=True)
 
 
 class UploadCodeAsArtifact(Callback):
@@ -69,22 +69,22 @@ class UploadCodeAsArtifact(Callback):
         code = wandb.Artifact("project-source", type="code")
 
         if self.use_git:
-            # get .git folder
-            # https://alexwlchan.net/2020/11/a-python-function-to-ignore-a-path-with-git-info-exclude/
+            # get .git folder path
             git_dir_path = Path(
                 subprocess.check_output(["git", "rev-parse", "--git-dir"]).strip().decode("utf8")
             ).resolve()
 
             for path in Path(self.code_dir).resolve().rglob("*"):
-                if (
-                    path.is_file()
-                    # ignore files in .git
-                    and not str(path).startswith(str(git_dir_path))  # noqa: W503
-                    # ignore files ignored by git
-                    and (  # noqa: W503
-                        subprocess.run(["git", "check-ignore", "-q", str(path)]).returncode == 1
-                    )
-                ):
+
+                # don't upload files ignored by git
+                # https://alexwlchan.net/2020/11/a-python-function-to-ignore-a-path-with-git-info-exclude/
+                command = ["git", "check-ignore", "-q", str(path)]
+                not_ignored = subprocess.run(command).returncode == 1
+
+                # don't upload files from .git folder
+                not_git = not str(path).startswith(str(git_dir_path))
+
+                if path.is_file() and not_git and not_ignored:
                     code.add_file(str(path), name=str(path.relative_to(self.code_dir)))
 
         else:

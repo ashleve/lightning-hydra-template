@@ -13,7 +13,7 @@ hydra:
   verbose: True
 
   # https://hydra.cc/docs/tutorials/basic/running_your_app/logging/
-  # sets level of only chosen command line loggers to 'DEBUG'
+  # use this to set level of only chosen command line loggers to 'DEBUG'
   # verbose: [src.train, src.utils.utils]
 
   # sets output paths for all file logs to 'logs/debug/'
