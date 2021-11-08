@@ -108,12 +108,11 @@ class MNISTLitModel(LightningModule):
     def test_epoch_end(self, outputs: List[Any]):
         pass
 
-    def epoch_end(self, outputs: List[Any]):
-        # you should reset all metrics at the end of every epoch!
+    def on_epoch_end(self):
+        # reset metrics at the end of every epoch!
         self.train_acc.reset()
         self.test_acc.reset()
         self.val_acc.reset()
-        self.val_acc_best.reset()
 
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
