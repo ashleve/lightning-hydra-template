@@ -1,7 +1,7 @@
 # --------- pytorch --------- #
 torch>=1.10.0
 torchvision>=0.11.0
-pytorch-lightning>=1.4.0
+pytorch-lightning>=1.5.0
 torchmetrics>=0.6.0
 
 # --------- hydra --------- #
