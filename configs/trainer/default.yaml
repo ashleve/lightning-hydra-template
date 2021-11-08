@@ -8,4 +8,6 @@ max_epochs: 10
 progress_bar_refresh_rate: 5
 resume_from_checkpoint: null
 weights_summary: "full"
-num_sanity_val_steps: 0
+
+# execute 2 validation steps for sanity check
+num_sanity_val_steps: 2

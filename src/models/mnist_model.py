@@ -50,7 +50,7 @@ class MNISTLitModel(LightningModule):
         self.val_acc = Accuracy()
         self.test_acc = Accuracy()
 
-        # for logging best accuracy achieved so far
+        # for logging best so far validation accuracy
         self.val_acc_best = MaxMetric()
 
     def forward(self, x: torch.Tensor):
@@ -92,9 +92,6 @@ class MNISTLitModel(LightningModule):
 
     def validation_epoch_end(self, outputs: List[Any]):
         acc = self.val_acc.compute()  # get val accuracy from current epoch
-        self.val_acc.reset()  # reset is necessary if you're using `num_sanity_val_steps` in trainer
-
-        # compute and log best so far val accuracy
         self.val_acc_best.update(acc)
         self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
 
@@ -110,6 +107,13 @@ class MNISTLitModel(LightningModule):
 
     def test_epoch_end(self, outputs: List[Any]):
         pass
+
+    def epoch_end(self, outputs: List[Any]):
+        # you should reset all metrics at the end of every epoch!
+        self.train_acc.reset()
+        self.test_acc.reset()
+        self.val_acc.reset()
+        self.val_acc_best.reset()
 
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
