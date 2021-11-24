@@ -1,8 +1,9 @@
 from typing import Optional, Tuple
+from sklearn.model_selection import KFold, StratifiedKFold
 
 import torch
 from pytorch_lightning import LightningDataModule
-from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
+from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split, Subset
 from torchvision.datasets import MNIST
 from torchvision.transforms import transforms
 
@@ -32,6 +33,8 @@ class MNISTDataModule(LightningDataModule):
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
+        stratify: bool = False,
+        n_splits: int = 5,
     ):
         super().__init__()
 
@@ -103,3 +106,42 @@ class MNISTDataModule(LightningDataModule):
             pin_memory=self.hparams.pin_memory,
             shuffle=False,
         )
+
+    def get_splits(self):
+        self.prepare_data()
+        self.setup()
+
+        if self.hparams.stratify:
+            labels = self.get_data_labels()
+            cv_ = StratifiedKFold(n_splits=self.hparams.n_splits)
+        else:
+            labels = None
+            cv_ = KFold(n_splits=self.hparams.n_splits)
+
+        dataset = self.get_dataset()
+        n_samples = len(dataset)
+        for train_idx, val_idx in cv_.split(X=range(n_samples), y=labels):
+            _train = Subset(dataset, train_idx)
+            train_loader = DataLoader(dataset=_train,
+                                      batch_size=self.hparams.batch_size,
+                                      shuffle=True,
+                                      num_workers=self.hparams.num_workers,
+                                      pin_memory=self.hparams.pin_memory)
+
+            _val = Subset(dataset, val_idx)
+            val_loader = DataLoader(dataset=_val,
+                                    batch_size=self.hparams.batch_size,
+                                    shuffle=False,
+                                    num_workers=self.hparams.num_workers,
+                                    pin_memory=self.hparams.pin_memory)
+
+            yield train_loader, val_loader
+
+    def get_dataset(self):
+        """Creates and returns the complete dataset."""
+        return ConcatDataset([self.data_train, self.data_val])
+
+    def get_data_labels(self):
+        dataset = self.get_dataset()
+        return [int(sample[1]) for sample in dataset]
+

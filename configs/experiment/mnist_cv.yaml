@@ -1,0 +1,53 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=example_full.yaml
+
+defaults:
+  - override /trainer: default.yaml
+  - override /model: mnist_model.yaml
+  - override /datamodule: mnist_datamodule.yaml
+  - override /callbacks: null
+  - override /logger: null
+
+# we override default configurations with nulls to prevent them from loading at all
+# instead we define all modules and their paths directly in this config,
+# so everything is stored in one place
+
+seed: 12345
+cross_validation: True
+#name: 'cv_test'
+
+trainer:
+  _target_: pytorch_lightning.Trainer
+  gpus: 1
+  min_epochs: 5
+  max_epochs: 5
+  gradient_clip_val: 0.5
+  accumulate_grad_batches: 1
+  weights_summary: null
+  enable_checkpointing: False
+
+datamodule:
+  _target_: src.datamodules.mnist_datamodule.MNISTDataModule
+  data_dir: ${data_dir}
+  batch_size: 256
+  train_val_test_split: [55_000, 5_000, 10_000]
+  num_workers: 8
+  pin_memory: True
+  n_splits: 2
+
+logger:
+  wandb:
+    _target_: pytorch_lightning.loggers.wandb.WandbLogger
+    project: "template-tests"
+    name: ${name}
+    save_dir: "."
+    offline: False # set True to store all logs only locally
+    id: null # pass correct id to resume experiment!
+    log_model: False
+    prefix: ""
+    job_type: "train"
+    group: ""
+    tags: []
+
