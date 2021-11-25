@@ -140,6 +140,7 @@ dmypy.json
 .idea/
 
 # Lightning-Hydra-Template
+configs/local/default.yaml
 data/
 logs/
 wandb/

@@ -70,6 +70,7 @@ The directory structure of new project looks like this:
 │   ├── datamodule              <- Datamodule configs
 │   ├── experiment              <- Experiment configs
 │   ├── hparams_search          <- Hyperparameter search configs
+│   ├── local                   <- Installation specific configs
 │   ├── logger                  <- Logger configs
 │   ├── mode                    <- Running mode configs
 │   ├── model                   <- Model configs
@@ -503,6 +504,34 @@ ignore_warnings: True
 
 <br>
 
+### Local Installation Configuration
+
+Location: [configs/local](configs/local)<br>
+Sometimes certain installations require specific default configurarion overrides, e.g. when you are running on a cluster, or on a machine with a certain harddrive configuration.
+
+For each of these scenarios, a file in `configs/local` can be created and checked into Git. They can be enabled by linking or copying them to `configs/local/default.yaml`, which is automatically loaded but is not tracked by Git.
+
+<details>
+<summary><b>Simple Slurm example</b></summary>
+
+```yaml
+# @package _global_
+
+defaults:
+  - override /hydra/launcher@_here_: submitit_slurm
+
+data_dir: /mnt/scratch/data/
+
+hydra:
+  launcher:
+    timeout_min: 1440
+    gpus_per_task: 1
+    gres: gpu:1
+```
+
+</details>
+
+
 ### Experiment Configuration
 
 Location: [configs/experiment](configs/experiment)<br>
@@ -905,12 +934,12 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 
 <br>
 
-<!-- 
+<!--
 ### Extra Features
 - Loading environment variables from `.env` file
 - Forcing debug-friendly configuration when using `trainer.fast_dev_run=True` (disables GPU and multiprocessing)
 -->
- 
+
 ### Limitations
 
 - Currently, template doesn't support k-fold cross validation, but it's possible to achieve it with Lightning Loop interface. See the [official example](https://github.com/PyTorchLightning/pytorch-lightning/blob/master/pl_examples/loop_examples/kfold.py). Implementing it requires rewriting the training pipeline.
