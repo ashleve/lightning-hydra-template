@@ -70,7 +70,7 @@ The directory structure of new project looks like this:
 │   ├── datamodule              <- Datamodule configs
 │   ├── experiment              <- Experiment configs
 │   ├── hparams_search          <- Hyperparameter search configs
-│   ├── local                   <- Installation specific configs
+│   ├── local                   <- Local configs
 │   ├── logger                  <- Logger configs
 │   ├── mode                    <- Running mode configs
 │   ├── model                   <- Model configs
@@ -613,9 +613,7 @@ logger:
 ### Local Configuration
 
 Location: [configs/local](configs/local) <br>
-Some configurations are user/machine specific (e.g. configuration of local cluster, or harddrive paths on a specific machine).
-
-For such scenarios, a file `configs/local/default.yaml` can be created which is automatically loaded but not tracked by Git.
+Some configurations are user/machine specific (e.g. configuration of local cluster, or harddrive paths on a specific machine). For such scenarios, a file `configs/local/default.yaml` can be created which is automatically loaded but not tracked by Git.
 
 <details>
 <summary><b>Local Slurm cluster config example</b></summary>
