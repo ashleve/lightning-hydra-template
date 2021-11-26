@@ -504,38 +504,6 @@ ignore_warnings: True
 
 <br>
 
-### Local Installation Configuration
-
-Location: [configs/local](configs/local)<br>
-Sometimes certain installations require specific default configurarion overrides, e.g. when you are running on a cluster, or on a machine with a certain harddrive configuration.
-
-For each of these scenarios, a file in `configs/local` can be created and checked into Git. They can be enabled by linking or copying them to `configs/local/default.yaml`, which is automatically loaded but is not tracked by Git.
-
-<details>
-<summary><b>Simple example</b></summary>
-
-```yaml
-# @package _global_
-
-defaults:
-  - override /hydra/launcher@_here_: submitit_slurm
-
-data_dir: /mnt/scratch/data/
-
-hydra:
-  launcher:
-    timeout_min: 1440
-    gpus_per_task: 1
-    gres: gpu:1
-  job:
-    env_set:
-      MY_VAR: /home/user/my/system/path
-      MY_KEY: asdgjhawi8y23ihsghsueity23ihwd
-```
-
-</details>
-
-
 ### Experiment Configuration
 
 Location: [configs/experiment](configs/experiment)<br>
@@ -636,6 +604,39 @@ logger:
     name: ${name}
     tags: ["best_model", "mnist"]
     notes: "Description of this model."
+```
+
+</details>
+
+<br>
+
+### Local Configuration
+
+Location: [configs/local](configs/local) <br>
+Some configurations are user/machine specific (e.g. configuration of local cluster, or harddrive paths on a specific machine).
+
+For such scenarios, a file `configs/local/default.yaml` can be created which is automatically loaded but not tracked by Git.
+
+<details>
+<summary><b>Local Slurm cluster config example</b></summary>
+
+```yaml
+# @package _global_
+
+defaults:
+  - override /hydra/launcher@_here_: submitit_slurm
+
+data_dir: /mnt/scratch/data/
+
+hydra:
+  launcher:
+    timeout_min: 1440
+    gpus_per_task: 1
+    gres: gpu:1
+  job:
+    env_set:
+      MY_VAR: /home/user/my/system/path
+      MY_KEY: asdgjhawi8y23ihsghsueity23ihwd
 ```
 
 </details>
