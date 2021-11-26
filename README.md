@@ -512,7 +512,7 @@ Sometimes certain installations require specific default configurarion overrides
 For each of these scenarios, a file in `configs/local` can be created and checked into Git. They can be enabled by linking or copying them to `configs/local/default.yaml`, which is automatically loaded but is not tracked by Git.
 
 <details>
-<summary><b>Simple Slurm example</b></summary>
+<summary><b>Simple example</b></summary>
 
 ```yaml
 # @package _global_
@@ -527,6 +527,10 @@ hydra:
     timeout_min: 1440
     gpus_per_task: 1
     gres: gpu:1
+  job:
+    env_set:
+      MY_VAR: /home/user/my/system/path
+      MY_KEY: asdgjhawi8y23ihsghsueity23ihwd
 ```
 
 </details>
