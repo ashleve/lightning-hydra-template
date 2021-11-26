@@ -70,6 +70,7 @@ The directory structure of new project looks like this:
 │   ├── datamodule              <- Datamodule configs
 │   ├── experiment              <- Experiment configs
 │   ├── hparams_search          <- Hyperparameter search configs
+│   ├── local                   <- Local configs
 │   ├── logger                  <- Logger configs
 │   ├── mode                    <- Running mode configs
 │   ├── model                   <- Model configs
@@ -609,6 +610,37 @@ logger:
 
 <br>
 
+### Local Configuration
+
+Location: [configs/local](configs/local) <br>
+Some configurations are user/machine/installation specific (e.g. configuration of local cluster, or harddrive paths on a specific machine). For such scenarios, a file `configs/local/default.yaml` can be created which is automatically loaded but not tracked by Git.
+
+<details>
+<summary><b>Local Slurm cluster config example</b></summary>
+
+```yaml
+# @package _global_
+
+defaults:
+  - override /hydra/launcher@_here_: submitit_slurm
+
+data_dir: /mnt/scratch/data/
+
+hydra:
+  launcher:
+    timeout_min: 1440
+    gpus_per_task: 1
+    gres: gpu:1
+  job:
+    env_set:
+      MY_VAR: /home/user/my/system/path
+      MY_KEY: asdgjhawi8y23ihsghsueity23ihwd
+```
+
+</details>
+
+<br>
+
 ### Workflow
 
 1. Write your PyTorch Lightning model (see [mnist_model.py](src/models/mnist_model.py) for example)
@@ -905,12 +937,12 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 
 <br>
 
-<!-- 
+<!--
 ### Extra Features
 - Loading environment variables from `.env` file
 - Forcing debug-friendly configuration when using `trainer.fast_dev_run=True` (disables GPU and multiprocessing)
 -->
- 
+
 ### Limitations
 
 - Currently, template doesn't support k-fold cross validation, but it's possible to achieve it with Lightning Loop interface. See the [official example](https://github.com/PyTorchLightning/pytorch-lightning/blob/master/pl_examples/loop_examples/kfold.py). Implementing it requires rewriting the training pipeline.
