@@ -49,12 +49,12 @@ hydra:
         type: float
         low: 0.0001
         high: 0.2
-      model.lin1_size:
+      model.net.lin1_size:
         type: categorical
         choices: [32, 64, 128, 256, 512]
-      model.lin2_size:
+      model.net.lin2_size:
         type: categorical
         choices: [32, 64, 128, 256, 512]
-      model.lin3_size:
+      model.net.lin3_size:
         type: categorical
         choices: [32, 64, 128, 256, 512]
