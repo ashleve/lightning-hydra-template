@@ -95,6 +95,7 @@ The directory structure of new project looks like this:
 │   ├── datamodules             <- Lightning datamodules
 │   ├── models                  <- Lightning models
 │   ├── utils                   <- Utility scripts
+│   ├── vendor                  <- Third party code that cannot be installed using PIP/Conda
 │   │
 │   └── train.py                <- Training pipeline
 │
@@ -905,12 +906,12 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 
 <br>
 
-<!-- 
+<!--
 ### Extra Features
 - Loading environment variables from `.env` file
 - Forcing debug-friendly configuration when using `trainer.fast_dev_run=True` (disables GPU and multiprocessing)
 -->
- 
+
 ### Limitations
 
 - Currently, template doesn't support k-fold cross validation, but it's possible to achieve it with Lightning Loop interface. See the [official example](https://github.com/PyTorchLightning/pytorch-lightning/blob/master/pl_examples/loop_examples/kfold.py). Implementing it requires rewriting the training pipeline.
