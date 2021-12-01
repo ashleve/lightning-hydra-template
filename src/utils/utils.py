@@ -112,6 +112,9 @@ def print_config(
     with open("config_tree.log", "w") as fp:
         rich.print(tree, file=fp)
 
+    with open("config.yaml", "w") as fp:
+        OmegaConf.save(config, f=fp, resolve=resolve)
+
 
 @rank_zero_only
 def log_hyperparameters(
