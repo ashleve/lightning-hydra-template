@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+find "$1" -type d -depth 2 | sort -r | head -n 1
