@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
 
+# Example usage:
+#
+# $ cd (logs/latest logs/runs)
+#
+
 find "$1" -type d -depth 2 | sort -r | head -n 1
