@@ -96,6 +96,7 @@ The directory structure of new project looks like this:
 │   ├── datamodules             <- Lightning datamodules
 │   ├── models                  <- Lightning models
 │   ├── utils                   <- Utility scripts
+│   ├── vendor                  <- Third party code that cannot be installed using PIP/Conda
 │   │
 │   └── train.py                <- Training pipeline
 │
