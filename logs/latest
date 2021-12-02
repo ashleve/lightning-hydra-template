@@ -5,4 +5,7 @@
 # $ cd (logs/latest logs/runs)
 #
 
-find "$1" -type d -depth 2 | sort -r | head -n 1
+set -e
+set -o pipefail
+
+find "$1" -maxdepth 2 -type d | sort -r | head -n 1
