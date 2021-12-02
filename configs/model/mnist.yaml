@@ -1,4 +1,4 @@
-_target_: src.models.mnist_model.MNISTLitModel
+_target_: src.models.mnist.MNISTLitModel
 
 input_size: 784
 lin1_size: 256

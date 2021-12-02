@@ -6,8 +6,8 @@
 defaults:
   - override /mode: exp.yaml
   - override /trainer: default.yaml
-  - override /model: mnist_model.yaml
-  - override /datamodule: mnist_datamodule.yaml
+  - override /model: mnist.yaml
+  - override /datamodule: mnist.yaml
   - override /callbacks: default.yaml
   - override /logger: null
 
