@@ -20,6 +20,6 @@ if ! [ -z "$1" ]
 then
     echo $(find "$1" -maxdepth 2 -type d | sort -r | head -n 1)
 else
-	echo $(find "logs/runs" -maxdepth 2 -type d | sort -r | head -n 1)
+    echo $(find "logs/runs" -maxdepth 2 -type d | sort -r | head -n 1)
 fi
 
