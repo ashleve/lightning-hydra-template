@@ -3,23 +3,14 @@
 # This script allows to quickly change into the latest log dir of a specific kind.
 # Should be executed from project root folder.
 # 
-# Go to latest log dir:
-# cd $(logs/latest)
-#
 # Go to latest log dir from 'runs' folder:
 # cd $(logs/latest logs/runs)
 #
-# Go to latest log dir from 'multiruns' folder:
-# cd $(logs/latest logs/multiruns)
+# Go to latest log dir from 'experiments' folder:
+# cd $(logs/latest logs/experiments)
 
 
 set -e
 set -o pipefail
 
-if ! [ -z "$1" ]
-then
-    echo $(find "$1" -maxdepth 2 -type d | sort -r | head -n 1)
-else
-    echo $(find "logs/runs" -maxdepth 2 -type d | sort -r | head -n 1)
-fi
-
+echo $(find "$1" -maxdepth 2 -type d | sort -r | head -n 1)
