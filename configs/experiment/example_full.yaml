@@ -71,6 +71,6 @@ callbacks:
 
 logger:
   wandb:
-    name: ${name}_${now:%Y-%m-%d_%H-%M-%S}
+    name: ${name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
     tags: ["best_model", "mnist"]
     notes: "Description of this model."
