@@ -13,4 +13,4 @@
 set -e
 set -o pipefail
 
-echo $(find "$1" -maxdepth 2 -type d | sort -r | head -n 1)
+find "$1" -maxdepth 2 -type d | sort -r | head -n 1
