@@ -670,7 +670,7 @@ This means your working directory is different for every run, which might not be
 │   │   │   └── multiruns
 │   │   │       ├── YYYY-MM-DD
 │   │   │       │   ├── HH-MM-SS
-│   │   │       │   │   ├── 1              		# Multirun job number
+│   │   │       │   │   ├── 1               # Multirun job number
 │   │   │       │   │   │   └── ...
 │   │   │       │   │   ├── 2
 │   │   │       │   │   └── ...
