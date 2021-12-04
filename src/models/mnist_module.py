@@ -5,10 +5,10 @@ from pytorch_lightning import LightningModule
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
 
-from src.models.modules.simple_dense_net import SimpleDenseNet
+from src.models.components.simple_dense_net import SimpleDenseNet
 
 
-class MNISTLitModel(LightningModule):
+class MNISTLitModule(LightningModule):
     """
     Example of LightningModule for MNIST classification.
 

@@ -32,7 +32,7 @@ trainer:
   num_sanity_val_steps: 0
 
 model:
-  _target_: src.models.mnist.MNISTLitModel
+  _target_: src.models.mnist_module.MNISTLitModule
   input_size: 784
   lin1_size: 256
   lin2_size: 256
@@ -42,7 +42,7 @@ model:
   weight_decay: 0.0005
 
 datamodule:
-  _target_: src.datamodules.mnist.MNISTDataModule
+  _target_: src.datamodules.mnist_datamodule.MNISTDataModule
   data_dir: ${data_dir}
   batch_size: 64
   train_val_test_split: [55_000, 5_000, 10_000]

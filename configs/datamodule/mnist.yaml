@@ -1,4 +1,4 @@
-_target_: src.datamodules.mnist.MNISTDataModule
+_target_: src.datamodules.mnist_datamodule.MNISTDataModule
 
 data_dir: ${data_dir} # data_dir is specified in config.yaml
 batch_size: 64
