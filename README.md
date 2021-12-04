@@ -810,7 +810,7 @@ The following code is an example of loading model from checkpoint and running pr
 from PIL import Image
 from torchvision import transforms
 
-from src.models.mnist import MNISTLitModule
+from src.models.mnist_module import MNISTLitModule
 
 
 def predict():
@@ -887,7 +887,7 @@ You can easily modify the commands in the scripts for your use case. If 1 epoch 
 
 ### Callbacks
 
-Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb.py](src/callbacks/wandb.py)).<br>
+Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
 To support reproducibility:
 
 - **WatchModel**
