@@ -11,7 +11,7 @@
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/ashleve/lightning-hydra-template/generate) to initialize new repository.
 
-*Suggestions are always welcome!*
+_Suggestions are always welcome!_
 
 </div>
 
@@ -52,8 +52,8 @@ It makes your code neatly organized and provides lots of useful features, like a
 - **Hyperparameter Search**: made easier with Hydra built-in plugins like [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) | [#Hyperparameter Search](#hyperparameter-search)
 - **Tests**: unit tests and shell/command based tests for speeding up the development | [#Tests](#tests)
 - **Best Practices**: a couple of recommended tools, practices and standards for efficient workflow and reproducibility | [#Best Practices](#best-practices)
-<!-- - **Tricks**: a couple of sometimes useful tricks | [#Useful Tricks](#useful-tricks) -->
-<!-- - **Extra Features**: optional utilities to make your life easier | [#Extra Features](#extra-features) -->
+  <!-- - **Tricks**: a couple of sometimes useful tricks | [#Useful Tricks](#useful-tricks) -->
+  <!-- - **Extra Features**: optional utilities to make your life easier | [#Extra Features](#extra-features) -->
 
 <br>
 
@@ -440,7 +440,7 @@ Have a question? Found a bug? Missing a specific feature? Ran into a problem? Fe
 Every run is initialized by [run.py](run.py) file. All PyTorch Lightning modules are dynamically instantiated from module paths specified in config. Example model config:
 
 ```yaml
-_target_: src.models.mnist.MNISTLitModel
+_target_: src.models.mnist_model.MNISTLitModule
 input_size: 784
 lin1_size: 256
 lin2_size: 256
@@ -581,7 +581,7 @@ trainer:
   gradient_clip_val: 0.5
 
 model:
-  _target_: src.models.mnist.MNISTLitModel
+  _target_: src.models.mnist_module.MNISTLitModule
   lr: 0.001
   weight_decay: 0.00005
   input_size: 784
@@ -591,7 +591,7 @@ model:
   output_size: 10
 
 datamodule:
-  _target_: src.datamodules.mnist.MNISTDataModule
+  _target_: src.datamodules.mnist_datamodule.MNISTDataModule
   data_dir: ${data_dir}
   train_val_test_split: [55_000, 5_000, 10_000]
   batch_size: 64
@@ -644,8 +644,8 @@ hydra:
 
 ### Workflow
 
-1. Write your PyTorch Lightning model (see [models/mnist.py](src/models/mnist.py) for example)
-2. Write your PyTorch Lightning datamodule (see [datamodules/mnist.py](src/datamodules/mnist.py) for example)
+1. Write your PyTorch Lightning module (see [models/mnist_module.py](src/models/mnist_module.py) for example)
+2. Write your PyTorch Lightning datamodule (see [datamodules/mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
 3. Write your experiment config, containing paths to your model and datamodule
 4. Run training with chosen experiment config: `python run.py experiment=experiment_name`
 
@@ -717,7 +717,7 @@ You can use many of them at once (see [configs/logger/many_loggers.yaml](configs
 
 You can also write your own logger.
 
-Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist.py).
+Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_module.py).
 
 <br>
 
@@ -803,7 +803,7 @@ The following code is an example of loading model from checkpoint and running pr
 from PIL import Image
 from torchvision import transforms
 
-from src.models.mnist import MNISTLitModel
+from src.models.mnist import MNISTLitModule
 
 
 def predict():
@@ -818,7 +818,7 @@ def predict():
     # load model from checkpoint
     # model __init__ parameters will be loaded from ckpt automatically
     # you can also pass some parameter explicitly to override it
-    trained_model = MNISTLitModel.load_from_checkpoint(checkpoint_path=CKPT_PATH)
+    trained_model = MNISTLitModule.load_from_checkpoint(checkpoint_path=CKPT_PATH)
 
     # print model hyperparameters
     print(trained_model.hparams)
@@ -921,6 +921,7 @@ python run.py trainer.gpus=4 +trainer.accelerator="ddp"
 ### Reproducibility
 
 What provides reproducibility:
+
 - Hydra manages your configs
 - Hydra manages your logging paths and makes every executed run store its hyperparameters and config overrides in a separate file in logs
 - Single seed for random number generators in pytorch, numpy and python.random
@@ -931,9 +932,11 @@ What provides reproducibility:
 - Example callbacks for wandb show how you can save and upload a snapshot of codebase every time the run is executed, as well as upload ckpts and track model gradients
 
 You can load the config of previous run using:
+
 ```bash
 python run.py --config-path /logs/runs/.../.hydra/ --config-name config.yaml
 ```
+
 The `config.yaml` from `.hydra` folder contains all overriden parameters and sections. This approach however is not officially supported by Hydra and doesn't override the `hydra/` part of the config, meaning logging paths will revert to default!
 
 <br>
@@ -1324,8 +1327,8 @@ pip install git+git://github.com/YourGithubName/your-repo-name.git --upgrade
 So any file can be easily imported into any other file like so:
 
 ```python
-from project_name.models.mnist import MNISTLitModel
-from project_name.datamodules.mnist import MNISTDataModule
+from project_name.models.mnist_module import MNISTLitModule
+from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
 
 </details>
