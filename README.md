@@ -976,7 +976,7 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 
    ```python
    # ./src/train.py
-   model = hydra.utils.instantiate(config.model, dm_conf=config.datamodule)
+   model = hydra.utils.instantiate(config.model, dm_conf=config.datamodule, _recursive_=False)
    ```
 
    Now you can access any datamodule config part like this:
