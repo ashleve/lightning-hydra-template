@@ -174,10 +174,10 @@ python run.py trainer.gpus=1
 python run.py +trainer.tpu_cores=8
 
 # train with DDP (Distributed Data Parallel) (4 GPUs)
-python run.py trainer.gpus=4 +trainer.accelerator=ddp
+python run.py trainer.gpus=4 +trainer.strategy=ddp
 
 # train with DDP (Distributed Data Parallel) (8 GPUs, 2 nodes)
-python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.accelerator=ddp
+python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.strategy=ddp
 ```
 
 </details>
@@ -915,7 +915,7 @@ The most common one is DDP, which spawns separate process for each GPU and avera
 You can run DDP on mnist example with 4 GPUs like this:
 
 ```bash
-python run.py trainer.gpus=4 +trainer.accelerator="ddp"
+python run.py trainer.gpus=4 +trainer.strategy=ddp
 ```
 
 ⚠️ When using DDP you have to be careful how you write your models - learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
