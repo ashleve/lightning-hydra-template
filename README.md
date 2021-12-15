@@ -304,9 +304,6 @@ python run.py +trainer.fast_dev_run=true
 # raise exception if there are any numerical anomalies in tensors, like NaN or +/-inf
 python run.py +trainer.detect_anomaly=true
 
-# print full weight summary of all PyTorch modules
-python run.py trainer.weights_summary="full"
-
 # print execution time profiling after training ends
 python run.py +trainer.profiler="simple"
 
