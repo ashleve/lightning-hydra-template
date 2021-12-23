@@ -15,7 +15,6 @@ hydra:
   # learn more here: https://hydra.cc/docs/next/plugins/optuna_sweeper
   sweeper:
     _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
-    storage: null
     study_name: null
     n_jobs: 1
 
@@ -28,16 +27,7 @@ hydra:
     # choose Optuna hyperparameter sampler
     # learn more here: https://optuna.readthedocs.io/en/stable/reference/samplers.html
     sampler:
-      _target_: optuna.samplers.TPESampler
       seed: 12345
-      consider_prior: true
-      prior_weight: 1.0
-      consider_magic_clip: true
-      consider_endpoints: false
-      n_startup_trials: 10
-      n_ei_candidates: 24
-      multivariate: false
-      warn_independent_sampling: true
 
     # define range of hyperparameters
     search_space:
