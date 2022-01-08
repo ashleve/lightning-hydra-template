@@ -435,7 +435,7 @@ Have a question? Found a bug? Missing a specific feature? Ran into a problem? Fe
 Every run is initialized by [run.py](run.py) file. All PyTorch Lightning modules are dynamically instantiated from module paths specified in config. Example model config:
 
 ```yaml
-_target_: src.models.mnist_model.MNISTLitModel
+_target_: src.models.mnist_model.MNISTLitModule
 input_size: 784
 lin1_size: 256
 lin2_size: 256
@@ -470,8 +470,8 @@ It also specifies everything that shouldn't be managed by experiment configurati
 # specify here default training configuration
 defaults:
   - trainer: default.yaml
-  - model: mnist_model.yaml
-  - datamodule: mnist_datamodule.yaml
+  - model: mnist.yaml
+  - datamodule: mnist.yaml
   - callbacks: default.yaml # set this to null if you don't want to use callbacks
   - logger: null # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
@@ -515,8 +515,8 @@ Experiment configurations allow you to overwrite parameters from main project co
 defaults:
   - override /mode: exp.yaml
   - override /trainer: default.yaml
-  - override /model: mnist_model.yaml
-  - override /datamodule: mnist_datamodule.yaml
+  - override /model: mnist.yaml
+  - override /datamodule: mnist.yaml
   - override /callbacks: default.yaml
   - override /logger: null
 
@@ -576,7 +576,7 @@ trainer:
   gradient_clip_val: 0.5
 
 model:
-  _target_: src.models.mnist_model.MNISTLitModel
+  _target_: src.models.mnist_module.MNISTLitModule
   lr: 0.001
   weight_decay: 0.00005
   input_size: 784
@@ -639,8 +639,8 @@ hydra:
 
 ### Workflow
 
-1. Write your PyTorch Lightning model (see [mnist_model.py](src/models/mnist_model.py) for example)
-2. Write your PyTorch Lightning datamodule (see [mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
+1. Write your PyTorch Lightning module (see [models/mnist_module.py](src/models/mnist_module.py) for example)
+2. Write your PyTorch Lightning datamodule (see [datamodules/mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
 3. Write your experiment config, containing paths to your model and datamodule
 4. Run training with chosen experiment config: `python run.py experiment=experiment_name`
 
@@ -721,7 +721,7 @@ You can use many of them at once (see [configs/logger/many_loggers.yaml](configs
 
 You can also write your own logger.
 
-Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_model.py).
+Lightning provides convenient method for logging custom metrics from inside LightningModule. Read the docs [here](https://pytorch-lightning.readthedocs.io/en/latest/extensions/logging.html#automatic-logging) or take a look at [MNIST example](src/models/mnist_module.py).
 
 <br>
 
@@ -807,7 +807,7 @@ The following code is an example of loading model from checkpoint and running pr
 from PIL import Image
 from torchvision import transforms
 
-from src.models.mnist_model import MNISTLitModel
+from src.models.mnist_module import MNISTLitModule
 
 
 def predict():
@@ -822,7 +822,7 @@ def predict():
     # load model from checkpoint
     # model __init__ parameters will be loaded from ckpt automatically
     # you can also pass some parameter explicitly to override it
-    trained_model = MNISTLitModel.load_from_checkpoint(checkpoint_path=CKPT_PATH)
+    trained_model = MNISTLitModule.load_from_checkpoint(checkpoint_path=CKPT_PATH)
 
     # print model hyperparameters
     print(trained_model.hparams)
@@ -1325,7 +1325,7 @@ pip install git+git://github.com/YourGithubName/your-repo-name.git --upgrade
 So any file can be easily imported into any other file like so:
 
 ```python
-from project_name.models.mnist_model import MNISTLitModel
+from project_name.models.mnist_module import MNISTLitModule
 from project_name.datamodules.mnist_datamodule import MNISTDataModule
 ```
 
