@@ -1,6 +1,9 @@
 # @package _global_
 
-# run in debug mode with:
+# debug mode sets name of the logging folder to 'logs/debug/...'
+# enables trainer debug options
+# also sets level od command line logger to DEBUG
+# example usage:
 # `python run.py mode=debug`
 
 defaults:
@@ -16,7 +19,6 @@ hydra:
   # use this to set level of only chosen command line loggers to 'DEBUG'
   # verbose: [src.train, src.utils]
 
-  # sets output paths for all file logs to 'logs/debug/'
   run:
     dir: logs/debug/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
