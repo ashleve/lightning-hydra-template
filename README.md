@@ -139,8 +139,6 @@ When running `python run.py` you should see something like this:
 
 ### ⚡&nbsp;&nbsp;Your Superpowers
 
-(click to expand)
-
 <details>
 <summary><b>Override any config parameter from command line</b></summary>
 
@@ -395,29 +393,9 @@ python run.py -m 'experiment=glob(*)'
 
 <br>
 
-## 🐳&nbsp;&nbsp;Docker
-
-First you will need to [install Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to enable GPU support.
-
-The template Dockerfile is provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). Copy it to the template root folder.
-
-To build the container use:
-
-```bash
-docker build -t <project_name> .
-```
-
-To mount the project to the container use:
-
-```bash
-docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
-```
-
-<br>
-
 ## ❤️&nbsp;&nbsp;Contributions
 
-Have a question? Found a bug? Missing a specific feature? Ran into a problem? Feel free to file a new issue or PR with respective title and description. If you already found a solution to your problem, don't hesitate to share it. Suggestions for new best practices and tricks are always welcome!
+Have a question? Found a bug? Missing a specific feature? Have an idea for improving documentation? Feel free to file a new issue, discussion or PR with respective title and description. If you already found a solution to your problem, don't hesitate to share it. Suggestions for new best practices are always welcome!
 
 <br>
 
@@ -504,13 +482,14 @@ ignore_warnings: True
 
 Location: [configs/experiment](configs/experiment)<br>
 You should store all your experiment configurations in this folder.<br>
-Experiment configurations allow you to overwrite parameters from main project configuration.
+Experiment configurations allow you to overwrite parameters from main project configuration.<br>
+You can use it to version control specific configurations, like best hyperparameters for combination model and datamodule.
 
 **Simple example**
 
 ```yaml
 # to execute this experiment run:
-# python run.py experiment=example_simple
+# python run.py experiment=example
 
 defaults:
   - override /mode: exp.yaml
@@ -523,12 +502,14 @@ defaults:
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-# name of the run determines folder name in logs and is accessed by loggers
-name: "example_simple"
+# name of the run determines folder name in logs
+# can also be accessed by loggers
+name: "example"
 
 seed: 12345
 
 trainer:
+  min_epochs: 1
   max_epochs: 10
   gradient_clip_val: 0.5
 
@@ -536,73 +517,18 @@ model:
   lin1_size: 128
   lin2_size: 256
   lin3_size: 64
-  lr: 0.005
+  lr: 0.002
 
 datamodule:
-  train_val_test_split: [55_000, 5_000, 10_000]
   batch_size: 64
-```
-
-</details>
-
-<details>
-<summary><b>Show advanced example</b></summary>
-
-```yaml
-# to execute this experiment run:
-# python run.py experiment=example_full
-
-defaults:
-  - override /mode: exp.yaml
-  - override /trainer: null
-  - override /model: null
-  - override /datamodule: null
-  - override /callbacks: null
-  - override /logger: null
-
-# we override default configurations with nulls to prevent them from loading at all
-# instead we define all modules and their paths directly in this config,
-# so everything is stored in one place
-
-name: "example_full"
-
-seed: 12345
-
-trainer:
-  _target_: pytorch_lightning.Trainer
-  gpus: 0
-  min_epochs: 1
-  max_epochs: 10
-  gradient_clip_val: 0.5
-
-model:
-  _target_: src.models.mnist_module.MNISTLitModule
-  lr: 0.001
-  weight_decay: 0.00005
-  input_size: 784
-  lin1_size: 256
-  lin2_size: 256
-  lin3_size: 128
-  output_size: 10
-
-datamodule:
-  _target_: src.datamodules.mnist_datamodule.MNISTDataModule
-  data_dir: ${data_dir}
   train_val_test_split: [55_000, 5_000, 10_000]
-  batch_size: 64
-  num_workers: 0
-  pin_memory: False
 
 logger:
+  csv:
+    name: csv/${name}
   wandb:
-    _target_: pytorch_lightning.loggers.wandb.WandbLogger
-    project: "lightning-hydra-template"
-    name: ${name}
-    tags: ["best_model", "mnist"]
-    notes: "Description of this model."
+    tags: ["mnist", "simple_dense_net"]
 ```
-
-</details>
 
 <br>
 
@@ -921,6 +847,24 @@ python run.py trainer.gpus=4 +trainer.strategy=ddp
 ⚠️ When using DDP you have to be careful how you write your models - learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
 
 <br>
+
+### Docker
+
+First you will need to [install Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) to enable GPU support.
+
+The template Dockerfile is provided on branch [`dockerfiles`](https://github.com/ashleve/lightning-hydra-template/tree/dockerfiles). Copy it to the template root folder.
+
+To build the container use:
+
+```bash
+docker build -t <project_name> .
+```
+
+To mount the project to the container use:
+
+```bash
+docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
+```
 
 ### Reproducibility
 

@@ -1,7 +1,7 @@
 # @package _global_
 
 # to execute this experiment run:
-# python run.py experiment=example_simple.yaml
+# python run.py experiment=example
 
 defaults:
   - override /mode: exp.yaml
@@ -15,8 +15,8 @@ defaults:
 # this allows you to overwrite only specified parameters
 
 # name of the run determines folder name in logs
-# it's also accessed by loggers
-name: "example_simple"
+# can also be accessed by loggers
+name: "example"
 
 seed: 12345
 
@@ -34,3 +34,9 @@ model:
 datamodule:
   batch_size: 64
   train_val_test_split: [55_000, 5_000, 10_000]
+
+logger:
+  csv:
+    name: csv/${name}
+  wandb:
+    tags: ["mnist", "simple_dense_net"]
