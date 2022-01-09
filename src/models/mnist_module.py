@@ -109,7 +109,7 @@ class MNISTLitModule(LightningModule):
         pass
 
     def on_epoch_end(self):
-        # reset metrics at the end of every epoch!
+        # reset metrics at the end of every epoch
         self.train_acc.reset()
         self.test_acc.reset()
         self.val_acc.reset()

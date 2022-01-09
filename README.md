@@ -19,7 +19,7 @@ _Suggestions are always welcome!_
 
 ## 📌&nbsp;&nbsp;Introduction
 
-This template tries to be as general as possible - you can easily delete any unwanted features from the pipeline or rewire the configuration, by modifying behavior in [src/train.py](src/train.py).
+This template tries to be as general as possible. It integrates many different MLOps tools.
 
 > Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
@@ -430,6 +430,12 @@ model = hydra.utils.instantiate(config.model)
 
 This allows you to easily iterate over new models!<br>
 Every time you create a new one, just specify its module path and parameters in appriopriate config file. <br>
+Switch between models and datamodules with command line arguments:
+
+```bash
+python run.py model=mnist
+```
+
 The whole pipeline managing the instantiation logic is placed in [src/train.py](src/train.py).
 
 <br>
@@ -452,13 +458,20 @@ defaults:
   - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
+  # modes are special collections of config options for different purposes, e.g. debugging
   - mode: default.yaml
 
+  # experiment configs allow for version control of specific configurations
   - experiment: null
+
+  # config for hyperparameter optimization
   - hparams_search: null
 
+  # optional local config for machine/user specific settings
+  - optional local: default.yaml
+
 # path to original working directory
-# hydra hijacks working directory by changing it to the current log directory,
+# hydra hijacks working directory by changing it to the new log directory
 # so it's useful to have this path as a special variable
 # https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 work_dir: ${hydra:runtime.cwd}
@@ -471,6 +484,13 @@ print_config: True
 
 # disable python warnings if they annoy you
 ignore_warnings: True
+
+# evaluate on test set, using best model weights achieved during training
+# lightning chooses best weights based on metric specified in checkpoint callback
+test_after_training: True
+
+# seed for random number generators in pytorch, numpy and python.random
+seed: null
 ```
 
 </details>
@@ -485,8 +505,6 @@ For example, you can use them to version control best hyperparameters for each c
 
 <details>
 <summary><b>Show example experiment config</b></summary>
-
-**Simple example**
 
 ```yaml
 # to execute this experiment run:
@@ -879,6 +897,8 @@ To mount the project to the container use:
 ```bash
 docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
 ```
+
+<br>
 
 ### Reproducibility
 

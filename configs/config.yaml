@@ -13,7 +13,7 @@ defaults:
   - mode: default.yaml
 
   # experiment configs allow for version control of specific configurations
-  # for example, use it to store best hyperparameters for each combination of model and datamodule
+  # for example, use them to store best hyperparameters for each combination of model and datamodule
   - experiment: null
 
   # config for hyperparameter optimization
