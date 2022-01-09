@@ -439,10 +439,9 @@ The whole pipeline managing the instantiation logic is placed in [src/train.py](
 Location: [configs/config.yaml](configs/config.yaml)<br>
 Main project config contains default training configuration.<br>
 It determines how config is composed when simply executing command `python run.py`.<br>
-It also specifies everything that shouldn't be managed by experiment configurations.
 
 <details>
-<summary><b>Show main project configuration</b></summary>
+<summary><b>Show main project config</b></summary>
 
 ```yaml
 # specify here default training configuration
@@ -450,7 +449,7 @@ defaults:
   - trainer: default.yaml
   - model: mnist.yaml
   - datamodule: mnist.yaml
-  - callbacks: default.yaml # set this to null if you don't want to use callbacks
+  - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
   - mode: default.yaml
@@ -481,9 +480,11 @@ ignore_warnings: True
 ### Experiment Configuration
 
 Location: [configs/experiment](configs/experiment)<br>
-You should store all your experiment configurations in this folder.<br>
-Experiment configurations allow you to overwrite parameters from main project configuration.<br>
-You can use it to version control specific configurations, like best hyperparameters for combination model and datamodule.
+Experiment configs allow you to overwrite parameters from main project configuration.<br>
+For example, you can use them to version control best hyperparameters for each combination of model and dataset.
+
+<details>
+<summary><b>Show example experiment config</b></summary>
 
 **Simple example**
 
@@ -500,7 +501,6 @@ defaults:
   - override /logger: null
 
 # all parameters below will be merged with parameters from default configurations set above
-# this allows you to overwrite only specified parameters
 
 # name of the run determines folder name in logs
 # can also be accessed by loggers
@@ -530,6 +530,8 @@ logger:
     tags: ["mnist", "simple_dense_net"]
 ```
 
+</details>
+
 <br>
 
 ### Local Configuration
@@ -538,7 +540,7 @@ Location: [configs/local](configs/local) <br>
 Some configurations are user/machine/installation specific (e.g. configuration of local cluster, or harddrive paths on a specific machine). For such scenarios, a file `configs/local/default.yaml` can be created which is automatically loaded but not tracked by Git.
 
 <details>
-<summary><b>Local Slurm cluster config example</b></summary>
+<summary><b>Show example local Slurm cluster config</b></summary>
 
 ```yaml
 # @package _global_
@@ -576,6 +578,9 @@ hydra:
 
 **Hydra creates new working directory for every executed run.** <br>
 This means your working directory is different for every run, which might not be compatible with some libraries and workflows. By default, logs have the following structure:
+
+<details>
+<summary><b>Show logs structure</b></summary>
 
 ```
 ├── logs
@@ -627,6 +632,8 @@ This means your working directory is different for every run, which might not be
 │       └── ...
 │
 ```
+
+</details>
 
 You can change this structure by modifying paths in [hydra configuration](configs/mode).
 
@@ -717,8 +724,15 @@ hydra:
 
 </details>
 
-Next, you can execute it with: `python run.py -m hparams_search=mnist_optuna`<br>
-Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file. You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad. The `optimization_results.yaml` will be available under `logs/multirun` folder.
+Next, you can execute it with: `python run.py -m hparams_search=mnist_optuna`
+
+Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file.
+
+You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
+
+The `optimization_results.yaml` will be available under `logs/multirun` folder.
+
+This approach doesn't support advanced technics like prunning - for more sophisticated search, you probably shouldn't use hydra multirun feature and instead write your own optimization pipeline.
 
 <br>
 
