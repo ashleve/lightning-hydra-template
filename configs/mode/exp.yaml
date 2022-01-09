@@ -1,15 +1,15 @@
 # @package _global_
 
-# run in experiment mode with:
-# `python run.py mode=exp name=experiment_name`
+# experiment mode sets name of the logging folder to the experiment name
+# can also be used to name the run in the logger
+# example usage:
+# `python run.py mode=exp name=some_name`
 
 experiment_mode: True
 
-# allows for custom naming of the experiment
 name: ???
 
 hydra:
-  # sets output paths for all file logs to `logs/experiment/name'
   run:
     dir: logs/experiments/${name}/runs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:

@@ -9,12 +9,17 @@ defaults:
   - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
+  # modes are special collections of config options for different purposes, e.g. debugging
   - mode: default.yaml
 
+  # experiment configs allow for version control of specific configurations
+  # for example, use them to store best hyperparameters for each combination of model and datamodule
   - experiment: null
+
+  # config for hyperparameter optimization
   - hparams_search: null
 
-  # optional local config
+  # optional local config for machine/user specific settings
   - optional local: default.yaml
 
   # enable color logging
@@ -22,7 +27,7 @@ defaults:
   - override hydra/job_logging: colorlog
 
 # path to original working directory
-# hydra hijacks working directory by changing it to the current log directory,
+# hydra hijacks working directory by changing it to the new log directory
 # so it's useful to have this path as a special variable
 # https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 work_dir: ${hydra:runtime.cwd}
@@ -43,6 +48,5 @@ test_after_training: True
 # seed for random number generators in pytorch, numpy and python.random
 seed: null
 
-# name of the run is accessed by loggers
-# should be used along with experiment mode
+# name of the run, should be used along with experiment mode
 name: null
