@@ -5,9 +5,9 @@ pytorch-lightning>=1.5.0
 torchmetrics>=0.6.0
 
 # --------- hydra --------- #
-hydra-core==1.1.0
-hydra-colorlog==1.1.0
-hydra-optuna-sweeper==1.1.0
+hydra-core>=1.1.0
+hydra-colorlog>=1.1.0
+hydra-optuna-sweeper>=1.1.0
 # hydra-ax-sweeper
 # hydra-ray-launcher
 # hydra-submitit-launcher
