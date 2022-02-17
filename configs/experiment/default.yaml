@@ -1,0 +1,4 @@
+# @package _global_
+
+# name of the run determines folder name in logs
+name: "default"

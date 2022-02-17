@@ -1,0 +1,11 @@
+# @package _global_
+
+# debugs by running 1 train, validation and test step
+
+defaults:
+  - default.yaml
+
+trainer:
+  fast_dev_run: true
+
+test_after_training: True
