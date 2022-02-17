@@ -31,7 +31,6 @@ model:
 
 datamodule:
   batch_size: 64
-  train_val_test_split: [55_000, 5_000, 10_000]
 
 logger:
   wandb:
