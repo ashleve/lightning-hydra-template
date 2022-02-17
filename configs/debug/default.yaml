@@ -1,16 +1,19 @@
 # @package _global_
 
-# default debugging setup
+# default debugging setup, runs 1 full epoch
 
 defaults:
-  - log_dir: debug.yaml
+  - override /log_dir: debug.yaml
 
 trainer:
+  max_epochs: 1
   gpus: 0 # debuggers don't like gpus
   detect_anomaly: true
+  track_grad_norm: 2
 
 datamodule:
   num_workers: 0 # debuggers don't like multiprocessing
+  pin_memory: False
 
 # sets level of all command line loggers to 'DEBUG'
 # https://hydra.cc/docs/tutorials/basic/running_your_app/logging/

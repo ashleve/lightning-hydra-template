@@ -34,4 +34,4 @@ datamodule:
 
 logger:
   wandb:
-    tags: ["mnist", ${name}]
+    tags: ["mnist", "${name}"]

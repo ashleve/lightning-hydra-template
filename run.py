@@ -15,11 +15,7 @@ def main(config: DictConfig):
     from src.train import train
     from src import utils
 
-    # A couple of optional utilities:
-    # - disabling python warnings
-    # - forcing debug-friendly configuration
-    # - verifying experiment name is set when running in experiment mode
-    # You can safely get rid of this line if you don't want those
+    # Applies optional utilities
     utils.extras(config)
 
     # Pretty print config using Rich library
