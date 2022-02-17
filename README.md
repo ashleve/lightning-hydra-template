@@ -66,11 +66,12 @@ The directory structure of new project looks like this:
 ├── configs                 <- Hydra configuration files
 │   ├── callbacks               <- Callbacks configs
 │   ├── datamodule              <- Datamodule configs
+│   ├── debug                   <- Debugging configs
 │   ├── experiment              <- Experiment configs
 │   ├── hparams_search          <- Hyperparameter search configs
 │   ├── local                   <- Local configs
+│   ├── log_dir                 <- Logging directory configs
 │   ├── logger                  <- Logger configs
-│   ├── mode                    <- Running mode configs
 │   ├── model                   <- Model configs
 │   ├── trainer                 <- Trainer configs
 │   │
