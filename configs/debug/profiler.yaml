@@ -1,6 +1,6 @@
 # @package _global_
 
-# debugs with execution time profiling
+# runs with execution time profiling
 
 defaults:
   - default.yaml

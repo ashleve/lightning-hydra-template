@@ -1,9 +1,9 @@
 # @package _global_
 
-# debugs by running only test epoch
+# runs only test epoch
 
 defaults:
   - default.yaml
 
 train: False
-test_after_training: True
+test: True

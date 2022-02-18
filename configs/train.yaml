@@ -16,7 +16,7 @@ defaults:
   # e.g. best hyperparameters for each combination of model and datamodule
   - experiment: null
 
-  # debugging config (enable through command line, e.g. `python run.py debug=one_epoch)
+  # debugging config (enable through command line, e.g. `python run.py debug=default)
   - debug: null
 
   # config for hyperparameter optimization
@@ -50,7 +50,7 @@ train: True
 
 # evaluate on test set, using best model weights achieved during training
 # lightning chooses best weights based on the metric specified in checkpoint callback
-test_after_training: True
+test: True
 
 # seed for random number generators in pytorch, numpy and python.random
 seed: null

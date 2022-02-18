@@ -1,6 +1,6 @@
 # @package _global_
 
-# debugs by using only 1% of the data
+# uses only 1% of the data
 
 defaults:
   - default.yaml
