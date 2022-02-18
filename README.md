@@ -106,8 +106,8 @@ The directory structure of new project looks like this:
 │
 ├── .env.example            <- Template of the file for storing private environment variables
 ├── .gitignore              <- List of files/folders ignored by git
-├── .pre-commit-config.yaml <- Configuration of automatic code formatting
-├── setup.cfg               <- Configurations of linters and pytest
+├── .pre-commit-config.yaml <- Configuration of pre-commit hooks for code formatting
+├── setup.cfg               <- Configuration of linters and pytest
 ├── requirements.txt        <- File for installing python dependencies
 └── README.md
 ```
@@ -419,8 +419,8 @@ Using this config we can instantiate the object with the following line:
 model = hydra.utils.instantiate(config.model)
 ```
 
-This allows you to easily iterate over new models!<br>
-Every time you create a new one, just specify its module path and parameters in appropriate config file. <br>
+This allows you to easily iterate over new models! Every time you create a new one, just specify its module path and parameters in appropriate config file. <br>
+
 Switch between models and datamodules with command line arguments:
 
 ```bash
@@ -597,8 +597,7 @@ hydra:
 
 ### Logs
 
-**Hydra creates new working directory for every executed run.** <br>
-This means your working directory is different for every run, which might not be compatible with some libraries and workflows. By default, logs have the following structure:
+**Hydra creates new working directory for every executed run.** By default, logs have the following structure:
 
 ```
 ├── logs
@@ -638,13 +637,13 @@ This means your working directory is different for every run, which might not be
 │           └── ...
 ```
 
-You can change this structure by modifying paths in [hydra configuration](configs/mode).
+You can change this structure by modifying paths in [hydra configuration](configs/log_dir).
 
 <br>
 
 ### Experiment Tracking
 
-PyTorch Lightning supports the most popular logging frameworks:<br>
+PyTorch Lightning supports many popular logging frameworks:<br>
 **[Weights&Biases](https://www.wandb.com/) · [Neptune](https://neptune.ai/) · [Comet](https://www.comet.ml/) · [MLFlow](https://mlflow.org) · [Tensorboard](https://www.tensorflow.org/tensorboard/)**
 
 These tools help you keep track of hyperparameters and output metrics and allow you to compare and visualize results. To use one of them simply complete its configuration in [configs/logger](configs/logger) and run:
@@ -827,7 +826,8 @@ You can easily modify the commands in the scripts for your use case. If 1 epoch 
 
 ### Callbacks
 
-Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).<br>
+Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).
+
 To support reproducibility:
 
 - **WatchModel**
@@ -852,8 +852,7 @@ To see the result of all the callbacks attached, take a look at [this experiment
 
 ### Multi-GPU Training
 
-Lightning supports multiple ways of doing distributed training.<br>
-The most common one is DDP, which spawns separate process for each GPU and averages gradients between them. To learn about other approaches read [lightning docs](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
+Lightning supports multiple ways of doing distributed training. The most common one is DDP, which spawns separate process for each GPU and averages gradients between them. To learn about other approaches read the [lightning docs](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
 
 You can run DDP on mnist example with 4 GPUs like this:
 

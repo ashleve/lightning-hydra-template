@@ -32,7 +32,6 @@ defaults:
 
 # path to original working directory
 # hydra hijacks working directory by changing it to the new log directory
-# so it's useful to have this path as a special variable
 # https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 original_work_dir: ${hydra:runtime.cwd}
 
