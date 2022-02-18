@@ -14,8 +14,6 @@ defaults:
   - override hydra/hydra_logging: colorlog
   - override hydra/job_logging: colorlog
 
-ckpt_path: ???
-
 original_work_dir: ${hydra:runtime.cwd}
 
 data_dir: ${original_work_dir}/data/
@@ -27,3 +25,6 @@ ignore_warnings: True
 seed: null
 
 name: "default"
+
+# passing checkpoint path is obligatory
+ckpt_path: ???

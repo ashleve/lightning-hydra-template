@@ -309,10 +309,10 @@ python run.py +trainer.track_grad_norm=2
 <details>
 <summary><b>Resume training from checkpoint</b></summary>
 
-> Checkpoint can be either path or URL. Path should be absolute!
+> Checkpoint can be either path or URL.
 
 ```yaml
-python run.py +trainer.resume_from_checkpoint="/absolute/path/to/ckpt/name.ckpt"
+python run.py +trainer.resume_from_checkpoint="/path/to/ckpt/name.ckpt"
 ```
 
 > ⚠️ Currently loading ckpt in Lightning doesn't resume logger experiment, but it will be supported in future Lightning release.

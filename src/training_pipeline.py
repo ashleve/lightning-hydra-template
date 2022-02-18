@@ -1,4 +1,5 @@
 from typing import List, Optional
+import os
 
 import hydra
 from omegaconf import DictConfig
@@ -30,6 +31,13 @@ def train(config: DictConfig) -> Optional[float]:
     # Set seed for random number generators in pytorch, numpy and python.random
     if config.get("seed"):
         seed_everything(config.seed, workers=True)
+
+    # Convert relative ckpt path to absolute path if path is not absolute
+    ckpt_path = config.trainer.get("resume_from_checkpoint")
+    if ckpt_path and not os.path.isabs(ckpt_path):
+        config.trainer.resume_from_checkpoint = os.path.join(
+            hydra.utils.get_original_cwd(), ckpt_path
+        )
 
     # Init lightning datamodule
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
@@ -87,7 +95,7 @@ def train(config: DictConfig) -> Optional[float]:
     score = trainer.callback_metrics.get(optimized_metric)
 
     # Test the model
-    if config.get("test_after_training") and not config.trainer.get("fast_dev_run"):
+    if config.get("test") and not config.trainer.get("fast_dev_run"):
         log.info("Starting testing!")
         ckpt_path = None if not config.get("train") else "best"
         trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
@@ -104,7 +112,7 @@ def train(config: DictConfig) -> Optional[float]:
     )
 
     # Print path to best checkpoint
-    if not config.trainer.get("fast_dev_run"):
+    if not config.trainer.get("fast_dev_run") and config.trainer.get("train"):
         log.info(f"Best model ckpt at {trainer.checkpoint_callback.best_model_path}")
 
     # Return metric score for hyperparameter optimization

@@ -1,5 +1,4 @@
-from typing import Optional
-
+import os
 import hydra
 from omegaconf import DictConfig
 from pytorch_lightning import (
@@ -14,7 +13,7 @@ from src import utils
 log = utils.get_logger(__name__)
 
 
-def evaluate(config: DictConfig) -> Optional[float]:
+def evaluate(config: DictConfig) -> None:
     """Contains evaluation pipeline.
     Instantiates all PyTorch Lightning objects from config.
 
@@ -25,6 +24,10 @@ def evaluate(config: DictConfig) -> Optional[float]:
     # Set seed for random number generators in pytorch, numpy and python.random
     if config.get("seed"):
         seed_everything(config.seed, workers=True)
+
+    # Convert relative path to absolute path if path is not absolute
+    if not os.path.isabs(config.ckpt_path):
+        config.ckpt_path = os.path.join(hydra.utils.get_original_cwd(), config.ckpt_path)
 
     # Init lightning datamodule
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
