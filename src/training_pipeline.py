@@ -1,5 +1,5 @@
-from typing import List, Optional
 import os
+from typing import List, Optional
 
 import hydra
 from omegaconf import DictConfig

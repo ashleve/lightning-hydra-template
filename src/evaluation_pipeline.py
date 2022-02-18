@@ -1,12 +1,8 @@
 import os
+
 import hydra
 from omegaconf import DictConfig
-from pytorch_lightning import (
-    seed_everything,
-    LightningDataModule,
-    LightningModule,
-    Trainer,
-)
+from pytorch_lightning import LightningDataModule, LightningModule, Trainer, seed_everything
 
 from src import utils
 

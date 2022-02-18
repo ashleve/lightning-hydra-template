@@ -1,5 +1,6 @@
-from tests.helpers.run_command import run_command
 import pytest
+
+from tests.helpers.run_command import run_command
 
 
 @pytest.mark.slow

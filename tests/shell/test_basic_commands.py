@@ -1,6 +1,7 @@
+import pytest
+
 from tests.helpers.run_command import run_command
 from tests.helpers.runif import RunIf
-import pytest
 
 """
 A couple of sanity checks to make sure the model doesn't crash with different running options.
