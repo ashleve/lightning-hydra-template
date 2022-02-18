@@ -34,7 +34,11 @@ log = get_logger(__name__)
 
 
 def extras(config: DictConfig) -> None:
-    """Optional utilities, controlled by hydra config.
+    """Applies optional utilities, controlled by config flags.
+
+    Utilties:
+    - Ignoring python warnings
+    - Rich config printing
 
     Args:
         config (DictConfig): Configuration composed by Hydra.
@@ -44,6 +48,11 @@ def extras(config: DictConfig) -> None:
     if config.get("ignore_warnings"):
         log.info("Disabling python warnings! <config.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
+
+    # Pretty print config using Rich library
+    if config.get("print_config"):
+        log.info("Printing config tree with Rich! <config.print_config=True>")
+        print_config(config, resolve=True)
 
 
 @rank_zero_only
@@ -91,8 +100,8 @@ def print_config(
 
     rich.print(tree)
 
-    with open("config_tree.log", "w") as fp:
-        rich.print(tree, file=fp)
+    with open("config_tree.log", "w") as f:
+        rich.print(tree, file=f)
 
 
 @rank_zero_only
