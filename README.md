@@ -75,7 +75,8 @@ The directory structure of new project looks like this:
 │   ├── model                   <- Model configs
 │   ├── trainer                 <- Trainer configs
 │   │
-│   └── config.yaml             <- Main project configuration file
+│   ├── train.yaml             <- Main config for training
+│   └── evaluate.yaml          <- Main config for evaluation
 │
 ├── data                    <- Project data
 │
@@ -97,9 +98,11 @@ The directory structure of new project looks like this:
 │   ├── utils                   <- Utility scripts
 │   ├── vendor                  <- Third party code that cannot be installed using PIP/Conda
 │   │
-│   └── train.py                <- Training pipeline
+│   ├── training_pipeline.py                <- Training pipeline
+│   └── evaluation_pipeline.py              <- Evaluation pipeline
 │
-├── run.py                  <- Run pipeline with chosen experiment configuration
+├── train.py                  <- Run training pipeline
+├── evaluate.py               <- Run evaluation pipeline
 │
 ├── .env.example            <- Template of the file for storing private environment variables
 ├── .gitignore              <- List of files/folders ignored by git
@@ -130,7 +133,7 @@ pip install -r requirements.txt
 ```
 
 Template contains example with MNIST classification.<br>
-When running `python run.py` you should see something like this:
+When running `python train.py` you should see something like this:
 
 <div align="center">
 
@@ -146,13 +149,13 @@ When running `python run.py` you should see something like this:
 > Hydra allows you to easily overwrite any parameter defined in your config.
 
 ```bash
-python run.py trainer.max_epochs=20 model.lr=1e-4
+python train.py trainer.max_epochs=20 model.lr=1e-4
 ```
 
 > You can also add new parameters with `+` sign.
 
 ```bash
-python run.py +model.new_param="uwu"
+python train.py +model.new_param="uwu"
 ```
 
 </details>
@@ -164,19 +167,19 @@ python run.py +model.new_param="uwu"
 
 ```bash
 # train on CPU
-python run.py trainer.gpus=0
+python train.py trainer.gpus=0
 
 # train on 1 GPU
-python run.py trainer.gpus=1
+python train.py trainer.gpus=1
 
 # train on TPU
-python run.py +trainer.tpu_cores=8
+python train.py +trainer.tpu_cores=8
 
 # train with DDP (Distributed Data Parallel) (4 GPUs)
-python run.py trainer.gpus=4 +trainer.strategy=ddp
+python train.py trainer.gpus=4 +trainer.strategy=ddp
 
 # train with DDP (Distributed Data Parallel) (8 GPUs, 2 nodes)
-python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.strategy=ddp
+python train.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.strategy=ddp
 ```
 
 </details>
@@ -186,7 +189,7 @@ python run.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.strategy=ddp
 
 ```bash
 # train with pytorch native automatic mixed precision (AMP)
-python run.py trainer.gpus=1 +trainer.precision=16
+python train.py trainer.gpus=1 +trainer.precision=16
 ```
 
 </details>
@@ -196,7 +199,7 @@ python run.py trainer.gpus=1 +trainer.precision=16
 <summary><b>Optimize large scale models on multiple GPUs with Deepspeed</b></summary>
 
 ```bash
-python run.py +trainer.
+python train.py +trainer.
 ```
 
 </details>
@@ -216,7 +219,7 @@ wandb:
 
 ```bash
 # train model with Weights&Biases (link to wandb dashboard should appear in the terminal)
-python run.py logger=wandb
+python train.py logger=wandb
 ```
 
 </details>
@@ -227,7 +230,7 @@ python run.py logger=wandb
 > Experiment configurations are placed in [configs/experiment/](configs/experiment/).
 
 ```bash
-python run.py experiment=example
+python train.py experiment=example
 ```
 
 </details>
@@ -239,7 +242,7 @@ python run.py experiment=example
 > Callbacks configurations are placed in [configs/callbacks/](configs/callbacks/).
 
 ```bash
-python run.py callbacks=default
+python train.py callbacks=default
 ```
 
 </details>
@@ -251,19 +254,19 @@ python run.py callbacks=default
 
 ```yaml
 # gradient clipping may be enabled to avoid exploding gradients
-python run.py +trainer.gradient_clip_val=0.5
+python train.py +trainer.gradient_clip_val=0.5
 
 # stochastic weight averaging can make your models generalize better
-python run.py +trainer.stochastic_weight_avg=true
+python train.py +trainer.stochastic_weight_avg=true
 
 # run validation loop 4 times during a training epoch
-python run.py +trainer.val_check_interval=0.25
+python train.py +trainer.val_check_interval=0.25
 
 # accumulate gradients
-python run.py +trainer.accumulate_grad_batches=10
+python train.py +trainer.accumulate_grad_batches=10
 
 # terminate training after 12 hours
-python run.py +trainer.max_time="00:12:00:00"
+python train.py +trainer.max_time="00:12:00:00"
 ```
 
 </details>
@@ -279,29 +282,29 @@ python run.py +trainer.max_time="00:12:00:00"
 # sets level of all command line loggers to 'DEBUG'
 # enables extra trainer flags like tracking gradient norm
 # enforces debug-friendly configuration
-python run.py debug=default
+python train.py debug=default
 
 # runs test epoch without training
-python run.py debug=test_only
+python train.py debug=test_only
 
 # run 1 train, val and test loop, using only 1 batch
-python run.py +trainer.fast_dev_run=true
+python train.py +trainer.fast_dev_run=true
 
 # raise exception if there are any numerical anomalies in tensors, like NaN or +/-inf
-python run.py +trainer.detect_anomaly=true
+python train.py +trainer.detect_anomaly=true
 
 # print execution time profiling after training ends
-python run.py +trainer.profiler="simple"
+python train.py +trainer.profiler="simple"
 
 # try overfitting to 1 batch
-python run.py +trainer.overfit_batches=1 trainer.max_epochs=20
+python train.py +trainer.overfit_batches=1 trainer.max_epochs=20
 
 # use only 20% of the data
-python run.py +trainer.limit_train_batches=0.2 \
+python train.py +trainer.limit_train_batches=0.2 \
 +trainer.limit_val_batches=0.2 +trainer.limit_test_batches=0.2
 
 # log second gradient norm of the model
-python run.py +trainer.track_grad_norm=2
+python train.py +trainer.track_grad_norm=2
 ```
 
 </details>
@@ -312,7 +315,7 @@ python run.py +trainer.track_grad_norm=2
 > Checkpoint can be either path or URL.
 
 ```yaml
-python run.py +trainer.resume_from_checkpoint="/path/to/ckpt/name.ckpt"
+python train.py +trainer.resume_from_checkpoint="/path/to/ckpt/name.ckpt"
 ```
 
 > ⚠️ Currently loading ckpt in Lightning doesn't resume logger experiment, but it will be supported in future Lightning release.
@@ -325,7 +328,7 @@ python run.py +trainer.resume_from_checkpoint="/path/to/ckpt/name.ckpt"
 ```bash
 # this will run 6 experiments one after the other,
 # each with different combination of batch_size and learning rate
-python run.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
+python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
 
 > ⚠️ This sweep is not failure resistant (if one job crashes than the whole sweep crashes).
@@ -340,7 +343,7 @@ python run.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```bash
 # this will run hyperparameter search defined in `configs/hparams_search/mnist_optuna.yaml`
 # over chosen experiment config
-python run.py -m hparams_search=mnist_optuna experiment=example_simple
+python train.py -m hparams_search=mnist_optuna experiment=example_simple
 ```
 
 > ⚠️ Currently this sweep is not failure resistant (if one job crashes than the whole sweep crashes). Might be supported in future Hydra release.
@@ -353,7 +356,7 @@ python run.py -m hparams_search=mnist_optuna experiment=example_simple
 > Hydra provides special syntax for controlling behavior of multiruns. Learn more [here](https://hydra.cc/docs/next/tutorials/basic/running_your_app/multi-run). The command below executes all experiments from folder [configs/experiment/](configs/experiment/).
 
 ```bash
-python run.py -m 'experiment=glob(*)'
+python train.py -m 'experiment=glob(*)'
 ```
 
 </details>
@@ -398,7 +401,7 @@ Have a question? Found a bug? Missing a specific feature? Have an idea for impro
 
 ### How It Works
 
-Every run is initialized by [run.py](run.py) file. All PyTorch Lightning modules are dynamically instantiated from module paths specified in config. Example model config:
+All PyTorch Lightning modules are dynamically instantiated from module paths specified in config. Example model config:
 
 ```yaml
 _target_: src.models.mnist_model.MNISTLitModule
@@ -417,22 +420,22 @@ model = hydra.utils.instantiate(config.model)
 ```
 
 This allows you to easily iterate over new models!<br>
-Every time you create a new one, just specify its module path and parameters in appriopriate config file. <br>
+Every time you create a new one, just specify its module path and parameters in appropriate config file. <br>
 Switch between models and datamodules with command line arguments:
 
 ```bash
-python run.py model=mnist
+python train.py model=mnist
 ```
 
-The whole pipeline managing the instantiation logic is placed in [src/train.py](src/train.py).
+The whole pipeline managing the instantiation logic is placed in [src/training_pipeline.py](src/training_pipeline.py).
 
 <br>
 
 ### Main Project Configuration
 
-Location: [configs/config.yaml](configs/config.yaml)<br>
+Location: [configs/train.yaml](configs/train.yaml) <br>
 Main project config contains default training configuration.<br>
-It determines how config is composed when simply executing command `python run.py`.<br>
+It determines how config is composed when simply executing command `python train.py`.<br>
 
 <details>
 <summary><b>Show main project config</b></summary>
@@ -443,7 +446,7 @@ defaults:
   - datamodule: mnist.yaml
   - model: mnist.yaml
   - callbacks: default.yaml
-  - logger: null # set logger here or use command line (e.g. `python run.py logger=tensorboard`)
+  - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml
 
   # logging folder path
@@ -453,7 +456,7 @@ defaults:
   # e.g. best hyperparameters for each combination of model and datamodule
   - experiment: null
 
-  # debugging config (enable through command line, e.g. `python run.py debug=one_epoch)
+  # debugging config (enable through command line, e.g. `python train.py debug=one_epoch)
   - debug: null
 
   # config for hyperparameter optimization
@@ -487,7 +490,7 @@ train: True
 
 # evaluate on test set, using best model weights achieved during training
 # lightning chooses best weights based on the metric specified in checkpoint callback
-test_after_training: True
+test: True
 
 # seed for random number generators in pytorch, numpy and python.random
 seed: null
@@ -512,7 +515,7 @@ For example, you can use them to version control best hyperparameters for each c
 
 ```yaml
 # to execute this experiment run:
-# python run.py experiment=example
+# python train.py experiment=example
 
 defaults:
   - override /datamodule: mnist.yaml
@@ -588,7 +591,7 @@ hydra:
 1. Write your PyTorch Lightning module (see [models/mnist_module.py](src/models/mnist_module.py) for example)
 2. Write your PyTorch Lightning datamodule (see [datamodules/mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
 3. Write your experiment config, containing paths to your model and datamodule
-4. Run training with chosen experiment config: `python run.py experiment=experiment_name`
+4. Run training with chosen experiment config: `python train.py experiment=experiment_name`
 
 <br>
 
@@ -647,7 +650,7 @@ PyTorch Lightning supports the most popular logging frameworks:<br>
 These tools help you keep track of hyperparameters and output metrics and allow you to compare and visualize results. To use one of them simply complete its configuration in [configs/logger](configs/logger) and run:
 
 ```bash
-python run.py logger=logger_name
+python train.py logger=logger_name
 ```
 
 You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).
@@ -724,7 +727,7 @@ hydra:
 
 </details>
 
-Next, you can execute it with: `python run.py -m hparams_search=mnist_optuna`
+Next, you can execute it with: `python train.py -m hparams_search=mnist_optuna`
 
 Using this approach doesn't require you to add any boilerplate into your pipeline, everything is defined in a single config file.
 
@@ -840,7 +843,7 @@ To provide examples of logging custom visualisations with callbacks only:
 To try all of the callbacks at once, use:
 
 ```bash
-python run.py logger=wandb callbacks=wandb
+python train.py logger=wandb callbacks=wandb
 ```
 
 To see the result of all the callbacks attached, take a look at [this experiment dashboard](https://wandb.ai/hobglob/template-tests/runs/3rw7q70h).
@@ -855,7 +858,7 @@ The most common one is DDP, which spawns separate process for each GPU and avera
 You can run DDP on mnist example with 4 GPUs like this:
 
 ```bash
-python run.py trainer.gpus=4 +trainer.strategy=ddp
+python train.py trainer.gpus=4 +trainer.strategy=ddp
 ```
 
 ⚠️ When using DDP you have to be careful how you write your models - learn more [here](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
@@ -898,7 +901,7 @@ What provides reproducibility:
 You can load the config of previous run using:
 
 ```bash
-python run.py --config-path /logs/runs/.../.hydra/ --config-name config.yaml
+python train.py --config-path /logs/runs/.../.hydra/ --config-name config.yaml
 ```
 
 The `config.yaml` from `.hydra` folder contains all overriden parameters and sections. This approach however is not officially supported by Hydra and doesn't override the `hydra/` part of the config, meaning logging paths will revert to default!
@@ -922,7 +925,7 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 1. The simplest way is to pass datamodule attribute directly to model on initialization:
 
    ```python
-   # ./src/train.py
+   # ./src/training_pipeline.py
    datamodule = hydra.utils.instantiate(config.datamodule)
    model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
    ```
@@ -932,7 +935,7 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 2. If you only want to access datamodule config, you can simply pass it as an init parameter:
 
    ```python
-   # ./src/train.py
+   # ./src/training_pipeline.py
    model = hydra.utils.instantiate(config.model, dm_conf=config.datamodule, _recursive_=False)
    ```
 
@@ -974,10 +977,10 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
    param1: ${datamodule: param1}
    ```
 
-   When later accessing this field, say in your lightning model, it will get automatically resolved based on all resolvers that are registered. Remember not to access this field before datamodule is initialized or it will crash. **You also need to set `resolve=False` in `print_config()` in [run.py](run.py) or it will throw errors:**
+   When later accessing this field, say in your lightning model, it will get automatically resolved based on all resolvers that are registered. Remember not to access this field before datamodule is initialized or it will crash. **You also need to set `resolve=False` in `print_config()` in [train.py](train.py) or it will throw errors:**
 
    ```python
-   # ./src/run.py
+   # ./src/train.py
    utils.print_config(config, resolve=False)
    ```
 
@@ -994,13 +997,13 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
    conda activate myenv
 
    # activate hydra tab completion for bash
-   eval "$(python run.py -sc install=bash)"
+   eval "$(python train.py -sc install=bash)"
 
    # enable aliases for debugging
-   alias debug='python run.py mode=debug'
-   alias debug2='python run.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=0'
-   alias debug3='python run.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=1'
-   alias debug_wandb='python run.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=1 logger=wandb logger.wandb.project=tests'
+   alias debug='python train.py mode=debug'
+   alias debug2='python train.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=0'
+   alias debug3='python train.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=1'
+   alias debug_wandb='python train.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=1 logger=wandb logger.wandb.project=tests'
    ```
 
    (these commands will be executed whenever you're openning or switching terminal to folder containing `.autoenv` file)
@@ -1102,7 +1105,7 @@ You should use it for storing environment variables like this:
 MY_VAR=/home/user/my_system_path
 ```
 
-All variables from `.env` are loaded in `run.py` automatically.
+All variables from `.env` are loaded in `train.py` automatically.
 
 Hydra allows you to reference any env variable in `.yaml` configs like this:
 
@@ -1414,20 +1417,20 @@ Train model with default configuration
 
 ```bash
 # train on CPU
-python run.py trainer.gpus=0
+python train.py trainer.gpus=0
 
 # train on GPU
-python run.py trainer.gpus=1
+python train.py trainer.gpus=1
 ```
 
 Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)
 
 ```bash
-python run.py experiment=experiment_name.yaml
+python train.py experiment=experiment_name.yaml
 ```
 
 You can override any parameter from command line like this
 
 ```bash
-python run.py trainer.max_epochs=20 datamodule.batch_size=64
+python train.py trainer.max_epochs=20 datamodule.batch_size=64
 ```

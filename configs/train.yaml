@@ -6,7 +6,7 @@ defaults:
   - datamodule: mnist.yaml
   - model: mnist.yaml
   - callbacks: default.yaml
-  - logger: null # set logger here or use command line (e.g. `python run.py logger=tensorboard`)
+  - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml
 
   # logging folder path
@@ -16,7 +16,7 @@ defaults:
   # e.g. best hyperparameters for each combination of model and datamodule
   - experiment: null
 
-  # debugging config (enable through command line, e.g. `python run.py debug=default)
+  # debugging config (enable through command line, e.g. `python train.py debug=default)
   - debug: null
 
   # config for hyperparameter optimization
