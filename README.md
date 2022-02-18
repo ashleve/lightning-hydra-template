@@ -66,11 +66,12 @@ The directory structure of new project looks like this:
 ├── configs                 <- Hydra configuration files
 │   ├── callbacks               <- Callbacks configs
 │   ├── datamodule              <- Datamodule configs
+│   ├── debug                   <- Debugging configs
 │   ├── experiment              <- Experiment configs
 │   ├── hparams_search          <- Hyperparameter search configs
 │   ├── local                   <- Local configs
+│   ├── log_dir                 <- Logging directory configs
 │   ├── logger                  <- Logger configs
-│   ├── mode                    <- Running mode configs
 │   ├── model                   <- Model configs
 │   ├── trainer                 <- Trainer configs
 │   │
@@ -221,28 +222,12 @@ python run.py logger=wandb
 </details>
 
 <details>
-<summary><b>Use different running modes</b></summary>
-
-```bash
-# debug mode changes logging folder to `logs/debug/`
-# also enables default trainer debugging options from `configs/trainer/debug.yaml`
-# also sets level of all command line loggers to 'DEBUG'
-python run.py mode=debug
-
-# experiment mode changes logging folder to `logs/experiments/name_of_your_experiment/`
-# name is also used by loggers
-python run.py mode=exp name='my_new_experiment_253'
-```
-
-</details>
-
-<details>
 <summary><b>Train model with chosen experiment config</b></summary>
 
 > Experiment configurations are placed in [configs/experiment/](configs/experiment/).
 
 ```bash
-python run.py experiment=example_simple
+python run.py experiment=example
 ```
 
 </details>
@@ -286,15 +271,18 @@ python run.py +trainer.max_time="00:12:00:00"
 <details>
 <summary><b>Easily debug</b></summary>
 
-```bash
-# run in debug mode
-# changes logging folder to `logs/debug/...`
-# enables trainer debugging options specified in `configs/trainer/debug.yaml`
-# sets level of all command line loggers to 'DEBUG'
-python run.py mode=debug
+> Visit [configs/debug/](configs/debug/) for different debugging configs.
 
-# enable trainer debugging options specified in `configs/trainer/debug.yaml`
-python run.py trainer=debug
+```bash
+# runs 1 epoch in default debugging mode
+# changes logging directory to `logs/debugs/...`
+# sets level of all command line loggers to 'DEBUG'
+# enables extra trainer flags like tracking gradient norm
+# enforces debug-friendly configuration
+python run.py debug=default
+
+# runs test epoch without training
+python run.py debug=test_only
 
 # run 1 train, val and test loop, using only 1 batch
 python run.py +trainer.fast_dev_run=true
@@ -452,32 +440,41 @@ It determines how config is composed when simply executing command `python run.p
 ```yaml
 # specify here default training configuration
 defaults:
-  - trainer: default.yaml
-  - model: mnist.yaml
   - datamodule: mnist.yaml
+  - model: mnist.yaml
   - callbacks: default.yaml
-  - logger: null # set logger here or use command line (e.g. `python run.py logger=wandb`)
+  - logger: null # set logger here or use command line (e.g. `python run.py logger=tensorboard`)
+  - trainer: default.yaml
 
-  # modes are special collections of config options for different purposes, e.g. debugging
-  - mode: default.yaml
+  # logging folder path
+  - log_dir: default.yaml
 
   # experiment configs allow for version control of specific configurations
+  # e.g. best hyperparameters for each combination of model and datamodule
   - experiment: null
+
+  # debugging config (enable through command line, e.g. `python run.py debug=one_epoch)
+  - debug: null
 
   # config for hyperparameter optimization
   - hparams_search: null
 
   # optional local config for machine/user specific settings
+  # it's optional since it doesn't need to exist and is excluded from version control
   - optional local: default.yaml
+
+  # enable color logging
+  - override hydra/hydra_logging: colorlog
+  - override hydra/job_logging: colorlog
 
 # path to original working directory
 # hydra hijacks working directory by changing it to the new log directory
 # so it's useful to have this path as a special variable
 # https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
-work_dir: ${hydra:runtime.cwd}
+original_work_dir: ${hydra:runtime.cwd}
 
 # path to folder with data
-data_dir: ${work_dir}/data/
+data_dir: ${original_work_dir}/data/
 
 # pretty print config at the start of the run using Rich library
 print_config: True
@@ -485,12 +482,19 @@ print_config: True
 # disable python warnings if they annoy you
 ignore_warnings: True
 
+# set False to skip model training
+train: True
+
 # evaluate on test set, using best model weights achieved during training
-# lightning chooses best weights based on metric specified in checkpoint callback
+# lightning chooses best weights based on the metric specified in checkpoint callback
 test_after_training: True
 
 # seed for random number generators in pytorch, numpy and python.random
 seed: null
+
+# default name for the experiment, determines logging folder path
+# (you can overwrite this name in experiment configs)
+name: "default"
 ```
 
 </details>
@@ -511,23 +515,22 @@ For example, you can use them to version control best hyperparameters for each c
 # python run.py experiment=example
 
 defaults:
-  - override /mode: exp.yaml
-  - override /trainer: default.yaml
-  - override /model: mnist.yaml
   - override /datamodule: mnist.yaml
+  - override /model: mnist.yaml
   - override /callbacks: default.yaml
   - override /logger: null
+  - override /trainer: default.yaml
 
 # all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
 
 # name of the run determines folder name in logs
-# can also be accessed by loggers
-name: "example"
+name: "simple_dense_net"
 
 seed: 12345
 
 trainer:
-  min_epochs: 1
+  min_epochs: 10
   max_epochs: 10
   gradient_clip_val: 0.5
 
@@ -539,13 +542,10 @@ model:
 
 datamodule:
   batch_size: 64
-  train_val_test_split: [55_000, 5_000, 10_000]
 
 logger:
-  csv:
-    name: csv/${name}
   wandb:
-    tags: ["mnist", "simple_dense_net"]
+    tags: ["mnist", "${name}"]
 ```
 
 </details>
@@ -597,61 +597,43 @@ hydra:
 **Hydra creates new working directory for every executed run.** <br>
 This means your working directory is different for every run, which might not be compatible with some libraries and workflows. By default, logs have the following structure:
 
-<details>
-<summary><b>Show logs structure</b></summary>
-
 ```
 ├── logs
-│   ├── experiments           # Folder for logs generated by experiments
-│   │   ├── experiment_name     # Name of the experiment
-│   │   │   ├── runs
-│   │   │   │   ├── YYYY-MM-DD        	# Date of execution
-│   │   │   │   │   ├── HH-MM-SS          # Time of execution
-│   │   │   │   │   │   ├── .hydra          # Hydra logs
-│   │   │   │   │   │   ├── wandb           # Weights&Biases logs
-│   │   │   │   │   │   ├── checkpoints     # Training checkpoints
-│   │   │   │   │   │   └── ...             # Any other thing saved during training
-│   │   │   │   │   └── ...
-│   │   │   │   └── ...
-│   │   │   │
-│   │   │   └── multiruns
-│   │   │       ├── YYYY-MM-DD
-│   │   │       │   ├── HH-MM-SS
-│   │   │       │   │   ├── 1               # Multirun job number
-│   │   │       │   │   │   └── ...
-│   │   │       │   │   ├── 2
-│   │   │       │   │   └── ...
-│   │   │       │   └── ...
-│   │   │       └── ...
-│   │   └── ...
-│   │
-│   ├── debugs                  # Folder for logs generated during debugging
-│   │ 	├── runs
-│   │   │   ├── YYYY-MM-DD
-│   │   │   │   ├── HH-MM-SS
+│   ├── experiments                     # Folder for the logs generated by experiments
+│   │   ├── runs                          # Folder for single runs
+│   │   │   ├── experiment_name             # Experiment name
+│   │   │   │   ├── YYYY-MM-DD_HH-MM-SS       # Datetime of the run
+│   │   │   │   │   ├── .hydra                  # Hydra logs
+│   │   │   │   │   ├── wandb                   # Weights&Biases logs
+│   │   │   │   │   ├── checkpoints             # Training checkpoints
+│   │   │   │   │   └── ...                     # Any other thing saved during training
 │   │   │   │   └── ...
 │   │   │   └── ...
-│   │   └── multiruns
-│   │       ├── YYYY-MM-DD
-│   │       │   ├── HH-MM-SS
+│   │   │
+│   │   └── multiruns                     # Folder for multiruns
+│   │       ├── experiment_name             # Experiment name
+│   │       │   ├── YYYY-MM-DD_HH-MM-SS       # Datetime of the multirun
+│   │       │   │   ├──1                        # Multirun job number
+│   │       │   │   ├──2
+│   │       │   │   └── ...
 │   │       │   └── ...
-│   │       └─ ...
+│   │       └── ...
 │   │
-│   ├── runs                    # Folder for logs generated by normal runs
-│   │   ├── YYYY-MM-DD
-│   │   │   ├── HH-MM-SS
-│   │   │   └── ...
-│   │   └── ...
-│   │
-│   └── multiruns               # Folder for logs generated by normal multiruns (sweeps)
-│       ├── YYYY-MM-DD
-│       |   ├── HH-MM-SS
-│       |   └── ...
-│       └── ...
-│
+│   └── debugs                          # Folder for the logs generated during debugging
+|       ├── runs
+|       │   ├── experiment_name
+│       │   │   ├── YYYY-MM-DD_HH-MM-SS
+│       │   │   │   └── ...
+│       │   │   └── ...
+│       │   └── ...
+│       │
+│       └── multiruns
+│           ├── experiment_name
+│           │   ├── YYYY-MM-DD_HH-MM-SS
+│           │   │   └── ...
+│           │   └── ...
+│           └── ...
 ```
-
-</details>
 
 You can change this structure by modifying paths in [hydra configuration](configs/mode).
 
