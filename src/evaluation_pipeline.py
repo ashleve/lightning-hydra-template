@@ -21,7 +21,7 @@ def evaluate(config: DictConfig) -> None:
     if config.get("seed"):
         seed_everything(config.seed, workers=True)
 
-    # Convert relative path to absolute path if path is not absolute
+    # Convert relative ckpt path to absolute path if necessary
     if not os.path.isabs(config.ckpt_path):
         config.ckpt_path = os.path.join(hydra.utils.get_original_cwd(), config.ckpt_path)
 

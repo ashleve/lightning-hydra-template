@@ -32,7 +32,7 @@ def train(config: DictConfig) -> Optional[float]:
     if config.get("seed"):
         seed_everything(config.seed, workers=True)
 
-    # Convert relative ckpt path to absolute path if path is not absolute
+    # Convert relative ckpt path to absolute path if necessary
     ckpt_path = config.trainer.get("resume_from_checkpoint")
     if ckpt_path and not os.path.isabs(ckpt_path):
         config.trainer.resume_from_checkpoint = os.path.join(
