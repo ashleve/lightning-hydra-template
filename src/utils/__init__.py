@@ -36,12 +36,9 @@ log = get_logger(__name__)
 def extras(config: DictConfig) -> None:
     """Applies optional utilities, controlled by config flags.
 
-    Utilties:
+    Utilities:
     - Ignoring python warnings
     - Rich config printing
-
-    Args:
-        config (DictConfig): Configuration composed by Hydra.
     """
 
     # disable python warnings if <config.ignore_warnings=True>
@@ -113,10 +110,10 @@ def log_hyperparameters(
     callbacks: List[pl.Callback],
     logger: List[pl.loggers.LightningLoggerBase],
 ) -> None:
-    """Controls which hyperparameters are saved by Lightning loggers.
+    """Controls which config parts are saved by Lightning loggers.
 
     Additionaly saves:
-        - number of model parameters
+    - number of model parameters
     """
 
     hparams = {}
