@@ -49,7 +49,7 @@ def extras(config: DictConfig) -> None:
         log.info("Disabling python warnings! <config.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
 
-    # Pretty print config using Rich library
+    # pretty print config tree using Rich library
     if config.get("print_config"):
         log.info("Printing config tree with Rich! <config.print_config=True>")
         print_config(config, resolve=True)
@@ -100,8 +100,8 @@ def print_config(
 
     rich.print(tree)
 
-    with open("config_tree.log", "w") as f:
-        rich.print(tree, file=f)
+    with open("config_tree.log", "w") as file:
+        rich.print(tree, file=file)
 
 
 @rank_zero_only

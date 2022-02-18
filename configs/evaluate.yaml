@@ -1,6 +1,6 @@
 # @package _global_
 
-# specify here default training configuration
+# specify here default evaluation configuration
 defaults:
   - _self_
   - datamodule: mnist.yaml
@@ -14,7 +14,7 @@ defaults:
   - override hydra/hydra_logging: colorlog
   - override hydra/job_logging: colorlog
 
-ckpt_path: "?"
+ckpt_path: ???
 
 original_work_dir: ${hydra:runtime.cwd}
 

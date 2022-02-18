@@ -1,30 +1,25 @@
-from typing import List, Optional
+from typing import Optional
 
 import hydra
 from omegaconf import DictConfig
 from pytorch_lightning import (
-    Callback,
+    seed_everything,
     LightningDataModule,
     LightningModule,
     Trainer,
-    seed_everything,
 )
-from pytorch_lightning.loggers import LightningLoggerBase
 
 from src import utils
 
 log = utils.get_logger(__name__)
 
 
-def train(config: DictConfig) -> Optional[float]:
-    """Contains training pipeline.
+def evaluate(config: DictConfig) -> Optional[float]:
+    """Contains evaluation pipeline.
     Instantiates all PyTorch Lightning objects from config.
 
     Args:
         config (DictConfig): Configuration composed by Hydra.
-
-    Returns:
-        Optional[float]: Metric score for hyperparameter optimization.
     """
 
     # Set seed for random number generators in pytorch, numpy and python.random
