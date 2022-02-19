@@ -6,17 +6,15 @@ defaults:
   - datamodule: mnist.yaml
   - model: mnist.yaml
   - callbacks: default.yaml
-  - logger: null # set logger here or use command line (e.g. `python run.py logger=tensorboard`)
+  - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml
-
-  # logging folder path
   - log_dir: default.yaml
 
   # experiment configs allow for version control of specific configurations
   # e.g. best hyperparameters for each combination of model and datamodule
   - experiment: null
 
-  # debugging config (enable through command line, e.g. `python run.py debug=one_epoch)
+  # debugging config (enable through command line, e.g. `python train.py debug=default)
   - debug: null
 
   # config for hyperparameter optimization
@@ -32,7 +30,6 @@ defaults:
 
 # path to original working directory
 # hydra hijacks working directory by changing it to the new log directory
-# so it's useful to have this path as a special variable
 # https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 original_work_dir: ${hydra:runtime.cwd}
 
@@ -50,7 +47,7 @@ train: True
 
 # evaluate on test set, using best model weights achieved during training
 # lightning chooses best weights based on the metric specified in checkpoint callback
-test_after_training: True
+test: True
 
 # seed for random number generators in pytorch, numpy and python.random
 seed: null

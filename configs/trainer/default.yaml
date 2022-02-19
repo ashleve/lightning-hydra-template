@@ -8,4 +8,5 @@ max_epochs: 10
 # number of validation steps to execute at the beginning of the training
 # num_sanity_val_steps: 0
 
+# ckpt path
 resume_from_checkpoint: null

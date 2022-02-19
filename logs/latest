@@ -2,7 +2,7 @@
 
 # This script allows to quickly change into the latest log dir of a specific kind.
 # Should be executed from project root folder.
-# 
+#
 # Go to latest log dir from 'runs' folder:
 # cd $(logs/latest logs/runs)
 #

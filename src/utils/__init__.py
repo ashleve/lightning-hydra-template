@@ -34,16 +34,22 @@ log = get_logger(__name__)
 
 
 def extras(config: DictConfig) -> None:
-    """Optional utilities, controlled by hydra config.
+    """Applies optional utilities, controlled by config flags.
 
-    Args:
-        config (DictConfig): Configuration composed by Hydra.
+    Utilities:
+    - Ignoring python warnings
+    - Rich config printing
     """
 
     # disable python warnings if <config.ignore_warnings=True>
     if config.get("ignore_warnings"):
         log.info("Disabling python warnings! <config.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
+
+    # pretty print config tree using Rich library if <config.print_config=True>
+    if config.get("print_config"):
+        log.info("Printing config tree with Rich! <config.print_config=True>")
+        print_config(config, resolve=True)
 
 
 @rank_zero_only
@@ -91,8 +97,8 @@ def print_config(
 
     rich.print(tree)
 
-    with open("config_tree.log", "w") as fp:
-        rich.print(tree, file=fp)
+    with open("config_tree.log", "w") as file:
+        rich.print(tree, file=file)
 
 
 @rank_zero_only
@@ -104,10 +110,10 @@ def log_hyperparameters(
     callbacks: List[pl.Callback],
     logger: List[pl.loggers.LightningLoggerBase],
 ) -> None:
-    """Controls which hyperparameters are saved by Lightning loggers.
+    """Controls which config parts are saved by Lightning loggers.
 
     Additionaly saves:
-        - number of model parameters
+    - number of model parameters
     """
 
     hparams = {}

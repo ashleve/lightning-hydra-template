@@ -1,3 +1,4 @@
+import os
 from typing import List, Optional
 
 import hydra
@@ -17,8 +18,8 @@ log = utils.get_logger(__name__)
 
 
 def train(config: DictConfig) -> Optional[float]:
-    """Contains training pipeline.
-    Instantiates all PyTorch Lightning objects from config.
+    """Contains the training pipeline.
+    Can additionally evaluate model on a testset, using best weights achieved during training.
 
     Args:
         config (DictConfig): Configuration composed by Hydra.
@@ -30,6 +31,13 @@ def train(config: DictConfig) -> Optional[float]:
     # Set seed for random number generators in pytorch, numpy and python.random
     if config.get("seed"):
         seed_everything(config.seed, workers=True)
+
+    # Convert relative ckpt path to absolute path if necessary
+    ckpt_path = config.trainer.get("resume_from_checkpoint")
+    if ckpt_path and not os.path.isabs(ckpt_path):
+        config.trainer.resume_from_checkpoint = os.path.join(
+            hydra.utils.get_original_cwd(), ckpt_path
+        )
 
     # Init lightning datamodule
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
@@ -87,9 +95,11 @@ def train(config: DictConfig) -> Optional[float]:
     score = trainer.callback_metrics.get(optimized_metric)
 
     # Test the model
-    if config.get("test_after_training") and not config.trainer.get("fast_dev_run"):
+    if config.get("test"):
+        ckpt_path = "best"
+        if not config.get("train") or config.trainer.get("fast_dev_run"):
+            ckpt_path = None
         log.info("Starting testing!")
-        ckpt_path = None if not config.get("train") else "best"
         trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
 
     # Make sure everything closed properly
@@ -104,7 +114,7 @@ def train(config: DictConfig) -> Optional[float]:
     )
 
     # Print path to best checkpoint
-    if not config.trainer.get("fast_dev_run"):
+    if not config.trainer.get("fast_dev_run") and config.trainer.get("train"):
         log.info(f"Best model ckpt at {trainer.checkpoint_callback.best_model_path}")
 
     # Return metric score for hyperparameter optimization

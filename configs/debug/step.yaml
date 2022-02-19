@@ -1,6 +1,6 @@
 # @package _global_
 
-# debugs by running 1 train, 1 validation and 1 test step
+# runs 1 train, 1 validation and 1 test step
 
 defaults:
   - default.yaml
