@@ -36,3 +36,9 @@ repos:
     rev: 3.9.2
     hooks:
       - id: flake8
+
+  # jupyter notebook cell output clearing
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.5.0
+    hooks:
+      - id: nbstripout
