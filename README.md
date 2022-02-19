@@ -391,6 +391,17 @@ python train.py -m 'experiment=glob(*)'
 
 </details>
 
+<details>
+<summary><b>Apply pre-commit hooks</b></summary>
+
+> Apply pre-commit hooks to automatically format your code and configs, perform code analysis and remove output from jupyter notebooks. See [# Best Practices](#best-practices) for more.
+
+```bash
+pre-commit run -a
+```
+
+</details>
+
 <br>
 
 ## ❤️&nbsp;&nbsp;Contributions
