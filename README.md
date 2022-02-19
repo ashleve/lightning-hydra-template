@@ -60,9 +60,6 @@ It makes your code neatly organized and provides lots of useful features, like a
 The directory structure of new project looks like this:
 
 ```
-├── bash                      <- Bash scripts
-│   └── schedule.sh              <- Schedule execution of many runs
-│
 ├── configs                   <- Hydra configuration files
 │   ├── callbacks                <- Callbacks configs
 │   ├── datamodule               <- Datamodule configs
@@ -86,10 +83,7 @@ The directory structure of new project looks like this:
 │                             the creator's initials, and a short `-` delimited description,
 │                             e.g. `1.0-jqp-initial-data-exploration.ipynb`.
 │
-├── tests                  <- Tests of any kind
-│   ├── helpers                  <- A couple of testing utilities
-│   ├── shell                    <- Shell/command based tests
-│   └── unit                     <- Unit tests
+├── scripts                <- Shell scripts
 │
 ├── src                    <- Source code
 │   ├── callbacks                <- Lightning callbacks
@@ -98,17 +92,22 @@ The directory structure of new project looks like this:
 │   ├── utils                    <- Utility scripts
 │   ├── vendor                   <- Third party code that cannot be installed using PIP/Conda
 │   │
-│   ├── testing_pipeline.py      <- Testing pipeline
-│   └── training_pipeline.py     <- Training pipeline
+│   ├── testing_pipeline.py
+│   └── training_pipeline.py
 │
-├── test.py               <- Run testing.
-├── train.py              <- Run training.
+├── tests                  <- Tests of any kind
+│   ├── helpers                  <- A couple of testing utilities
+│   ├── shell                    <- Shell/command based tests
+│   └── unit                     <- Unit tests
+│
+├── test.py               <- Run testing
+├── train.py              <- Run training
 │
 ├── .env.example              <- Template of the file for storing private environment variables
 ├── .gitignore                <- List of files/folders ignored by git
-├── .pre-commit-config.yaml   <- Configuration of pre-commit hooks for code formatting
-├── setup.cfg                 <- Configuration of linters and pytest
+├── .pre-commit-config.yaml   <- Configuration of pre-commit hooks
 ├── requirements.txt          <- File for installing python dependencies
+├── setup.cfg                 <- Configuration of linters and pytest
 └── README.md
 ```
 
