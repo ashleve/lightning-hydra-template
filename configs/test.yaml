@@ -5,6 +5,8 @@ defaults:
   - _self_
   - datamodule: mnist.yaml # choose the datamodule for evaluation
   - model: mnist.yaml
+  - callbacks: null
+  - logger: null
   - trainer: default.yaml
   - log_dir: evaluation.yaml
 

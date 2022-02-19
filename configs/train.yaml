@@ -8,8 +8,6 @@ defaults:
   - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml
-
-  # logging folder path
   - log_dir: default.yaml
 
   # experiment configs allow for version control of specific configurations

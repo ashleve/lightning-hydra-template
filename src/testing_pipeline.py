@@ -1,8 +1,10 @@
 import os
+from typing import List
 
 import hydra
 from omegaconf import DictConfig
 from pytorch_lightning import LightningDataModule, LightningModule, Trainer, seed_everything
+from pytorch_lightning.loggers import LightningLoggerBase
 
 from src import utils
 
@@ -36,9 +38,20 @@ def test(config: DictConfig) -> None:
     log.info(f"Instantiating model <{config.model._target_}>")
     model: LightningModule = hydra.utils.instantiate(config.model)
 
+    # Init lightning loggers
+    logger: List[LightningLoggerBase] = []
+    if "logger" in config:
+        for _, lg_conf in config.logger.items():
+            if "_target_" in lg_conf:
+                log.info(f"Instantiating logger <{lg_conf._target_}>")
+                logger.append(hydra.utils.instantiate(lg_conf))
+
     # Init lightning trainer
     log.info(f"Instantiating trainer <{config.trainer._target_}>")
-    trainer: Trainer = hydra.utils.instantiate(config.trainer)
+    trainer: Trainer = hydra.utils.instantiate(config.trainer, logger=logger)
+
+    # Log hyperparameters
+    trainer.logger.log_hyperparams({"ckpt_path": config.ckpt_path})
 
     log.info("Starting testing!")
     trainer.test(model=model, datamodule=datamodule, ckpt_path=config.ckpt_path)
