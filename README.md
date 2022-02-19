@@ -807,8 +807,7 @@ if __name__ == "__main__":
 
 ### Tests
 
-Template comes with example tests implemented with pytest library. <br>
-To execute them simply run:
+Template comes with example tests implemented with pytest library. To execute them simply run:
 
 ```bash
 # run all tests
