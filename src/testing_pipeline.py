@@ -9,12 +9,15 @@ from src import utils
 log = utils.get_logger(__name__)
 
 
-def evaluate(config: DictConfig) -> None:
-    """Contains evaluation pipeline.
-    Instantiates all PyTorch Lightning objects from config.
+def test(config: DictConfig) -> None:
+    """Contains minimal example of the testing pipeline.
+    Evaluates given checkpoint on a testset.
 
     Args:
         config (DictConfig): Configuration composed by Hydra.
+
+    Returns:
+        None
     """
 
     # Set seed for random number generators in pytorch, numpy and python.random

@@ -75,8 +75,8 @@ The directory structure of new project looks like this:
 │   ├── model                    <- Model configs
 │   ├── trainer                  <- Trainer configs
 │   │
-│   ├── train.yaml            <- Main config for training
-│   └── evaluate.yaml         <- Main config for evaluation
+│   ├── test.yaml             <- Main config for testing
+│   └── train.yaml            <- Main config for training
 │
 ├── data                   <- Project data
 │
@@ -98,11 +98,11 @@ The directory structure of new project looks like this:
 │   ├── utils                    <- Utility scripts
 │   ├── vendor                   <- Third party code that cannot be installed using PIP/Conda
 │   │
-│   ├── training_pipeline.py        <- Training pipeline
-│   └── evaluation_pipeline.py      <- Evaluation pipeline
+│   ├── testing_pipeline.py      <- Testing pipeline
+│   └── training_pipeline.py     <- Training pipeline
 │
-├── train.py               <- Run training pipeline
-├── evaluate.py            <- Run evaluation pipeline
+├── test.py               <- Run testing.
+├── train.py              <- Run training.
 │
 ├── .env.example              <- Template of the file for storing private environment variables
 ├── .gitignore                <- List of files/folders ignored by git
@@ -315,10 +315,21 @@ python train.py +trainer.track_grad_norm=2
 > Checkpoint can be either path or URL.
 
 ```yaml
-python train.py +trainer.resume_from_checkpoint="/path/to/ckpt/name.ckpt"
+python train.py trainer.resume_from_checkpoint="/path/to/ckpt/name.ckpt"
 ```
 
 > ⚠️ Currently loading ckpt in Lightning doesn't resume logger experiment, but it will be supported in future Lightning release.
+
+</details>
+
+<details>
+<summary><b>Execute evaluation for a given checkpoint</b></summary>
+
+> Checkpoint can be either path or URL.
+
+```yaml
+python test.py ckpt_path="/path/to/ckpt/name.ckpt"
+```
 
 </details>
 

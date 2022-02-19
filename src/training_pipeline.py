@@ -18,8 +18,8 @@ log = utils.get_logger(__name__)
 
 
 def train(config: DictConfig) -> Optional[float]:
-    """Contains training pipeline.
-    Instantiates all PyTorch Lightning objects from config.
+    """Contains the training pipeline.
+    Can additionally evaluate model on testset, using best weights achieved during training.
 
     Args:
         config (DictConfig): Configuration composed by Hydra.

@@ -3,7 +3,7 @@
 # specify here default evaluation configuration
 defaults:
   - _self_
-  - datamodule: mnist.yaml
+  - datamodule: mnist.yaml # choose the datamodule for evaluation
   - model: mnist.yaml
   - trainer: default.yaml
   - log_dir: evaluation.yaml
@@ -26,5 +26,5 @@ seed: null
 
 name: "default"
 
-# passing checkpoint path is obligatory
+# passing checkpoint path is necessary
 ckpt_path: ???
