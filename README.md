@@ -86,7 +86,6 @@ The directory structure of new project looks like this:
 ├── scripts                <- Shell scripts
 │
 ├── src                    <- Source code
-│   ├── callbacks                <- Lightning callbacks
 │   ├── datamodules              <- Lightning datamodules
 │   ├── models                   <- Lightning models
 │   ├── utils                    <- Utility scripts
@@ -105,7 +104,7 @@ The directory structure of new project looks like this:
 │
 ├── .env.example              <- Template of the file for storing private environment variables
 ├── .gitignore                <- List of files/folders ignored by git
-├── .pre-commit-config.yaml   <- Configuration of pre-commit hooks
+├── .pre-commit-config.yaml   <- Configuration of pre-commit hooks for code formatting
 ├── requirements.txt          <- File for installing python dependencies
 ├── setup.cfg                 <- Configuration of linters and pytest
 └── README.md
@@ -453,20 +452,19 @@ It determines how config is composed when simply executing command `python train
 ```yaml
 # specify here default training configuration
 defaults:
+  - _self_
   - datamodule: mnist.yaml
   - model: mnist.yaml
   - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml
-
-  # logging folder path
   - log_dir: default.yaml
 
   # experiment configs allow for version control of specific configurations
   # e.g. best hyperparameters for each combination of model and datamodule
   - experiment: null
 
-  # debugging config (enable through command line, e.g. `python train.py debug=one_epoch)
+  # debugging config (enable through command line, e.g. `python train.py debug=default)
   - debug: null
 
   # config for hyperparameter optimization
@@ -482,7 +480,6 @@ defaults:
 
 # path to original working directory
 # hydra hijacks working directory by changing it to the new log directory
-# so it's useful to have this path as a special variable
 # https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 original_work_dir: ${hydra:runtime.cwd}
 
@@ -827,21 +824,27 @@ You can easily modify the commands in the scripts for your use case. If 1 epoch 
 
 ### Callbacks
 
-Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).
+The branch [`wandb-callbacks`](https://github.com/ashleve/lightning-hydra-template/tree/wandb-callbacks) contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](https://github.com/ashleve/lightning-hydra-template/tree/wandb-callbacks/src/callbacks/wandb_callbacks.py)).
 
-To support reproducibility:
+Callbacks which support reproducibility:
 
 - **WatchModel**
 - **UploadCodeAsArtifact**
 - **UploadCheckpointsAsArtifact**
 
-To provide examples of logging custom visualisations with callbacks only:
+Callbacks which provide examples of logging custom visualisations:
 
 - **LogConfusionMatrix**
 - **LogF1PrecRecHeatmap**
 - **LogImagePredictions**
 
-To try all of the callbacks at once, use:
+To try all of the callbacks at once, switch to the right branch:
+
+```bash
+git checkout wandb-callbacks
+```
+
+And then run the following command:
 
 ```bash
 python train.py logger=wandb callbacks=wandb
@@ -898,6 +901,7 @@ What provides reproducibility:
 - Pytorch Lightning takes care of creating training checkpoints
 - Example callbacks for wandb show how you can save and upload a snapshot of codebase every time the run is executed, as well as upload ckpts and track model gradients
 
+<!--
 You can load the config of previous run using:
 
 ```bash
@@ -905,7 +909,7 @@ python train.py --config-path /logs/runs/.../.hydra/ --config-name config.yaml
 ```
 
 The `config.yaml` from `.hydra` folder contains all overriden parameters and sections. This approach however is not officially supported by Hydra and doesn't override the `hydra/` part of the config, meaning logging paths will revert to default!
-
+ -->
 <br>
 
 ### Limitations
