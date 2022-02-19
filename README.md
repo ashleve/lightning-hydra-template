@@ -86,7 +86,6 @@ The directory structure of new project looks like this:
 ├── scripts                <- Shell scripts
 │
 ├── src                    <- Source code
-│   ├── callbacks                <- Lightning callbacks
 │   ├── datamodules              <- Lightning datamodules
 │   ├── models                   <- Lightning models
 │   ├── utils                    <- Utility scripts
@@ -453,20 +452,19 @@ It determines how config is composed when simply executing command `python train
 ```yaml
 # specify here default training configuration
 defaults:
+  - _self_
   - datamodule: mnist.yaml
   - model: mnist.yaml
   - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml
-
-  # logging folder path
   - log_dir: default.yaml
 
   # experiment configs allow for version control of specific configurations
   # e.g. best hyperparameters for each combination of model and datamodule
   - experiment: null
 
-  # debugging config (enable through command line, e.g. `python train.py debug=one_epoch)
+  # debugging config (enable through command line, e.g. `python train.py debug=default)
   - debug: null
 
   # config for hyperparameter optimization
@@ -482,7 +480,6 @@ defaults:
 
 # path to original working directory
 # hydra hijacks working directory by changing it to the new log directory
-# so it's useful to have this path as a special variable
 # https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
 original_work_dir: ${hydra:runtime.cwd}
 
@@ -904,6 +901,7 @@ What provides reproducibility:
 - Pytorch Lightning takes care of creating training checkpoints
 - Example callbacks for wandb show how you can save and upload a snapshot of codebase every time the run is executed, as well as upload ckpts and track model gradients
 
+<!--
 You can load the config of previous run using:
 
 ```bash
@@ -911,7 +909,7 @@ python train.py --config-path /logs/runs/.../.hydra/ --config-name config.yaml
 ```
 
 The `config.yaml` from `.hydra` folder contains all overriden parameters and sections. This approach however is not officially supported by Hydra and doesn't override the `hydra/` part of the config, meaning logging paths will revert to default!
-
+ -->
 <br>
 
 ### Limitations
