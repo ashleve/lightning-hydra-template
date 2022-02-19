@@ -36,16 +36,12 @@ class MNISTDataModule(LightningDataModule):
         super().__init__()
 
         # this line allows to access init params with 'self.hparams' attribute
-        # it also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
 
         # data transformations
         self.transforms = transforms.Compose(
             [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
         )
-
-        # self.dims is returned when you call datamodule.size()
-        self.dims = (1, 28, 28)
 
         self.data_train: Optional[Dataset] = None
         self.data_val: Optional[Dataset] = None

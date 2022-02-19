@@ -1,0 +1,9 @@
+# @package _global_
+
+# runs only test epoch
+
+defaults:
+  - default.yaml
+
+train: False
+test: True

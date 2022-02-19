@@ -1,36 +1,31 @@
 # --------- pytorch --------- #
 torch>=1.10.0
 torchvision>=0.11.0
-pytorch-lightning>=1.5.0
-torchmetrics>=0.6.0
+pytorch-lightning>=1.5.10
+torchmetrics>=0.7.0
 
 # --------- hydra --------- #
-hydra-core==1.1.0
-hydra-colorlog==1.1.0
-hydra-optuna-sweeper==1.1.0
-# hydra-ax-sweeper
-# hydra-ray-launcher
-# hydra-submitit-launcher
+hydra-core>=1.1.0
+hydra-colorlog>=1.1.0
+hydra-optuna-sweeper>=1.1.0
 
 # --------- loggers --------- #
-wandb
+# wandb
 # neptune-client
 # mlflow
 # comet-ml
-# torch_tb_profiler
+# tensorboard
 
 # --------- linters --------- #
 pre-commit      # hooks for applying linters on commit
 black           # code formatting
 isort           # import sorting
 flake8          # code analysis
+nbstripout      # remove output from jupyter notebooks
 
 # --------- others --------- #
 python-dotenv   # loading env variables from .env file
 rich            # beautiful text formatting in terminal
 pytest          # tests
 sh              # for running bash commands in some tests
-scikit-learn    # used in some callbacks
-seaborn         # used in some callbacks
-jupyterlab      # better jupyter notebooks
 pudb            # debugger

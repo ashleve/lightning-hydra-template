@@ -1,0 +1,28 @@
+# @package _global_
+
+# default debugging setup, runs 1 full epoch
+# other debugging configs can inherit from this one
+
+defaults:
+  - override /log_dir: debug.yaml
+
+trainer:
+  max_epochs: 1
+  gpus: 0 # debuggers don't like gpus
+  detect_anomaly: true # raise exception if NaN or +/-inf is detected in any tensor
+  track_grad_norm: 2 # track gradient norm with loggers
+
+datamodule:
+  num_workers: 0 # debuggers don't like multiprocessing
+  pin_memory: False # disable gpu memory pin
+
+# sets level of all command line loggers to 'DEBUG'
+# https://hydra.cc/docs/tutorials/basic/running_your_app/logging/
+hydra:
+  verbose: True
+
+  # use this to set level of only chosen command line loggers to 'DEBUG':
+  # verbose: [src.train, src.utils]
+
+# config is already printed by hydra when `hydra/verbose: True`
+print_config: False

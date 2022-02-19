@@ -7,6 +7,7 @@ defaults:
   - override /hydra/sweeper: optuna
 
 # choose metric which will be optimized by Optuna
+# make sure this is the correct name of some metric logged in lightning module!
 optimized_metric: "val/acc_best"
 
 # here we define Optuna hyperparameter search

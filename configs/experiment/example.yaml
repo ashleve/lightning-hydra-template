@@ -1,27 +1,25 @@
 # @package _global_
 
 # to execute this experiment run:
-# python run.py experiment=example_simple.yaml
+# python train.py experiment=example
 
 defaults:
-  - override /mode: exp.yaml
-  - override /trainer: default.yaml
-  - override /model: mnist_model.yaml
-  - override /datamodule: mnist_datamodule.yaml
+  - override /datamodule: mnist.yaml
+  - override /model: mnist.yaml
   - override /callbacks: default.yaml
   - override /logger: null
+  - override /trainer: default.yaml
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
 # name of the run determines folder name in logs
-# it's also accessed by loggers
-name: "example_simple"
+name: "simple_dense_net"
 
 seed: 12345
 
 trainer:
-  min_epochs: 1
+  min_epochs: 10
   max_epochs: 10
   gradient_clip_val: 0.5
 
@@ -33,4 +31,7 @@ model:
 
 datamodule:
   batch_size: 64
-  train_val_test_split: [55_000, 5_000, 10_000]
+
+logger:
+  wandb:
+    tags: ["mnist", "${name}"]

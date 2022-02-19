@@ -5,7 +5,8 @@ gpus: 0
 min_epochs: 1
 max_epochs: 10
 
-resume_from_checkpoint: null
-
 # number of validation steps to execute at the beginning of the training
-num_sanity_val_steps: 0
+# num_sanity_val_steps: 0
+
+# ckpt path
+resume_from_checkpoint: null

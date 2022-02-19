@@ -18,7 +18,7 @@ early_stopping:
 
 model_summary:
   _target_: pytorch_lightning.callbacks.RichModelSummary
-  max_depth: 1
+  max_depth: -1
 
 rich_progress_bar:
   _target_: pytorch_lightning.callbacks.RichProgressBar
