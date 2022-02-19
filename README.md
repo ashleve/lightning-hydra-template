@@ -105,7 +105,7 @@ The directory structure of new project looks like this:
 │
 ├── .env.example              <- Template of the file for storing private environment variables
 ├── .gitignore                <- List of files/folders ignored by git
-├── .pre-commit-config.yaml   <- Configuration of pre-commit hooks
+├── .pre-commit-config.yaml   <- Configuration of pre-commit hooks for code formatting
 ├── requirements.txt          <- File for installing python dependencies
 ├── setup.cfg                 <- Configuration of linters and pytest
 └── README.md
@@ -827,21 +827,27 @@ You can easily modify the commands in the scripts for your use case. If 1 epoch 
 
 ### Callbacks
 
-Template contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](src/callbacks/wandb_callbacks.py)).
+The branch [`wandb-callbacks`](https://github.com/ashleve/lightning-hydra-template/tree/wandb-callbacks) contains example callbacks enabling better Weights&Biases integration, which you can use as a reference for writing your own callbacks (see [wandb_callbacks.py](https://github.com/ashleve/lightning-hydra-template/tree/wandb-callbacks/src/callbacks/wandb_callbacks.py)).
 
-To support reproducibility:
+Callbacks which support reproducibility:
 
 - **WatchModel**
 - **UploadCodeAsArtifact**
 - **UploadCheckpointsAsArtifact**
 
-To provide examples of logging custom visualisations with callbacks only:
+Callbacks which provide examples of logging custom visualisations:
 
 - **LogConfusionMatrix**
 - **LogF1PrecRecHeatmap**
 - **LogImagePredictions**
 
-To try all of the callbacks at once, use:
+To try all of the callbacks at once, switch to the right branch:
+
+```bash
+git checkout wandb-callbacks
+```
+
+And then run the following command:
 
 ```bash
 python train.py logger=wandb callbacks=wandb
