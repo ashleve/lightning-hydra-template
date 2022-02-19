@@ -95,9 +95,11 @@ def train(config: DictConfig) -> Optional[float]:
     score = trainer.callback_metrics.get(optimized_metric)
 
     # Test the model
-    if config.get("test") and not config.trainer.get("fast_dev_run"):
+    if config.get("test"):
+        ckpt_path = "best"
+        if not config.get("train") or config.trainer.get("fast_dev_run"):
+            ckpt_path = None
         log.info("Starting testing!")
-        ckpt_path = None if not config.get("train") else "best"
         trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
 
     # Make sure everything closed properly
