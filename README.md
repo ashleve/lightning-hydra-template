@@ -617,6 +617,7 @@ hydra:
 │   │   │   ├── experiment_name             # Experiment name
 │   │   │   │   ├── YYYY-MM-DD_HH-MM-SS       # Datetime of the run
 │   │   │   │   │   ├── .hydra                  # Hydra logs
+│   │   │   │   │   ├── csv                     # Csv logs
 │   │   │   │   │   ├── wandb                   # Weights&Biases logs
 │   │   │   │   │   ├── checkpoints             # Training checkpoints
 │   │   │   │   │   └── ...                     # Any other thing saved during training
@@ -632,20 +633,11 @@ hydra:
 │   │       │   └── ...
 │   │       └── ...
 │   │
-│   └── debugs                          # Folder for the logs generated during debugging
-|       ├── runs
-|       │   ├── experiment_name
-│       │   │   ├── YYYY-MM-DD_HH-MM-SS
-│       │   │   │   └── ...
-│       │   │   └── ...
-│       │   └── ...
-│       │
-│       └── multiruns
-│           ├── experiment_name
-│           │   ├── YYYY-MM-DD_HH-MM-SS
-│           │   │   └── ...
-│           │   └── ...
-│           └── ...
+│   ├── evaluations                       # Folder for the logs generated during evaluation/testing
+│   │   └── ...
+│   │
+│   └── debugs                            # Folder for the logs generated during debugging
+│       └── ...
 ```
 
 You can change this structure by modifying paths in [hydra configuration](configs/log_dir).
@@ -1008,12 +1000,6 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 
    # activate hydra tab completion for bash
    eval "$(python train.py -sc install=bash)"
-
-   # enable aliases for debugging
-   alias debug='python train.py mode=debug'
-   alias debug2='python train.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=0'
-   alias debug3='python train.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=1'
-   alias debug_wandb='python train.py mode=debug trainer.fast_dev_run=false trainer.max_epochs=1 trainer.gpus=1 logger=wandb logger.wandb.project=tests'
    ```
 
    (these commands will be executed whenever you're openning or switching terminal to folder containing `.autoenv` file)
