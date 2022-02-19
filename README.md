@@ -391,6 +391,17 @@ python train.py -m 'experiment=glob(*)'
 
 </details>
 
+<details>
+<summary><b>Apply pre-commit hooks</b></summary>
+
+> Apply pre-commit hooks to automatically format your code and configs, perform code analysis and remove output from jupyter notebooks. See [# Best Practices](#best-practices) for more.
+
+```bash
+pre-commit run -a
+```
+
+</details>
+
 <br>
 
 ## ❤️&nbsp;&nbsp;Contributions
@@ -1081,7 +1092,7 @@ pre-commit install
 ```
 
 After that your code will be automatically reformatted on every new commit.<br>
-Currently template contains configurations of **black** (python code formatting), **isort** (python import sorting), **flake8** (python code analysis) and **prettier** (yaml formating). <br>
+Currently template contains configurations of **black** (python code formatting), **isort** (python import sorting), **flake8** (python code analysis), **prettier** (yaml formating) and **nbstripout** (clearing output from jupyter notebooks). <br>
 
 To reformat all files in the project use command:
 
