@@ -1092,7 +1092,7 @@ pre-commit install
 ```
 
 After that your code will be automatically reformatted on every new commit.<br>
-Currently template contains configurations of **black** (python code formatting), **isort** (python import sorting), **flake8** (python code analysis), **prettier** (yaml formating) and **nbstrip** (clearing output from jupyter notebooks). <br>
+Currently template contains configurations of **black** (python code formatting), **isort** (python import sorting), **flake8** (python code analysis), **prettier** (yaml formating) and **nbstripout** (clearing output from jupyter notebooks). <br>
 
 To reformat all files in the project use command:
 
