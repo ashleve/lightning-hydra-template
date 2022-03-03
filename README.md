@@ -425,12 +425,15 @@ All PyTorch Lightning modules are dynamically instantiated from module paths spe
 
 ```yaml
 _target_: src.models.mnist_model.MNISTLitModule
-input_size: 784
-lin1_size: 256
-lin2_size: 256
-lin3_size: 256
-output_size: 10
 lr: 0.001
+
+net:
+  _target_: src.models.components.simple_dense_net.SimpleDenseNet
+  input_size: 784
+  lin1_size: 256
+  lin2_size: 256
+  lin3_size: 256
+  output_size: 10
 ```
 
 Using this config we can instantiate the object with the following line:
@@ -556,10 +559,11 @@ trainer:
   gradient_clip_val: 0.5
 
 model:
-  lin1_size: 128
-  lin2_size: 256
-  lin3_size: 64
   lr: 0.002
+  net:
+    lin1_size: 128
+    lin2_size: 256
+    lin3_size: 64
 
 datamodule:
   batch_size: 64
@@ -723,13 +727,13 @@ hydra:
         type: float
         low: 0.0001
         high: 0.2
-      model.lin1_size:
+      model.net.lin1_size:
         type: categorical
         choices: [32, 64, 128, 256, 512]
-      model.lin2_size:
+      model.net.lin2_size:
         type: categorical
         choices: [32, 64, 128, 256, 512]
-      model.lin3_size:
+      model.net.lin3_size:
         type: categorical
         choices: [32, 64, 128, 256, 512]
 ```
