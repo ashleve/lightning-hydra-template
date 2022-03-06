@@ -2,6 +2,7 @@ import os
 from typing import List, Optional
 
 import hydra
+import torch
 from omegaconf import DictConfig
 from pytorch_lightning import (
     Callback,
@@ -64,10 +65,18 @@ def train(config: DictConfig) -> Optional[float]:
                 logger.append(hydra.utils.instantiate(lg_conf))
 
     # Init lightning trainer
+    if config.trainer.get("amp_backend") == "apex":
+        log.info(f"Using Mixed Precision <{config.trainer.amp_backend}>")
+    if config.trainer.get("precision"):
+        log.info(f"Using precision training <{config.trainer.precision}>")
     log.info(f"Instantiating trainer <{config.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(
         config.trainer, callbacks=callbacks, logger=logger, _convert_="partial"
     )
+    
+    # print model GPU
+    for i in range(torch.cuda.device_count()):
+        print(f"\n> GPU {i} ready: {torch.cuda.get_device_name(i)}")
 
     # Send some parameters from config to all lightning loggers
     log.info("Logging hyperparameters!")

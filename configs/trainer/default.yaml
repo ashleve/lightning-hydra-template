@@ -10,3 +10,13 @@ max_epochs: 10
 
 # ckpt path
 resume_from_checkpoint: null
+
+# Activation learning rate finder
+# auto_lr_find=True
+
+# Precision default:32
+# precision: 32
+# Mixed precision activation https://pytorch-lightning.readthedocs.io/en/stable/advanced/mixed_precision.html?highlight=precision
+# amp_backend: apex
+# level mixed precision
+# amp_level: 02
