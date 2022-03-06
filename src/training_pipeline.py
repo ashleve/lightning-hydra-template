@@ -65,7 +65,7 @@ def train(config: DictConfig) -> Optional[float]:
                 logger.append(hydra.utils.instantiate(lg_conf))
 
     # Init lightning trainer
-    if config.trainer.get("amp_backend") == "apex":
+    if config.trainer.get("amp_backend"):
         log.info(f"Using Mixed Precision <{config.trainer.amp_backend}>")
     if config.trainer.get("precision"):
         log.info(f"Using precision training <{config.trainer.precision}>")
