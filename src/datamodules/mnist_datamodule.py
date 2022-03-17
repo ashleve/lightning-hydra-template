@@ -60,12 +60,11 @@ class MNISTDataModule(LightningDataModule):
         MNIST(self.hparams.data_dir, train=False, download=True)
 
     def setup(self, stage: Optional[str] = None):
-        """Load data.
+        """Load data. Set variables: `self.data_train`, `self.data_val`, `self.data_test`.
 
-        Set variables: `self.data_train`, `self.data_val`, `self.data_test`. This method is
-        called by lightning twice for `trainer.fit()` and `trainer.test()`, so be careful if
-        you do a random split! The `stage` can be used to differentiate whether it's called
-        before trainer.fit()` or `trainer.test()`.
+        This method is called by lightning twice for `trainer.fit()` and `trainer.test()`,
+        so be careful if you do a random split! The `stage` can be used to differentiate
+        whether it's called before trainer.fit()` or `trainer.test()`.
         """
 
         # load datasets only if they're not loaded already
