@@ -26,7 +26,7 @@ repos:
 
   # python docstring formatting
   - repo: https://github.com/myint/docformatter
-    rev: v1.3.1
+    rev: v1.4
     hooks:
       - id: docformatter
         args: [--in-place, --wrap-summaries, "99", --wrap-descriptions, "92"]
