@@ -8,8 +8,7 @@ from torchvision.transforms import transforms
 
 
 class MNISTDataModule(LightningDataModule):
-    """
-    Example of LightningDataModule for MNIST dataset.
+    """Example of LightningDataModule for MNIST dataset.
 
     A DataModule implements 5 key methods:
         - prepare_data (things to do on 1 GPU/TPU, not on every GPU/TPU in distributed mode)
@@ -52,15 +51,22 @@ class MNISTDataModule(LightningDataModule):
         return 10
 
     def prepare_data(self):
-        """Download data if needed. This method is called only from a single GPU.
-        Do not use it to assign state (self.x = y)."""
+        """Download data if needed.
+
+        This method is called only from a single GPU.
+        Do not use it to assign state (self.x = y).
+        """
         MNIST(self.hparams.data_dir, train=True, download=True)
         MNIST(self.hparams.data_dir, train=False, download=True)
 
     def setup(self, stage: Optional[str] = None):
-        """Load data. Set variables: `self.data_train`, `self.data_val`, `self.data_test`.
-        This method is called by lightning twice for `trainer.fit()` and `trainer.test()`, so be careful if you do a random split!
-        The `stage` can be used to differentiate whether it's called before trainer.fit()` or `trainer.test()`."""
+        """Load data.
+
+        Set variables: `self.data_train`, `self.data_val`, `self.data_test`. This method is
+        called by lightning twice for `trainer.fit()` and `trainer.test()`, so be careful if
+        you do a random split! The `stage` can be used to differentiate whether it's called
+        before trainer.fit()` or `trainer.test()`.
+        """
 
         # load datasets only if they're not loaded already
         if not self.data_train and not self.data_val and not self.data_test:

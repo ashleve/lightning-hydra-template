@@ -9,8 +9,7 @@ from src.models.components.simple_dense_net import SimpleDenseNet
 
 
 class MNISTLitModule(LightningModule):
-    """
-    Example of LightningModule for MNIST classification.
+    """Example of LightningModule for MNIST classification.
 
     A LightningModule organizes your PyTorch code into 5 sections:
         - Computations (init).
