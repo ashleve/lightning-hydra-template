@@ -18,8 +18,8 @@ log = utils.get_logger(__name__)
 
 
 def train(config: DictConfig) -> Optional[float]:
-    """Contains the training pipeline.
-    Can additionally evaluate model on a testset, using best weights achieved during training.
+    """Contains the training pipeline. Can additionally evaluate model on a testset, using best
+    weights achieved during training.
 
     Args:
         config (DictConfig): Configuration composed by Hydra.

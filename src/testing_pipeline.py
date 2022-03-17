@@ -12,8 +12,7 @@ log = utils.get_logger(__name__)
 
 
 def test(config: DictConfig) -> None:
-    """Contains minimal example of the testing pipeline.
-    Evaluates given checkpoint on a testset.
+    """Contains minimal example of the testing pipeline. Evaluates given checkpoint on a testset.
 
     Args:
         config (DictConfig): Configuration composed by Hydra.

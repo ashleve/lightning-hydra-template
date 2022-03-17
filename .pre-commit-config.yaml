@@ -24,6 +24,13 @@ repos:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
 
+  # python docstring formatting
+  - repo: https://github.com/myint/docformatter
+    rev: v1.4
+    hooks:
+      - id: docformatter
+        args: [--in-place, --wrap-summaries, "99", --wrap-descriptions, "92"]
+
   # yaml formatting
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.5.1

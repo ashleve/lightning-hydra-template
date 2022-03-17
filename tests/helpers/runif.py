@@ -20,8 +20,8 @@ from tests.helpers.module_available import (
 
 
 class RunIf:
-    """
-    RunIf wrapper for conditional skipping of tests.
+    """RunIf wrapper for conditional skipping of tests.
+
     Fully compatible with `@pytest.mark`.
 
     Example:
@@ -30,7 +30,6 @@ class RunIf:
         @pytest.mark.parametrize("arg1", [1.0, 2.0])
         def test_wrapper(arg1):
             assert arg1 > 0
-
     """
 
     def __new__(

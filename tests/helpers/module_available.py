@@ -14,7 +14,6 @@ def _module_available(module_path: str) -> bool:
     True
     >>> _module_available('bla.bla')
     False
-
     """
     try:
         return find_spec(module_path) is not None
