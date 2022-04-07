@@ -19,13 +19,13 @@ _Suggestions are always welcome!_
 
 ## 📌&nbsp;&nbsp;Introduction
 
-This template tries to be as general as possible. It integrates many different MLOps tools.
+This template tries to be as general as possible.
 
-> Effective usage of this template requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
+> Effective usage requires learning of a couple of technologies: [PyTorch](https://pytorch.org), [PyTorch Lightning](https://www.pytorchlightning.ai) and [Hydra](https://hydra.cc). Knowledge of some experiment logging framework like [Weights&Biases](https://wandb.com), [Neptune](https://neptune.ai) or [MLFlow](https://mlflow.org) is also recommended.
 
-**Why you should use it:** it allows you to rapidly iterate over new models/datasets and scale your projects from small single experiments to hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most convenient all-in-one technology stack for Deep Learning research. Good starting point for reproducing papers, kaggle competitions or small-team research projects. It's also a collection of best practices for efficient workflow and reproducibility.
+**Why you should use it:** it allows you to rapidly iterate over new models/datasets and scale your projects from small single experiments to hyperparameter searches on computing clusters, without writing any boilerplate code. To my knowledge, it's one of the most convenient all-in-one technology stack for deep learning prototyping. Quick starting point for reproducing papers, hackathons, kaggle competitions or small-team research projects. It's also a collection of best practices for efficient workflow and reproducibility.
 
-**Why you shouldn't use it:** this template is not fitted to be a production environment, should be used more as a fast experimentation tool. Apart from that, Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known bugs, visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug). Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task. See [#Limitations](#limitations) for more.
+**Why you shouldn't use it:** this template is not fitted to be a production/deployment environment, should be used more as a fast experimentation tool. Apart from that, Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known bugs, visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug). Also, even though Lightning is very flexible, it's not well suited for every possible deep learning task. See [#Limitations](#limitations) for more.
 
 ### Why PyTorch Lightning?
 
@@ -907,14 +907,13 @@ docker run -v $(pwd):/workspace/project --gpus all -it --rm <project_name>
 
 What provides reproducibility:
 
-- Hydra manages your configs
-- Hydra manages your logging paths and makes every executed run store its hyperparameters and config overrides in a separate file in logs
-- Single seed for random number generators in pytorch, numpy and python.random
-- LightningDataModule allows you to encapsulate data split, transformations and default parameters in a single, clean abstraction
-- LightningModule separates your research code from engineering code in a clean way
-- Experiment tracking frameworks take care of logging metrics and hparams, some can also store results and artifacts in cloud
-- Pytorch Lightning takes care of creating training checkpoints
-- Example callbacks for wandb show how you can save and upload a snapshot of codebase every time the run is executed, as well as upload ckpts and track model gradients
+- Hydra manages your configs.
+- Hydra manages your logging paths and makes every executed run store its hyperparameters and config overrides in a separate file in logs.
+- LightningDataModule allows you to encapsulate data split, transformations and default parameters in a single, clean abstraction.
+- LightningModule separates your research code from engineering code in a clean way.
+- Experiment tracking frameworks take care of logging metrics and hparams, some can also store results and artifacts in cloud.
+- Pytorch Lightning takes care of creating training checkpoints.
+- [Example callbacks for wandb](https://github.com/ashleve/lightning-hydra-template/tree/wandb-callbacks) show how you can save and upload a snapshot of codebase every time the run is executed, as well as upload ckpts and track model gradients.
 
 <!--
 You can load the config of previous run using:
@@ -930,9 +929,9 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 ### Limitations
 
 - Currently, template doesn't support k-fold cross validation, but it's possible to achieve it with Lightning Loop interface. See the [official example](https://github.com/PyTorchLightning/pytorch-lightning/blob/master/pl_examples/loop_examples/kfold.py). Implementing it requires rewriting the training pipeline.
-- Pytorch Lightning might not be the best choice for scalable reinforcement learning, it's probably better to use something like [Ray](https://github.com/ray-project/ray).
 - Currently hyperparameter search with Hydra Optuna Plugin doesn't support prunning.
 - Hydra changes working directory to new logging folder for every executed run, which might not be compatible with the way some libraries work.
+- Restoring logger state is currently not supported. This might change in future lightning realease.
 
 <br>
 
