@@ -116,6 +116,9 @@ def log_hyperparameters(
     - number of model parameters
     """
 
+    if not trainer.logger:
+        return
+
     hparams = {}
 
     # choose which parts of hydra config will be saved to loggers
