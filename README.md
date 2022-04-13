@@ -992,7 +992,7 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 
    ```yaml
    # this will return attribute 'param1' from datamodule object
-   param1: ${datamodule: param1}
+   param1: ${datamodule:param1}
    ```
 
    When later accessing this field, say in your lightning model, it will get automatically resolved based on all resolvers that are registered. Remember not to access this field before datamodule is initialized or it will crash. **You also need to set `resolve=False` in `print_config()` in [train.py](train.py) or it will throw errors:**
