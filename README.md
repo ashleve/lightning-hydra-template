@@ -992,14 +992,23 @@ The `config.yaml` from `.hydra` folder contains all overriden parameters and sec
 
    ```yaml
    # this will return attribute 'param1' from datamodule object
-   param1: ${datamodule: param1}
+   param1: ${datamodule:param1}
    ```
 
-   When later accessing this field, say in your lightning model, it will get automatically resolved based on all resolvers that are registered. Remember not to access this field before datamodule is initialized or it will crash. **You also need to set `resolve=False` in `print_config()` in [train.py](train.py) or it will throw errors:**
+   When later accessing this field, say in your lightning model, it will get automatically resolved based on all resolvers that are registered. Remember not to access this field before datamodule is initialized or it will crash.
+
+   **You also need to set `resolve=False` in `print_config(...)` in [utils](src/urils/__init__.py) to prevent config printing from accessing the parameter before datamodule is initialized:**
 
    ```python
-   # ./src/train.py
-   utils.print_config(config, resolve=False)
+   # ./src/urils/__init__.py
+    def extras(config: DictConfig) -> None:
+
+      ...
+
+      log.info("Printing config tree with Rich! <config.print_config=True>")
+      print_config(config, resolve=False)
+
+      ...
    ```
 
 </details>
