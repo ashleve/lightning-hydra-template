@@ -51,6 +51,9 @@ class MNISTLitModule(LightningModule):
     def forward(self, x: torch.Tensor):
         return self.net(x)
 
+    def on_train_start(self):
+        self.val_acc_best.reset()
+
     def step(self, batch: Any):
         x, y = batch
         logits = self.forward(x)
