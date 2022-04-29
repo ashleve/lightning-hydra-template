@@ -52,6 +52,8 @@ class MNISTLitModule(LightningModule):
         return self.net(x)
 
     def on_train_start(self):
+        # by default lightning executes validation step sanity checks before training starts,
+        # so we need to make sure val_acc_best doesn't store accuracy from these checks
         self.val_acc_best.reset()
 
     def step(self, batch: Any):
@@ -70,7 +72,7 @@ class MNISTLitModule(LightningModule):
         self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
 
         # we can return here dict with any tensors
-        # and then read it in some callback or in `training_epoch_end()`` below
+        # and then read it in some callback or in `training_epoch_end()` below
         # remember to always return loss from `training_step()` or else backpropagation will fail!
         return {"loss": loss, "preds": preds, "targets": targets}
 
