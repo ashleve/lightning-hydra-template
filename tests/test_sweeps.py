@@ -12,19 +12,14 @@ Use the following command to skip slow tests:
 
 
 startfile = "train.py"
-overrides = []
+overrides = ["++trainer.fast_dev_run=true", "logger=[]"]
 
 
 @RunIf(sh=True)
 @pytest.mark.slow
 def test_experiments():
     """Test running all available experiment configs with fast_dev_run."""
-    command = [
-        startfile,
-        "-m",
-        "experiment=glob(*)",
-        "++trainer.fast_dev_run=true",
-    ] + overrides
+    command = [startfile, "-m", "experiment=glob(*)"] + overrides
     run_sh_command(command)
 
 
@@ -32,14 +27,7 @@ def test_experiments():
 @pytest.mark.slow
 def test_default_sweep():
     """Test default Hydra sweeper."""
-    command = [
-        startfile,
-        "-m",
-        "datamodule.batch_size=64,128",
-        "model.lr=0.01,0.02",
-        "trainer=default",
-        "++trainer.fast_dev_run=true",
-    ] + overrides
+    command = [startfile, "-m", "model.lr=0.01,0.02,0.03", "trainer=default"] + overrides
     run_sh_command(command)
 
 
@@ -47,11 +35,5 @@ def test_default_sweep():
 @pytest.mark.slow
 def test_optuna_sweep():
     """Test Optuna sweeper."""
-    command = [
-        startfile,
-        "-m",
-        "hparams_search=mnist_optuna",
-        "trainer=default",
-        "++trainer.fast_dev_run=true",
-    ] + overrides
+    command = [startfile, "-m", "hparams_search=mnist_optuna", "trainer=default"] + overrides
     run_sh_command(command)
