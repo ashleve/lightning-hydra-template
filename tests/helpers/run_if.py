@@ -11,11 +11,11 @@ Adapted from:
     https://github.com/PyTorchLightning/pytorch-lightning/blob/master/tests/helpers/runif.py
 """
 
-from tests.helpers.module_available import (
+from tests.helpers.package_available import (
+    _IS_WINDOWS,
+    _SH_AVAILABLE,
     _DEEPSPEED_AVAILABLE,
     _FAIRSCALE_AVAILABLE,
-    _IS_WINDOWS,
-    _RPC_AVAILABLE,
 )
 
 
@@ -39,7 +39,7 @@ class RunIf:
         max_torch: Optional[str] = None,
         min_python: Optional[str] = None,
         skip_windows: bool = False,
-        rpc: bool = False,
+        sh: bool = False,
         fairscale: bool = False,
         deepspeed: bool = False,
         **kwargs,
@@ -51,7 +51,7 @@ class RunIf:
             max_torch: maximum pytorch version to run test
             min_python: minimum python version required to run test
             skip_windows: skip test for Windows platform
-            rpc: requires Remote Procedure Call (RPC)
+            sh: if `sh` module is required to run the test
             fairscale: if `fairscale` module is required to run the test
             deepspeed: if `deepspeed` module is required to run the test
             kwargs: native pytest.mark.skipif keyword arguments
@@ -84,9 +84,9 @@ class RunIf:
             conditions.append(_IS_WINDOWS)
             reasons.append("does not run on Windows")
 
-        if rpc:
-            conditions.append(not _RPC_AVAILABLE)
-            reasons.append("RPC")
+        if sh:
+            conditions.append(not _SH_AVAILABLE)
+            reasons.append("sh")
 
         if fairscale:
             conditions.append(not _FAIRSCALE_AVAILABLE)

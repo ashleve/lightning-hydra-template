@@ -1,4 +1,8 @@
+import os
 import pytest
+
+from hydra import initialize, compose
+import train
 
 from tests.helpers.run_sh_command import run_sh_command
 from tests.helpers.run_if import RunIf
@@ -9,6 +13,13 @@ A couple of sanity checks to make sure basic commands work.
 
 
 startfile = "train.py"
+
+
+def test_train_fast_dev_run(tmpdir):
+    with initialize(config_path="../../configs/"):
+        cfg = compose(config_name="train", overrides=["++trainer.fast_dev_run=true"])
+        cfg.original_work_dir = os.getcwd()
+        train.main(cfg)
 
 
 @RunIf(sh=True)

@@ -47,9 +47,9 @@ def extras(config: DictConfig) -> None:
         warnings.filterwarnings("ignore")
 
     # pretty print config tree using Rich library if <config.print_config=True>
-    if config.get("print_config"):
-        log.info("Printing config tree with Rich! <config.print_config=True>")
-        print_config(config, resolve=True)
+    # if config.get("print_config"):
+    #     log.info("Printing config tree with Rich! <config.print_config=True>")
+    #     print_config(config, resolve=True)
 
 
 @rank_zero_only

@@ -7,27 +7,25 @@ from src.datamodules.mnist_datamodule import MNISTDataModule
 
 
 @pytest.mark.parametrize("batch_size", [32, 128])
-def test_mnist_datamodule(batch_size):
-    datamodule = MNISTDataModule(batch_size=batch_size)
-    datamodule.prepare_data()
+def test_mnist_datamodule(data_dir="data/", batch_size=32):
+    dm = MNISTDataModule(data_dir=data_dir, batch_size=batch_size)
+    dm.prepare_data()
 
-    assert not datamodule.data_train and not datamodule.data_val and not datamodule.data_test
+    assert not dm.data_train and not dm.data_val and not dm.data_test
+    assert os.path.exists(os.path.join(data_dir, "MNIST"))
+    assert os.path.exists(os.path.join(data_dir, "MNIST", "raw"))
 
-    assert os.path.exists(os.path.join("data", "MNIST"))
-    assert os.path.exists(os.path.join("data", "MNIST", "raw"))
+    dm.setup()
+    assert dm.data_train and dm.data_val and dm.data_test
 
-    datamodule.setup()
+    num_datapoints = len(dm.data_train) + len(dm.data_val) + len(dm.data_test)
+    assert num_datapoints == 70_000
 
-    assert datamodule.data_train and datamodule.data_val and datamodule.data_test
-    assert (
-        len(datamodule.data_train) + len(datamodule.data_val) + len(datamodule.data_test) == 70_000
-    )
+    assert dm.train_dataloader()
+    assert dm.val_dataloader()
+    assert dm.test_dataloader()
 
-    assert datamodule.train_dataloader()
-    assert datamodule.val_dataloader()
-    assert datamodule.test_dataloader()
-
-    batch = next(iter(datamodule.train_dataloader()))
+    batch = next(iter(dm.train_dataloader()))
     x, y = batch
 
     assert len(x) == batch_size
