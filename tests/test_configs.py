@@ -1,10 +1,7 @@
-import hydra
-from train import main
-from omegaconf import OmegaConf
-from rich import print
 import os
+import hydra
+from omegaconf import OmegaConf
 from pathlib import Path
-from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig
 
 

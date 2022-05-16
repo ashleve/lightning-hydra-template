@@ -4,12 +4,13 @@ from tests.helpers.run_sh_command import run_sh_command
 from tests.helpers.run_if import RunIf
 
 """
-A couple of sanity checks to make sure all debugging configs work.
+A couple of sanity checks to make sure debugging configs don't crash.
 """
 
 
 startfile = "train.py"
 overrides = ["callbacks=none", "++trainer.max_steps=1", "logger=[]"]
+# overrides = ["++trainer.max_steps=1", "logger=[]"]
 
 
 # @RunIf(sh=True)
