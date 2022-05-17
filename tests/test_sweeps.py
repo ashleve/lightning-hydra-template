@@ -3,13 +3,6 @@ import pytest
 from tests.helpers.run_sh_command import run_sh_command
 from tests.helpers.run_if import RunIf
 
-"""
-A couple of tests executing hydra sweeps.
-
-Use the following command to skip slow tests:
-    pytest -k "not slow"
-"""
-
 
 startfile = "train.py"
 overrides = ["++trainer.fast_dev_run=true", "logger=[]"]

@@ -11,11 +11,11 @@ def _package_available(package_name: str) -> bool:
         return False
 
 
+_TPU_AVAILABLE = XLADeviceUtils.tpu_device_exists()
+
 _IS_WINDOWS = platform.system() == "Windows"
 
 _SH_AVAILABLE = not _IS_WINDOWS and _package_available("sh")
-
-_TPU_AVAILABLE = XLADeviceUtils.tpu_device_exists()
 
 _DEEPSPEED_AVAILABLE = not _IS_WINDOWS and _package_available("deepspeed")
 _FAIRSCALE_AVAILABLE = not _IS_WINDOWS and _package_available("fairscale")

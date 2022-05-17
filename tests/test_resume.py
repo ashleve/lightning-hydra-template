@@ -2,25 +2,48 @@ import os
 import pytest
 from omegaconf import DictConfig
 import train
+import test
 from hydra import initialize, compose
 from hydra.core.hydra_config import HydraConfig
+from tests.helpers import load_config
+from omegaconf import DictConfig, OmegaConf, open_dict
 
 
-def test_train_resume(cfg_train: DictConfig):
-    cfg_train.trainer.max_epochs = 1
+@pytest.mark.slow
+def test_train_resume(tmp_path):
+    cfg = load_config.load_train_cfg_simple(tmp_path)
+
+    with open_dict(cfg):
+        cfg.trainer.fast_dev_run = False
+        cfg.trainer.max_epochs = 1
+
+    train.main(cfg)
+
+    files = os.listdir(tmp_path)
+    assert "last.ckpt" in files
+    assert "epoch_000.ckpt" in files
+
+    with open_dict(cfg):
+        cfg.ckpt_path = str(tmp_path / "last.ckpt")
+
+    train.main(cfg)
+
+    files = os.listdir(tmp_path)
+    assert "epoch_001.ckpt" in files
+
+
+@pytest.mark.slow
+def test_train_eval(tmp_path):
+    cfg_train = load_config.load_train_cfg_simple(tmp_path)
+
+    with open_dict(cfg_train):
+        cfg_train.trainer.fast_dev_run = False
+        cfg_train.trainer.max_epochs = 1
 
     train.main(cfg_train)
-    
-    
-def test_train_eval(cfg_train: DictConfig):
-    cfg_train.trainer.max_epochs = 1
 
-    train.main(cfg_train)
+    files = os.listdir(tmp_path)
+    assert "last.ckpt" in files
 
-
-# def test_train_resume():
-#     with initialize(config_path="../../configs/"):
-#         cfg = compose(config_name="train", overrides=["++trainer.fast_dev_run=true"])
-#         cfg.original_work_dir = os.getcwd()
-#         HydraConfig().set_config(cfg)
-#         train.main(cfg)
+    cfg_test = load_config.load_test_cfg_simple(tmp_path, ckpt_path=str(tmp_path / "last.ckpt"))
+    test.main(cfg_test)

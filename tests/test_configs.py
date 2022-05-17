@@ -3,6 +3,7 @@ import hydra
 from omegaconf import OmegaConf
 from pathlib import Path
 from omegaconf import DictConfig
+from hydra.core.hydra_config import HydraConfig
 
 
 def test_train_config(cfg_train: DictConfig):
@@ -21,6 +22,8 @@ def test_test_config(cfg_test: DictConfig):
     assert cfg_test.datamodule
     assert cfg_test.model
     assert cfg_test.trainer
+
+    assert cfg_test.ckpt_path
 
     hydra.utils.instantiate(cfg_test.datamodule)
     hydra.utils.instantiate(cfg_test.model)
