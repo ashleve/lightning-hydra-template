@@ -75,16 +75,18 @@ def print_config(
     style = "dim"
     tree = rich.tree.Tree("CONFIG", style=style, guide_style=style)
 
-    quee = []
+    queue = []
 
     for field in print_order:
-        quee.append(field) if field in config else log.info(f"Field '{field}' not found in config")
+        queue.append(field) if field in config else log.info(
+            f"Field '{field}' not found in config"
+        )
 
     for field in config:
-        if field not in quee:
-            quee.append(field)
+        if field not in queue:
+            queue.append(field)
 
-    for field in quee:
+    for field in queue:
         branch = tree.add(field, style=style, guide_style=style)
 
         config_group = config[field]
