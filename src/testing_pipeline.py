@@ -32,12 +32,8 @@ def test(cfg: DictConfig) -> None:
     model: LightningModule = hydra.utils.instantiate(cfg.model)
 
     # init lightning loggers
-    logger: List[LightningLoggerBase] = []
-    if "logger" in cfg:
-        for _, lg_conf in cfg.logger.items():
-            if "_target_" in lg_conf:
-                log.info(f"Instantiating logger <{lg_conf._target_}>")
-                logger.append(hydra.utils.instantiate(lg_conf))
+    log.info("Instantiating loggers...")
+    logger: List[LightningLoggerBase] = utils.instantiate_loggers(cfg)
 
     # init lightning trainer
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")

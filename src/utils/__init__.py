@@ -8,6 +8,8 @@ import pytorch_lightning as pl
 import rich.syntax
 import rich.tree
 from omegaconf import DictConfig, OmegaConf
+from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
+from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning.utilities import rank_zero_only
 
 
@@ -111,14 +113,36 @@ def print_config(
         rich.print(tree, file=file)
 
 
+def instantiate_callbacks(cfg: DictConfig) -> List[Callback]:
+    """Instantiates callbacks from config."""
+    callbacks: List[Callback] = []
+    if "callbacks" in cfg:
+        for _, cb_conf in cfg.callbacks.items():
+            if "_target_" in cb_conf:
+                log.info(f"Instantiating callback <{cb_conf._target_}>")
+                callbacks.append(hydra.utils.instantiate(cb_conf))
+    return callbacks
+
+
+def instantiate_loggers(cfg: DictConfig) -> List[LightningLoggerBase]:
+    """Instantiates loggers from config."""
+    loggers: List[LightningLoggerBase] = []
+    if "logger" in cfg:
+        for _, lg_conf in cfg.logger.items():
+            if "_target_" in lg_conf:
+                log.info(f"Instantiating logger <{lg_conf._target_}>")
+                loggers.append(hydra.utils.instantiate(lg_conf))
+    return loggers
+
+
 @rank_zero_only
 def log_hyperparameters(
     cfg: DictConfig,
-    model: pl.LightningModule,
-    datamodule: pl.LightningDataModule,
-    trainer: pl.Trainer,
-    callbacks: List[pl.Callback],
-    logger: List[pl.loggers.LightningLoggerBase],
+    model: LightningModule,
+    datamodule: LightningDataModule,
+    trainer: Trainer,
+    callbacks: List[Callback],
+    logger: List[LightningLoggerBase],
 ) -> None:
     """Controls which config parts are saved by Lightning loggers.
 
@@ -157,33 +181,33 @@ def log_hyperparameters(
     trainer.logger.log_hyperparams(hparams)
 
 
-def get_metric_value(metric_name: str, trainer: pl.Trainer) -> float:
+def get_metric_value(metric_name: str, trainer: Trainer) -> float:
     """Retrieves value of the metric logged in LightningModule.
 
     Args:
         metric_name (str): Name of the metric.
-        trainer (pl.Trainer): Lightning Trainer instance.
+        trainer (Trainer): Lightning Trainer instance.
     """
     if metric_name not in trainer.callback_metrics:
         raise Exception(
             f"Metric value not found! <metric_name={metric_name}>\n"
             "Make sure metric name logged in LightningModule is correct!\n"
-            "Make sure the `optimized_metric` name in `hparams_search` config is correct!"
+            "Make sure `optimized_metric` name in `hparams_search` config is correct!"
         )
     return trainer.callback_metrics[metric_name]
 
 
 def finish(
     cfg: DictConfig,
-    model: pl.LightningModule,
-    datamodule: pl.LightningDataModule,
-    trainer: pl.Trainer,
-    callbacks: List[pl.Callback],
-    logger: List[pl.loggers.LightningLoggerBase],
+    model: LightningModule,
+    datamodule: LightningDataModule,
+    trainer: Trainer,
+    callbacks: List[Callback],
+    logger: List[LightningLoggerBase],
 ) -> None:
     """Makes sure everything closed properly."""
 
-    # without this sweeps with wandb logger might crash!
+    # without this sweeps with wandb logger might crash
     for lg in logger:
         if isinstance(lg, pl.loggers.wandb.WandbLogger):
             import wandb
