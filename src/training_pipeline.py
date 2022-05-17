@@ -31,20 +31,12 @@ def train(cfg: DictConfig) -> Optional[float]:
     model: LightningModule = hydra.utils.instantiate(cfg.model)
 
     # init lightning callbacks
-    callbacks: List[Callback] = []
-    if "callbacks" in cfg:
-        for _, cb_conf in cfg.callbacks.items():
-            if "_target_" in cb_conf:
-                log.info(f"Instantiating callback <{cb_conf._target_}>")
-                callbacks.append(hydra.utils.instantiate(cb_conf))
+    log.info("Instantiating callbacks...")
+    callbacks: List[Callback] = utils.instantiate_callbacks(cfg)
 
     # init lightning loggers
-    logger: List[LightningLoggerBase] = []
-    if "logger" in cfg:
-        for _, lg_conf in cfg.logger.items():
-            if "_target_" in lg_conf:
-                log.info(f"Instantiating logger <{lg_conf._target_}>")
-                logger.append(hydra.utils.instantiate(lg_conf))
+    log.info("Instantiating loggers...")
+    logger: List[LightningLoggerBase] = utils.instantiate_loggers(cfg)
 
     # init lightning trainer
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
