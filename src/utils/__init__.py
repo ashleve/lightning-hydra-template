@@ -1,5 +1,5 @@
-import os
 import logging
+import os
 import warnings
 from typing import List, Sequence
 
@@ -40,25 +40,31 @@ def extras(config: DictConfig) -> None:
 
     Utilities:
     - Ignoring python warnings
-    - Rich config printing
+    - Setting global seeds
     - Converting relative ckpt path to absolute path
+    - Rich config printing
     """
 
-    # disable python warnings if <config.ignore_warnings=True>
+    # disable python warnings
     if config.get("ignore_warnings"):
-        log.info("Disabling python warnings! <config.ignore_warnings=True>")
+        log.info(f"Disabling python warnings! <config.ignore_warnings={config.ignore_warnings}>")
         warnings.filterwarnings("ignore")
 
-    # pretty print config tree using Rich library if <config.print_config=True>
-    if config.get("print_config"):
-        log.info("Printing config tree with Rich! <config.print_config=True>")
-        print_config(config, resolve=True)
+    # set seed for random number generators in pytorch, numpy and python.random
+    if config.get("seed"):
+        log.info(f"Setting seeds! <config.seed={config.seed}>")
+        pl.seed_everything(config.seed, workers=True)
 
     # convert ckpt path to absolute path
     ckpt_path = config.get("ckpt_path")
     if ckpt_path and not os.path.isabs(ckpt_path):
-        log.info("Converting ckpt path to absolute path! <config.ckpt_path=...>")
+        log.info(f"Converting ckpt path to absolute path! <config.ckpt_path={ckpt_path}>")
         config.ckpt_path = os.path.join(hydra.utils.get_original_cwd(), ckpt_path)
+
+    # pretty print config tree using Rich library
+    if config.get("print_config"):
+        log.info(f"Printing config tree with Rich! <config.print_config={config.print_config}>")
+        print_config(config, resolve=True)
 
 
 @rank_zero_only
@@ -88,7 +94,7 @@ def print_config(
 
     for field in print_order:
         queue.append(field) if field in config else log.info(
-            f"Field '{field}' not found in config"
+            f"Field '{field}' not found in config."
         )
 
     for field in config:
