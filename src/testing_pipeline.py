@@ -46,3 +46,14 @@ def test(cfg: DictConfig) -> None:
     # test the model
     log.info("Starting testing!")
     trainer.test(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
+
+    # make sure everything closed properly
+    log.info("Finalizing!")
+    utils.finish(
+        cfg=cfg,
+        model=model,
+        datamodule=datamodule,
+        trainer=trainer,
+        callbacks=[],
+        logger=logger,
+    )
