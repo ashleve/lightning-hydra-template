@@ -8,7 +8,7 @@ dotenv.load_dotenv(override=True)
 
 
 @hydra.main(config_path="configs/", config_name="train.yaml")
-def main(config: DictConfig):
+def main(cfg: DictConfig):
 
     # imports can be nested inside @hydra.main to optimize tab completion
     # https://github.com/facebookresearch/hydra/issues/934
@@ -16,10 +16,10 @@ def main(config: DictConfig):
     from src.training_pipeline import train
 
     # applies optional utilities
-    utils.extras(config)
+    utils.extras(cfg)
 
     # train model
-    return train(config)
+    return train(cfg)
 
 
 if __name__ == "__main__":

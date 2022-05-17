@@ -111,5 +111,5 @@ class MNISTDataModule(LightningDataModule):
             shuffle=False,
         )
 
-    def teardown(self):
+    def teardown(self, stage: Optional[str] = None):
         pass
