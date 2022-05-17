@@ -3,7 +3,7 @@ from typing import List
 
 import hydra
 from omegaconf import DictConfig
-from pytorch_lightning import LightningDataModule, LightningModule, Trainer, seed_everything
+from pytorch_lightning import LightningDataModule, LightningModule, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
 
 from src import utils
@@ -22,10 +22,6 @@ def test(config: DictConfig) -> None:
     """
 
     assert config.ckpt_path
-
-    # Set seed for random number generators in pytorch, numpy and python.random
-    if config.get("seed"):
-        seed_everything(config.seed, workers=True)
 
     # Init lightning datamodule
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
