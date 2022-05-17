@@ -162,6 +162,22 @@ def log_hyperparameters(
     trainer.logger.log_hyperparams(hparams)
 
 
+def get_metric_value(metric_name: str, trainer: pl.Trainer) -> float:
+    """Retrieves value of the metric logged in LightningModule.
+
+    Args:
+        metric_name (str): Name of the metric.
+        trainer (pl.Trainer): Lightning Trainer instance.
+    """
+    if metric_name not in trainer.callback_metrics:
+        raise Exception(
+            f"Metric value not found! <metric_name={metric_name}>\n"
+            "Make sure metric name logged in LightningModule is correct!\n"
+            "Make sure the `optimized_metric` name in `hparams_search` config is correct!"
+        )
+    return trainer.callback_metrics[metric_name]
+
+
 def finish(
     config: DictConfig,
     model: pl.LightningModule,
