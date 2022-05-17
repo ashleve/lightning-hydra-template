@@ -69,13 +69,8 @@ def train(config: DictConfig) -> Optional[float]:
         trainer.fit(model=model, datamodule=datamodule, ckpt_path=config.get("ckpt_path"))
 
     # Get metric score for hyperparameter optimization
-    optimized_metric = config.get("optimized_metric")
-    if optimized_metric and optimized_metric not in trainer.callback_metrics:
-        raise Exception(
-            "Metric for hyperparameter optimization not found! "
-            "Make sure the `optimized_metric` in `hparams_search` config is correct!"
-        )
-    score = trainer.callback_metrics.get(optimized_metric)
+    metric_name = config.get("optimized_metric")
+    score = utils.get_metric_value(metric_name, trainer) if metric_name else None
 
     # Test the model
     if config.get("test"):
