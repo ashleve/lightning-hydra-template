@@ -1,4 +1,3 @@
-import os
 from typing import List, Optional
 
 import hydra
@@ -40,9 +39,7 @@ def train(cfg: DictConfig) -> Optional[float]:
 
     # init lightning trainer
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
-    trainer: Trainer = hydra.utils.instantiate(
-        cfg.trainer, callbacks=callbacks, logger=logger, _convert_="partial"
-    )
+    trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
 
     # send hyperparameters to loggers
     log.info("Logging hyperparameters!")
