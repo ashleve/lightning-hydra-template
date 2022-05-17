@@ -32,13 +32,6 @@ def train(config: DictConfig) -> Optional[float]:
     if config.get("seed"):
         seed_everything(config.seed, workers=True)
 
-    # Convert relative ckpt path to absolute path if necessary
-    ckpt_path = config.trainer.get("resume_from_checkpoint")
-    if ckpt_path and not os.path.isabs(ckpt_path):
-        config.trainer.resume_from_checkpoint = os.path.join(
-            hydra.utils.get_original_cwd(), ckpt_path
-        )
-
     # Init lightning datamodule
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(config.datamodule)
@@ -83,7 +76,7 @@ def train(config: DictConfig) -> Optional[float]:
     # Train the model
     if config.get("train"):
         log.info("Starting training!")
-        trainer.fit(model=model, datamodule=datamodule)
+        trainer.fit(model=model, datamodule=datamodule, ckpt_path=config.get("ckpt_path"))
 
     # Get metric score for hyperparameter optimization
     optimized_metric = config.get("optimized_metric")
