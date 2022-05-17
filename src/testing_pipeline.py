@@ -23,15 +23,15 @@ def test(config: DictConfig) -> None:
 
     assert config.ckpt_path
 
-    # Init lightning datamodule
+    # init lightning datamodule
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(config.datamodule)
 
-    # Init lightning model
+    # init lightning model
     log.info(f"Instantiating model <{config.model._target_}>")
     model: LightningModule = hydra.utils.instantiate(config.model)
 
-    # Init lightning loggers
+    # init lightning loggers
     logger: List[LightningLoggerBase] = []
     if "logger" in config:
         for _, lg_conf in config.logger.items():
@@ -39,13 +39,10 @@ def test(config: DictConfig) -> None:
                 log.info(f"Instantiating logger <{lg_conf._target_}>")
                 logger.append(hydra.utils.instantiate(lg_conf))
 
-    # Init lightning trainer
+    # init lightning trainer
     log.info(f"Instantiating trainer <{config.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(config.trainer, logger=logger)
 
-    # Log hyperparameters
-    if trainer.logger:
-        trainer.logger.log_hyperparams({"ckpt_path": config.ckpt_path})
-
+    # test the model
     log.info("Starting testing!")
     trainer.test(model=model, datamodule=datamodule, ckpt_path=config.ckpt_path)

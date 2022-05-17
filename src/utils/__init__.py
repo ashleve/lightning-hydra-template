@@ -18,15 +18,8 @@ def get_logger(name=__name__) -> logging.Logger:
 
     # this ensures all logging levels get marked with the rank zero decorator
     # otherwise logs would get multiplied for each GPU process in multi-GPU setup
-    for level in (
-        "debug",
-        "info",
-        "warning",
-        "error",
-        "exception",
-        "fatal",
-        "critical",
-    ):
+    logging_levels = ("debug", "info", "warning", "error", "exception", "fatal", "critical")
+    for level in logging_levels:
         setattr(logger, level, rank_zero_only(getattr(logger, level)))
 
     return logger
@@ -94,7 +87,7 @@ def print_config(
 
     for field in print_order:
         queue.append(field) if field in config else log.info(
-            f"Field '{field}' not found in config."
+            f"Field '{field}' not found in config. Skipping '{field}' config printing..."
         )
 
     for field in config:
@@ -157,6 +150,8 @@ def log_hyperparameters(
         hparams["seed"] = config["seed"]
     if "callbacks" in config:
         hparams["callbacks"] = config["callbacks"]
+    if "ckpt_path" in config:
+        hparams["ckpt_path"] = config.ckpt_path
 
     # send hparams to all loggers
     trainer.logger.log_hyperparams(hparams)
