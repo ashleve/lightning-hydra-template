@@ -1,3 +1,6 @@
+default_language_version:
+  python: python3
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0
@@ -5,17 +8,28 @@ repos:
       # list of supported hooks: https://pre-commit.com/hooks.html
       - id: trailing-whitespace
       - id: end-of-file-fixer
+      - id: check-docstring-first
       - id: check-yaml
-      - id: check-added-large-files
       - id: debug-statements
       - id: detect-private-key
+      - id: check-executables-have-shebangs
+      - id: check-toml
+      - id: check-case-conflict
+      - id: check-added-large-files
 
   # python code formatting
   - repo: https://github.com/psf/black
-    rev: 22.1.0
+    rev: 22.3.0
     hooks:
       - id: black
         args: [--line-length, "99"]
+
+  # python upgrading syntax to newer version
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.31.1
+    hooks:
+      - id: pyupgrade
+        args: [--py37-plus]
 
   # python import sorting
   - repo: https://github.com/PyCQA/isort
@@ -29,7 +43,7 @@ repos:
     rev: v1.4
     hooks:
       - id: docformatter
-        args: [--in-place, --wrap-summaries, "99", --wrap-descriptions, "92"]
+        args: [--in-place, --wrap-summaries=99, --wrap-descriptions=99]
 
   # yaml formatting
   - repo: https://github.com/pre-commit/mirrors-prettier
