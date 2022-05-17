@@ -1,7 +1,9 @@
+import os
 import logging
 import warnings
 from typing import List, Sequence
 
+import hydra
 import pytorch_lightning as pl
 import rich.syntax
 import rich.tree
@@ -39,6 +41,7 @@ def extras(config: DictConfig) -> None:
     Utilities:
     - Ignoring python warnings
     - Rich config printing
+    - Converting relative ckpt path to absolute path
     """
 
     # disable python warnings if <config.ignore_warnings=True>
@@ -50,6 +53,12 @@ def extras(config: DictConfig) -> None:
     if config.get("print_config"):
         log.info("Printing config tree with Rich! <config.print_config=True>")
         print_config(config, resolve=True)
+
+    # convert ckpt path to absolute path
+    ckpt_path = config.get("ckpt_path")
+    if ckpt_path and not os.path.isabs(ckpt_path):
+        log.info("Converting ckpt path to absolute path! <config.ckpt_path=...>")
+        config.ckpt_path = os.path.join(hydra.utils.get_original_cwd(), ckpt_path)
 
 
 @rank_zero_only

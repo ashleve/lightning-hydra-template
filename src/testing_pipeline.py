@@ -21,13 +21,11 @@ def test(config: DictConfig) -> None:
         None
     """
 
+    assert config.ckpt_path
+
     # Set seed for random number generators in pytorch, numpy and python.random
     if config.get("seed"):
         seed_everything(config.seed, workers=True)
-
-    # Convert relative ckpt path to absolute path if necessary
-    if not os.path.isabs(config.ckpt_path):
-        config.ckpt_path = os.path.join(hydra.utils.get_original_cwd(), config.ckpt_path)
 
     # Init lightning datamodule
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
