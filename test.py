@@ -10,15 +10,15 @@ dotenv.load_dotenv(override=True)
 @hydra.main(config_path="configs/", config_name="test.yaml")
 def main(config: DictConfig):
 
-    # Imports can be nested inside @hydra.main to optimize tab completion
+    # imports can be nested inside @hydra.main to optimize tab completion
     # https://github.com/facebookresearch/hydra/issues/934
     from src import utils
     from src.testing_pipeline import test
 
-    # Applies optional utilities
+    # applies optional utilities
     utils.extras(config)
 
-    # Evaluate model
+    # evaluate model
     return test(config)
 
 
