@@ -28,7 +28,7 @@ def get_logger(name=__name__) -> logging.Logger:
 log = get_logger(__name__)
 
 
-def extras(config: DictConfig) -> None:
+def extras(cfg: DictConfig) -> None:
     """Applies optional utilities, controlled by config flags.
 
     Utilities:
@@ -39,30 +39,30 @@ def extras(config: DictConfig) -> None:
     """
 
     # disable python warnings
-    if config.get("ignore_warnings"):
-        log.info(f"Disabling python warnings! <config.ignore_warnings={config.ignore_warnings}>")
+    if cfg.get("ignore_warnings"):
+        log.info(f"Disabling python warnings! <cfg.ignore_warnings={cfg.ignore_warnings}>")
         warnings.filterwarnings("ignore")
 
     # set seed for random number generators in pytorch, numpy and python.random
-    if config.get("seed"):
-        log.info(f"Setting seeds! <config.seed={config.seed}>")
-        pl.seed_everything(config.seed, workers=True)
+    if cfg.get("seed"):
+        log.info(f"Setting seeds! <cfg.seed={cfg.seed}>")
+        pl.seed_everything(cfg.seed, workers=True)
 
     # convert ckpt path to absolute path
-    ckpt_path = config.get("ckpt_path")
+    ckpt_path = cfg.get("ckpt_path")
     if ckpt_path and not os.path.isabs(ckpt_path):
-        log.info(f"Converting ckpt path to absolute path! <config.ckpt_path={ckpt_path}>")
-        config.ckpt_path = os.path.join(hydra.utils.get_original_cwd(), ckpt_path)
+        log.info(f"Converting ckpt path to absolute path! <cfg.ckpt_path={ckpt_path}>")
+        cfg.ckpt_path = os.path.join(hydra.utils.get_original_cwd(), ckpt_path)
 
     # pretty print config tree using Rich library
-    if config.get("print_config"):
-        log.info(f"Printing config tree with Rich! <config.print_config={config.print_config}>")
-        print_config(config, resolve=True)
+    if cfg.get("print_config"):
+        log.info(f"Printing config tree with Rich! <cfg.print_config={cfg.print_config}>")
+        print_config(cfg, resolve=True)
 
 
 @rank_zero_only
 def print_config(
-    config: DictConfig,
+    cfg: DictConfig,
     print_order: Sequence[str] = (
         "datamodule",
         "model",
@@ -75,7 +75,7 @@ def print_config(
     """Prints content of DictConfig using Rich library and its tree structure.
 
     Args:
-        config (DictConfig): Configuration composed by Hydra.
+        cfg (DictConfig): Configuration composed by Hydra.
         print_order (Sequence[str], optional): Determines in what order config components are printed.
         resolve (bool, optional): Whether to resolve reference fields of DictConfig.
     """
@@ -86,18 +86,18 @@ def print_config(
     queue = []
 
     for field in print_order:
-        queue.append(field) if field in config else log.info(
+        queue.append(field) if field in cfg else log.info(
             f"Field '{field}' not found in config. Skipping '{field}' config printing..."
         )
 
-    for field in config:
+    for field in cfg:
         if field not in queue:
             queue.append(field)
 
     for field in queue:
         branch = tree.add(field, style=style, guide_style=style)
 
-        config_group = config[field]
+        config_group = cfg[field]
         if isinstance(config_group, DictConfig):
             branch_content = OmegaConf.to_yaml(config_group, resolve=resolve)
         else:
@@ -113,7 +113,7 @@ def print_config(
 
 @rank_zero_only
 def log_hyperparameters(
-    config: DictConfig,
+    cfg: DictConfig,
     model: pl.LightningModule,
     datamodule: pl.LightningDataModule,
     trainer: pl.Trainer,
@@ -132,7 +132,7 @@ def log_hyperparameters(
     hparams = {}
 
     # choose which parts of hydra config will be saved to loggers
-    hparams["model"] = config["model"]
+    hparams["model"] = cfg["model"]
 
     # save number of model parameters
     hparams["model/params/total"] = sum(p.numel() for p in model.parameters())
@@ -143,15 +143,15 @@ def log_hyperparameters(
         p.numel() for p in model.parameters() if not p.requires_grad
     )
 
-    hparams["datamodule"] = config["datamodule"]
-    hparams["trainer"] = config["trainer"]
+    hparams["datamodule"] = cfg["datamodule"]
+    hparams["trainer"] = cfg["trainer"]
 
-    if "seed" in config:
-        hparams["seed"] = config["seed"]
-    if "callbacks" in config:
-        hparams["callbacks"] = config["callbacks"]
-    if "ckpt_path" in config:
-        hparams["ckpt_path"] = config.ckpt_path
+    if "seed" in cfg:
+        hparams["seed"] = cfg["seed"]
+    if "callbacks" in cfg:
+        hparams["callbacks"] = cfg["callbacks"]
+    if "ckpt_path" in cfg:
+        hparams["ckpt_path"] = cfg.ckpt_path
 
     # send hparams to all loggers
     trainer.logger.log_hyperparams(hparams)
@@ -174,7 +174,7 @@ def get_metric_value(metric_name: str, trainer: pl.Trainer) -> float:
 
 
 def finish(
-    config: DictConfig,
+    cfg: DictConfig,
     model: pl.LightningModule,
     datamodule: pl.LightningDataModule,
     trainer: pl.Trainer,
