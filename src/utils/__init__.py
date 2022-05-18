@@ -1,14 +1,15 @@
 import logging
 import os
 import warnings
-from typing import List, Sequence
+from typing import Any, Dict, List, Sequence
 
+import dotenv
 import hydra
 import pytorch_lightning as pl
 import rich.syntax
 import rich.tree
 from omegaconf import DictConfig, OmegaConf
-from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
+from pytorch_lightning import Callback, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning.utilities import rank_zero_only
 
@@ -34,27 +35,33 @@ def extras(cfg: DictConfig) -> None:
     """Applies optional utilities, controlled by config flags.
 
     Utilities:
+    - Loading environment variables from .env file
     - Ignoring python warnings
-    - Setting global seeds
     - Converting relative ckpt path to absolute path
+    - Setting global seeds
     - Rich config printing
     """
+
+    # load environment variables from `.env` file if exists
+    if cfg.get("load_dotenv"):
+        log.info(f"Loading environment variables! <cfg.load_dotenv={cfg.load_dotenv}>")
+        dotenv.load_dotenv(override=True, verbose=True)
 
     # disable python warnings
     if cfg.get("ignore_warnings"):
         log.info(f"Disabling python warnings! <cfg.ignore_warnings={cfg.ignore_warnings}>")
         warnings.filterwarnings("ignore")
 
+    # convert relative ckpt path to absolute path
+    # otherwise relative paths won't work since hydra hijacks the work dir
+    if cfg.get("ckpt_path") and not os.path.isabs(cfg.ckpt_path):
+        log.info(f"Converting ckpt path to absolute path! <cfg.ckpt_path={cfg.ckpt_path}>")
+        cfg.ckpt_path = os.path.join(hydra.utils.get_original_cwd(), cfg.ckpt_path)
+
     # set seed for random number generators in pytorch, numpy and python.random
     if cfg.get("seed"):
         log.info(f"Setting seeds! <cfg.seed={cfg.seed}>")
         pl.seed_everything(cfg.seed, workers=True)
-
-    # convert ckpt path to absolute path
-    ckpt_path = cfg.get("ckpt_path")
-    if ckpt_path and not os.path.isabs(ckpt_path):
-        log.info(f"Converting ckpt path to absolute path! <cfg.ckpt_path={ckpt_path}>")
-        cfg.ckpt_path = os.path.join(hydra.utils.get_original_cwd(), ckpt_path)
 
     # pretty print config tree using Rich library
     if cfg.get("print_config"):
@@ -65,13 +72,7 @@ def extras(cfg: DictConfig) -> None:
 @rank_zero_only
 def print_config(
     cfg: DictConfig,
-    print_order: Sequence[str] = (
-        "datamodule",
-        "model",
-        "callbacks",
-        "logger",
-        "trainer",
-    ),
+    print_order: Sequence[str] = ("datamodule", "model", "callbacks", "logger", "trainer"),
     resolve: bool = True,
 ) -> None:
     """Prints content of DictConfig using Rich library and its tree structure.
@@ -113,49 +114,57 @@ def print_config(
         rich.print(tree, file=file)
 
 
-def instantiate_callbacks(cfg: DictConfig) -> List[Callback]:
+def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
     """Instantiates callbacks from config."""
     callbacks: List[Callback] = []
-    if "callbacks" in cfg:
-        for _, cb_conf in cfg.callbacks.items():
-            if "_target_" in cb_conf:
-                log.info(f"Instantiating callback <{cb_conf._target_}>")
-                callbacks.append(hydra.utils.instantiate(cb_conf))
+
+    if not callbacks_cfg:
+        return callbacks
+
+    assert isinstance(callbacks_cfg, DictConfig), "Callbacks config must be a DictConfig!"
+
+    for _, cb_conf in callbacks_cfg.items():
+        if "_target_" in cb_conf:
+            log.info(f"Instantiating callback <{cb_conf._target_}>")
+            callbacks.append(hydra.utils.instantiate(cb_conf))
+
     return callbacks
 
 
-def instantiate_loggers(cfg: DictConfig) -> List[LightningLoggerBase]:
+def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
     """Instantiates loggers from config."""
-    loggers: List[LightningLoggerBase] = []
-    if "logger" in cfg:
-        for _, lg_conf in cfg.logger.items():
-            if "_target_" in lg_conf:
-                log.info(f"Instantiating logger <{lg_conf._target_}>")
-                loggers.append(hydra.utils.instantiate(lg_conf))
-    return loggers
+    logger: List[LightningLoggerBase] = []
+
+    if not logger_cfg:
+        return logger
+
+    assert isinstance(logger_cfg, DictConfig), "Loggers config must be a DictConfig!"
+
+    for _, lg_conf in logger_cfg.items():
+        if "_target_" in lg_conf:
+            log.info(f"Instantiating logger <{lg_conf._target_}>")
+            logger.append(hydra.utils.instantiate(lg_conf))
+
+    return logger
 
 
 @rank_zero_only
-def log_hyperparameters(
-    cfg: DictConfig,
-    model: LightningModule,
-    datamodule: LightningDataModule,
-    trainer: Trainer,
-    callbacks: List[Callback],
-    logger: List[LightningLoggerBase],
-) -> None:
+def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
     """Controls which config parts are saved by Lightning loggers.
 
     Additionaly saves:
     - number of model parameters
     """
 
+    hparams = {}
+
+    cfg = object_dict["cfg"]
+    model = object_dict["model"]
+    trainer = object_dict["trainer"]
+
     if not trainer.logger:
         return
 
-    hparams = {}
-
-    # choose which parts of hydra config will be saved to loggers
     hparams["model"] = cfg["model"]
 
     # save number of model parameters
@@ -197,17 +206,11 @@ def get_metric_value(metric_name: str, trainer: Trainer) -> float:
     return trainer.callback_metrics[metric_name]
 
 
-def finish(
-    cfg: DictConfig,
-    model: LightningModule,
-    datamodule: LightningDataModule,
-    trainer: Trainer,
-    callbacks: List[Callback],
-    logger: List[LightningLoggerBase],
-) -> None:
+def finish(object_dict: Dict[str, Any]) -> None:
     """Makes sure everything closed properly."""
 
     # without this sweeps with wandb logger might crash
+    logger = object_dict.get("logger", [])
     for lg in logger:
         if isinstance(lg, pl.loggers.wandb.WandbLogger):
             import wandb
