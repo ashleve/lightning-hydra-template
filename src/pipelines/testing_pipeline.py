@@ -41,7 +41,6 @@ def test(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(cfg.trainer, logger=logger)
 
-    # create dict for more convenient access to objects
     object_dict = {
         "cfg": cfg,
         "datamodule": datamodule,
@@ -57,5 +56,8 @@ def test(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
     # test the model
     log.info("Starting testing!")
     trainer.test(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
+
+    # for predictions use trainer.predict(...)
+    # predictions = trainer.predict(model=model, dataloaders=dataloaders, ckpt_path=cfg.ckpt_path)
 
     return None, object_dict

@@ -22,7 +22,7 @@ def pipeline_wrapper(pipeline_func):
 
         # TODO: repeat call if fails...
         result = pipeline_func(cfg=cfg)
-        score, object_dict = result
+        metric_value, object_dict = result
 
         # make sure everything closed properly
         utils.finish(object_dict)
@@ -33,8 +33,8 @@ def pipeline_wrapper(pipeline_func):
             file.write("Total execution time:\n")
             file.write(pipeline_func.__name__ + ": " + str(end - start) + "\n")
 
-        assert type(score) is float or score is None
+        assert type(metric_value) is float or metric_value is None
         assert type(object_dict) is dict
-        return score, object_dict
+        return metric_value, object_dict
 
     return wrap

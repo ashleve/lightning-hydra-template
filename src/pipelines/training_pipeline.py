@@ -47,7 +47,6 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
 
-    # create dict for more convenient access to objects
     object_dict = {
         "cfg": cfg,
         "datamodule": datamodule,
@@ -66,21 +65,21 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
         log.info("Starting training!")
         trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
 
-    # get metric score for hyperparameter optimization
-    score = None
+    # get metric value for hyperparameter optimization
+    metric_value = None
     if cfg.get("optimized_metric"):
-        log.info("Retrieving metric score!")
-        score = utils.get_metric_value(metric_name=cfg.optimized_metric, trainer=trainer)
+        log.info("Retrieving metric value!")
+        metric_value = utils.get_metric_value(metric_name=cfg.optimized_metric, trainer=trainer)
 
     # test the model
     if cfg.get("test"):
         log.info("Starting testing!")
-        ckpt_path = "best" if cfg.get("train") and not cfg.trainer.get("fast_dev_run") else None
+        ckpt_path = "best" if trainer.checkpoint_callback.best_model_path else None
         trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
 
     # print path to best checkpoint
     if trainer.checkpoint_callback.best_model_path:
         log.info(f"Best model ckpt at {trainer.checkpoint_callback.best_model_path}")
 
-    # return metric score for hyperparameter optimization
-    return score, object_dict
+    # return metric value for hyperparameter optimization
+    return metric_value, object_dict
