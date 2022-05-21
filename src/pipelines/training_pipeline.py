@@ -23,7 +23,7 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
         cfg (DictConfig): Configuration composed by Hydra.
 
     Returns:
-        Tuple[Optional[float], Dict[str, Any]]: A tuple of metric score for hyperparameter optimization
+        Tuple[Optional[float], Dict[str, Any]]: A tuple of metric value for hyperparameter optimization
         and dictionary with all instantiated objects.
     """
 
