@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict, Tuple, Any
+from typing import Any, Dict, List, Optional, Tuple
 
 import hydra
 from omegaconf import DictConfig
@@ -13,7 +13,9 @@ log = utils.get_logger(__name__)
 
 @pipeline_wrapper
 def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
-    """Contains the training pipeline. Can additionally evaluate model on a testset, using best
+    """Contains the training pipeline.
+
+    Can additionally evaluate model on a testset, using best
     weights obtained during training.
 
     This method is wrapped in @pipeline_wrapper decorator which applies extra utilities

@@ -1,26 +1,28 @@
-from typing import List, Dict, Tuple, Any
-
+from typing import Any, Dict, List, Tuple
 
 import hydra
 from omegaconf import DictConfig
 from pytorch_lightning import LightningDataModule, LightningModule, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
 
-from src.pipelines import pipeline_wrapper
 from src import utils
+from src.pipelines import pipeline_wrapper
 
 log = utils.get_logger(__name__)
 
 
 @pipeline_wrapper
 def test(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
-    """Contains minimal example of the testing pipeline. Evaluates given checkpoint on a testset.
+    """Evaluates given checkpoint on a datamodule testset.
+
+    This method is wrapped in @pipeline_wrapper decorator which applies extra utilities
+    before and after the call.
 
     Args:
         cfg (DictConfig): Configuration composed by Hydra.
 
     Returns:
-        Tuple[None, Dict[str, Any]]
+        Tuple[None, Dict[str, Any]]: A tuple of None and dictionary with all instantiated objects.
     """
 
     assert cfg.ckpt_path

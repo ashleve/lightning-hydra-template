@@ -1,7 +1,6 @@
-import pyrootutils
 import hydra
+import pyrootutils
 from omegaconf import DictConfig
-
 
 # project root setup
 # allows for calling this script from any place

@@ -1,6 +1,8 @@
 import time
-from src import utils
+
 from omegaconf import DictConfig
+
+from src import utils
 
 log = utils.get_logger(__name__)
 

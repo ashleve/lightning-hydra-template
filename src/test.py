@@ -1,7 +1,6 @@
-import pyrootutils
 import hydra
+import pyrootutils
 from omegaconf import DictConfig
-
 
 root = pyrootutils.setup_root(indicator=".git", search_from=__file__)
 
