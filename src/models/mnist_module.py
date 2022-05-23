@@ -11,12 +11,13 @@ from src.models.components.simple_dense_net import SimpleDenseNet
 class MNISTLitModule(LightningModule):
     """Example of LightningModule for MNIST classification.
 
-    A LightningModule organizes your PyTorch code into 5 sections:
+    A LightningModule organizes your PyTorch code into 6 sections:
         - Computations (init).
         - Train loop (training_step)
         - Validation loop (validation_step)
         - Test loop (test_step)
-        - Optimizers (configure_optimizers)
+        - Prediction Loop (predict_step)
+        - Optimizers and LR Schedulers (configure_optimizers)
 
     Read the docs:
         https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html
@@ -118,7 +119,7 @@ class MNISTLitModule(LightningModule):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
         Normally you'd need one. But in the case of GANs or similar you might have multiple.
 
-        See examples here:
+        Examples:
             https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
         """
         return torch.optim.Adam(
