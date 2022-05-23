@@ -3,7 +3,6 @@ import os
 import warnings
 from typing import Any, Dict, List, Sequence
 
-import dotenv
 import hydra
 import pytorch_lightning as pl
 import rich.syntax
@@ -35,17 +34,11 @@ def extras(cfg: DictConfig) -> None:
     """Applies optional utilities, controlled by config flags.
 
     Utilities:
-    - Loading environment variables from .env file
     - Ignoring python warnings
     - Converting relative ckpt path to absolute path
     - Setting global seeds
     - Rich config printing
     """
-
-    # load environment variables from `.env` file if exists
-    if cfg.get("load_dotenv"):
-        log.info(f"Loading environment variables! <cfg.load_dotenv={cfg.load_dotenv}>")
-        dotenv.load_dotenv(override=True, verbose=True)
 
     # disable python warnings
     if cfg.get("ignore_warnings"):
@@ -210,9 +203,8 @@ def finish(object_dict: Dict[str, Any]) -> None:
     """Makes sure everything closed properly."""
 
     # without this sweeps with wandb logger might crash
-    logger = object_dict.get("logger", [])
-    for lg in logger:
-        if isinstance(lg, pl.loggers.wandb.WandbLogger):
+    for logger in object_dict.get("logger", []):
+        if isinstance(logger, pl.loggers.wandb.WandbLogger):
             import wandb
 
             wandb.finish()

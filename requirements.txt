@@ -5,9 +5,9 @@ pytorch-lightning>=1.6.0
 torchmetrics>=0.8.0
 
 # --------- hydra --------- #
-hydra-core>=1.1.0
-hydra-colorlog>=1.1.0
-hydra-optuna-sweeper>=1.1.0
+hydra-core>=1.2.0
+hydra-colorlog>=1.2.0
+hydra-optuna-sweeper>=1.2.0
 
 # --------- loggers --------- #
 # wandb
@@ -16,6 +16,7 @@ hydra-optuna-sweeper>=1.1.0
 # comet-ml
 
 # --------- others --------- #
+pyrootutils     # standardizing the project root setup
 pre-commit      # hooks for applying linters on commit
 python-dotenv   # loading env variables from .env file
 rich            # beautiful text formatting in terminal
