@@ -1,8 +1,20 @@
+import pyrootutils
 import hydra
 from omegaconf import DictConfig
 
 
-@hydra.main(config_path="configs", config_name="train.yaml")
+# project root setup
+# allows for calling this script from any place
+root = pyrootutils.setup_root(
+    indicator=".git",  # file which indicates the root dir
+    search_from=__file__,  # search for indicator in parent dirs, starting from here
+    pythonpath=True,  # add root dir to the PYTHONPATH
+    cwd=True,  # set current work dir to the root dir
+    dotenv=True,  # load environment variables from .env if exists
+)
+
+
+@hydra.main(config_path=root / "configs", config_name="train.yaml")
 def main(cfg: DictConfig) -> float:
 
     # imports can be nested inside @hydra.main to optimize tab completion
