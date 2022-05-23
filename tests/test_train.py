@@ -1,9 +1,9 @@
 import pytest
-import train
-
-from tests.helpers.run_if import RunIf
 from omegaconf import open_dict
+
+import train
 from tests.helpers import load_config
+from tests.helpers.run_if import RunIf
 
 
 def test_train_fast_dev_run(tmp_path):

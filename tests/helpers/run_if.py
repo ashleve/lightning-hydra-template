@@ -1,3 +1,8 @@
+"""Adapted from:
+
+https://github.com/PyTorchLightning/pytorch-lightning/blob/master/tests/helpers/runif.py
+"""
+
 import sys
 from typing import Optional
 
@@ -6,21 +11,16 @@ import torch
 from packaging.version import Version
 from pkg_resources import get_distribution
 
-"""
-Adapted from:
-    https://github.com/PyTorchLightning/pytorch-lightning/blob/master/tests/helpers/runif.py
-"""
-
 from tests.helpers.package_available import (
-    _IS_WINDOWS,
-    _SH_AVAILABLE,
-    _TPU_AVAILABLE,
+    _COMET_AVAILABLE,
     _DEEPSPEED_AVAILABLE,
     _FAIRSCALE_AVAILABLE,
-    _WANDB_AVAILABLE,
-    _NEPTUNE_AVAILABLE,
-    _COMET_AVAILABLE,
+    _IS_WINDOWS,
     _MLFLOW_AVAILABLE,
+    _NEPTUNE_AVAILABLE,
+    _SH_AVAILABLE,
+    _TPU_AVAILABLE,
+    _WANDB_AVAILABLE,
 )
 
 

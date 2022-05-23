@@ -1,9 +1,5 @@
-import os
 import hydra
-from omegaconf import OmegaConf
-from pathlib import Path
 from omegaconf import DictConfig
-from hydra.core.hydra_config import HydraConfig
 
 
 def test_train_config(cfg_train: DictConfig):

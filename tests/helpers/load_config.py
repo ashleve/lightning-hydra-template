@@ -1,7 +1,8 @@
-from omegaconf import DictConfig, OmegaConf, open_dict
+from typing import List
+
 from hydra import compose, initialize
 from hydra.core.hydra_config import HydraConfig
-from typing import List
+from omegaconf import DictConfig, OmegaConf, open_dict
 
 
 def load_cfg(config_name: str, overrides: List[str]) -> DictConfig:

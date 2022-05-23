@@ -1,4 +1,5 @@
 import platform
+
 import pkg_resources
 from pytorch_lightning.utilities.xla_device import XLADeviceUtils
 

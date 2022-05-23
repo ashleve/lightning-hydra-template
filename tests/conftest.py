@@ -1,17 +1,14 @@
-import pytest
+"""Use the following command to skip slow tests:
 
-from omegaconf import DictConfig
-from tests.helpers import load_config
-from pytest import TempPathFactory
-from hydra.core.hydra_config import HydraConfig
-
-
-"""
-Use the following command to skip slow tests:
-```
 pytest -k "not slow"
-```
 """
+
+import pytest
+from hydra.core.hydra_config import HydraConfig
+from omegaconf import DictConfig
+from pytest import TempPathFactory
+
+from tests.helpers import load_config
 
 
 @pytest.fixture(scope="package")

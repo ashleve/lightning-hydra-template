@@ -1,8 +1,7 @@
 import pytest
 
-from tests.helpers.run_sh_command import run_sh_command
 from tests.helpers.run_if import RunIf
-
+from tests.helpers.run_sh_command import run_sh_command
 
 startfile = "train.py"
 overrides = ["++trainer.fast_dev_run=true", "logger=[]"]

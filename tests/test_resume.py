@@ -1,12 +1,13 @@
 import os
-import pytest
-from omegaconf import DictConfig
-import train
 import test
-from hydra import initialize, compose
+
+import pytest
+from hydra import compose, initialize
 from hydra.core.hydra_config import HydraConfig
-from tests.helpers import load_config
 from omegaconf import DictConfig, OmegaConf, open_dict
+
+import train
+from tests.helpers import load_config
 
 
 @pytest.mark.slow
