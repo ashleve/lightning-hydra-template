@@ -72,6 +72,12 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
     if cfg.get("optimized_metric"):
         log.info("Retrieving metric value!")
         metric_value = utils.get_metric_value(metric_name=cfg.optimized_metric, trainer=trainer)
+        print(metric_value)
+        print(metric_value)
+        print(metric_value)
+        print(metric_value)
+        print(metric_value)
+        print(metric_value)
 
     # test the model
     if cfg.get("test"):

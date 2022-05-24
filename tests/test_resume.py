@@ -1,12 +1,9 @@
 import os
-import test
 
 import pytest
-from hydra import compose, initialize
-from hydra.core.hydra_config import HydraConfig
-from omegaconf import DictConfig, OmegaConf, open_dict
+from omegaconf import open_dict
 
-import train
+from src import test, train
 from tests.helpers import load_config
 
 
@@ -26,6 +23,7 @@ def test_train_resume(tmp_path):
 
     with open_dict(cfg):
         cfg.ckpt_path = str(tmp_path / "last.ckpt")
+        cfg.trainer.max_epochs = 2
 
     train.main(cfg)
 

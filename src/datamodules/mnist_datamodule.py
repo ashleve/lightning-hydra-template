@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import torch
 from pytorch_lightning import LightningDataModule
@@ -14,10 +14,10 @@ class MNISTDataModule(LightningDataModule):
 
         def prepare_data(self):
             # things to do on 1 GPU/TPU (not on every GPU/TPU in DDP)
-            # download data, split, etc...
+            # download data, pre-process, split, save to disk, etc...
         def setup(self, stage):
             # things to do on every process in DDP
-            # load data, split, set variables, etc...
+            # load data, set variables, etc...
         def train_dataloader(self):
             # return train dataloader
         def val_dataloader(self):
@@ -46,7 +46,7 @@ class MNISTDataModule(LightningDataModule):
         super().__init__()
 
         # this line allows to access init params with 'self.hparams' attribute
-        # it also ensures init params will be stored in ckpt
+        # also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
 
         # data transformations
@@ -63,15 +63,18 @@ class MNISTDataModule(LightningDataModule):
         return 10
 
     def prepare_data(self):
-        """Download data if needed."""
+        """Download data if needed.
+
+        Do not use it to assign state (self.x = y).
+        """
         MNIST(self.hparams.data_dir, train=True, download=True)
         MNIST(self.hparams.data_dir, train=False, download=True)
 
     def setup(self, stage: Optional[str] = None):
         """Load data. Set variables: `self.data_train`, `self.data_val`, `self.data_test`.
 
-        This method is called by Lightning with both `trainer.fit()` and `trainer.test()`, so be
-        careful not to execute the random split twice!
+        This method is called by lightning with both `trainer.fit()` and `trainer.test()`, so be
+        careful not to execute things like random split twice!
         """
         # load and split datasets only if not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
@@ -112,4 +115,13 @@ class MNISTDataModule(LightningDataModule):
         )
 
     def teardown(self, stage: Optional[str] = None):
+        """Clean up after fit or test."""
+        pass
+
+    def state_dict(self) -> Dict[str, Any]:
+        """Extra things to save to checkpoint."""
+        return {}
+
+    def load_state_dict(self, state_dict: Dict[str, Any]) -> None:
+        """Things to do when loading checkpoint."""
         pass

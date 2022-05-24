@@ -196,7 +196,7 @@ def get_metric_value(metric_name: str, trainer: Trainer) -> float:
             "Make sure metric name logged in LightningModule is correct!\n"
             "Make sure `optimized_metric` name in `hparams_search` config is correct!"
         )
-    return trainer.callback_metrics[metric_name]
+    return trainer.callback_metrics[metric_name].item()
 
 
 def finish(object_dict: Dict[str, Any]) -> None:

@@ -32,7 +32,7 @@ class MNISTLitModule(LightningModule):
         super().__init__()
 
         # this line allows to access init params with 'self.hparams' attribute
-        # it also ensures init params will be stored in ckpt
+        # also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
 
         self.net = net

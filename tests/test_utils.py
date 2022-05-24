@@ -1,10 +1,6 @@
 import pytest
 
 
-def test_modify_paths(tmp_path):
-    pass
-
-
 def test_extras(tmp_path):
     pass
 

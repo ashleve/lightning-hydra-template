@@ -1,7 +1,7 @@
 import pytest
 from omegaconf import open_dict
 
-import train
+from src import train
 from tests.helpers import load_config
 from tests.helpers.run_if import RunIf
 
