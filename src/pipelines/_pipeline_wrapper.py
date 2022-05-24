@@ -35,8 +35,8 @@ def pipeline_wrapper(pipeline_func):
             file.write("Total execution time:\n")
             file.write(pipeline_func.__name__ + ": " + str(end - start) + "\n")
 
-        assert type(metric_value) is float or metric_value is None
-        assert type(object_dict) is dict
+        assert isinstance(metric_value, (float, None)), "Returned metric must be a float or None!"
+        assert isinstance(object_dict, dict), "Returned object_dict must be a dict!"
         return metric_value, object_dict
 
     return wrap
