@@ -38,8 +38,8 @@ def load_train_cfg_simple(tmp_dir: str) -> DictConfig:
     return cfg
 
 
-def load_test_cfg_simple(tmp_dir: str, ckpt_path: str) -> DictConfig:
-    cfg = load_cfg("test.yaml", overrides=[f"ckpt_path={ckpt_path}"])
+def load_eval_cfg_simple(tmp_dir: str, ckpt_path: str) -> DictConfig:
+    cfg = load_cfg("eval.yaml", overrides=[f"ckpt_path={ckpt_path}"])
 
     # set defaults
     with open_dict(cfg):
