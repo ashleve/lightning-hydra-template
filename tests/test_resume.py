@@ -3,7 +3,7 @@ import os
 import pytest
 from omegaconf import open_dict
 
-from src import test, train
+from src import eval, train
 from tests.helpers import load_config
 
 
@@ -44,5 +44,5 @@ def test_train_eval(tmp_path):
     files = os.listdir(tmp_path)
     assert "last.ckpt" in files
 
-    cfg_test = load_config.load_test_cfg_simple(tmp_path, ckpt_path=str(tmp_path / "last.ckpt"))
-    test.main(cfg_test)
+    cfg_test = load_config.load_eval_cfg_simple(tmp_path, ckpt_path=str(tmp_path / "last.ckpt"))
+    eval.main(cfg_test)

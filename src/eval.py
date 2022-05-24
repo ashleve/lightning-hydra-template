@@ -14,9 +14,9 @@ root = pyrootutils.setup_root(
 @hydra.main(config_path=root / "configs", config_name="test.yaml")
 def main(cfg: DictConfig):
 
-    from src.pipelines.testing_pipeline import test
+    from src.pipelines.eval_pipeline import eval
 
-    test(cfg)
+    eval(cfg)
 
 
 if __name__ == "__main__":

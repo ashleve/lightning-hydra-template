@@ -12,7 +12,7 @@ log = utils.get_logger(__name__)
 
 
 @pipeline_wrapper
-def test(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
+def eval(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
     """Evaluates given checkpoint on a datamodule testset.
 
     This method is wrapped in @pipeline_wrapper decorator which applies extra utilities

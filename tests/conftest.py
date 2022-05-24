@@ -21,5 +21,5 @@ def cfg_train(tmp_path_factory: TempPathFactory) -> DictConfig:
 @pytest.fixture(scope="package")
 def cfg_test(tmp_path_factory: TempPathFactory) -> DictConfig:
     tmpdir_test = tmp_path_factory.mktemp("tmpdir_test")
-    cfg = load_config.load_test_cfg_simple(tmpdir_test, ckpt_path=str(tmpdir_test / "last.ckpt"))
+    cfg = load_config.load_eval_cfg_simple(tmpdir_test, ckpt_path=str(tmpdir_test / "last.ckpt"))
     yield cfg
