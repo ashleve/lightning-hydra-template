@@ -3,12 +3,11 @@
 # specify here default evaluation configuration
 defaults:
   - _self_
-  - datamodule: mnist.yaml # choose the datamodule for evaluation
+  - datamodule: mnist.yaml # choose datamodule with test_dataloader for evaluation
   - model: mnist.yaml
-  - callbacks: null
   - logger: null
   - trainer: default.yaml
-  - log_dir: evaluation.yaml
+  - log_dir: eval.yaml
 
   - experiment: null
 

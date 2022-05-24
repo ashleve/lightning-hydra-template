@@ -9,7 +9,7 @@ defaults:
   - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml
-  - log_dir: experiment.yaml
+  - log_dir: train.yaml
 
   # experiment configs allow for version control of specific configurations
   # e.g. best hyperparameters for given model and datamodule

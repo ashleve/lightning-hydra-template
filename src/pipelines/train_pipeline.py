@@ -13,10 +13,8 @@ log = utils.get_logger(__name__)
 
 @pipeline_wrapper
 def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
-    """Contains the training pipeline.
-
-    Can additionally evaluate model on a testset, using best
-    weights obtained during training.
+    """Trains the model. Can additionally evaluate on a testset, using best weights obtained during
+    training.
 
     This method is wrapped in @pipeline_wrapper decorator which applies extra utilities
     before and after the call.
@@ -71,7 +69,7 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
     metric_value = None
     if cfg.get("optimized_metric"):
         metric_value = utils.get_metric_value(metric_name=cfg.optimized_metric, trainer=trainer)
-        log.info(f"Retrieved metric value! {cfg.optimized_metric}={metric_value}")
+        log.info(f"Retrieved metric value! <{cfg.optimized_metric}={metric_value}>")
 
     # test the model
     if cfg.get("test"):
