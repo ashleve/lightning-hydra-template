@@ -32,3 +32,10 @@ class SimpleDenseNet(nn.Module):
         x = x.view(batch_size, -1)
 
         return self.model(x)
+
+
+if __name__ == "__main__":
+    import pyrootutils
+
+    root = pyrootutils.setup_root(__file__)
+    _ = SimpleDenseNet()
