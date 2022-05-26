@@ -18,7 +18,7 @@ def main(cfg: DictConfig) -> float:
 
     # imports can be nested inside @hydra.main to optimize tab completion
     # https://github.com/facebookresearch/hydra/issues/934
-    from src.pipelines.train_pipeline import train
+    from src.tasks.train_task import train
 
     # train model
     metric_value, _ = train(cfg)

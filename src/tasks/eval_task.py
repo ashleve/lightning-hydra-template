@@ -6,16 +6,16 @@ from pytorch_lightning import LightningDataModule, LightningModule, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
 
 from src import utils
-from src.pipelines import pipeline_wrapper
+from src.tasks import task_wrapper
 
 log = utils.get_logger(__name__)
 
 
-@pipeline_wrapper
+@task_wrapper
 def eval(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
     """Evaluates given checkpoint on a datamodule testset.
 
-    This method is wrapped in @pipeline_wrapper decorator which applies extra utilities
+    This method is wrapped in @task_wrapper decorator which applies extra utilities
     before and after the call.
 
     Args:

@@ -6,17 +6,17 @@ from pytorch_lightning import Callback, LightningDataModule, LightningModule, Tr
 from pytorch_lightning.loggers import LightningLoggerBase
 
 from src import utils
-from src.pipelines import pipeline_wrapper
+from src.tasks import task_wrapper
 
 log = utils.get_logger(__name__)
 
 
-@pipeline_wrapper
+@task_wrapper
 def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
     """Trains the model. Can additionally evaluate on a testset, using best weights obtained during
     training.
 
-    This method is wrapped in @pipeline_wrapper decorator which applies extra utilities
+    This method is wrapped in @task_wrapper decorator which applies extra utilities
     before and after the call.
 
     Args:

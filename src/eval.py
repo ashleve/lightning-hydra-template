@@ -2,19 +2,13 @@ import hydra
 import pyrootutils
 from omegaconf import DictConfig
 
-root = pyrootutils.setup_root(
-    indicator=".git",
-    search_from=__file__,
-    pythonpath=True,
-    cwd=True,
-    dotenv=True,
-)
+root = pyrootutils.setup_root(__file__)
 
 
 @hydra.main(config_path=root / "configs", config_name="eval.yaml")
 def main(cfg: DictConfig):
 
-    from src.pipelines.eval_pipeline import eval
+    from src.tasks.eval_task import eval
 
     eval(cfg)
 
