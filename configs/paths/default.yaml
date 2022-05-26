@@ -1,0 +1,12 @@
+# we assume current working directory is the root directory
+root_dir: ${hydra:runtime.cwd}
+
+# path to folder with data
+data_dir: ${paths.root_dir}/data
+
+# logging directory
+log_dir: ${paths.root_dir}/logs
+
+# output directory, created dynamically by hydra
+# use it to store all files generated during the run, like ckpts and logs
+output_dir: ${hydra:run.dir}
