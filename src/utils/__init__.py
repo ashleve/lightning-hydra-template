@@ -1,6 +1,7 @@
 import logging
 import os
 import warnings
+from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
 import hydra
@@ -40,6 +41,8 @@ def extras(cfg: DictConfig) -> None:
     - Rich config printing
     """
 
+    assert_paths_exist(cfg)
+
     # disable python warnings
     if cfg.get("ignore_warnings"):
         log.info(f"Disabling python warnings! <cfg.ignore_warnings={cfg.ignore_warnings}>")
@@ -62,10 +65,24 @@ def extras(cfg: DictConfig) -> None:
         print_config(cfg, resolve=True)
 
 
+def assert_paths_exist(cfg: DictConfig) -> None:
+    assert Path(cfg.paths.root_dir).exists()
+    assert Path(cfg.paths.data_dir).exists()
+    assert Path(cfg.paths.log_dir).exists()
+    assert Path(cfg.paths.output_dir).exists()
+
+
 @rank_zero_only
 def print_config(
     cfg: DictConfig,
-    print_order: Sequence[str] = ("datamodule", "model", "callbacks", "logger", "trainer"),
+    print_order: Sequence[str] = (
+        "datamodule",
+        "model",
+        "callbacks",
+        "logger",
+        "trainer",
+        "paths",
+    ),
     resolve: bool = True,
 ) -> None:
     """Prints content of DictConfig using Rich library and its tree structure.
@@ -103,7 +120,7 @@ def print_config(
 
     rich.print(tree)
 
-    with open("config_tree.log", "w") as file:
+    with open(os.path.join(cfg.paths.output_dir, "config_tree.log"), "w") as file:
         rich.print(tree, file=file)
 
 

@@ -1,7 +1,7 @@
 # @package _global_
 
-# specify here default training configuration
-# order of defaults determines the order of config overrides
+# specify here default configuration
+# order of defaults determines the order in which configs override each other
 defaults:
   - _self_
   - datamodule: mnist.yaml
@@ -9,14 +9,12 @@ defaults:
   - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml
-  - log_dir: train.yaml
+  - hydra: default.yaml
+  - paths: default.yaml
 
-  # experiment configs allow for version control of specific configurations
+  # experiment configs allow for version control of specific hyperparameters
   # e.g. best hyperparameters for given model and datamodule
   - experiment: null
-
-  # debugging config (enable through command line, e.g. `python train.py debug=default)
-  - debug: null
 
   # config for hyperparameter optimization
   - hparams_search: null
@@ -25,23 +23,28 @@ defaults:
   # it's optional since it doesn't need to exist and is excluded from version control
   - optional local: default.yaml
 
-  # enable color logging
-  - override hydra/hydra_logging: colorlog
-  - override hydra/job_logging: colorlog
+  # debugging config (enable through command line, e.g. `python train.py debug=default)
+  - debug: null
 
-# path to original working directory
-# hydra hijacks working directory by changing it to the new log directory
-# https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
-original_work_dir: ${hydra:runtime.cwd}
+# task name, determines output directory path
+task_name: "train"
 
-# path to folder with data
-data_dir: ${original_work_dir}/data/
+# default name for the experiment, determines output directory path
+# (you can overwrite this in experiment configs)
+name: "default"
+
+# tags to help you identify your experiments
+# (you can overwrite this in experiment configs)
+tags: ["mnist"]
+
+# seed for random number generators in pytorch, numpy and python.random
+seed: null
+
+# disable python warnings if they annoy you
+ignore_warnings: False
 
 # pretty print config at the start of the run using Rich library
 print_config: True
-
-# disable python warnings if they annoy you
-ignore_warnings: True
 
 # set False to skip model training
 train: True
@@ -50,12 +53,5 @@ train: True
 # lightning chooses best weights based on the metric specified in checkpoint callback
 test: True
 
-# checkpoint path for resuming training
+# simply provide checkpoint path to resume training
 ckpt_path: null
-
-# seed for random number generators in pytorch, numpy and python.random
-seed: null
-
-# default name for the experiment, determines logging folder path
-# (you can overwrite this name in experiment configs)
-name: "default"

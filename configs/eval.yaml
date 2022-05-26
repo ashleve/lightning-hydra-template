@@ -1,6 +1,5 @@
 # @package _global_
 
-# specify here default evaluation configuration
 defaults:
   - _self_
   - datamodule: mnist.yaml # choose datamodule with test_dataloader for evaluation
@@ -8,24 +7,21 @@ defaults:
   - logger: null
   - trainer: default.yaml
   - log_dir: eval.yaml
-
-  - experiment: null
+  - hydra: default.yaml
 
   # enable color logging
   - override hydra/hydra_logging: colorlog
   - override hydra/job_logging: colorlog
 
-original_work_dir: ${hydra:runtime.cwd}
-
-data_dir: ${original_work_dir}/data/
-
-print_config: True
-
-ignore_warnings: True
-
-seed: null
+task_name: "eval"
 
 name: "default"
 
-# passing checkpoint path is necessary
+tags: ["mnist"]
+
+ignore_warnings: False
+
+print_config: True
+
+# passing checkpoint path is necessary for evaluation
 ckpt_path: ???

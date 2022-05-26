@@ -3,8 +3,8 @@
 # default debugging setup, runs 1 full epoch
 # other debugging configs can inherit from this one
 
-defaults:
-  - override /log_dir: debug.yaml
+# overwrite task name to dubug, determines output dir path
+task_name: "debug"
 
 trainer:
   max_epochs: 1

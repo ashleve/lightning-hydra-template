@@ -5,7 +5,7 @@ model_checkpoint:
   save_top_k: 1 # save k best models (determined by above metric)
   save_last: True # additionaly always save model from last epoch
   verbose: False
-  dirpath: "checkpoints/"
+  dirpath: ${paths.output_dir}/checkpoints
   filename: "epoch_{epoch:03d}"
   auto_insert_metric_name: False
 
