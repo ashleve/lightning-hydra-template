@@ -6,12 +6,8 @@ defaults:
   - model: mnist.yaml
   - logger: null
   - trainer: default.yaml
-  - log_dir: eval.yaml
   - hydra: default.yaml
-
-  # enable color logging
-  - override hydra/hydra_logging: colorlog
-  - override hydra/job_logging: colorlog
+  - paths: default.yaml
 
 task_name: "eval"
 

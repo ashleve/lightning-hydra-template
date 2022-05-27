@@ -31,7 +31,7 @@ class MNISTLitModule(LightningModule):
 
         # this line allows to access init params with 'self.hparams' attribute
         # also ensures init params will be stored in ckpt
-        self.save_hyperparameters(logger=False)
+        self.save_hyperparameters(logger=False, ignore=["net"])
 
         self.net = net
 
@@ -122,8 +122,8 @@ class MNISTLitModule(LightningModule):
 
 if __name__ == "__main__":
     import hydra
-    import pyrootutils
     import omegaconf
+    import pyrootutils
 
     root = pyrootutils.setup_root(__file__, ".git")
     cfg = omegaconf.OmegaConf.load(root / "configs" / "model" / "mnist.yaml")

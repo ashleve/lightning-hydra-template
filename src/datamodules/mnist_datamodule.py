@@ -129,8 +129,8 @@ class MNISTDataModule(LightningDataModule):
 
 if __name__ == "__main__":
     import hydra
-    import pyrootutils
     import omegaconf
+    import pyrootutils
 
     root = pyrootutils.setup_root(__file__)
     cfg = omegaconf.OmegaConf.load(root / "configs" / "datamodule" / "mnist.yaml")

@@ -1,7 +1,6 @@
 import logging
 import os
 import warnings
-from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
 import hydra
@@ -41,18 +40,10 @@ def extras(cfg: DictConfig) -> None:
     - Rich config printing
     """
 
-    assert_paths_exist(cfg)
-
     # disable python warnings
     if cfg.get("ignore_warnings"):
         log.info(f"Disabling python warnings! <cfg.ignore_warnings={cfg.ignore_warnings}>")
         warnings.filterwarnings("ignore")
-
-    # convert relative ckpt path to absolute path
-    # otherwise relative paths won't work since hydra hijacks the work dir
-    if cfg.get("ckpt_path") and not os.path.isabs(cfg.ckpt_path):
-        log.info(f"Converting ckpt path to absolute path! <cfg.ckpt_path={cfg.ckpt_path}>")
-        cfg.ckpt_path = os.path.join(hydra.utils.get_original_cwd(), cfg.ckpt_path)
 
     # set seed for random number generators in pytorch, numpy and python.random
     if cfg.get("seed"):
@@ -63,13 +54,6 @@ def extras(cfg: DictConfig) -> None:
     if cfg.get("print_config"):
         log.info(f"Printing config tree with Rich! <cfg.print_config={cfg.print_config}>")
         print_config(cfg, resolve=True)
-
-
-def assert_paths_exist(cfg: DictConfig) -> None:
-    assert Path(cfg.paths.root_dir).exists()
-    assert Path(cfg.paths.data_dir).exists()
-    assert Path(cfg.paths.log_dir).exists()
-    assert Path(cfg.paths.output_dir).exists()
 
 
 @rank_zero_only

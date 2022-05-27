@@ -1,5 +1,6 @@
-import time
 import os
+import time
+
 from omegaconf import DictConfig
 from pytorch_lightning.utilities import rank_zero_only
 
