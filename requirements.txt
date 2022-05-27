@@ -18,7 +18,6 @@ hydra-optuna-sweeper>=1.2.0
 # --------- others --------- #
 pyrootutils     # standardizing the project root setup
 pre-commit      # hooks for applying linters on commit
-python-dotenv   # loading env variables from .env file
 rich            # beautiful text formatting in terminal
 pytest          # tests
 sh              # for running bash commands in some tests
