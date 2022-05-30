@@ -45,7 +45,7 @@ repos:
       - id: docformatter
         args: [--in-place, --wrap-summaries=99, --wrap-descriptions=99]
 
-  # python code analysis
+  # python check (PEP8), programming errors and code complexity
   - repo: https://github.com/PyCQA/flake8
     rev: 4.0.1
     hooks:
@@ -63,3 +63,10 @@ repos:
     rev: 0.5.0
     hooks:
       - id: nbstripout
+
+  # python security linter
+  - repo: https://github.com/PyCQA/bandit
+    rev: "1.7.1"
+    hooks:
+      - id: bandit
+        args: ["-s", "B101"]
