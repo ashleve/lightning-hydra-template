@@ -1,8 +1,8 @@
 # path to folder with data
-data_dir: data/
+data_dir: data
 
 # path to folder with logs
-log_dir: logs/
+log_dir: logs
 
 # output directory, created dynamically by hydra, should be generated inside `log_dir`
 # use it to store all files generated during the run, like ckpts and metrics

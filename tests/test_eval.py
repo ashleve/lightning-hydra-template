@@ -11,17 +11,11 @@ from src.tasks import eval_task, train_task
 def test_train_eval(tmp_path, cfg_train, cfg_eval):
     assert str(tmp_path) == cfg_train.paths.output_dir == cfg_eval.paths.output_dir
 
-    print(tmp_path)
-    print(cfg_train.paths.output_dir)
-    print(cfg_train.callbacks.model_checkpoint.dirpath)
-
     with open_dict(cfg_train):
         cfg_train.trainer.max_epochs = 1
 
     HydraConfig().set_config(cfg_train)
     train_task.train(cfg_train)
-
-    print(os.listdir(tmp_path))
 
     assert "last.ckpt" in os.listdir(tmp_path / "checkpoints")
 
