@@ -1,5 +1,6 @@
 import pytest
 from hydra import compose, initialize
+from hydra.core.global_hydra import GlobalHydra
 from omegaconf import DictConfig, OmegaConf, open_dict
 
 
@@ -55,7 +56,9 @@ def cfg_train(cfg_train_global, tmp_path) -> DictConfig:
         cfg.paths.output_dir = str(tmp_path)
         cfg.paths.log_dir = str(tmp_path)
 
-    return cfg
+    yield cfg
+
+    GlobalHydra.instance().clear()
 
 
 # this is called by each test which uses `cfg_eval` arg
@@ -68,4 +71,6 @@ def cfg_eval(cfg_eval_global, tmp_path) -> DictConfig:
         cfg.paths.output_dir = str(tmp_path)
         cfg.paths.log_dir = str(tmp_path)
 
-    return cfg
+    yield cfg
+
+    GlobalHydra.instance().clear()

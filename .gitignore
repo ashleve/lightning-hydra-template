@@ -139,10 +139,14 @@ dmypy.json
 # JetBrains
 .idea/
 
+# Data & Models
+*.h5
+*.tar
+*.tar.gz
+
 # Lightning-Hydra-Template
 configs/local/default.yaml
 data/
 logs/
-wandb/
 .env
 .autoenv

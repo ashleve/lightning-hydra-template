@@ -6,14 +6,14 @@ defaults:
   - model: mnist.yaml
   - logger: null
   - trainer: default.yaml
-  - hydra: default.yaml
   - paths: default.yaml
+  - hydra: default.yaml
 
 task_name: "eval"
 
 name: "default"
 
-tags: ["mnist"]
+tags: []
 
 ignore_warnings: False
 
