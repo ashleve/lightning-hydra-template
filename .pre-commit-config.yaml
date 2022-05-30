@@ -24,19 +24,19 @@ repos:
       - id: black
         args: [--line-length, "99"]
 
-  # python upgrading syntax to newer version
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v2.31.1
-    hooks:
-      - id: pyupgrade
-        args: [--py37-plus]
-
   # python import sorting
   - repo: https://github.com/PyCQA/isort
     rev: 5.10.1
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
+
+  # python upgrading syntax to newer version
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.32.1
+    hooks:
+      - id: pyupgrade
+        args: [--py38-plus]
 
   # python docstring formatting
   - repo: https://github.com/myint/docformatter
@@ -50,6 +50,14 @@ repos:
     rev: 4.0.1
     hooks:
       - id: flake8
+        args: ["--ignore", "E501,F401,F841,W504", "--exclude", "logs/*,data/*"]
+
+  # python security linter
+  - repo: https://github.com/PyCQA/bandit
+    rev: "1.7.1"
+    hooks:
+      - id: bandit
+        args: ["-s", "B101"]
 
   # yaml formatting
   - repo: https://github.com/pre-commit/mirrors-prettier
@@ -63,10 +71,3 @@ repos:
     rev: 0.5.0
     hooks:
       - id: nbstripout
-
-  # python security linter
-  - repo: https://github.com/PyCQA/bandit
-    rev: "1.7.1"
-    hooks:
-      - id: bandit
-        args: ["-s", "B101"]
