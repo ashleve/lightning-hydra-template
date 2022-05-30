@@ -1,7 +1,11 @@
 from typing import List
 
 import pytest
-import sh
+
+from tests.helpers.package_available import _SH_AVAILABLE
+
+if _SH_AVAILABLE:
+    import sh
 
 
 def run_sh_command(command: List[str]):
