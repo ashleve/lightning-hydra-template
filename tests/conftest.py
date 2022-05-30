@@ -1,25 +1,76 @@
-"""Use the following command to skip slow tests:
-
-pytest -k "not slow"
-"""
-
 import pytest
-from hydra.core.hydra_config import HydraConfig
-from omegaconf import DictConfig
-from pytest import TempPathFactory
-
-from tests.helpers import load_config
+from hydra import compose, initialize
+from hydra.core.global_hydra import GlobalHydra
+from omegaconf import DictConfig, OmegaConf, open_dict
 
 
 @pytest.fixture(scope="package")
-def cfg_train(tmp_path_factory: TempPathFactory) -> DictConfig:
-    tmpdir_train = tmp_path_factory.mktemp("tmpdir_train")
-    cfg = load_config.load_train_cfg_simple(tmpdir_train)
-    yield cfg
+def cfg_train_global() -> DictConfig:
+    with initialize(version_base="1.2", config_path="../configs"):
+        cfg = compose(config_name="train.yaml", return_hydra_config=True, overrides=[])
+
+        # enable adding new keys to config
+        OmegaConf.set_struct(cfg, True)
+
+        # set defaults for all tests
+        with open_dict(cfg):
+            cfg.trainer.max_epochs = 1
+            cfg.trainer.limit_train_batches = 0.1
+            cfg.trainer.limit_val_batches = 0.1
+            cfg.trainer.limit_test_batches = 0.1
+            cfg.trainer.gpus = 0
+            cfg.datamodule.num_workers = 0
+            cfg.datamodule.pin_memory = False
+            cfg.print_config = False
+
+    return cfg
 
 
 @pytest.fixture(scope="package")
-def cfg_test(tmp_path_factory: TempPathFactory) -> DictConfig:
-    tmpdir_test = tmp_path_factory.mktemp("tmpdir_test")
-    cfg = load_config.load_eval_cfg_simple(tmpdir_test, ckpt_path=str(tmpdir_test / "last.ckpt"))
+def cfg_eval_global() -> DictConfig:
+    with initialize(version_base="1.2", config_path="../configs"):
+        cfg = compose(config_name="eval.yaml", return_hydra_config=True, overrides=["ckpt_path=."])
+
+        # enable adding new keys to config
+        OmegaConf.set_struct(cfg, True)
+
+        # set defaults for all tests
+        with open_dict(cfg):
+            cfg.trainer.max_epochs = 1
+            cfg.trainer.limit_test_batches = 0.1
+            cfg.trainer.gpus = 0
+            cfg.datamodule.num_workers = 0
+            cfg.datamodule.pin_memory = False
+            cfg.print_config = False
+
+    return cfg
+
+
+# this is called by each test which uses `cfg_train` arg
+# each test uses it's own temporary logging path
+@pytest.fixture(scope="function")
+def cfg_train(cfg_train_global, tmp_path) -> DictConfig:
+    cfg = cfg_train_global.copy()
+
+    with open_dict(cfg):
+        cfg.paths.output_dir = str(tmp_path)
+        cfg.paths.log_dir = str(tmp_path)
+
     yield cfg
+
+    GlobalHydra.instance().clear()
+
+
+# this is called by each test which uses `cfg_eval` arg
+# each test uses it's own temporary logging path
+@pytest.fixture(scope="function")
+def cfg_eval(cfg_eval_global, tmp_path) -> DictConfig:
+    cfg = cfg_eval_global.copy()
+
+    with open_dict(cfg):
+        cfg.paths.output_dir = str(tmp_path)
+        cfg.paths.log_dir = str(tmp_path)
+
+    yield cfg
+
+    GlobalHydra.instance().clear()

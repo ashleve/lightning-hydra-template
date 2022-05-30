@@ -16,7 +16,6 @@ def test_experiments(tmp_path):
         "-m",
         "experiment=glob(*)",
         "hydra.sweep.dir=" + str(tmp_path),
-        "hydra.sweep.subdir=${hydra.job.num}",
     ] + overrides
     run_sh_command(command)
 
@@ -29,7 +28,6 @@ def test_default_sweep(tmp_path):
         startfile,
         "-m",
         "hydra.sweep.dir=" + str(tmp_path),
-        "hydra.sweep.subdir=${hydra.job.num}",
         "model.lr=0.01,0.02,0.03",
         "trainer=default",
     ] + overrides
@@ -46,8 +44,6 @@ def test_optuna_sweep(tmp_path):
         "-m",
         "hparams_search=mnist_optuna",
         "hydra.sweep.dir=" + str(tmp_path),
-        "hydra.sweep.subdir=${hydra.job.num}",
-        "trainer=default",
         "hydra.sweeper.n_trials=10",
         "hydra.sweeper.sampler.n_startup_trials=5",
     ] + overrides

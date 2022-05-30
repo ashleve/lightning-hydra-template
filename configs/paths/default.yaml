@@ -4,6 +4,6 @@ data_dir: data/
 # path to folder with logs
 log_dir: logs/
 
-# output directory, created dynamically by hydra
+# output directory, created dynamically by hydra, should be generated inside `log_dir`
 # use it to store all files generated during the run, like ckpts and metrics
 output_dir: ${hydra:runtime.output_dir}
