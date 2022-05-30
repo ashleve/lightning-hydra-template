@@ -35,7 +35,7 @@ name: "default"
 
 # tags to help you identify your experiments
 # (you can overwrite this in experiment configs)
-tags: ["mnist"]
+tags: []
 
 # seed for random number generators in pytorch, numpy and python.random
 seed: null

@@ -16,6 +16,8 @@ defaults:
 # name of the run determines folder name in logs
 name: "simple_dense_net"
 
+tags: ["mnist", "${name}"]
+
 seed: 12345
 
 trainer:
@@ -35,4 +37,5 @@ datamodule:
 
 logger:
   wandb:
-    tags: ["mnist", "${name}"]
+    tags: ${tags}
+    group: ${name}
