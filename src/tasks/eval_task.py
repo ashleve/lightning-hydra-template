@@ -12,7 +12,7 @@ log = utils.get_logger(__name__)
 
 
 @task_wrapper
-def eval(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
+def evaluate(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
     """Evaluates given checkpoint on a datamodule testset.
 
     This method is wrapped in @task_wrapper decorator which applies extra utilities

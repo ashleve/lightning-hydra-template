@@ -35,7 +35,6 @@ def extras(cfg: DictConfig) -> None:
 
     Utilities:
     - Ignoring python warnings
-    - Converting relative ckpt path to absolute path
     - Setting global seeds
     - Rich config printing
     """
