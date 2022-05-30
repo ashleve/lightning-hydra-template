@@ -30,8 +30,8 @@ def get_logger(name=__name__) -> logging.Logger:
 log = get_logger(__name__)
 
 
-def extras(cfg: DictConfig) -> None:
-    """Applies optional utilities, controlled by config flags.
+def start(cfg: DictConfig) -> None:
+    """Applies optional utilities before the task execution.
 
     Utilities:
     - Ignoring python warnings
@@ -53,6 +53,19 @@ def extras(cfg: DictConfig) -> None:
     if cfg.get("print_config"):
         log.info(f"Printing config tree with Rich! <cfg.print_config={cfg.print_config}>")
         print_config(cfg, resolve=True)
+
+
+def finish(object_dict: Dict[str, Any]) -> None:
+    """Applies optional utilities after the task is executed.
+
+    Utilities:
+    - Makes sure all loggers closed properly (prevents logging failure during multirun)
+    """
+    for logger in object_dict.get("logger", []):
+        if isinstance(logger, pl.loggers.wandb.WandbLogger):
+            import wandb
+
+            wandb.finish()
 
 
 @rank_zero_only
@@ -117,7 +130,7 @@ def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
     assert isinstance(callbacks_cfg, DictConfig), "Callbacks config must be a DictConfig!"
 
     for _, cb_conf in callbacks_cfg.items():
-        if "_target_" in cb_conf:
+        if isinstance(cb_conf, DictConfig) and "_target_" in cb_conf:
             log.info(f"Instantiating callback <{cb_conf._target_}>")
             callbacks.append(hydra.utils.instantiate(cb_conf))
 
@@ -134,7 +147,7 @@ def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
     assert isinstance(logger_cfg, DictConfig), "Loggers config must be a DictConfig!"
 
     for _, lg_conf in logger_cfg.items():
-        if "_target_" in lg_conf:
+        if isinstance(lg_conf, DictConfig) and "_target_" in lg_conf:
             log.info(f"Instantiating logger <{lg_conf._target_}>")
             logger.append(hydra.utils.instantiate(lg_conf))
 
@@ -143,7 +156,7 @@ def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
 
 @rank_zero_only
 def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
-    """Controls which config parts are saved by Lightning loggers.
+    """Controls which config parts are saved by lightning loggers.
 
     Additionaly saves:
     - number of model parameters
@@ -197,14 +210,3 @@ def get_metric_value(metric_name: str, trainer: Trainer) -> float:
             "Make sure `optimized_metric` name in `hparams_search` config is correct!"
         )
     return trainer.callback_metrics[metric_name].item()
-
-
-def finish(object_dict: Dict[str, Any]) -> None:
-    """Makes sure everything closed properly."""
-
-    # without this sweeps with wandb logger might crash
-    for logger in object_dict.get("logger", []):
-        if isinstance(logger, pl.loggers.wandb.WandbLogger):
-            import wandb
-
-            wandb.finish()

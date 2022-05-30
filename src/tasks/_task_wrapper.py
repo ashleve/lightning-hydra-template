@@ -22,7 +22,7 @@ def task_wrapper(task_func):
         start = time.time()
 
         # applies optional config utilities
-        utils.extras(cfg)
+        utils.start(cfg)
 
         # TODO: repeat call if fails...
         result = task_func(cfg=cfg)
