@@ -59,13 +59,27 @@ def finish(object_dict: Dict[str, Any]) -> None:
     """Applies optional utilities after the task is executed.
 
     Utilities:
-    - Makes sure all loggers closed properly (prevents logging failure during multirun)
+    - Making sure all loggers closed properly (prevents logging failure during multirun)
     """
     for logger in object_dict.get("logger", []):
+
         if isinstance(logger, pl.loggers.wandb.WandbLogger):
             import wandb
 
             wandb.finish()
+
+        if isinstance(logger, pl.loggers.neptune.NeptuneLogger):
+            import neptune
+
+            neptune.stop()
+
+        if isinstance(logger, pl.loggers.mlflow.MLflowLogger):
+            import mlflow
+
+            mlflow.end_run()
+
+        if isinstance(logger, pl.loggers.comet.CometLogger):
+            logger._experiment.end()
 
 
 @rank_zero_only
