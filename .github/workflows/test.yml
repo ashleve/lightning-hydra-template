@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [release]
+    branches: [main]
   pull_request:
-    branches: [release/1.4]
+    branches: [main]
 
 jobs:
   run_tests:
@@ -16,7 +16,7 @@ jobs:
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
         python-version: ["3.7", "3.8", "3.9", "3.10"]
 
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v3
