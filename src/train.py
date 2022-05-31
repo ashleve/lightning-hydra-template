@@ -6,9 +6,9 @@ from omegaconf import DictConfig
 # searches for root indicators in parent directories, like ".git", "pyproject.toml", "setup.py", etc.
 # adds project root dir to the PYTHONPATH
 # sets current working directory to the root directory
-# loads enviroment variables from ".env" file if exists
+# loads environment variables from ".env" file if exists
 # https://github.com/ashleve/pyrootutils
-root = pyrootutils.setup_root(search_from=__file__)
+root = pyrootutils.setup_root(__file__)
 
 
 @hydra.main(version_base="1.2", config_path=root / "configs", config_name="train.yaml")

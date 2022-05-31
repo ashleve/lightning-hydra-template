@@ -1,5 +1,5 @@
-import os
 import time
+from pathlib import Path
 
 from omegaconf import DictConfig
 from pytorch_lightning.utilities import rank_zero_only
@@ -46,6 +46,6 @@ def task_wrapper(task_func):
 
 @rank_zero_only
 def save_exec_time(path, task_name, time_in_seconds):
-    with open(os.path.join(path, "exec_time.log"), "w+") as file:
+    with open(Path(path, "exec_time.log"), "w+") as file:
         file.write("Total task execution time.\n")
         file.write(task_name + ": " + str(time_in_seconds) + " (s)" + "\n")
