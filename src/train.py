@@ -8,7 +8,7 @@ from omegaconf import DictConfig
 # sets current working directory to the root directory
 # loads environment variables from ".env" file if exists
 # https://github.com/ashleve/pyrootutils
-root = pyrootutils.setup_root = __file__
+root = pyrootutils.setup_root(__file__)
 
 
 @hydra.main(version_base="1.2", config_path=root / "configs", config_name="train.yaml")
