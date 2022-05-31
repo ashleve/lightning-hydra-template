@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 import pytest
 import torch
@@ -14,8 +14,8 @@ def test_mnist_datamodule(batch_size):
     dm.prepare_data()
 
     assert not dm.data_train and not dm.data_val and not dm.data_test
-    assert os.path.exists(os.path.join(data_dir, "MNIST"))
-    assert os.path.exists(os.path.join(data_dir, "MNIST", "raw"))
+    assert Path(data_dir, "MNIST").exists()
+    assert Path(data_dir, "MNIST", "raw").exists()
 
     dm.setup()
     assert dm.data_train and dm.data_val and dm.data_test

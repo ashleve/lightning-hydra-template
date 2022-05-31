@@ -1,6 +1,6 @@
 import logging
-import os
 import warnings
+from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
 import hydra
@@ -130,7 +130,7 @@ def print_config(
 
     rich.print(tree)
 
-    with open(os.path.join(cfg.paths.output_dir, "config_tree.log"), "w") as file:
+    with open(Path(cfg.paths.output_dir, "config_tree.log"), "w") as file:
         rich.print(tree, file=file)
 
 
