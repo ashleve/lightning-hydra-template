@@ -8,7 +8,7 @@ ARG UBUNTU="22.04"
 
 FROM nvcr.io/nvidia/pytorch:22.04-py3
 
-ENV CONDA_ENV_NAME=tfm_env
+ENV CONDA_ENV_NAME=myenv
 ENV PYTHON_VERSION=3.9
 
 # Basic setup
