@@ -39,7 +39,7 @@ SHELL ["/bin/bash", "-c"]
 # Install requirements
 COPY requirements.txt ./
 
-RUN pip pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu115
+# RUN pip pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu115
 
 RUN source activate ${CONDA_ENV_NAME} \
     && pip install --no-cache-dir -r requirements.txt \
