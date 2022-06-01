@@ -73,7 +73,7 @@ def finish(object_dict: Dict[str, Any]) -> None:
 
             neptune.stop()
 
-        if isinstance(logger, pl.loggers.mlflow.MLflowLogger):
+        if isinstance(logger, pl.loggers.mlflow.MLFlowLogger):
             import mlflow
 
             mlflow.end_run()
