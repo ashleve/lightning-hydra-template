@@ -19,10 +19,10 @@ def task_wrapper(task_func):
     """Optional decorator that wraps the task function in extra utilities.
 
     Utilities:
+    - Calling the task_utils.start() before the task is started
+    - Calling the task_utils.finish() after the task is finished
     - Logging the total time of execution
     - Enabling repeating task execution on failure
-    - Calling the utils.start() before the task is started
-    - Calling the utils.finish() after the task is finished
     """
 
     def wrap(cfg: DictConfig):
