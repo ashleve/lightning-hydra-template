@@ -1,10 +1,10 @@
 # path to folder with data
-data_dir: data
+data_dir: data/
 
 # path to folder with logs
-log_dir: logs
+log_dir: logs/
 
-# output directory, created dynamically by hydra
-# visit `configs/hydra/default.yaml` to modify it
+# path to output directory, created dynamically by hydra
+# path generation pattern is specified in `configs/hydra/default.yaml`
 # use it to store all files generated during the run, like ckpts and metrics
 output_dir: ${hydra:runtime.output_dir}
