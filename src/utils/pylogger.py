@@ -1,5 +1,6 @@
-from pytorch_lightning.utilities import rank_zero_only
 import logging
+
+from pytorch_lightning.utilities import rank_zero_only
 
 
 def get_pylogger(name=__name__) -> logging.Logger:

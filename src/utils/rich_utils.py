@@ -1,10 +1,12 @@
+from pathlib import Path
+from typing import Sequence
+
 import rich.syntax
 import rich.tree
-from typing import Sequence
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.utilities import rank_zero_only
+
 from src import utils
-from pathlib import Path
 
 log = utils.get_pylogger(__name__)
 
@@ -41,7 +43,7 @@ def print_config(
             f"Field '{field}' not found in config. Skipping '{field}' config printing..."
         )
 
-    # if some config parts are not specified in `print_order`, print them at the end 
+    # if some config parts are not specified in `print_order`, print them at the end
     for field in cfg:
         if field not in queue:
             queue.append(field)
@@ -63,6 +65,3 @@ def print_config(
     # save config tree to file
     with open(Path(cfg.paths.output_dir, "config_tree.log"), "w") as file:
         rich.print(tree, file=file)
-
-
-# TODO rich logger?
