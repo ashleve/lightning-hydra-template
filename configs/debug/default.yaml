@@ -6,6 +6,9 @@
 # overwrite task name to dubug, determines output dir path
 task_name: "debug"
 
+# disable callbacks during debugging
+callbacks: null
+
 trainer:
   max_epochs: 1
   gpus: 0 # debuggers don't like gpus
