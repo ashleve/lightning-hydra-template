@@ -35,15 +35,18 @@ def print_config(
 
     queue = []
 
+    # fetch config parts specified in `print_order`
     for field in print_order:
         queue.append(field) if field in cfg else log.info(
             f"Field '{field}' not found in config. Skipping '{field}' config printing..."
         )
 
+    # if some config parts are not specified in `print_order`, print them at the end 
     for field in cfg:
         if field not in queue:
             queue.append(field)
 
+    # generate config tree for printing
     for field in queue:
         branch = tree.add(field, style=style, guide_style=style)
 
@@ -57,6 +60,7 @@ def print_config(
 
     rich.print(tree)
 
+    # save config tree to file
     with open(Path(cfg.paths.output_dir, "config_tree.log"), "w") as file:
         rich.print(tree, file=file)
 
