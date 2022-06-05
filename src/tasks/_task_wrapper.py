@@ -14,14 +14,14 @@ def task_wrapper(task_func):
 
     - logging the total time of execution
     - enabling repeating task execution on failure
-    - calling the utils.extras() before the task is started
+    - calling the utils.start() before the task is started
     - calling the utils.finish() after the task is finished
     """
 
     def wrap(cfg: DictConfig):
         start = time.time()
 
-        # applies optional config utilities
+        # apply optional config utilities
         utils.start(cfg)
 
         # TODO: repeat call if fails...

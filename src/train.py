@@ -4,7 +4,7 @@ from omegaconf import DictConfig
 
 # project root setup (allows for calling this script from any place)
 # searches for root indicators in parent directories, like ".git", "pyproject.toml", "setup.py", etc.
-# adds project root dir to the PYTHONPATH
+# adds project root directory to the PYTHONPATH
 # sets current working directory to the root directory
 # loads environment variables from ".env" file if exists
 # https://github.com/ashleve/pyrootutils
