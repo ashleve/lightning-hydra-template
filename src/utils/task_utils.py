@@ -176,12 +176,12 @@ def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
     hparams["datamodule"] = cfg["datamodule"]
     hparams["trainer"] = cfg["trainer"]
 
-    if "seed" in cfg:
-        hparams["seed"] = cfg["seed"]
-    if "callbacks" in cfg:
-        hparams["callbacks"] = cfg["callbacks"]
-    if "ckpt_path" in cfg:
-        hparams["ckpt_path"] = cfg.ckpt_path
+    hparams["callbacks"] = cfg.get("callbacks")
+    hparams["seed"] = cfg.get("seed")
+    hparams["task_name"] = cfg.get("task_name")
+    hparams["exp_name"] = cfg.get("name")
+    hparams["tags"] = cfg.get("tags")
+    hparams["ckpt_path"] = cfg.get("ckpt_path")
 
     # send hparams to all loggers
     trainer.logger.log_hyperparams(hparams)
