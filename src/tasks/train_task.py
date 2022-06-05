@@ -8,7 +8,7 @@ from pytorch_lightning.loggers import LightningLoggerBase
 from src import utils
 from src.tasks import task_wrapper
 
-log = utils.get_logger(__name__)
+log = utils.get_pylogger(__name__)
 
 
 @task_wrapper

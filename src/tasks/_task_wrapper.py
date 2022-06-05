@@ -6,7 +6,7 @@ from pytorch_lightning.utilities import rank_zero_only
 
 from src import utils
 
-log = utils.get_logger(__name__)
+log = utils.get_pylogger(__name__)
 
 
 def task_wrapper(task_func):
