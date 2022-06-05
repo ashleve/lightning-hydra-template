@@ -8,3 +8,5 @@ defaults:
 trainer:
   max_epochs: 20
   overfit_batches: 3
+
+callbacks: null
