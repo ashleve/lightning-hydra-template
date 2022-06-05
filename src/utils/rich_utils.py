@@ -6,9 +6,9 @@ import rich.tree
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.utilities import rank_zero_only
 
-from src import utils
+from src.utils import get_pylogger
 
-log = utils.get_pylogger(__name__)
+log = get_pylogger(__name__)
 
 
 @rank_zero_only
