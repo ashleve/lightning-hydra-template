@@ -6,12 +6,11 @@ from pytorch_lightning import LightningDataModule, LightningModule, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
 
 from src import utils
-from src.tasks import task_wrapper
 
-log = utils.get_logger(__name__)
+log = utils.get_pylogger(__name__)
 
 
-@task_wrapper
+@utils.task_wrapper
 def evaluate(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
     """Evaluates given checkpoint on a datamodule testset.
 
