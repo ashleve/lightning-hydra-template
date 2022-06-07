@@ -42,7 +42,7 @@ def print_config_tree(
 
     # fetch config parts specified in `print_order`
     for field in print_order:
-        queue.append(field) if field in cfg else log.info(
+        queue.append(field) if field in cfg else log.warning(
             f"Field '{field}' not found in config. Skipping '{field}' config printing..."
         )
 
@@ -75,5 +75,5 @@ if __name__ == "__main__":
     from hydra import compose, initialize
 
     with initialize(version_base="1.2", config_path="../../configs"):
-        cfg = compose(config_name="train.yaml", return_hydra_config=True, overrides=[])
+        cfg = compose(config_name="train.yaml", return_hydra_config=False, overrides=[])
         print_config_tree(cfg)

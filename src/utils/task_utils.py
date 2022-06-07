@@ -51,14 +51,6 @@ def task_wrapper(task_func):
     return wrap
 
 
-@rank_zero_only
-def save_exec_time(path, task_name, time_in_seconds):
-    """Saves task execution time to file."""
-    with open(Path(path, "exec_time.log"), "w+") as file:
-        file.write("Total task execution time.\n")
-        file.write(task_name + ": " + str(time_in_seconds) + " (s)" + "\n")
-
-
 def start(cfg: DictConfig) -> None:
     """Applies optional utilities before the task is started.
 
@@ -109,6 +101,14 @@ def finish(object_dict: Dict[str, Any]) -> None:
 
         if isinstance(logger, pl.loggers.comet.CometLogger):
             logger._experiment.end()
+
+
+@rank_zero_only
+def save_exec_time(path, task_name, time_in_seconds):
+    """Saves task execution time to file."""
+    with open(Path(path, "exec_time.log"), "w+") as file:
+        file.write("Total task execution time.\n")
+        file.write(task_name + ": " + str(time_in_seconds) + " (s)" + "\n")
 
 
 def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
