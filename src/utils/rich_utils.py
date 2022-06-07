@@ -40,18 +40,18 @@ def print_config_tree(
 
     queue = []
 
-    # fetch config parts specified in `print_order`
+    # add fields from `print_order` to queue
     for field in print_order:
         queue.append(field) if field in cfg else log.warning(
             f"Field '{field}' not found in config. Skipping '{field}' config printing..."
         )
 
-    # if some config parts are not specified in `print_order`, print them at the end
+    # add all the other fields to queue (not specified in `print_order`)
     for field in cfg:
         if field not in queue:
             queue.append(field)
 
-    # generate config tree for printing
+    # generate config tree from queue
     for field in queue:
         branch = tree.add(field, style=style, guide_style=style)
 
@@ -63,6 +63,7 @@ def print_config_tree(
 
         branch.add(rich.syntax.Syntax(branch_content, "yaml"))
 
+    # print config tree
     rich.print(tree)
 
     # save config tree to file
