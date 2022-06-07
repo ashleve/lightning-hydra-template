@@ -15,6 +15,3 @@ def get_pylogger(name=__name__) -> logging.Logger:
         setattr(logger, level, rank_zero_only(getattr(logger, level)))
 
     return logger
-
-
-log = get_pylogger(__name__)

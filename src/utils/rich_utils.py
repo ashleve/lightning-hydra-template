@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Sequence
 
+import rich
 import rich.syntax
 import rich.tree
 from omegaconf import DictConfig, OmegaConf
@@ -12,7 +13,7 @@ log = get_pylogger(__name__)
 
 
 @rank_zero_only
-def print_config(
+def print_config_tree(
     cfg: DictConfig,
     print_order: Sequence[str] = (
         "datamodule",
@@ -22,7 +23,8 @@ def print_config(
         "trainer",
         "paths",
     ),
-    resolve: bool = True,
+    resolve: bool = False,
+    save_cfg_tree: bool = False,
 ) -> None:
     """Prints content of DictConfig using Rich library and its tree structure.
 
@@ -63,5 +65,14 @@ def print_config(
     rich.print(tree)
 
     # save config tree to file
-    with open(Path(cfg.paths.output_dir, "config_tree.log"), "w") as file:
-        rich.print(tree, file=file)
+    if save_cfg_tree:
+        with open(Path(cfg.paths.output_dir, "config_tree.log"), "w") as file:
+            rich.print(tree, file=file)
+
+
+if __name__ == "__main__":
+    from hydra import compose, initialize
+
+    with initialize(version_base="1.2", config_path="../../configs"):
+        cfg = compose(config_name="train.yaml", return_hydra_config=True, overrides=[])
+        print_config_tree(cfg)

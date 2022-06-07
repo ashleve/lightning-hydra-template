@@ -10,7 +10,7 @@ from pytorch_lightning import Callback, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning.utilities import rank_zero_only
 
-from src.utils import get_pylogger, print_config
+from src.utils import get_pylogger, print_config_tree
 
 log = get_pylogger(__name__)
 
@@ -81,7 +81,7 @@ def start(cfg: DictConfig) -> None:
     # pretty print config tree using Rich library
     if cfg.get("print_config"):
         log.info(f"Printing config tree with Rich! <cfg.print_config={cfg.print_config}>")
-        print_config(cfg, resolve=True)
+        print_config_tree(cfg, resolve=True, save_cfg_tree=True)
 
 
 def finish(object_dict: Dict[str, Any]) -> None:
@@ -150,7 +150,7 @@ def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
     """Controls which config parts are saved by lightning loggers.
 
     Additionaly saves:
-    - number of model parameters
+    - Number of model parameters
     """
 
     hparams = {}
@@ -188,12 +188,7 @@ def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
 
 
 def get_metric_value(metric_name: str, trainer: Trainer) -> float:
-    """Retrieves value of the metric logged in LightningModule.
-
-    Args:
-        metric_name (str): Name of the metric.
-        trainer (Trainer): Lightning Trainer instance.
-    """
+    """Retrieves value of the metric logged in LightningModule."""
     if metric_name not in trainer.callback_metrics:
         raise Exception(
             f"Metric value not found! <metric_name={metric_name}>\n"
