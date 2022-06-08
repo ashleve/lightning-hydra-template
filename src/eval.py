@@ -2,7 +2,7 @@ import hydra
 import pyrootutils
 from omegaconf import DictConfig
 
-root = pyrootutils.setup_root(__file__)
+root = pyrootutils.setup_root(__file__, cwd=False)
 
 
 @hydra.main(version_base="1.2", config_path=root / "configs", config_name="eval.yaml")

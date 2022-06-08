@@ -3,11 +3,6 @@ defaults:
   - override hydra_logging: colorlog
   - override job_logging: colorlog
 
-# save cfg to pickle for reproducibility
-# callbacks:
-#   save_job_info:
-#     _target_: hydra.experimental.callbacks.PickleJobInfoCallback
-
 # output directory, generated dynamically on each run
 run:
   dir: ${paths.log_dir}/${task_name}/runs/${name}/${now:%Y-%m-%d}_${now:%H-%M-%S}

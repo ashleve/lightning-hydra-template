@@ -1,8 +1,13 @@
-# path to folder with data
-data_dir: data/
+# path to root directory
+# this requires PROJECT_ROOT environment variable to exist
+# PROJECT_ROOT is inferred and set by pyrootutils package in `train.py` and `eval.py`
+root_dir: ${oc.env:PROJECT_ROOT}
 
-# path to folder with logs
-log_dir: logs/
+# path to data directory
+data_dir: ${paths.root_dir}/data/
+
+# path to logging directory
+log_dir: ${paths.root_dir}/logs/
 
 # path to output directory, created dynamically by hydra
 # path generation pattern is specified in `configs/hydra/default.yaml`
