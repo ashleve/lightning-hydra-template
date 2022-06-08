@@ -22,4 +22,5 @@ exclude_lines = [
     "raise NotImplementedError",
     "raise NotImplementedError()",
     "if __name__ == .__main__.:",
+    "@hydra.main",
 ]
