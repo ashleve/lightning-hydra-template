@@ -9,20 +9,22 @@ task_name: "debug"
 # disable callbacks during debugging
 callbacks: null
 
+# sets level of all command line loggers to 'DEBUG'
+# https://hydra.cc/docs/tutorials/basic/running_your_app/logging/
+hydra:
+  job_logging:
+    root:
+      level: DEBUG
+
+  # use this to also set hydra loggers to 'DEBUG'
+  # verbose: True
+
 trainer:
   max_epochs: 1
   gpus: 0 # debuggers don't like gpus
   detect_anomaly: true # raise exception if NaN or +/-inf is detected in any tensor
-  track_grad_norm: 2 # track gradient norm with loggers
+  track_grad_norm: 2 # track gradient norm with experiment loggers
 
 datamodule:
   num_workers: 0 # debuggers don't like multiprocessing
   pin_memory: False # disable gpu memory pin
-
-# sets level of all command line loggers to 'DEBUG'
-# https://hydra.cc/docs/tutorials/basic/running_your_app/logging/
-hydra:
-  verbose: True
-
-# config is already printed by hydra when `hydra/verbose: True`
-print_config: False
