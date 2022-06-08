@@ -1,6 +1,11 @@
 _target_: src.models.mnist_module.MNISTLitModule
-lr: 0.001
-weight_decay: 0
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.001
+  weight_decay: 0.0
+
 net:
   _target_: src.models.components.simple_dense_net.SimpleDenseNet
   input_size: 784
