@@ -40,6 +40,7 @@ jobs:
       - name: Run pytest
         run: |
           pytest -v
+
   # upload code coverate report
   code-coverage:
     runs-on: ubuntu-latest
@@ -58,7 +59,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
-          pip install pytest-cov
+          pip install pytest-cov[toml]
           pip install protobuf==3.20.0
 
       - name: Run tests and collect coverage
