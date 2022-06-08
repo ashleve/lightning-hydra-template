@@ -1,9 +1,11 @@
 _target_: pytorch_lightning.Trainer
 
 default_root_dir: ${paths.output_dir}
-enable_model_summary: False
-
-gpus: 0
 
 min_epochs: 1 # prevents early stopping
 max_epochs: 10
+
+accelerator: cpu
+devices: 1
+
+enable_model_summary: False
