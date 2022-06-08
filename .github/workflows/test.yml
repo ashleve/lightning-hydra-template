@@ -62,7 +62,7 @@ jobs:
           pip install protobuf==3.20.0
 
       - name: Run tests and collect coverage
-        run: pytest --cov pyrootutils
+        run: pytest --cov src # NEEDS TO BE UPDATED WHEN CHANGING THE NAME OF "src" FOLDER
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
