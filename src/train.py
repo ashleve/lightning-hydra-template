@@ -7,9 +7,9 @@ from omegaconf import DictConfig
 # https://github.com/ashleve/pyrootutils
 pyrootutils.setup_root(
     search_from=__file__,
-    project_root_env_var=True, # set PROJECT_ROOT env var (used in `configs/paths/default.yaml`)
-    dotenv=True, # load env vars from ".env" if exists
-    pythonpath=True, # add root dir to the PYTHONPATH
+    project_root_env_var=True,  # set PROJECT_ROOT env var (used in `configs/paths/default.yaml`)
+    dotenv=True,  # load env vars from ".env" if exists
+    pythonpath=True,  # add root dir to the PYTHONPATH
 )
 
 
