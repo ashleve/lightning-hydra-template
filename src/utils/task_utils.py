@@ -61,25 +61,29 @@ def start(cfg: DictConfig) -> None:
     - Rich config printing
     """
 
+    if not cfg.get("extras"):
+        log.warning("Extras config not found! <cfg.extras=null>")
+        return
+
     # disable python warnings
-    if cfg.get("ignore_warnings"):
-        log.info(f"Disabling python warnings! <cfg.ignore_warnings={cfg.ignore_warnings}>")
+    if cfg.extras.get("ignore_warnings"):
+        log.info("Disabling python warnings! <cfg.extras.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
 
-    # prompt user to input tags from command line
-    if cfg.get("enforce_tags"):
-        log.info(f"Enforcing tags! <cfg.enforce_tags={cfg.enforce_tags}>")
+    # prompt user to input tags from command line if none are provided in config
+    if cfg.extras.get("enforce_tags"):
+        log.info("Enforcing tags! <cfg.extras.enforce_tags=True>")
         enforce_tags(cfg)
 
-    # set seed for random number generators in pytorch, numpy and python.random
-    if cfg.get("seed"):
-        log.info(f"Setting seeds! <cfg.seed={cfg.seed}>")
-        pl.seed_everything(cfg.seed, workers=True)
-
     # pretty print config tree using Rich library
-    if cfg.get("print_config"):
-        log.info(f"Printing config tree with Rich! <cfg.print_config={cfg.print_config}>")
+    if cfg.extras.get("print_config"):
+        log.info("Printing config tree with Rich! <cfg.extras.print_config=True>")
         print_config_tree(cfg, resolve=True, save_cfg_tree=True)
+        
+    # set seed for random number generators in pytorch, numpy and python.random
+    if cfg.extras.get("seed"):
+        log.info(f"Setting seeds! <cfg.extras.seed={cfg.extras.seed}>")
+        pl.seed_everything(cfg.extras.seed, workers=True)
 
 
 def finish(object_dict: Dict[str, Any]) -> None:

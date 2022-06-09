@@ -24,6 +24,7 @@ def print_config_tree(
         "logger",
         "trainer",
         "paths",
+        "extras",
     ),
     resolve: bool = False,
     save_cfg_tree: bool = False,
