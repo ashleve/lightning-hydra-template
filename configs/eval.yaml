@@ -13,7 +13,7 @@ task_name: "eval"
 
 name: "default"
 
-tags: []
+tags: ["dev"]
 
 ignore_warnings: False
 
