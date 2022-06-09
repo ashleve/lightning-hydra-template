@@ -76,7 +76,7 @@ def print_config_tree(
 
 def enforce_tags(cfg: DictConfig) -> None:
     """Prompts user to input tags from command line if no tags are provided in config."""
-    
+
     if not cfg.get("tags"):
         assert "id" not in HydraConfig().cfg.hydra.job, "Specify tags before launching multi-run!"
 
