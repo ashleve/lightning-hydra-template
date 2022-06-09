@@ -13,9 +13,11 @@ task_name: "eval"
 
 name: "default"
 
-tags: []
+tags: ["dev"]
 
 ignore_warnings: False
+
+enforce_tags: True
 
 print_config: True
 

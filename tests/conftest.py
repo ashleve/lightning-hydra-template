@@ -24,6 +24,7 @@ def cfg_train_global() -> DictConfig:
             cfg.datamodule.num_workers = 0
             cfg.datamodule.pin_memory = False
             cfg.print_config = False
+            cfg.tags = ["test"]
 
     return cfg
 
@@ -45,6 +46,7 @@ def cfg_eval_global() -> DictConfig:
             cfg.datamodule.num_workers = 0
             cfg.datamodule.pin_memory = False
             cfg.print_config = False
+            cfg.tags = ["test"]
 
     return cfg
 

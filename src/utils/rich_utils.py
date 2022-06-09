@@ -4,8 +4,10 @@ from typing import Sequence
 import rich
 import rich.syntax
 import rich.tree
-from omegaconf import DictConfig, OmegaConf
+from hydra.core.hydra_config import HydraConfig
+from omegaconf import DictConfig, OmegaConf, open_dict
 from pytorch_lightning.utilities import rank_zero_only
+from rich.prompt import Prompt
 
 from src.utils import get_pylogger
 
@@ -70,6 +72,24 @@ def print_config_tree(
     if save_cfg_tree:
         with open(Path(cfg.paths.output_dir, "config_tree.log"), "w") as file:
             rich.print(tree, file=file)
+
+
+@rank_zero_only
+def enforce_tags(cfg: DictConfig) -> None:
+    """Prompts user to input tags from command line if no tags are provided in config."""
+
+    if not cfg.get("tags"):
+        if "id" in HydraConfig().cfg.hydra.job:
+            raise ValueError("Specify tags before launching a multirun!")
+
+        log.warning("No tags provided in config. Prompting user to input tags...")
+        tags = Prompt.ask("Enter a list of comma separated tags", default="dev")
+        tags = [t.strip() for t in tags.split(",")]
+
+        with open_dict(cfg):
+            cfg.tags = tags
+
+        log.info(f"Tags: {cfg.tags}")
 
 
 if __name__ == "__main__":

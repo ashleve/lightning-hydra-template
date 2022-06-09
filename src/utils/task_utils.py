@@ -1,7 +1,7 @@
 import time
 import warnings
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 import hydra
 import pytorch_lightning as pl
@@ -10,12 +10,12 @@ from pytorch_lightning import Callback, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning.utilities import rank_zero_only
 
-from src.utils import get_pylogger, print_config_tree
+from src.utils import enforce_tags, get_pylogger, print_config_tree
 
 log = get_pylogger(__name__)
 
 
-def task_wrapper(task_func):
+def task_wrapper(task_func) -> Callable:
     """Optional decorator that wraps the task function in extra utilities.
 
     Utilities:
@@ -56,6 +56,7 @@ def start(cfg: DictConfig) -> None:
 
     Utilities:
     - Ignoring python warnings
+    - Setting tags from command line
     - Setting global seeds
     - Rich config printing
     """
@@ -64,6 +65,11 @@ def start(cfg: DictConfig) -> None:
     if cfg.get("ignore_warnings"):
         log.info(f"Disabling python warnings! <cfg.ignore_warnings={cfg.ignore_warnings}>")
         warnings.filterwarnings("ignore")
+
+    # prompt user to input tags from command line
+    if cfg.get("enforce_tags"):
+        log.info(f"Enforcing tags! <cfg.enforce_tags={cfg.enforce_tags}>")
+        enforce_tags(cfg)
 
     # set seed for random number generators in pytorch, numpy and python.random
     if cfg.get("seed"):
@@ -104,7 +110,7 @@ def finish(object_dict: Dict[str, Any]) -> None:
 
 
 @rank_zero_only
-def save_exec_time(path, task_name, time_in_seconds):
+def save_exec_time(path, task_name, time_in_seconds) -> None:
     """Saves task execution time to file."""
     with open(Path(path, "exec_time.log"), "w+") as file:
         file.write("Total task execution time.\n")
