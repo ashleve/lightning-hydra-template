@@ -7,7 +7,6 @@ defaults:
   - override /datamodule: mnist.yaml
   - override /model: mnist.yaml
   - override /callbacks: default.yaml
-  - override /logger: null
   - override /trainer: default.yaml
 
 # all parameters below will be merged with parameters from default configurations set above
@@ -15,7 +14,8 @@ defaults:
 
 tags: ["mnist", "simple_dense_net"]
 
-seed: 12345
+extras:
+  seed: 12345
 
 trainer:
   min_epochs: 10

@@ -10,9 +10,6 @@ def cfg_train_global() -> DictConfig:
     with initialize(version_base="1.2", config_path="../configs"):
         cfg = compose(config_name="train.yaml", return_hydra_config=True, overrides=[])
 
-        # enable adding new keys to config
-        OmegaConf.set_struct(cfg, True)
-
         # set defaults for all tests
         with open_dict(cfg):
             cfg.paths.root_dir = str(pyrootutils.find_root())
@@ -23,8 +20,9 @@ def cfg_train_global() -> DictConfig:
             cfg.trainer.gpus = 0
             cfg.datamodule.num_workers = 0
             cfg.datamodule.pin_memory = False
-            cfg.print_config = False
-            cfg.tags = ["test"]
+            cfg.extras.print_config = False
+            cfg.extras.enforce_tags = False
+            cfg.logger = None
 
     return cfg
 
@@ -34,9 +32,6 @@ def cfg_eval_global() -> DictConfig:
     with initialize(version_base="1.2", config_path="../configs"):
         cfg = compose(config_name="eval.yaml", return_hydra_config=True, overrides=["ckpt_path=."])
 
-        # enable adding new keys to config
-        OmegaConf.set_struct(cfg, True)
-
         # set defaults for all tests
         with open_dict(cfg):
             cfg.paths.root_dir = str(pyrootutils.find_root())
@@ -45,8 +40,9 @@ def cfg_eval_global() -> DictConfig:
             cfg.trainer.gpus = 0
             cfg.datamodule.num_workers = 0
             cfg.datamodule.pin_memory = False
-            cfg.print_config = False
-            cfg.tags = ["test"]
+            cfg.extras.print_config = False
+            cfg.extras.enforce_tags = False
+            cfg.logger = None
 
     return cfg
 

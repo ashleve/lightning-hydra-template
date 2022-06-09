@@ -1,9 +1,6 @@
 defaults:
   - default.yaml
 
-# mixed precision for extra speed-up
-# precision: 16
-
 # use "ddp_spawn" instead of "ddp",
 # it's slower but normal "ddp" currently doesn't work ideally with hydra
 # https://github.com/facebookresearch/hydra/issues/2070
