@@ -79,7 +79,7 @@ def start(cfg: DictConfig) -> None:
     if cfg.extras.get("print_config"):
         log.info("Printing config tree with Rich! <cfg.extras.print_config=True>")
         print_config_tree(cfg, resolve=True, save_cfg_tree=True)
-        
+
     # set seed for random number generators in pytorch, numpy and python.random
     if cfg.extras.get("seed"):
         log.info(f"Setting seeds! <cfg.extras.seed={cfg.extras.seed}>")
