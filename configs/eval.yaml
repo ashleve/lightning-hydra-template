@@ -11,8 +11,6 @@ defaults:
 
 task_name: "eval"
 
-name: "default"
-
 tags: ["dev"]
 
 ignore_warnings: False

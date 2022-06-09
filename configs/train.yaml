@@ -29,12 +29,11 @@ defaults:
 # task name, determines output directory path
 task_name: "train"
 
-# default name for the experiment, determines output directory path
-# (you can overwrite this in experiment configs)
-name: "default"
-
 # tags to help you identify your experiments
-# (you can overwrite this in experiment configs)
+# you can overwrite this in experiment configs
+# overwrite from command line with `python train.py "tags=[first_tag, second_tag]"`
+# appending lists from command line is currently not supported :(
+# https://github.com/facebookresearch/hydra/issues/1547
 tags: ["dev"]
 
 # seed for random number generators in pytorch, numpy and python.random

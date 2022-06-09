@@ -13,10 +13,7 @@ defaults:
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-# name of the run determines folder name in logs
-name: "simple_dense_net"
-
-tags: ["mnist", "${name}"]
+tags: ["mnist", "simple_dense_net"]
 
 seed: 12345
 
@@ -38,4 +35,4 @@ datamodule:
 logger:
   wandb:
     tags: ${tags}
-    group: ${name}
+    group: "mnist"
