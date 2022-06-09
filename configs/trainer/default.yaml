@@ -8,4 +8,8 @@ max_epochs: 10
 accelerator: cpu
 devices: 1
 
+# set True to to ensure deterministic results
+# makes training slower but gives more reproducibility than just setting seeds
+deterministic: False
+
 enable_model_summary: False
