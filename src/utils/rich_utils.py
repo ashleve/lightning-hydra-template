@@ -5,7 +5,7 @@ import rich
 import rich.syntax
 import rich.tree
 from hydra.core.hydra_config import HydraConfig
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig, OmegaConf, open_dict
 from pytorch_lightning.utilities import rank_zero_only
 from rich.prompt import Prompt
 
@@ -74,22 +74,27 @@ def print_config_tree(
             rich.print(tree, file=file)
 
 
+@rank_zero_only
 def enforce_tags(cfg: DictConfig) -> None:
     """Prompts user to input tags from command line if no tags are provided in config."""
 
     if not cfg.get("tags"):
-        assert "id" not in HydraConfig().cfg.hydra.job, "Specify tags before launching multi-run!"
+        if "id" in HydraConfig().cfg.hydra.job:
+            raise ValueError("Specify tags before launching a multirun!")
 
+        log.warning("No tags provided in config. Prompting user to input tags...")
         tags = Prompt.ask("Enter a list of comma separated tags", default="dev")
         tags = [t.strip() for t in tags.split(",")]
-        cfg.tags = tags
 
-    log.info(f"Tags: {tags if tags is not None else []}")
+        with open_dict(cfg):
+            cfg.tags = tags
+
+        log.info(f"Tags: {cfg.tags}")
 
 
 if __name__ == "__main__":
     from hydra import compose, initialize
 
     with initialize(version_base="1.2", config_path="../../configs"):
-        cfg = compose(config_name="train.yaml", return_hydra_config=True, overrides=[])
+        cfg = compose(config_name="train.yaml", return_hydra_config=False, overrides=[])
         print_config_tree(cfg, resolve=False, save_cfg_tree=False)

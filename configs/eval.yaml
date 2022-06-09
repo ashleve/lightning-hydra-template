@@ -17,6 +17,8 @@ tags: ["dev"]
 
 ignore_warnings: False
 
+enforce_tags: True
+
 print_config: True
 
 # passing checkpoint path is necessary for evaluation

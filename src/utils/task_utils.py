@@ -67,8 +67,8 @@ def start(cfg: DictConfig) -> None:
         warnings.filterwarnings("ignore")
 
     # prompt user to input tags from command line
-    if not cfg.get("tags"):
-        log.warning("No tags provided!")
+    if cfg.get("enforce_tags"):
+        log.info(f"Enforcing tags! <cfg.enforce_tags={cfg.enforce_tags}>")
         enforce_tags(cfg)
 
     # set seed for random number generators in pytorch, numpy and python.random
