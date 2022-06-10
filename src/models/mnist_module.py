@@ -24,8 +24,7 @@ class MNISTLitModule(LightningModule):
     def __init__(
         self,
         net: torch.nn.Module,
-        lr: float = 0.001,
-        weight_decay: float = 0.0005,
+        optimizer: torch.optim.Optimizer,
     ):
         super().__init__()
 
@@ -115,9 +114,9 @@ class MNISTLitModule(LightningModule):
         Examples:
             https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
         """
-        return torch.optim.Adam(
-            params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay
-        )
+        return {
+            "optimizer": self.hparams.optimizer(params=self.parameters()),
+        }
 
 
 if __name__ == "__main__":

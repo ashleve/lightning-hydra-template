@@ -23,7 +23,8 @@ trainer:
   gradient_clip_val: 0.5
 
 model:
-  lr: 0.002
+  optimizer:
+    lr: 0.002
   net:
     lin1_size: 128
     lin2_size: 256
