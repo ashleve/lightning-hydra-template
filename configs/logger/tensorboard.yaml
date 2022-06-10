@@ -4,7 +4,7 @@ tensorboard:
   _target_: pytorch_lightning.loggers.tensorboard.TensorBoardLogger
   save_dir: "${paths.output_dir}/tensorboard/"
   name: null
-  version: ${name}
+  version: ${tags[0]}
   log_graph: False
   default_hp_metric: True
   prefix: ""
