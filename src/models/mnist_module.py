@@ -115,7 +115,7 @@ class MNISTLitModule(LightningModule):
             https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
         """
         return {
-            "optimizer": self.hparams.optimizer(params=self.parameters())
+            "optimizer": self.hparams.optimizer(params=self.parameters()),
         }
 
 
