@@ -28,7 +28,7 @@ def test_default_sweep(tmp_path):
         startfile,
         "-m",
         "hydra.sweep.dir=" + str(tmp_path),
-        "model.lr=0.01,0.02,0.03",
+        "model.optimizer.lr=0.01,0.02,0.03",
         "trainer=default",
     ] + overrides
 

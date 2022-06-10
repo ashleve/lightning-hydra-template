@@ -147,7 +147,7 @@ When running `python train.py` you should see something like this:
 > Hydra allows you to easily overwrite any parameter defined in your config.
 
 ```bash
-python train.py trainer.max_epochs=20 model.lr=1e-4
+python train.py trainer.max_epochs=20 model.optimizer.lr=1e-4
 ```
 
 > You can also add new parameters with `+` sign.
@@ -337,7 +337,7 @@ python test.py ckpt_path="/path/to/ckpt/name.ckpt"
 ```bash
 # this will run 6 experiments one after the other,
 # each with different combination of batch_size and learning rate
-python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
+python train.py -m datamodule.batch_size=32,64,128 model.optimizer.lr=0.001,0.0005
 ```
 
 > ⚠️ This sweep is not failure resistant (if one job crashes than the whole sweep crashes).
@@ -425,7 +425,12 @@ All PyTorch Lightning modules are dynamically instantiated from module paths spe
 
 ```yaml
 _target_: src.models.mnist_model.MNISTLitModule
-lr: 0.001
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.001
+  weight_decay: 0.0
 
 net:
   _target_: src.models.components.simple_dense_net.SimpleDenseNet
@@ -559,7 +564,8 @@ trainer:
   gradient_clip_val: 0.5
 
 model:
-  lr: 0.002
+  opimtimizer:
+    lr: 0.002
   net:
     lin1_size: 128
     lin2_size: 256
@@ -723,7 +729,7 @@ hydra:
       datamodule.batch_size:
         type: categorical
         choices: [32, 64, 128]
-      model.lr:
+      model.optimizer.lr:
         type: float
         low: 0.0001
         high: 0.2
