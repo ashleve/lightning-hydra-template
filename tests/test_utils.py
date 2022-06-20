@@ -1,7 +1,11 @@
 import pytest
 
 
-def test_extras(tmp_path):
+def test_start(tmp_path):
+    pass
+
+
+def test_finish(tmp_path):
     pass
 
 

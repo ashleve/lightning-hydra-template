@@ -2,7 +2,7 @@ import pyrootutils
 import pytest
 from hydra import compose, initialize
 from hydra.core.global_hydra import GlobalHydra
-from omegaconf import DictConfig, OmegaConf, open_dict
+from omegaconf import DictConfig, open_dict
 
 
 @pytest.fixture(scope="package")
@@ -17,7 +17,8 @@ def cfg_train_global() -> DictConfig:
             cfg.trainer.limit_train_batches = 0.01
             cfg.trainer.limit_val_batches = 0.1
             cfg.trainer.limit_test_batches = 0.1
-            cfg.trainer.gpus = 0
+            cfg.trainer.accelerator = "cpu"
+            cfg.trainer.devices = 1
             cfg.datamodule.num_workers = 0
             cfg.datamodule.pin_memory = False
             cfg.extras.print_config = False
@@ -37,7 +38,8 @@ def cfg_eval_global() -> DictConfig:
             cfg.paths.root_dir = str(pyrootutils.find_root())
             cfg.trainer.max_epochs = 1
             cfg.trainer.limit_test_batches = 0.1
-            cfg.trainer.gpus = 0
+            cfg.trainer.accelerator = "cpu"
+            cfg.trainer.devices = 1
             cfg.datamodule.num_workers = 0
             cfg.datamodule.pin_memory = False
             cfg.extras.print_config = False
@@ -48,7 +50,7 @@ def cfg_eval_global() -> DictConfig:
 
 
 # this is called by each test which uses `cfg_train` arg
-# each test generates it's own temporary logging path
+# each test generates its own temporary logging path
 @pytest.fixture(scope="function")
 def cfg_train(cfg_train_global, tmp_path) -> DictConfig:
     cfg = cfg_train_global.copy()
@@ -63,7 +65,7 @@ def cfg_train(cfg_train_global, tmp_path) -> DictConfig:
 
 
 # this is called by each test which uses `cfg_eval` arg
-# each test generates it's own temporary logging path
+# each test generates its own temporary logging path
 @pytest.fixture(scope="function")
 def cfg_eval(cfg_eval_global, tmp_path) -> DictConfig:
     cfg = cfg_eval_global.copy()

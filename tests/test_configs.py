@@ -16,7 +16,7 @@ def test_train_config(cfg_train: DictConfig):
     hydra.utils.instantiate(cfg_train.trainer)
 
 
-def test_test_config(cfg_eval: DictConfig):
+def test_eval_config(cfg_eval: DictConfig):
     assert cfg_eval
     assert cfg_eval.datamodule
     assert cfg_eval.model
