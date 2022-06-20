@@ -27,7 +27,7 @@ def print_config_tree(
         "extras",
     ),
     resolve: bool = False,
-    save_cfg_tree: bool = False,
+    save_to_file: bool = False,
 ) -> None:
     """Prints content of DictConfig using Rich library and its tree structure.
 
@@ -35,7 +35,7 @@ def print_config_tree(
         cfg (DictConfig): Configuration composed by Hydra.
         print_order (Sequence[str], optional): Determines in what order config components are printed.
         resolve (bool, optional): Whether to resolve reference fields of DictConfig.
-        save_cfg_tree (bool, optional): Whether to export config to the hydra output folder.
+        save_to_file (bool, optional): Whether to export config to the hydra output folder.
     """
 
     style = "dim"
@@ -70,13 +70,13 @@ def print_config_tree(
     rich.print(tree)
 
     # save config tree to file
-    if save_cfg_tree:
+    if save_to_file:
         with open(Path(cfg.paths.output_dir, "config_tree.log"), "w") as file:
             rich.print(tree, file=file)
 
 
 @rank_zero_only
-def enforce_tags(cfg: DictConfig) -> None:
+def enforce_tags(cfg: DictConfig, save_to_file: bool = False) -> None:
     """Prompts user to input tags from command line if no tags are provided in config."""
 
     if not cfg.get("tags"):
@@ -85,12 +85,16 @@ def enforce_tags(cfg: DictConfig) -> None:
 
         log.warning("No tags provided in config. Prompting user to input tags...")
         tags = Prompt.ask("Enter a list of comma separated tags", default="dev")
-        tags = [t.strip() for t in tags.split(",")]
+        tags = [t.strip() for t in tags.split(",") if t != ""]
 
         with open_dict(cfg):
             cfg.tags = tags
 
         log.info(f"Tags: {cfg.tags}")
+
+    if save_to_file:
+        with open(Path(cfg.paths.output_dir, "tags.log"), "w") as file:
+            rich.print(cfg.tags, file=file)
 
 
 if __name__ == "__main__":
@@ -98,4 +102,4 @@ if __name__ == "__main__":
 
     with initialize(version_base="1.2", config_path="../../configs"):
         cfg = compose(config_name="train.yaml", return_hydra_config=False, overrides=[])
-        print_config_tree(cfg, resolve=False, save_cfg_tree=False)
+        print_config_tree(cfg, resolve=False, save_to_file=False)
