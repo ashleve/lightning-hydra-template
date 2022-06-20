@@ -10,9 +10,9 @@ from pytorch_lightning import Callback, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning.utilities import rank_zero_only
 
-from src.utils import enforce_tags, get_pylogger, print_config_tree
+from src.utils import pylogger, rich_utils
 
-log = get_pylogger(__name__)
+log = pylogger.get_pylogger(__name__)
 
 
 def task_wrapper(task_func) -> Callable:
@@ -43,8 +43,10 @@ def task_wrapper(task_func) -> Callable:
         save_exec_time(cfg.paths.output_dir, cfg.task_name, end_time - start_time)
 
         # make sure returned types are correct
-        assert isinstance(metric_value, float) or metric_value is None
-        assert isinstance(object_dict, dict)
+        if not (isinstance(metric_value, float) or metric_value is None):
+            raise TypeError("Incorrect type of 'metric_value'.")
+        if not isinstance(object_dict, dict):
+            raise TypeError("Incorrect type of 'object_dict'.")
 
         return metric_value, object_dict
 
@@ -70,15 +72,15 @@ def start(cfg: DictConfig) -> None:
         log.info("Disabling python warnings! <cfg.extras.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
 
-    # prompt user to input tags from command line if none are provided in config
+    # prompt user to input tags from command line if none are provided in the config
     if cfg.extras.get("enforce_tags"):
         log.info("Enforcing tags! <cfg.extras.enforce_tags=True>")
-        enforce_tags(cfg)
+        rich_utils.enforce_tags(cfg, save_to_file=True)
 
     # pretty print config tree using Rich library
     if cfg.extras.get("print_config"):
         log.info("Printing config tree with Rich! <cfg.extras.print_config=True>")
-        print_config_tree(cfg, resolve=True, save_cfg_tree=True)
+        rich_utils.print_config_tree(cfg, resolve=True, save_to_file=True)
 
     # set seed for random number generators in pytorch, numpy and python.random
     if cfg.extras.get("seed"):
@@ -126,9 +128,11 @@ def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
     callbacks: List[Callback] = []
 
     if not callbacks_cfg:
+        log.warning("Callbacks config is empty.")
         return callbacks
 
-    assert isinstance(callbacks_cfg, DictConfig), "Callbacks config must be a DictConfig!"
+    if not isinstance(callbacks_cfg, DictConfig):
+        raise TypeError("Callbacks config must be a DictConfig!")
 
     for _, cb_conf in callbacks_cfg.items():
         if isinstance(cb_conf, DictConfig) and "_target_" in cb_conf:
@@ -143,9 +147,11 @@ def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
     logger: List[LightningLoggerBase] = []
 
     if not logger_cfg:
+        log.warning("Logger config is empty.")
         return logger
 
-    assert isinstance(logger_cfg, DictConfig), "Loggers config must be a DictConfig!"
+    if not isinstance(logger_cfg, DictConfig):
+        raise TypeError("Loggers config must be a DictConfig!")
 
     for _, lg_conf in logger_cfg.items():
         if isinstance(lg_conf, DictConfig) and "_target_" in lg_conf:
