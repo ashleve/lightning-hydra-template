@@ -2,7 +2,7 @@
 
 defaults:
   - _self_
-  - datamodule: mnist.yaml # choose datamodule with test_dataloader for evaluation
+  - datamodule: mnist.yaml # choose datamodule with `test_dataloader()` for evaluation
   - model: mnist.yaml
   - logger: null
   - trainer: default.yaml
