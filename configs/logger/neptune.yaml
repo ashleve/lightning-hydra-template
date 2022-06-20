@@ -6,6 +6,6 @@ neptune:
   project_name: your_name/lightning-hydra-template
   close_after_fit: True
   offline_mode: False
-  experiment_name: ${name}
   experiment_id: null
   prefix: ""
+  # experiment_name: ""
