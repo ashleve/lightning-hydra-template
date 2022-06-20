@@ -10,7 +10,7 @@ from pytorch_lightning import Callback, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning.utilities import rank_zero_only
 
-from src import pylogger, rich_utils
+from src.utils import pylogger, rich_utils
 
 log = pylogger.get_pylogger(__name__)
 
@@ -128,7 +128,7 @@ def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
     callbacks: List[Callback] = []
 
     if not callbacks_cfg:
-        log.warning(f"Callbacks config is empty.")
+        log.warning("Callbacks config is empty.")
         return callbacks
 
     if not isinstance(callbacks_cfg, DictConfig):
@@ -147,7 +147,7 @@ def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
     logger: List[LightningLoggerBase] = []
 
     if not logger_cfg:
-        log.warning(f"Logger config is empty.")
+        log.warning("Logger config is empty.")
         return logger
 
     if not isinstance(logger_cfg, DictConfig):
