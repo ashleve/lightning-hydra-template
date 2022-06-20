@@ -35,7 +35,4 @@ class SimpleDenseNet(nn.Module):
 
 
 if __name__ == "__main__":
-    import pyrootutils
-
-    root = pyrootutils.setup_root(__file__)
     _ = SimpleDenseNet()
