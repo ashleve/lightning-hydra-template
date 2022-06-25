@@ -5,6 +5,10 @@
 
 defaults:
   - override /hydra/sweeper: optuna
+  
+  # make sure to override the default sampler, when you want to try other sampler, like RandomSampler
+  # https://github.com/facebookresearch/hydra/blob/8b9ce30802165c1b24dbf4e513eb78d8ca8cacd6/plugins/hydra_optuna_sweeper/hydra_plugins/hydra_optuna_sweeper/config.py#L144
+  # - override /hydra/sweeper/sampler: random
 
 # choose metric which will be optimized by Optuna
 # make sure this is the correct name of some metric logged in lightning module!
@@ -36,7 +40,7 @@ hydra:
     # choose Optuna hyperparameter sampler
     # docs: https://optuna.readthedocs.io/en/stable/reference/samplers.html
     sampler:
-      _target_: optuna.samplers.TPESampler
+      _target_: optuna.samplers.TPESampler  # or optuna.samplers.RandomSampler
       seed: 12345
       n_startup_trials: 10 # number of random sampling runs before optimization starts
 
