@@ -6,6 +6,9 @@
 defaults:
   - override /hydra/sweeper: optuna
 
+  # override `tpe` to `random` to execute random search (without optimization)
+  - override /hydra/sweeper/sampler: tpe
+
 # choose metric which will be optimized by Optuna
 # make sure this is the correct name of some metric logged in lightning module!
 optimized_metric: "val/acc_best"
