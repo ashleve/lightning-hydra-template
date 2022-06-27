@@ -6,7 +6,7 @@
 defaults:
   - override /hydra/sweeper: optuna
 
-  # override the default sampler if you want to try other sampler, such as random for RandomSampler
+  # override `tpe` to `random` to execute random search (without optimization)
   - override /hydra/sweeper/sampler: tpe
 
 # choose metric which will be optimized by Optuna
