@@ -1,0 +1,17 @@
+# https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.callbacks.ModelCheckpoint.html#pytorch_lightning.callbacks.ModelCheckpoint
+
+model_checkpoint:
+  _target_: pytorch_lightning.callbacks.ModelCheckpoint
+  dirpath: null
+  filename: null
+  monitor: null
+  verbose: False
+  save_last: null
+  save_top_k: 1
+  mode: "min"
+  auto_insert_metric_name: True
+  save_weights_only: False
+  every_n_train_steps: null
+  train_time_interval: null
+  every_n_epochs: null
+  save_on_train_epoch_end: null
