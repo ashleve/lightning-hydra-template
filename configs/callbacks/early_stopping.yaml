@@ -12,4 +12,4 @@ early_stopping:
   stopping_threshold: null
   divergence_threshold: null
   check_on_train_epoch_end: null
-  log_rank_zero_only: False
+  # log_rank_zero_only: False  # this keyword argument isn't available in stable version
