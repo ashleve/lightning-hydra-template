@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List
 
 import hydra
+import pkg_resources
 import pytorch_lightning as pl
 from omegaconf import DictConfig
 from pytorch_lightning import Callback, Trainer
@@ -19,30 +20,40 @@ def task_wrapper(task_func) -> Callable:
     """Optional decorator that wraps the task function in extra utilities.
 
     Utilities:
-    - Calling the task_utils.start() before the task is started
-    - Calling the task_utils.finish() after the task is finished
-    - Logging the total time of execution
-    - Enabling repeating task execution on failure
+    - Calling the `extras()` before the task is started
+    - Calling the `close_loggers()` after the task is finished
+    - Calling the `close_loggers()` if exception occurs (otherwise multirun with logger could fail)
+    - Logging the exception if occurs
+    - Logging the task total execution time
     """
 
     def wrap(cfg: DictConfig):
+
+        # apply extra config utilities
+        extras(cfg)
+
         start_time = time.time()
 
-        # apply optional config utilities
-        start(cfg)
+        # execute the task
+        try:
+            result = task_func(cfg=cfg)
+        except Exception as ex:
+            log.exception("")
+            close_loggers()
+            raise ex
 
-        # TODO: repeat call if fails...
-        result = task_func(cfg=cfg)
-        metric_value, object_dict = result
-
-        # make sure everything closed properly
-        finish(object_dict)
+        end_time = time.time()
 
         # save task execution time
-        end_time = time.time()
-        save_exec_time(cfg.paths.output_dir, cfg.task_name, end_time - start_time)
+        content = f"'{cfg.task_name}' execution time: {end_time - start_time} (s)"
+        path = Path(cfg.paths.output_dir, "exec_time.log")
+        save_file(path, content)
+
+        # make sure loggers closed properly
+        close_loggers()
 
         # make sure returned types are correct
+        metric_value, object_dict = result
         if not (isinstance(metric_value, float) or metric_value is None):
             raise TypeError("Incorrect type of 'metric_value'.")
         if not isinstance(object_dict, dict):
@@ -53,7 +64,7 @@ def task_wrapper(task_func) -> Callable:
     return wrap
 
 
-def start(cfg: DictConfig) -> None:
+def extras(cfg: DictConfig) -> None:
     """Applies optional utilities before the task is started.
 
     Utilities:
@@ -88,39 +99,11 @@ def start(cfg: DictConfig) -> None:
         pl.seed_everything(cfg.extras.seed, workers=True)
 
 
-def finish(object_dict: Dict[str, Any]) -> None:
-    """Applies optional utilities after the task is executed.
-
-    Utilities:
-    - Making sure all loggers closed properly (prevents logging failure during multirun)
-    """
-    for logger in object_dict.get("logger", []):
-
-        if isinstance(logger, pl.loggers.wandb.WandbLogger):
-            import wandb
-
-            wandb.finish()
-
-        if isinstance(logger, pl.loggers.neptune.NeptuneLogger):
-            import neptune
-
-            neptune.stop()
-
-        if isinstance(logger, pl.loggers.mlflow.MLFlowLogger):
-            import mlflow
-
-            mlflow.end_run()
-
-        if isinstance(logger, pl.loggers.comet.CometLogger):
-            logger._experiment.end()
-
-
 @rank_zero_only
-def save_exec_time(path, task_name, time_in_seconds) -> None:
-    """Saves task execution time to file."""
-    with open(Path(path, "exec_time.log"), "w+") as file:
-        file.write("Total task execution time.\n")
-        file.write(task_name + ": " + str(time_in_seconds) + " (s)" + "\n")
+def save_file(path, content) -> None:
+    """Save file in rank zero mode."""
+    with open(path, "w+") as file:
+        file.write(content)
 
 
 def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
@@ -151,7 +134,7 @@ def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
         return logger
 
     if not isinstance(logger_cfg, DictConfig):
-        raise TypeError("Loggers config must be a DictConfig!")
+        raise TypeError("Logger config must be a DictConfig!")
 
     for _, lg_conf in logger_cfg.items():
         if isinstance(lg_conf, DictConfig) and "_target_" in lg_conf:
@@ -212,3 +195,28 @@ def get_metric_value(metric_name: str, trainer: Trainer) -> float:
             "Make sure `optimized_metric` name in `hparams_search` config is correct!"
         )
     return trainer.callback_metrics[metric_name].item()
+
+
+def close_loggers() -> None:
+    """Makes sure all loggers closed properly (prevents logging failure during multirun)."""
+
+    def package_available(package_name: str) -> bool:
+        try:
+            return pkg_resources.require(package_name) is not None
+        except pkg_resources.DistributionNotFound:
+            return False
+
+    if package_available("wandb"):
+        from wandb import finish
+
+        finish()
+
+    if package_available("neptune"):
+        from neptune import stop
+
+        stop()
+
+    if package_available("mlflow"):
+        from mlflow import end_run
+
+        end_run()
