@@ -27,30 +27,29 @@ def task_wrapper(task_func: Callable) -> Callable:
     """
 
     def wrap(cfg: DictConfig):
-        log.info(f"Output dir: {cfg.paths.output_dir}")
 
         # apply extra config utilities
         extras(cfg)
 
         try:
             start_time = time.time()
-            result = task_func(cfg=cfg)
-            metric_value, object_dict = result
+            metric_value, object_dict = task_func(cfg=cfg)
         except Exception as ex:
             log.exception("")  # save exception to `.log` file
             raise ex
         finally:
-            save_file(
-                path=Path(cfg.paths.output_dir, "exec_time.log"),
-                content=f"'{cfg.task_name}' execution time: {time.time() - start_time} (s)",
-            )
+            path = Path(cfg.paths.output_dir, "exec_time.log")
+            content = f"'{cfg.task_name}' execution time: {time.time() - start_time} (s)"
+            save_file(path, content)
             close_loggers()
+
+        object_dict = None
 
         # make sure returned types are correct
         if not (isinstance(metric_value, float) or metric_value is None):
-            raise TypeError("Incorrect type of 'metric_value'.")
+            raise TypeError(f"Incorrect type of 'metric_value': {type(metric_value)}")
         if not isinstance(object_dict, dict):
-            raise TypeError("Incorrect type of 'object_dict'.")
+            raise TypeError(f"Incorrect type of 'object_dict': {type(object_dict)}")
 
         return metric_value, object_dict
 
