@@ -16,44 +16,37 @@ from src.utils import pylogger, rich_utils
 log = pylogger.get_pylogger(__name__)
 
 
-def task_wrapper(task_func) -> Callable:
+def task_wrapper(task_func: Callable) -> Callable:
     """Optional decorator that wraps the task function in extra utilities.
 
     Utilities:
     - Calling the `extras()` before the task is started
-    - Calling the `close_loggers()` after the task is finished
-    - Calling the `close_loggers()` if exception occurs (otherwise multirun with logger could fail)
+    - Calling the `close_loggers()` after the task is finished (prevents multirun failure)
     - Logging the exception if occurs
     - Logging the task total execution time
     """
 
     def wrap(cfg: DictConfig):
+        log.info(f"Output dir: {cfg.paths.output_dir}")
 
         # apply extra config utilities
         extras(cfg)
 
-        start_time = time.time()
-
-        # execute the task
         try:
+            start_time = time.time()
             result = task_func(cfg=cfg)
+            metric_value, object_dict = result
         except Exception as ex:
-            log.exception("")
-            close_loggers()
+            log.exception("")  # save exception to `.log` file
             raise ex
-
-        end_time = time.time()
-
-        # save task execution time
-        content = f"'{cfg.task_name}' execution time: {end_time - start_time} (s)"
-        path = Path(cfg.paths.output_dir, "exec_time.log")
-        save_file(path, content)
-
-        # make sure loggers closed properly
-        close_loggers()
+        finally:
+            save_file(
+                path=Path(cfg.paths.output_dir, "exec_time.log"), 
+                content=f"'{cfg.task_name}' execution time: {time.time() - start_time} (s)"
+            ) # save task execution time
+            close_loggers()
 
         # make sure returned types are correct
-        metric_value, object_dict = result
         if not (isinstance(metric_value, float) or metric_value is None):
             raise TypeError("Incorrect type of 'metric_value'.")
         if not isinstance(object_dict, dict):
@@ -74,6 +67,7 @@ def extras(cfg: DictConfig) -> None:
     - Rich config printing
     """
 
+    # return if no `extras` config
     if not cfg.get("extras"):
         log.warning("Extras config not found! <cfg.extras=null>")
         return
@@ -199,6 +193,8 @@ def get_metric_value(metric_name: str, trainer: Trainer) -> float:
 
 def close_loggers() -> None:
     """Makes sure all loggers closed properly (prevents logging failure during multirun)."""
+
+    log.info("Closing loggers!")
 
     def package_available(package_name: str) -> bool:
         try:
