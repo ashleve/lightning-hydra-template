@@ -20,8 +20,8 @@ def task_wrapper(task_func: Callable) -> Callable:
     """Optional decorator that wraps the task function in extra utilities.
 
     Utilities:
-    - Calling the `extras()` before the task is started
-    - Calling the `close_loggers()` after the task is finished (prevents multirun failure)
+    - Calling the `task_utils.extras()` before the task is started
+    - Calling the `task_utils.close_loggers()` after the task is finished (prevents multirun failure)
     - Logging the exception if occurs
     - Logging the task total execution time
     """
@@ -41,9 +41,9 @@ def task_wrapper(task_func: Callable) -> Callable:
             raise ex
         finally:
             save_file(
-                path=Path(cfg.paths.output_dir, "exec_time.log"), 
-                content=f"'{cfg.task_name}' execution time: {time.time() - start_time} (s)"
-            ) # save task execution time
+                path=Path(cfg.paths.output_dir, "exec_time.log"),
+                content=f"'{cfg.task_name}' execution time: {time.time() - start_time} (s)",
+            )
             close_loggers()
 
         # make sure returned types are correct
