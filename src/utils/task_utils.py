@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List
 
 import hydra
-import pkg_resources
 import pytorch_lightning as pl
 from omegaconf import DictConfig
 from pytorch_lightning import Callback, Trainer
@@ -193,23 +192,11 @@ def close_loggers() -> None:
 
     log.info("Closing loggers!")
 
-    def package_available(package_name: str) -> bool:
-        try:
-            return pkg_resources.require(package_name) is not None
-        except pkg_resources.DistributionNotFound:
-            return False
+    # import wandb
+    # wandb.finish()
 
-    if package_available("wandb"):
-        from wandb import finish
+    # import neptune
+    # neptune.stop()
 
-        finish()
-
-    if package_available("neptune"):
-        from neptune import stop
-
-        stop()
-
-    if package_available("mlflow"):
-        from mlflow import end_run
-
-        end_run()
+    # import mlflow
+    # mlflow.end_run()
