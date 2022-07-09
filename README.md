@@ -70,15 +70,17 @@ The directory structure of new project looks like this:
 │   ├── datamodule               <- Datamodule configs
 │   ├── debug                    <- Debugging configs
 │   ├── experiment               <- Experiment configs
+│   ├── extras                   <- Extra utilities configs
 │   ├── hparams_search           <- Hyperparameter search configs
+│   ├── hydra                    <- Hydra configs
 │   ├── local                    <- Local configs
-│   ├── log_dir                  <- Logging directory configs
 │   ├── logger                   <- Logger configs
 │   ├── model                    <- Model configs
+│   ├── paths                    <- Project paths configs
 │   ├── trainer                  <- Trainer configs
 │   │
-│   ├── eval.yaml             <- Main config for evaluation pipeline
-│   └── train.yaml            <- Main config for training pipeline
+│   ├── eval.yaml             <- Main config for evaluation
+│   └── train.yaml            <- Main config for training
 │
 ├── data                   <- Project data
 │
@@ -93,7 +95,7 @@ The directory structure of new project looks like this:
 ├── src                    <- Source code
 │   ├── datamodules              <- Lightning datamodules
 │   ├── models                   <- Lightning models
-│   ├── pipelines                <- Pipelines for different scenarios
+│   ├── tasks                    <- Different scenarios, like training, evaluation, etc.
 │   ├── utils                    <- Utility scripts
 │   │
 │   ├── eval.py                  <- Run evaluation
@@ -101,11 +103,12 @@ The directory structure of new project looks like this:
 │
 ├── tests                  <- Tests of any kind
 │
-├── .env.example              <- Template of the file for storing private environment variables
+├── .env.example              <- Example of the file for storing private environment variables
 ├── .gitignore                <- List of files/folders ignored by git
 ├── .pre-commit-config.yaml   <- Configuration of pre-commit hooks for code formatting
+├── pyproject.toml            <- Configuration of pytest
 ├── requirements.txt          <- File for installing python dependencies
-├── setup.cfg                 <- Configuration of linters and pytest
+├── setup.py                  <- File for installing project as a package
 └── README.md
 ```
 
@@ -119,7 +122,7 @@ git clone https://github.com/ashleve/lightning-hydra-template
 cd lightning-hydra-template
 
 # [OPTIONAL] create conda environment
-conda create -n myenv python=3.10
+conda create -n myenv python=3.9
 conda activate myenv
 
 # install pytorch according to instructions
@@ -995,7 +998,7 @@ git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
 # [OPTIONAL] create conda environment
-conda create -n myenv python=3.10
+conda create -n myenv python=3.9
 conda activate myenv
 
 # install pytorch according to instructions
@@ -1009,20 +1012,20 @@ Train model with default configuration
 
 ```bash
 # train on CPU
-python train.py trainer.gpus=0
+python src/train.py trainer=cpu
 
 # train on GPU
-python train.py trainer.gpus=1
+python src/train.py trainer=gpu
 ```
 
 Train model with chosen experiment configuration from [configs/experiment/](configs/experiment/)
 
 ```bash
-python train.py experiment=experiment_name.yaml
+python src/train.py experiment=experiment_name.yaml
 ```
 
 You can override any parameter from command line like this
 
 ```bash
-python train.py trainer.max_epochs=20 datamodule.batch_size=64
+python src/train.py trainer.max_epochs=20 datamodule.batch_size=64
 ```
