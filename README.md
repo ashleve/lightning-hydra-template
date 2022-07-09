@@ -408,9 +408,11 @@ pytest -k "not slow"
 
 ## ❤️&nbsp;&nbsp;Contributions
 
-Have a question? Found a bug? Missing a specific feature? Feel free to file a new issue, discussion or PR with respective title and description. Suggestions are always welcome!
+Have a question? Found a bug? Missing a specific feature? Feel free to file a new issue, discussion or PR with respective title and description.
 
 Before making an issue, please verify that the problem still exists on the current `main` branch.
+
+Suggestions for improvements are always welcome!
 
 <br>
 
@@ -565,7 +567,7 @@ logger:
 
 ## Workflow
 
-**Basic workflow:**
+### Basic workflow
 
 1. Write your PyTorch Lightning module (see [models/mnist_module.py](src/models/mnist_module.py) for example)
 2. Write your PyTorch Lightning datamodule (see [datamodules/mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
@@ -575,24 +577,18 @@ logger:
    python src/train.py experiment=experiment_name.yaml
    ```
 
-**Experiment design:**
+### Experiment design
 
-_Say you want to execute 20 different runs and plot how accuracy changes in respect to batch size._
+_Say you want to execute many runs to plot how accuracy changes in respect to batch size._
 
-1. Execute the runs with some config parameter that allows you to identify them easily, like experiment name or tags:
+1. Execute the runs with some config parameter that allows you to identify them easily, like tags:
 
    ```bash
-   # execute run with specific name
-   python train.py logger=csv datamodule.batch_size=16 name="batch_size_exp"
-
-   # execute many runs with specific name
-   python train.py -m logger=csv datamodule.batch_size=16,32,64,128 name="batch_size_exp"
-
-   # execute many runs with specific tags
-   python train.py -m logger=csv datamodule.batch_size=16,32,64,128 tags=["batch_size_exp"]
+   # execute multirun with specific tags
+   python src/train.py -m logger=csv datamodule.batch_size=16,32,64,128,256 tags=["batch_size_experiment"]
    ```
 
-2. Write a script/notebook that searches over the `logs/` folder and retrieves the metrics of runs containing given name or tags in config. Plot the results.
+2. Write a script or notebook that searches over the `logs/` folder and retrieves runs containing given tags in config. Plot the results.
 
 <br>
 
