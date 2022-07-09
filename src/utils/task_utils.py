@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List
 
 import hydra
-import pytorch_lightning as pl
 from omegaconf import DictConfig
 from pytorch_lightning import Callback, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
@@ -57,7 +56,6 @@ def extras(cfg: DictConfig) -> None:
     Utilities:
     - Ignoring python warnings
     - Setting tags from command line
-    - Setting global seeds
     - Rich config printing
     """
 
@@ -80,11 +78,6 @@ def extras(cfg: DictConfig) -> None:
     if cfg.extras.get("print_config"):
         log.info("Printing config tree with Rich! <cfg.extras.print_config=True>")
         rich_utils.print_config_tree(cfg, resolve=True, save_to_file=True)
-
-    # set seed for random number generators in pytorch, numpy and python.random
-    if cfg.extras.get("seed"):
-        log.info(f"Setting seeds! <cfg.extras.seed={cfg.extras.seed}>")
-        pl.seed_everything(cfg.extras.seed, workers=True)
 
 
 @rank_zero_only
