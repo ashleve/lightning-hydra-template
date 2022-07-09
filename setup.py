@@ -1,7 +1,6 @@
-# setup.py
 #!/usr/bin/env python
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="src",
@@ -9,7 +8,7 @@ setup(
     description="Describe Your Cool Project",
     author="",
     author_email="",
-    url="https://github.com/YourSeed",  # REPLACE WITH YOUR OWN GITHUB PROJECT LINK
-    install_requires=["pytorch-lightning"],
+    url="https://github.com/user/project",  # REPLACE WITH YOUR OWN GITHUB PROJECT LINK
+    install_requires=["pytorch-lightning", "hydra-core"],
     packages=find_packages(),
 )
