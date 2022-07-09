@@ -52,7 +52,7 @@ def test_hydra_sweep_ddp_sim(tmp_path):
         "model.optimizer.lr=0.005,0.01,0.02",
     ] + overrides
     run_sh_command(command)
-    
+
 
 @RunIf(sh=True)
 @pytest.mark.slow
