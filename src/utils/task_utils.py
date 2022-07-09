@@ -30,7 +30,7 @@ def task_wrapper(task_func: Callable) -> Callable:
 
     def wrap(cfg: DictConfig):
 
-        # apply extra config utilities
+        # apply extra utilities
         extras(cfg)
         
         # execute the task
@@ -190,7 +190,6 @@ def close_loggers() -> None:
     """Makes sure all loggers closed properly (prevents logging failure during multirun)."""
 
     log.info("Closing loggers...")
-    print(find_spec("wandb"))
 
     if find_spec("wandb"): # if wandb is installed
         import wandb
