@@ -52,6 +52,17 @@ def test_train_epoch_double_val_loop(cfg_train):
 
 
 @pytest.mark.slow
+def test_train_ddp_sim(cfg_train):
+    HydraConfig().set_config(cfg_train)
+    with open_dict(cfg_train):
+        cfg_train.trainer.max_epochs = 2
+        cfg_train.trainer.accelerator = "cpu"
+        cfg_train.trainer.devices = 2
+        cfg_train.trainer.strategy = "ddp_spawn"
+    train_task.train(cfg_train)
+
+
+@pytest.mark.slow
 def test_train_resume(tmp_path, cfg_train):
     with open_dict(cfg_train):
         cfg_train.trainer.max_epochs = 1

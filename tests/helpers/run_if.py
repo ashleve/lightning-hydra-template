@@ -56,13 +56,13 @@ class RunIf:
     ):
         """
         Args:
-            min_gpus: min number of gpus required to run test
+            min_gpus: min number of GPUs required to run test
             min_torch: minimum pytorch version to run test
             max_torch: maximum pytorch version to run test
             min_python: minimum python version required to run test
             skip_windows: skip test for Windows platform
-            sh: if `sh` module is required to run the test
             tpu: if TPU is available
+            sh: if `sh` module is required to run the test
             fairscale: if `fairscale` module is required to run the test
             deepspeed: if `deepspeed` module is required to run the test
             wandb: if `wandb` module is required to run the test
@@ -99,21 +99,21 @@ class RunIf:
             conditions.append(_IS_WINDOWS)
             reasons.append("does not run on Windows")
 
-        if sh:
-            conditions.append(not _SH_AVAILABLE)
-            reasons.append("sh")
-
         if tpu:
             conditions.append(not _TPU_AVAILABLE)
             reasons.append("TPU")
 
+        if sh:
+            conditions.append(not _SH_AVAILABLE)
+            reasons.append("sh")
+
         if fairscale:
             conditions.append(not _FAIRSCALE_AVAILABLE)
-            reasons.append("Fairscale")
+            reasons.append("fairscale")
 
         if deepspeed:
             conditions.append(not _DEEPSPEED_AVAILABLE)
-            reasons.append("Deepspeed")
+            reasons.append("deepspeed")
 
         if wandb:
             conditions.append(not _WANDB_AVAILABLE)
