@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional, Tuple
 
 import hydra
+import pytorch_lightning as pl
 from omegaconf import DictConfig
 from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
@@ -26,6 +27,10 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
         and dictionary with all instantiated objects.
     """
 
+    # set seed for random number generators in pytorch, numpy and python.random
+    if cfg.get("seed"):
+        pl.seed_everything(cfg.seed, workers=True)
+
     # init lightning datamodule
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
@@ -35,11 +40,11 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
     model: LightningModule = hydra.utils.instantiate(cfg.model)
 
     # init lightning callbacks
-    log.info("Instantiating callbacks!")
+    log.info("Instantiating callbacks...")
     callbacks: List[Callback] = utils.instantiate_callbacks(cfg.get("callbacks"))
 
     # init lightning loggers
-    log.info("Instantiating loggers!")
+    log.info("Instantiating loggers...")
     logger: List[LightningLoggerBase] = utils.instantiate_loggers(cfg.get("logger"))
 
     # init lightning trainer
@@ -71,14 +76,15 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
         log.info(f"Retrieved metric value! <{cfg.optimized_metric}={metric_value}>")
 
     # test the model
+    best_ckpt = trainer.checkpoint_callback.best_model_path
+    best_ckpt = None if best_ckpt == "" else best_ckpt
     if cfg.get("test"):
         log.info("Starting testing!")
-        ckpt_path = "best" if trainer.checkpoint_callback.best_model_path else None
-        trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
+        trainer.test(model=model, datamodule=datamodule, ckpt_path=best_ckpt)
 
-    # print path to best checkpoint
-    if trainer.checkpoint_callback.best_model_path:
-        log.info(f"Best model ckpt at {trainer.checkpoint_callback.best_model_path}")
+    # print paths
+    log.info(f"Output dir: {cfg.paths.output_dir}")
+    log.info(f"Best ckpt: {best_ckpt}")
 
     # return metric value for hyperparameter optimization
     return metric_value, object_dict

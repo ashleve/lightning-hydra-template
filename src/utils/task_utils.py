@@ -1,66 +1,65 @@
 import time
 import warnings
+from importlib.util import find_spec
 from pathlib import Path
 from typing import Any, Callable, Dict, List
 
 import hydra
-import pytorch_lightning as pl
 from omegaconf import DictConfig
 from pytorch_lightning import Callback, Trainer
 from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning.utilities import rank_zero_only
 
-from src.utils import enforce_tags, get_pylogger, print_config_tree
+from src.utils import pylogger, rich_utils
 
-log = get_pylogger(__name__)
+log = pylogger.get_pylogger(__name__)
 
 
-def task_wrapper(task_func) -> Callable:
+def task_wrapper(task_func: Callable) -> Callable:
     """Optional decorator that wraps the task function in extra utilities.
 
+    Makes multiurn more resistant to failure.
+
     Utilities:
-    - Calling the task_utils.start() before the task is started
-    - Calling the task_utils.finish() after the task is finished
-    - Logging the total time of execution
-    - Enabling repeating task execution on failure
+    - Calling the `task_utils.extras()` before the task is started
+    - Calling the `task_utils.close_loggers()` after the task is finished
+    - Logging the exception if occurs
+    - Logging the task total execution time
     """
 
     def wrap(cfg: DictConfig):
-        start_time = time.time()
 
-        # apply optional config utilities
-        start(cfg)
+        # apply extra utilities
+        extras(cfg)
 
-        # TODO: repeat call if fails...
-        result = task_func(cfg=cfg)
-        metric_value, object_dict = result
-
-        # make sure everything closed properly
-        finish(object_dict)
-
-        # save task execution time
-        end_time = time.time()
-        save_exec_time(cfg.paths.output_dir, cfg.task_name, end_time - start_time)
-
-        # make sure returned types are correct
-        assert isinstance(metric_value, float) or metric_value is None
-        assert isinstance(object_dict, dict)
+        # execute the task
+        try:
+            start_time = time.time()
+            metric_value, object_dict = task_func(cfg=cfg)
+        except Exception as ex:
+            log.exception("")  # save exception to `.log` file
+            raise ex
+        finally:
+            path = Path(cfg.paths.output_dir, "exec_time.log")
+            content = f"'{cfg.task_name}' execution time: {time.time() - start_time} (s)"
+            save_file(path, content)  # save task execution time (even if exception occurs)
+            close_loggers()  # close loggers (even if exception occurs so multirun won't fail)
 
         return metric_value, object_dict
 
     return wrap
 
 
-def start(cfg: DictConfig) -> None:
+def extras(cfg: DictConfig) -> None:
     """Applies optional utilities before the task is started.
 
     Utilities:
     - Ignoring python warnings
     - Setting tags from command line
-    - Setting global seeds
     - Rich config printing
     """
 
+    # return if no `extras` config
     if not cfg.get("extras"):
         log.warning("Extras config not found! <cfg.extras=null>")
         return
@@ -70,55 +69,22 @@ def start(cfg: DictConfig) -> None:
         log.info("Disabling python warnings! <cfg.extras.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
 
-    # prompt user to input tags from command line if none are provided in config
+    # prompt user to input tags from command line if none are provided in the config
     if cfg.extras.get("enforce_tags"):
         log.info("Enforcing tags! <cfg.extras.enforce_tags=True>")
-        enforce_tags(cfg)
+        rich_utils.enforce_tags(cfg, save_to_file=True)
 
     # pretty print config tree using Rich library
     if cfg.extras.get("print_config"):
         log.info("Printing config tree with Rich! <cfg.extras.print_config=True>")
-        print_config_tree(cfg, resolve=True, save_cfg_tree=True)
-
-    # set seed for random number generators in pytorch, numpy and python.random
-    if cfg.extras.get("seed"):
-        log.info(f"Setting seeds! <cfg.extras.seed={cfg.extras.seed}>")
-        pl.seed_everything(cfg.extras.seed, workers=True)
-
-
-def finish(object_dict: Dict[str, Any]) -> None:
-    """Applies optional utilities after the task is executed.
-
-    Utilities:
-    - Making sure all loggers closed properly (prevents logging failure during multirun)
-    """
-    for logger in object_dict.get("logger", []):
-
-        if isinstance(logger, pl.loggers.wandb.WandbLogger):
-            import wandb
-
-            wandb.finish()
-
-        if isinstance(logger, pl.loggers.neptune.NeptuneLogger):
-            import neptune
-
-            neptune.stop()
-
-        if isinstance(logger, pl.loggers.mlflow.MLFlowLogger):
-            import mlflow
-
-            mlflow.end_run()
-
-        if isinstance(logger, pl.loggers.comet.CometLogger):
-            logger._experiment.end()
+        rich_utils.print_config_tree(cfg, resolve=True, save_to_file=True)
 
 
 @rank_zero_only
-def save_exec_time(path, task_name, time_in_seconds) -> None:
-    """Saves task execution time to file."""
-    with open(Path(path, "exec_time.log"), "w+") as file:
-        file.write("Total task execution time.\n")
-        file.write(task_name + ": " + str(time_in_seconds) + " (s)" + "\n")
+def save_file(path, content) -> None:
+    """Save file in rank zero mode (only on one process in multi-GPU setup)."""
+    with open(path, "w+") as file:
+        file.write(content)
 
 
 def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
@@ -126,9 +92,11 @@ def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
     callbacks: List[Callback] = []
 
     if not callbacks_cfg:
+        log.warning("Callbacks config is empty.")
         return callbacks
 
-    assert isinstance(callbacks_cfg, DictConfig), "Callbacks config must be a DictConfig!"
+    if not isinstance(callbacks_cfg, DictConfig):
+        raise TypeError("Callbacks config must be a DictConfig!")
 
     for _, cb_conf in callbacks_cfg.items():
         if isinstance(cb_conf, DictConfig) and "_target_" in cb_conf:
@@ -143,9 +111,11 @@ def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
     logger: List[LightningLoggerBase] = []
 
     if not logger_cfg:
+        log.warning("Logger config is empty.")
         return logger
 
-    assert isinstance(logger_cfg, DictConfig), "Loggers config must be a DictConfig!"
+    if not isinstance(logger_cfg, DictConfig):
+        raise TypeError("Logger config must be a DictConfig!")
 
     for _, lg_conf in logger_cfg.items():
         if isinstance(lg_conf, DictConfig) and "_target_" in lg_conf:
@@ -170,6 +140,7 @@ def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
     trainer = object_dict["trainer"]
 
     if not trainer.logger:
+        log.warning("Logger not found! Skipping hyperparameter logging...")
         return
 
     hparams["model"] = cfg["model"]
@@ -187,9 +158,9 @@ def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
     hparams["trainer"] = cfg["trainer"]
 
     hparams["callbacks"] = cfg.get("callbacks")
-    hparams["seed"] = cfg.get("seed")
+    hparams["extras"] = cfg.get("extras")
+
     hparams["task_name"] = cfg.get("task_name")
-    hparams["exp_name"] = cfg.get("name")
     hparams["tags"] = cfg.get("tags")
     hparams["ckpt_path"] = cfg.get("ckpt_path")
 
@@ -206,3 +177,16 @@ def get_metric_value(metric_name: str, trainer: Trainer) -> float:
             "Make sure `optimized_metric` name in `hparams_search` config is correct!"
         )
     return trainer.callback_metrics[metric_name].item()
+
+
+def close_loggers() -> None:
+    """Makes sure all loggers closed properly (prevents logging failure during multirun)."""
+
+    log.info("Closing loggers...")
+
+    if find_spec("wandb"):  # if wandb is installed
+        import wandb
+
+        if wandb.run:
+            log.info("Closing wandb!")
+            wandb.finish()

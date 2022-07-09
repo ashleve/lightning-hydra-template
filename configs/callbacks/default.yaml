@@ -1,24 +1,22 @@
+defaults:
+  - model_checkpoint.yaml
+  - early_stopping.yaml
+  - model_summary.yaml
+  - rich_progress_bar.yaml
+  - _self_
+
 model_checkpoint:
-  _target_: pytorch_lightning.callbacks.ModelCheckpoint
-  monitor: "val/acc" # name of the logged metric which determines when model is improving
-  mode: "max" # "max" means higher metric value is better, can be also "min"
-  save_top_k: 1 # save k best models (determined by above metric)
-  save_last: True # additionaly always save model from last epoch
-  verbose: False
   dirpath: ${paths.output_dir}/checkpoints
   filename: "epoch_{epoch:03d}"
+  monitor: "val/acc"
+  mode: "max"
+  save_last: True
   auto_insert_metric_name: False
 
 early_stopping:
-  _target_: pytorch_lightning.callbacks.EarlyStopping
-  monitor: "val/acc" # name of the logged metric which determines when model is improving
-  mode: "max" # "max" means higher metric value is better, can be also "min"
-  patience: 100 # how many validation epochs of not improving until training stops
-  min_delta: 0 # minimum change in the monitored metric needed to qualify as an improvement
+  monitor: "val/acc"
+  patience: 100
+  mode: "max"
 
 model_summary:
-  _target_: pytorch_lightning.callbacks.RichModelSummary
   max_depth: -1
-
-rich_progress_bar:
-  _target_: pytorch_lightning.callbacks.RichProgressBar
