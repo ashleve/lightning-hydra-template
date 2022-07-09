@@ -36,7 +36,7 @@ def test_hydra_sweep(tmp_path):
     run_sh_command(command)
 
 
-@RunIf(wandb=True, sh=True)
+@RunIf(sh=True)
 @pytest.mark.slow
 def test_hydra_sweep_ddp_sim(tmp_path):
     """Test default hydra sweep with ddp sim."""
