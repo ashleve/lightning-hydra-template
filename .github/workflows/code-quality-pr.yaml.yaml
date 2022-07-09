@@ -4,11 +4,9 @@
 # Inspired by the sktime library:
 # https://github.com/alan-turing-institute/sktime/blob/main/.github/workflows/test.yml
 
-name: Code Quality
+name: Code Quality On PR
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main, "release/*"]
 

@@ -1,0 +1,16 @@
+# Same as `code-quality-pr.yaml.yaml` but triggered on commit
+# to main branch and runs on all files (instead of only the changed ones)
+
+name: Code Quality On Push
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: pre-commit/action@v2.0.3
