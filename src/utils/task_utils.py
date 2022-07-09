@@ -3,6 +3,7 @@ import warnings
 from pathlib import Path
 from typing import Any, Callable, Dict, List
 
+from importlib.util import find_spec
 import hydra
 import pytorch_lightning as pl
 from omegaconf import DictConfig
@@ -17,10 +18,12 @@ log = pylogger.get_pylogger(__name__)
 
 def task_wrapper(task_func: Callable) -> Callable:
     """Optional decorator that wraps the task function in extra utilities.
+    
+    Makes multiurn more resistant to failure.
 
     Utilities:
     - Calling the `task_utils.extras()` before the task is started
-    - Calling the `task_utils.close_loggers()` after the task is finished (prevents multirun failure)
+    - Calling the `task_utils.close_loggers()` after the task is finished
     - Logging the exception if occurs
     - Logging the task total execution time
     """
@@ -29,7 +32,8 @@ def task_wrapper(task_func: Callable) -> Callable:
 
         # apply extra config utilities
         extras(cfg)
-
+        
+        # execute the task
         try:
             start_time = time.time()
             metric_value, object_dict = task_func(cfg=cfg)
@@ -41,12 +45,6 @@ def task_wrapper(task_func: Callable) -> Callable:
             content = f"'{cfg.task_name}' execution time: {time.time() - start_time} (s)"
             save_file(path, content)  # save task execution time (even if exception occurs)
             close_loggers()  # close loggers (even if exception occurs so multirun won't fail)
-
-        # make sure returned types are correct
-        if not (isinstance(metric_value, float) or metric_value is None):
-            raise TypeError(f"Incorrect type of 'metric_value': {type(metric_value)}")
-        if not isinstance(object_dict, dict):
-            raise TypeError(f"Incorrect type of 'object_dict': {type(object_dict)}")
 
         return metric_value, object_dict
 
@@ -91,7 +89,7 @@ def extras(cfg: DictConfig) -> None:
 
 @rank_zero_only
 def save_file(path, content) -> None:
-    """Save file in rank zero mode."""
+    """Save file in rank zero mode (only on one process in multi-GPU setup)."""
     with open(path, "w+") as file:
         file.write(content)
 
@@ -149,6 +147,7 @@ def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
     trainer = object_dict["trainer"]
 
     if not trainer.logger:
+        log.warning("Logger not found! Skipping hyperparameter logging...")
         return
 
     hparams["model"] = cfg["model"]
@@ -166,9 +165,9 @@ def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
     hparams["trainer"] = cfg["trainer"]
 
     hparams["callbacks"] = cfg.get("callbacks")
-    hparams["seed"] = cfg.get("seed")
+    hparams["extras"] = cfg.get("extras")
+    
     hparams["task_name"] = cfg.get("task_name")
-    hparams["exp_name"] = cfg.get("name")
     hparams["tags"] = cfg.get("tags")
     hparams["ckpt_path"] = cfg.get("ckpt_path")
 
@@ -190,13 +189,11 @@ def get_metric_value(metric_name: str, trainer: Trainer) -> float:
 def close_loggers() -> None:
     """Makes sure all loggers closed properly (prevents logging failure during multirun)."""
 
-    log.info("Closing loggers!")
+    log.info("Closing loggers...")
+    print(find_spec("wandb"))
 
-    # import wandb
-    # wandb.finish()
-
-    # import neptune
-    # neptune.stop()
-
-    # import mlflow
-    # mlflow.end_run()
+    if find_spec("wandb"): # if wandb is installed
+        import wandb
+        if wandb.run:
+            log.info("Closing wandb!")
+            wandb.finish()
