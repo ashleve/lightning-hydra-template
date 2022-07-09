@@ -21,7 +21,7 @@ _Suggestions are always welcome!_
 
 **Why you should use it:**
 
-- To my knowledge, it's one of the most convenient all-in-one technology stack for deep learning prototyping.
+- One of the most convenient all-in-one technology stacks for deep learning prototyping.
 - Allows you to rapidly iterate over new models and datasets.
 - A collection of best practices for efficient workflow and reproducibility.
 - Thoroughly commented - consider it an educational resource on various MLOps tools.
@@ -133,7 +133,7 @@ pip install -r requirements.txt
 ```
 
 Template contains example with MNIST classification.<br>
-When running `python train.py` you should see something like this:
+When running `python src/train.py` you should see something like this:
 
 <div align="center">
 
@@ -408,7 +408,14 @@ pytest -k "not slow"
 
 ## ❤️&nbsp;&nbsp;Contributions
 
-Have a question? Found a bug? Missing a specific feature? Have an idea for improving documentation? Feel free to file a new issue, discussion or PR with respective title and description. If you already found a solution to your problem, don't hesitate to share it. Suggestions for new best practices are always welcome!
+Have a question? Found a bug? Missing a specific feature? Feel free to file a new issue, discussion or PR with respective title and description.
+
+Before asking:
+
+1. Verify that the issue exists on the current `main` branch
+2.
+
+If you already found a solution to your problem, don't hesitate to share it. Suggestions are always welcome!
 
 <br>
 
@@ -442,7 +449,7 @@ Switch between models and datamodules with command line arguments:
 python train.py model=mnist
 ```
 
-Example pipeline managing the instantiation logic: [src/pipelines/train_pipeline.py](src/pipelines/train_pipeline.py).
+Example pipeline managing the instantiation logic: [src/tasks/train_task.py](src/tasks/train_task.py).
 
 <br>
 
@@ -456,8 +463,7 @@ It determines how config is composed when simply executing command `python train
 <summary><b>Show main project config</b></summary>
 
 ```yaml
-# specify here default training configuration
-# order of defaults determines the order of config overrides
+# order of defaults determines the order in which configs override each other
 defaults:
   - _self_
   - datamodule: mnist.yaml
@@ -465,14 +471,13 @@ defaults:
   - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml
-  - log_dir: train.yaml
+  - paths: default.yaml
+  - extras: default.yaml
+  - hydra: default.yaml
 
-  # experiment configs allow for version control of specific configurations
+  # experiment configs allow for version control of specific hyperparameters
   # e.g. best hyperparameters for given model and datamodule
   - experiment: null
-
-  # debugging config (enable through command line, e.g. `python train.py debug=default)
-  - debug: null
 
   # config for hyperparameter optimization
   - hparams_search: null
@@ -481,26 +486,18 @@ defaults:
   # it's optional since it doesn't need to exist and is excluded from version control
   - optional local: default.yaml
 
-  # enable color logging
-  - override hydra/hydra_logging: colorlog
-  - override hydra/job_logging: colorlog
+  # debugging config (enable through command line, e.g. `python train.py debug=default)
+  - debug: null
 
-# path to original working directory
-# hydra hijacks working directory by changing it to the new log directory
-# https://hydra.cc/docs/next/tutorials/basic/running_your_app/working_directory
-original_work_dir: ${hydra:runtime.cwd}
+# task name, determines output directory path
+task_name: "train"
 
-# path to folder with data
-data_dir: ${original_work_dir}/data/
-
-# pretty print config at the start of the run using Rich library
-print_config: True
-
-# disable python warnings if they annoy you
-ignore_warnings: True
-
-# seed for random number generators in pytorch, numpy and python.random
-seed: null
+# tags to help you identify your experiments
+# you can overwrite this in experiment configs
+# overwrite from command line with `python train.py tags="[first_tag, second_tag]"`
+# appending lists from command line is currently not supported :(
+# https://github.com/facebookresearch/hydra/issues/1547
+tags: ["dev"]
 
 # set False to skip model training
 train: True
@@ -512,9 +509,8 @@ test: True
 # simply provide checkpoint path to resume training
 ckpt_path: null
 
-# default name for the experiment, determines logging folder path
-# (you can overwrite this name in experiment configs)
-name: "default"
+# seed for random number generators in pytorch, numpy and python.random
+seed: null
 ```
 
 </details>
@@ -538,14 +534,12 @@ defaults:
   - override /datamodule: mnist.yaml
   - override /model: mnist.yaml
   - override /callbacks: default.yaml
-  - override /logger: null
   - override /trainer: default.yaml
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-# name of the experiment determines folder name in logs
-name: "simple_dense_net"
+tags: ["mnist", "simple_dense_net"]
 
 seed: 12345
 
@@ -555,7 +549,8 @@ trainer:
   gradient_clip_val: 0.5
 
 model:
-  lr: 0.002
+  optimizer:
+    lr: 0.002
   net:
     lin1_size: 128
     lin2_size: 256
