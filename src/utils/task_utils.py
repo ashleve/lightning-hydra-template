@@ -1,9 +1,9 @@
 import time
 import warnings
+from importlib.util import find_spec
 from pathlib import Path
 from typing import Any, Callable, Dict, List
 
-from importlib.util import find_spec
 import hydra
 import pytorch_lightning as pl
 from omegaconf import DictConfig
@@ -18,7 +18,7 @@ log = pylogger.get_pylogger(__name__)
 
 def task_wrapper(task_func: Callable) -> Callable:
     """Optional decorator that wraps the task function in extra utilities.
-    
+
     Makes multiurn more resistant to failure.
 
     Utilities:
@@ -32,7 +32,7 @@ def task_wrapper(task_func: Callable) -> Callable:
 
         # apply extra utilities
         extras(cfg)
-        
+
         # execute the task
         try:
             start_time = time.time()
@@ -166,7 +166,7 @@ def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
 
     hparams["callbacks"] = cfg.get("callbacks")
     hparams["extras"] = cfg.get("extras")
-    
+
     hparams["task_name"] = cfg.get("task_name")
     hparams["tags"] = cfg.get("tags")
     hparams["ckpt_path"] = cfg.get("ckpt_path")
@@ -191,8 +191,9 @@ def close_loggers() -> None:
 
     log.info("Closing loggers...")
 
-    if find_spec("wandb"): # if wandb is installed
+    if find_spec("wandb"):  # if wandb is installed
         import wandb
+
         if wandb.run:
             log.info("Closing wandb!")
             wandb.finish()
