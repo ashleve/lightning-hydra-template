@@ -2,16 +2,23 @@
 
 # Lightning-Hydra-Template
 
-[![python-x](https://img.shields.io/badge/-Python_3.7_|_3.8_|_3.9_|_3.10-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![python](https://img.shields.io/badge/-Python_3.7_|_3.8_|_3.9_|_3.10-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![pytorch](https://img.shields.io/badge/PyTorch_1.8+-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
+[![lightning](https://img.shields.io/badge/-Lightning_1.6+-792ee5?logo=pytorchlightning&logoColor=white)](https://pytorchlightning.ai/)
+[![hydra](https://img.shields.io/badge/Config-Hydra_1.2-89b8cd)](https://hydra.cc/)
+[![black](https://img.shields.io/badge/code%20style-black-black.svg?labelColor=gray)](https://black.readthedocs.io/en/stable/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![Code Quality](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality.yaml/badge.svg)](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality.yaml)
+[![Tests](https://github.com/ashleve/pyrootutils/actions/workflows/test.yml/badge.svg?branch=main&event=push)](https://github.com/ashleve/pyrootutils/actions/workflows/test.yml)
+[![Codecov](https://codecov.io/gh/ashleve/pyrootutils/branch/main/graph/badge.svg)](https://codecov.io/gh/ashleve/pyrootutils)
+[![code-quality](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality.yaml/badge.svg)](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality.yaml)
+[![License](https://img.shields.io/github/license/ashleve/pyrootutils)](https://github.com/ashleve/pyrootutils/blob/main/LICENSE)
 
 <!-- <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7+-blue?style=for-the-badge&logo=python&logoColor=white"></a> -->
 
-<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch 1.8+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
+<!-- <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch 1.8+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning 1.6+-792ee5?style=for-the-badge&logo=pytorchlightning&logoColor=white"></a>
 <a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra 1.2-89b8cd?style=for-the-badge&labelColor=gray"></a>
-<a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge&labelColor=gray"></a>
+<a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge&labelColor=gray"></a> -->
 
 A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/ashleve/lightning-hydra-template/generate) to initialize new repository.
@@ -34,18 +41,18 @@ _Suggestions are always welcome!_
 
 **Why you shouldn't use it:**
 
-- Not fitted for data engineering - the template configuration setup is not designed for building multi-step data processing pipelines that depend on each other.
+- Not fitted for data engineering - the template configuration setup is not designed for building data processing pipelines that depend on each other.
 - Not fitted to be a deployment environment.
 - Limits you as much as pytorch lightning limits you.
-- Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known bugs, visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
+- Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
 
 <br>
 
 ## Main Technologies
 
-[PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) - lightweight PyTorch wrapper for high-performance AI research. Think of it as a framework for organizing your PyTorch code.
+[PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) - a lightweight PyTorch wrapper for high-performance AI research. Think of it as a framework for organizing your PyTorch code.
 
-[Hydra](https://github.com/facebookresearch/hydra) - framework for elegantly configuring complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line.
+[Hydra](https://github.com/facebookresearch/hydra) - a framework for elegantly configuring complex applications. The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line.
 
 <br>
 
