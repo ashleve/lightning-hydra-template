@@ -2,7 +2,12 @@
 
 # Lightning-Hydra-Template
 
-<a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7+-blue?style=for-the-badge&logo=python&logoColor=white"></a>
+[![python-x](https://img.shields.io/badge/-Python_3.7_|_3.8_|_3.9_|_3.10-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![Code Quality](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality.yaml/badge.svg)](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality.yaml)
+
+<!-- <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7+-blue?style=for-the-badge&logo=python&logoColor=white"></a> -->
+
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch 1.8+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning 1.6+-792ee5?style=for-the-badge&logo=pytorchlightning&logoColor=white"></a>
 <a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra 1.2-89b8cd?style=for-the-badge&labelColor=gray"></a>
@@ -21,15 +26,17 @@ _Suggestions are always welcome!_
 
 **Why you should use it:**
 
-- One of the most convenient all-in-one technology stacks for deep learning prototyping.
-- Allows you to rapidly iterate over new models and datasets.
+- Convenient all-in-one technology stack for deep learning prototyping.
+- Allows you to rapidly iterate over new models, datasets and tasks.
+- Hardware-agnostic - run the same code on CPU, GPU, multi-GPU, SLURM clusters and TPU.
 - A collection of best practices for efficient workflow and reproducibility.
-- Thoroughly commented - consider it an educational resource on various MLOps tools.
+- Thoroughly commented - you can use this repo as a reference and educational resource.
 
 **Why you shouldn't use it:**
 
-- The template configuration setup doesn't go well with building multi-step data processing systems and pipelines that depend on each other.
-- Not fitted to be a production/deployment environment.
+- Not fitted for data engineering - the template configuration setup is not designed for building multi-step data processing pipelines that depend on each other.
+- Not fitted to be a deployment environment.
+- Limits you as much as pytorch lightning limits you.
 - Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known bugs, visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
 
 <br>
