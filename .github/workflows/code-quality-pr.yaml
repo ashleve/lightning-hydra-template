@@ -1,5 +1,5 @@
-# This workflow finds which files was changed, print them, and then
-# run `pre-commit` on those files.
+# This workflow finds which files were changed, prints them, and then
+# runs `pre-commit` on those files.
 
 # Inspired by the sktime library:
 # https://github.com/alan-turing-institute/sktime/blob/main/.github/workflows/test.yml

@@ -1,4 +1,4 @@
-# Same as `code-quality-pr.yaml.yaml` but triggered on commit
+# Same as `code-quality-pr.yaml` but triggered on commit
 # to main branch and runs on all files (instead of only the changed ones)
 
 name: Code Quality On Push
