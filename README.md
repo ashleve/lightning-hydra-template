@@ -159,7 +159,7 @@ When running `python src/train.py` you should see something like this:
 <summary><b>Override any config parameter from command line</b></summary>
 
 ```bash
-python train.py trainer.max_epochs=20 model.lr=1e-4
+python train.py trainer.max_epochs=20 model.optimizer.lr=1e-4
 ```
 
 > **Note**: You can also add new parameters with `+` sign.
@@ -175,19 +175,25 @@ python train.py +model.new_param="owo"
 
 ```bash
 # train on CPU
-python train.py trainer.gpus=0
+python train.py trainer=cpu
 
 # train on 1 GPU
-python train.py trainer.gpus=1
+python train.py trainer=gpu
 
 # train on TPU
 python train.py +trainer.tpu_cores=8
 
 # train with DDP (Distributed Data Parallel) (4 GPUs)
-python train.py trainer.gpus=4 +trainer.strategy=ddp
+python train.py trainer=ddp trainer.devices=4
 
 # train with DDP (Distributed Data Parallel) (8 GPUs, 2 nodes)
-python train.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.strategy=ddp
+python train.py trainer=ddp trainer.devices=4 trainer.num_nodes=2
+
+# simulate DDP on CPU processes
+python train.py trainer=ddp_sim trainer.devices=2
+
+# accelerate training on mac
+python train.py trainer=mps
 ```
 
 </details>
@@ -197,7 +203,7 @@ python train.py trainer.gpus=4 +trainer.num_nodes=2 +trainer.strategy=ddp
 
 ```bash
 # train with pytorch native automatic mixed precision (AMP)
-python train.py trainer.gpus=1 +trainer.precision=16
+python train.py trainer=gpu +trainer.precision=16
 ```
 
 </details>
@@ -288,28 +294,27 @@ python train.py +trainer.max_time="00:12:00:00"
 # runs 1 epoch in default debugging mode
 # changes logging directory to `logs/debugs/...`
 # sets level of all command line loggers to 'DEBUG'
-# enables extra trainer flags like tracking gradient norm
 # enforces debug-friendly configuration
 python train.py debug=default
 
 # run 1 train, val and test loop, using only 1 batch
-python train.py +trainer.fast_dev_run=true
+python train.py debug=fdr
+
+# print execution time profiling
+python train.py debug=profiler
+
+# try overfitting to 1 batch
+python train.py debug=overfit
 
 # raise exception if there are any numerical anomalies in tensors, like NaN or +/-inf
 python train.py +trainer.detect_anomaly=true
 
-# print execution time profiling after training ends
-python train.py +trainer.profiler="simple"
-
-# try overfitting to 1 batch
-python train.py +trainer.overfit_batches=1 trainer.max_epochs=20
+# log second gradient norm of the model
+python train.py +trainer.track_grad_norm=2
 
 # use only 20% of the data
 python train.py +trainer.limit_train_batches=0.2 \
 +trainer.limit_val_batches=0.2 +trainer.limit_test_batches=0.2
-
-# log second gradient norm of the model
-python train.py +trainer.track_grad_norm=2
 ```
 
 > **Note**: Visit [configs/debug/](configs/debug/) for different debugging configs.
@@ -384,6 +389,8 @@ python train.py -m 'experiment=glob(*)'
 python train.py -m seed=111,222,333,444,555 trainer.deterministic=True logger=csv tags=["exp_X"]
 ```
 
+> **Note**: `trainer.deterministic=True` makes the training more deterministic but impacts the performance.
+
 </details>
 
 <details>
@@ -403,7 +410,7 @@ python train.py -m seed=111,222,333,444,555 trainer.deterministic=True logger=cs
 <details>
 <summary><b>Use Hydra tab completion</b></summary>
 
-> **Note**: Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Learn more [here](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).
+> **Note**: Hydra allows you to autocomplete config argument overrides in shell as you write them, by pressing `tab` key. Read the [docs](https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion).
 
 </details>
 
@@ -701,8 +708,6 @@ And many others. You should be able to modify them easily for your use case.
 
 There is also `@RunIf` decorator implemented, that allows you to run tests only if certain conditions are met, e.g. GPU is available or system is not windows. See the [examples](tests/test_train.py).
 
-````bash
-
 <br>
 
 ## Hyperparameter Search
@@ -713,8 +718,42 @@ You can define hyperparemter search by adding new config file to [configs/hparam
 <summary><b>Show example hyperparameter search config</b></summary>
 
 ```yaml
+# @package _global_
 
-````
+defaults:
+  - override /hydra/sweeper: optuna
+
+# choose metric which will be optimized by Optuna
+# make sure this is the correct name of some metric logged in lightning module!
+optimized_metric: "val/acc_best"
+
+# here we define Optuna hyperparameter search
+# it optimizes for value returned from function with @hydra.main decorator
+hydra:
+  sweeper:
+    _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+
+    # 'minimize' or 'maximize' the objective
+    direction: maximize
+
+    # total number of runs that will be executed
+    n_trials: 20
+
+    # choose Optuna hyperparameter sampler
+    # docs: https://optuna.readthedocs.io/en/stable/reference/samplers.html
+    sampler:
+      _target_: optuna.samplers.TPESampler
+      seed: 1234
+      n_startup_trials: 10 # number of random sampling runs before optimization starts
+
+    # define hyperparameter search space
+    params:
+      model.optimizer.lr: interval(0.0001, 0.1)
+      datamodule.batch_size: choice(32, 64, 128, 256)
+      model.net.lin1_size: choice(64, 128, 256)
+      model.net.lin2_size: choice(64, 128, 256)
+      model.net.lin3_size: choice(32, 64, 128, 256)
+```
 
 </details>
 
