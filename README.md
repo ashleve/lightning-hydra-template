@@ -320,12 +320,23 @@ python train.py +trainer.track_grad_norm=2
 <summary><b>Resume training from checkpoint</b></summary>
 
 ```yaml
-python train.py trainer.resume_from_checkpoint="/path/to/ckpt/name.ckpt"
+python train.py ckpt_path="/path/to/ckpt/name.ckpt"
 ```
 
 > **Note**: Checkpoint can be either path or URL.
 
 > **Note**: Currently loading ckpt doesn't resume logger experiment, but it will be supported in future Lightning release.
+
+</details>
+
+<details>
+<summary><b>Evaluate checkpoint on test dataset</b></summary>
+
+```yaml
+python eval.py ckpt_path="/path/to/ckpt/name.ckpt"
+```
+
+> **Note**: Checkpoint can be either path or URL.
 
 </details>
 
@@ -337,8 +348,6 @@ python train.py trainer.resume_from_checkpoint="/path/to/ckpt/name.ckpt"
 # each with different combination of batch_size and learning rate
 python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
-
-> **Note**: Sweeps are not failure resistant (if one job crashes than the whole sweep crashes).
 
 > **Note**: Hydra composes configs lazily at job launching time. If you change code or configs after launching a job/sweep, the final composed configs might be impacted.
 
@@ -353,7 +362,7 @@ python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 python train.py -m hparams_search=mnist_optuna experiment=example
 ```
 
-> **Note**: Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) doesn't require you to add any boilerplate into the pipeline, everything is defined in a [single config file](configs/hparams_search/mnist_optuna.yaml).
+> **Note**: Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) doesn't require you to add any boilerplate to your code, everything is defined in a [single config file](configs/hparams_search/mnist_optuna.yaml).
 
 </details>
 
@@ -372,7 +381,7 @@ python train.py -m 'experiment=glob(*)'
 <summary><b>Execute run for multiple different seeds</b></summary>
 
 ```bash
-python train.py -m seed=111,222,333,444,555 logger=csv tags=["exp_X_seed_test"]
+python train.py -m seed=111,222,333,444,555 trainer.deterministic=True logger=csv tags=["exp_X"]
 ```
 
 </details>
