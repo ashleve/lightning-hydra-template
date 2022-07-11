@@ -446,7 +446,12 @@ pytest -k "not slow"
 <details>
 <summary><b>Use tags</b></summary>
 
-Each experiment should be tagged in order to easily filter them across files or in logger UI. If no tags are provided, you will be asked to input them from command line:
+Each experiment should be tagged in order to easily filter them across files or in logger UI:
+```bash
+python train.py tags=["mnist", "experiment_X"]
+```
+
+If no tags are provided, you will be asked to input them from command line:
 ```bash
 >>> python train.py tags=[]
 [2022-07-11 15:40:09,358][src.utils.task_utils][INFO] - Enforcing tags! <cfg.extras.enforce_tags=True>
@@ -459,6 +464,8 @@ If no tags are provided for multirun, an error will be raised:
 >>> python train.py -m +x=1,2,3 tags=[]
 ValueError: Specify tags before launching a multirun!
 ```
+
+**Note**: Appending lists from command line is currently not supported in hydra :(
 
 </details>
 
