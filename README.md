@@ -60,8 +60,8 @@ _Suggestions are always welcome!_
 - **Rapid Experimentation**: thanks to hydra command line superpowers | [# Your Superpowers](#your-superpowers)
 - **Little Boilerplate**: thanks to automating pipelines with config instantiation | [# How It Works](#how-it-works)
 - **Reproducibility**: easily reproduce exactly the previous experiment | [# Reproducibility](#reproducibility)
-- **Main Configs**: specify default training configuration | [# Main Project Configuration](#main-project-configuration)
-- **Experiment Configs**: override chosen hyperparameters | [# Experiment Configuration](#experiment-configuration)
+- **Main Configs**: specify default training configuration | [# Main Project Configuration](#main-config)
+- **Experiment Configs**: override chosen hyperparameters | [# Experiment Configuration](#experiment-config)
 - **Workflow**: comes down to 4 simple steps | [# Workflow](#workflow)
 - **Experiment Tracking**: Tensorboard, W&B, Neptune, Comet, MLFlow and CSVLogger | [# Experiment Tracking](#experiment-tracking)
 - **Logs**: all logs (checkpoints, configs, etc.) are stored in a dynamically generated folder structure | [# Logs](#logs)
@@ -369,6 +369,15 @@ python train.py -m 'experiment=glob(*)'
 </details>
 
 <details>
+<summary><b>Execute run for multiple different seeds</b></summary>
+
+```bash
+python train.py -m seed=111,222,333,444,555 logger=csv tags=["exp_X_seed_test"]
+```
+
+</details>
+
+<details>
 <summary><b>Execute sweep on a remote AWS cluster</b></summary>
 
 > **Note**: This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not implemented in this template.
@@ -596,7 +605,7 @@ _Say you want to execute many runs to plot how accuracy changes in respect to ba
 1. Execute the runs with some config parameter that allows you to identify them easily, like tags:
 
    ```bash
-   python train.py -m logger=csv datamodule.batch_size=16,32,64,128,256 tags=["batch_size_exp", "mnist"]
+   python train.py -m logger=csv datamodule.batch_size=16,32,64,128 tags=["batch_size_exp"]
    ```
 
 2. Write a script or notebook that searches over the `logs/` folder and retrieves csv logs from runs containing given tags in config. Plot the results.
@@ -681,6 +690,10 @@ Currently, the tests cover cases like:
 
 And many others. You should be able to modify them easily for your use case.
 
+There is also `@RunIf` decorator implemented, that allows you to run tests only if certain conditions are met, e.g. GPU is available or system is not windows. See the [examples](tests/test_train.py).
+
+````bash
+
 <br>
 
 ## Hyperparameter Search
@@ -692,7 +705,7 @@ You can define hyperparemter search by adding new config file to [configs/hparam
 
 ```yaml
 
-```
+````
 
 </details>
 
@@ -705,6 +718,18 @@ You can use different optimization frameworks integrated with Hydra, like [Optun
 The `optimization_results.yaml` will be available under `logs/task_name/multirun` folder.
 
 This approach doesn't support advanced technics like prunning - for more sophisticated search, you should probably write a dedicated optimization task.
+
+<br>
+
+## Continuous Integration
+
+Template comes with CI workflows implemented in Github Actions:
+
+- `test.yaml`: running all tests with pytest
+- `code-quality-main.yaml`: running pre-commits on main branch for all files
+- `code-quality-pr.yaml`: running pre-commits on pull requests for modified files only
+
+> **Note:** You need to enable the GitHub Actions from the settings in your repository.
 
 <br>
 
@@ -1001,6 +1026,7 @@ This template was inspired by:
 - [PyTorchLightning/deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template)
 - [drivendata/cookiecutter-data-science](https://github.com/drivendata/cookiecutter-data-science)
 - [lucmos/nn-template](https://github.com/lucmos/nn-template)
+- [kedro-org/kedro](https://github.com/kedro-org/kedro)
 
 Useful repositories:
 
