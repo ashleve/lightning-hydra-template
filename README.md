@@ -12,6 +12,8 @@
 [![codecov](https://codecov.io/gh/ashleve/pyrootutils/branch/main/graph/badge.svg)](https://codecov.io/gh/ashleve/pyrootutils)
 [![code-quality](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality.yaml/badge.svg)](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality.yaml)
 [![license](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/ashleve/lightning-hydra-template#license)
+[![contributors](https://img.shields.io/github/contributors/ashleve/lightning-hydra-template.svg)](https://github.com/ashleve/lightning-hydra-template/graphs/contributors)
+
 
 <!-- <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7+-blue?style=for-the-badge&logo=python&logoColor=white"></a> -->
 
@@ -60,8 +62,8 @@ _Suggestions are always welcome!_
 - **Rapid Experimentation**: thanks to hydra command line superpowers | [# Your Superpowers](#your-superpowers)
 - **Little Boilerplate**: thanks to automating pipelines with config instantiation | [# How It Works](#how-it-works)
 - **Reproducibility**: easily reproduce exactly the previous experiment | [# Reproducibility](#reproducibility)
-- **Main Configs**: specify default training configuration | [# Main Project Configuration](#main-config)
-- **Experiment Configs**: override chosen hyperparameters | [# Experiment Configuration](#experiment-config)
+- **Main Configs**: specify default training configuration | [# Main Config](#main-config)
+- **Experiment Configs**: override chosen hyperparameters | [# Experiment Config](#experiment-config)
 - **Workflow**: comes down to 4 simple steps | [# Workflow](#workflow)
 - **Experiment Tracking**: Tensorboard, W&B, Neptune, Comet, MLFlow and CSVLogger | [# Experiment Tracking](#experiment-tracking)
 - **Logs**: all logs (checkpoints, configs, etc.) are stored in a dynamically generated folder structure | [# Logs](#logs)
@@ -441,6 +443,25 @@ pytest -k "not slow"
 
 </details>
 
+<details>
+<summary><b>Use tags</b></summary>
+
+Each experiment should be tagged in order to easily filter them across files or in logger UI. If no tags are provided, you will be asked to input them from command line:
+```bash
+>>> python train.py tags=[]
+[2022-07-11 15:40:09,358][src.utils.task_utils][INFO] - Enforcing tags! <cfg.extras.enforce_tags=True>
+[2022-07-11 15:40:09,359][src.utils.rich_utils][WARNING] - No tags provided in config. Prompting user to input tags...
+Enter a list of comma separated tags (dev): 
+```
+
+If no tags are provided for multirun, an error will be raised:
+```bash
+>>> python train.py -m +x=1,2,3 tags=[]
+ValueError: Specify tags before launching a multirun!
+```
+
+</details>
+
 <br>
 
 ## ❤️&nbsp;&nbsp;Contributions
@@ -759,7 +780,7 @@ hydra:
 
 Next, execute it with: `python train.py -m hparams_search=mnist_optuna`
 
-Using this approach doesn't require adding any boilerplate to code, everything is defined in a single config file. The only necessary thing is to return the optimization metric from the launching file.
+Using this approach doesn't require adding any boilerplate to code, everything is defined in a single config file. The only necessary thing is to return the optimized metric value from the launch file.
 
 You can use different optimization frameworks integrated with Hydra, like [Optuna, Ax or Nevergrad](https://hydra.cc/docs/plugins/optuna_sweeper/).
 
