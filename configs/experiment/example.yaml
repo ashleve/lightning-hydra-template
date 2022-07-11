@@ -14,8 +14,7 @@ defaults:
 
 tags: ["mnist", "simple_dense_net"]
 
-extras:
-  seed: 12345
+seed: 12345
 
 trainer:
   min_epochs: 10
