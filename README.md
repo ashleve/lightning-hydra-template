@@ -773,11 +773,11 @@ This approach doesn't support advanced technics like prunning - for more sophist
 
 Template comes with CI workflows implemented in Github Actions:
 
-- `test.yaml`: running all tests with pytest
-- `code-quality-main.yaml`: running pre-commits on main branch for all files
-- `code-quality-pr.yaml`: running pre-commits on pull requests for modified files only
+- `.github/workflows/test.yaml`: running all tests with pytest
+- `.github/workflows/code-quality-main.yaml`: running pre-commits on main branch for all files
+- `.github/workflows/code-quality-pr.yaml`: running pre-commits on pull requests for modified files only
 
-> **Note:** You need to enable the GitHub Actions from the settings in your repository.
+> **Note**: You need to enable the GitHub Actions from the settings in your repository.
 
 <br>
 
