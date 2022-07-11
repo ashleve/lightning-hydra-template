@@ -491,7 +491,7 @@ If no tags are provided for multirun, an error will be raised:
 ValueError: Specify tags before launching a multirun!
 ```
 
-**Note**: Appending lists from command line is currently not supported in hydra :(
+> **Note**: Appending lists from command line is currently not supported in hydra :(
 
 </details>
 
