@@ -414,7 +414,7 @@ python train.py -m 'experiment=glob(*)'
 python train.py -m seed=111,222,333,444,555 trainer.deterministic=True logger=csv tags=["exp_X"]
 ```
 
-> **Note**: `trainer.deterministic=True` makes the training more deterministic but impacts the performance.
+> **Note**: `trainer.deterministic=True` makes pytorch more deterministic but impacts the performance.
 
 </details>
 
@@ -849,7 +849,7 @@ python train.py trainer=ddp
 
 <br>
 
-## Editing Accessing Datamodule Attributes In Model
+## Accessing Datamodule Attributes In Model
 
 The simplest way is to pass datamodule attribute directly to model on initialization:
 
@@ -886,6 +886,8 @@ def on_train_start(self):
 ```
 
 > **Note**: This only works after the training starts since otherwise trainer won't be yet available in LightningModule.
+
+<br>
 
 ## Best Practices
 
