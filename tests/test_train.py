@@ -9,41 +9,39 @@ from tests.helpers.run_if import RunIf
 
 
 def test_train_fast_dev_run(cfg_train):
+    """Run for 1 train, val and test step."""
     HydraConfig().set_config(cfg_train)
     with open_dict(cfg_train):
         cfg_train.trainer.fast_dev_run = True
+        cfg_train.trainer.accelerator = "cpu"
     train_task.train(cfg_train)
 
 
 @RunIf(min_gpus=1)
 def test_train_fast_dev_run_gpu(cfg_train):
+    """Run for 1 train, val and test step on GPU."""
     HydraConfig().set_config(cfg_train)
     with open_dict(cfg_train):
         cfg_train.trainer.fast_dev_run = True
-        cfg_train.trainer.gpus = 1
+        cfg_train.trainer.accelerator = "gpu"
     train_task.train(cfg_train)
 
 
 @RunIf(min_gpus=1)
-def test_train_fast_dev_run_gpu_amp(cfg_train):
+@pytest.mark.slow
+def test_train_epoch_gpu_amp(cfg_train):
+    """Train 1 epoch on GPU with mixed-precision."""
     HydraConfig().set_config(cfg_train)
     with open_dict(cfg_train):
-        cfg_train.trainer.fast_dev_run = True
-        cfg_train.trainer.gpus = 1
+        cfg_train.trainer.max_epochs = 1
+        cfg_train.trainer.accelerator = "cpu"
         cfg_train.trainer.precision = 16
     train_task.train(cfg_train)
 
 
 @pytest.mark.slow
-def test_train_epoch(cfg_train):
-    HydraConfig().set_config(cfg_train)
-    with open_dict(cfg_train):
-        cfg_train.trainer.max_epochs = 1
-    train_task.train(cfg_train)
-
-
-@pytest.mark.slow
 def test_train_epoch_double_val_loop(cfg_train):
+    """Train 1 epoch with validation loop twice per epoch."""
     HydraConfig().set_config(cfg_train)
     with open_dict(cfg_train):
         cfg_train.trainer.max_epochs = 1
@@ -53,6 +51,7 @@ def test_train_epoch_double_val_loop(cfg_train):
 
 @pytest.mark.slow
 def test_train_ddp_sim(cfg_train):
+    """Simulate DDP (Distributed Data Parallel) on 2 CPU processes."""
     HydraConfig().set_config(cfg_train)
     with open_dict(cfg_train):
         cfg_train.trainer.max_epochs = 2
@@ -64,6 +63,7 @@ def test_train_ddp_sim(cfg_train):
 
 @pytest.mark.slow
 def test_train_resume(tmp_path, cfg_train):
+    """Run 1 epoch, finish, and resume for another epoch."""
     with open_dict(cfg_train):
         cfg_train.trainer.max_epochs = 1
 
