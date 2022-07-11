@@ -849,6 +849,44 @@ python train.py trainer=ddp
 
 <br>
 
+## Editing Accessing Datamodule Attributes In Model
+
+The simplest way is to pass datamodule attribute directly to model on initialization:
+
+```python
+# ./src/tasks/train_task.py
+datamodule = hydra.utils.instantiate(config.datamodule)
+model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
+```
+
+> **Note**: Not a very robust solution, since it assumes all your datamodules have `some_param` attribute available.
+
+Similarly, you can pass a whole datamodule config as an init parameter:
+
+```python
+# ./src/tasks/train_task.py
+model = hydra.utils.instantiate(config.model, dm_conf=config.datamodule, _recursive_=False)
+```
+
+You can also pass a datamodule config parameter to your model through variable interpolation:
+
+```yaml
+# ./configs/model/my_model.yaml
+_target_: src.models.my_module.MyLitModule
+lr: 0.01
+some_param: ${datamodule.some_param}
+```
+
+Another approach is to access datamodule in LightningModule directly through Trainer:
+
+```python
+# ./src/models/mnist_module.py
+def on_train_start(self):
+  self.some_param = self.trainer.datamodule.some_param
+```
+
+> **Note**: This only works after the training starts since otherwise trainer won't be yet available in LightningModule.
+
 ## Best Practices
 
 <details>
