@@ -596,11 +596,10 @@ _Say you want to execute many runs to plot how accuracy changes in respect to ba
 1. Execute the runs with some config parameter that allows you to identify them easily, like tags:
 
    ```bash
-   # execute multirun with specific tags
-   python src/train.py -m logger=csv datamodule.batch_size=16,32,64,128,256 tags=["batch_size_experiment"]
+   python train.py -m logger=csv datamodule.batch_size=16,32,64,128,256 tags=["batch_size_exp", "mnist"]
    ```
 
-2. Write a script or notebook that searches over the `logs/` folder and retrieves runs containing given tags in config. Plot the results.
+2. Write a script or notebook that searches over the `logs/` folder and retrieves csv logs from runs containing given tags in config. Plot the results.
 
 <br>
 
@@ -629,7 +628,7 @@ Default logging structure:
 │   │       │   └── ...
 │   │       └── ...
 │   │
-│   └── debugs                          # Logs generated when debegguing config is attached
+│   └── debugs                          # Logs generated when debugging config is attached
 │       └── ...
 ```
 
@@ -659,7 +658,7 @@ Lightning provides convenient method for logging custom metrics from inside Ligh
 
 ## Tests
 
-Template comes with generic tests implemented with `pytest`. To execute them simply run:
+Template comes with generic tests implemented with `pytest`.
 
 ```bash
 # run all tests
@@ -672,13 +671,13 @@ pytest tests/shell/test_basic_commands.py
 pytest -k "not slow"
 ```
 
-Most of those tests don't check for any specific output - they exist to simply verify that executing some commands doesn't end up in throwing exceptions. You can execute these tests once in a while to speed up the development.
+Most of the implemented tests don't check for any specific output - they exist to simply verify that executing some commands doesn't end up in throwing exceptions. You can execute them once in a while to speed up the development.
 
 Currently, the tests cover cases like:
 
 - running 1 train, val and test step
-- running the first epoch, saving ckpt and resuming for the second epoch
-- running 2 epochs with DDP simulated on CPU,
+- running 1 epoch on 1% of data, saving ckpt and resuming for the second epoch
+- running 2 epochs on 1% of data, with DDP simulated on CPU
 
 And many others. You should be able to modify them easily for your use case.
 
@@ -699,9 +698,9 @@ You can define hyperparemter search by adding new config file to [configs/hparam
 
 Next, execute it with: `python train.py -m hparams_search=mnist_optuna`
 
-Using this approach doesn't require adding any boilerplate to code, everything is defined in a single config file.
+Using this approach doesn't require adding any boilerplate to code, everything is defined in a single config file. The only necessary thing is to return the optimization metric from the launching file.
 
-You can use different optimization frameworks integrated with Hydra, like Optuna, Ax or Nevergrad.
+You can use different optimization frameworks integrated with Hydra, like [Optuna, Ax or Nevergrad](https://hydra.cc/docs/plugins/optuna_sweeper/).
 
 The `optimization_results.yaml` will be available under `logs/task_name/multirun` folder.
 
@@ -961,6 +960,34 @@ So any file can be easily imported into any other file like so:
 ```python
 from project_name.models.mnist_module import MNISTLitModule
 from project_name.datamodules.mnist_datamodule import MNISTDataModule
+```
+
+</details>
+
+<details>
+<summary><b>Keep local configs out of code versioning</b></summary>
+
+Some configurations are user/machine/installation specific (e.g. configuration of local cluster, or harddrive paths on a specific machine). For such scenarios, a file [configs/local/default.yaml](configs/local/) can be created which is automatically loaded but not tracked by Git.
+
+Example SLURM cluster config:
+
+```yaml
+# @package _global_
+
+defaults:
+  - override /hydra/launcher@_here_: submitit_slurm
+
+data_dir: /mnt/scratch/data/
+
+hydra:
+  launcher:
+    timeout_min: 1440
+    gpus_per_task: 1
+    gres: gpu:1
+  job:
+    env_set:
+      MY_VAR: /home/user/my/system/path
+      MY_KEY: asdgjhawi8y23ihsghsueity23ihwd
 ```
 
 </details>
