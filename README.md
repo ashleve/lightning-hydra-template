@@ -14,7 +14,6 @@
 [![license](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/ashleve/lightning-hydra-template#license)
 [![contributors](https://img.shields.io/github/contributors/ashleve/lightning-hydra-template.svg)](https://github.com/ashleve/lightning-hydra-template/graphs/contributors)
 
-
 <!-- <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7+-blue?style=for-the-badge&logo=python&logoColor=white"></a> -->
 
 <!-- <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch 1.8+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
@@ -47,6 +46,30 @@ _Suggestions are always welcome!_
 - Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
 
 <br>
+
+<!-- ## Table Of Contents
+
+- [📌&nbsp;&nbsp;Introduction](#introduction)
+- [Main Technologies](#main-technologies)
+- [Main Ideas Of This Template](#main-ideas-of-this-template)
+- [Project Structure](#project-structure)
+- [🚀&nbsp;&nbsp;Quickstart](#quickstart)
+- [⚡&nbsp;&nbsp;Your Superpowers](#your-superpowers)
+- [❤️&nbsp;&nbsp;Contributions](#️contributions)
+- [How It Works](#how-it-works)
+- [Main Config](#main-config)
+- [Experiment Config](#experiment-config)
+- [Workflow](#workflow)
+- [Logs](#logs)
+- [Experiment Tracking](#experiment-tracking)
+- [Tests](#tests)
+- [Hyperparameter Search](#hyperparameter-search)
+- [Continuous Integration](#continuous-integration)
+- [Distributed Training](#distributed-training)
+- [Best Practices](#best-practices)
+- [Resources](#resources)
+
+<br> -->
 
 ## Main Technologies
 
@@ -447,19 +470,22 @@ pytest -k "not slow"
 <summary><b>Use tags</b></summary>
 
 Each experiment should be tagged in order to easily filter them across files or in logger UI:
+
 ```bash
 python train.py tags=["mnist", "experiment_X"]
 ```
 
 If no tags are provided, you will be asked to input them from command line:
+
 ```bash
 >>> python train.py tags=[]
 [2022-07-11 15:40:09,358][src.utils.task_utils][INFO] - Enforcing tags! <cfg.extras.enforce_tags=True>
 [2022-07-11 15:40:09,359][src.utils.rich_utils][WARNING] - No tags provided in config. Prompting user to input tags...
-Enter a list of comma separated tags (dev): 
+Enter a list of comma separated tags (dev):
 ```
 
 If no tags are provided for multirun, an error will be raised:
+
 ```bash
 >>> python train.py -m +x=1,2,3 tags=[]
 ValueError: Specify tags before launching a multirun!
