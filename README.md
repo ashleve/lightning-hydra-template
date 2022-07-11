@@ -819,7 +819,7 @@ You can use different optimization frameworks integrated with Hydra, like [Optun
 
 The `optimization_results.yaml` will be available under `logs/task_name/multirun` folder.
 
-This approach doesn't support advanced technics like prunning - for more sophisticated search, you should probably write a dedicated optimization task.
+This approach doesn't support advanced technics like prunning - for more sophisticated search, you should probably write a dedicated optimization task (without multirun feature).
 
 <br>
 
