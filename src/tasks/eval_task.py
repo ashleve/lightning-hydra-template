@@ -21,7 +21,7 @@ def evaluate(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
         cfg (DictConfig): Configuration composed by Hydra.
 
     Returns:
-        Tuple[None, Dict[str, Any]]: A tuple of None and dictionary with all instantiated objects.
+        Tuple[dict, dict]: Dict with metrics and dict with all instantiated objects.
     """
 
     assert cfg.ckpt_path
@@ -61,4 +61,6 @@ def evaluate(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
     # for predictions use trainer.predict(...)
     # predictions = trainer.predict(model=model, dataloaders=dataloaders, ckpt_path=cfg.ckpt_path)
 
-    return None, object_dict
+    metric_dict = trainer.callback_metrics
+
+    return metric_dict, object_dict

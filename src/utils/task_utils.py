@@ -6,7 +6,7 @@ from typing import Any, Callable, Dict, List
 
 import hydra
 from omegaconf import DictConfig
-from pytorch_lightning import Callback, Trainer
+from pytorch_lightning import Callback
 from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning.utilities import rank_zero_only
 
@@ -25,6 +25,7 @@ def task_wrapper(task_func: Callable) -> Callable:
     - Calling the `task_utils.close_loggers()` after the task is finished
     - Logging the exception if occurs
     - Logging the task total execution time
+    - Loggingg the output dir
     """
 
     def wrap(cfg: DictConfig):
@@ -35,7 +36,7 @@ def task_wrapper(task_func: Callable) -> Callable:
         # execute the task
         try:
             start_time = time.time()
-            metric_value, object_dict = task_func(cfg=cfg)
+            metric_dict, object_dict = task_func(cfg=cfg)
         except Exception as ex:
             log.exception("")  # save exception to `.log` file
             raise ex
@@ -45,7 +46,9 @@ def task_wrapper(task_func: Callable) -> Callable:
             save_file(path, content)  # save task execution time (even if exception occurs)
             close_loggers()  # close loggers (even if exception occurs so multirun won't fail)
 
-        return metric_value, object_dict
+        log.info(f"Output dir: {cfg.paths.output_dir}")
+
+        return metric_dict, object_dict
 
     return wrap
 
@@ -169,15 +172,24 @@ def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
     trainer.logger.log_hyperparams(hparams)
 
 
-def get_metric_value(metric_name: str, trainer: Trainer) -> float:
-    """Retrieves value of the metric logged in LightningModule."""
-    if metric_name not in trainer.callback_metrics:
+def get_metric_value(metric_dict: dict, metric_name: str) -> float:
+    """Safely retrieves value of the metric logged in LightningModule."""
+
+    if not metric_name:
+        log.info("Metric name is None! Skipping metric value retrieval...")
+        return None
+
+    if metric_name not in metric_dict:
         raise Exception(
             f"Metric value not found! <metric_name={metric_name}>\n"
             "Make sure metric name logged in LightningModule is correct!\n"
             "Make sure `optimized_metric` name in `hparams_search` config is correct!"
         )
-    return trainer.callback_metrics[metric_name].item()
+
+    metric_value = metric_dict[metric_name].item()
+    log.info(f"Retrieved metric value! <{metric_name}={metric_value}>")
+
+    return metric_value
 
 
 def close_loggers() -> None:

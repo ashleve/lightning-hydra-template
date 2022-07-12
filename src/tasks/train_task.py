@@ -23,8 +23,7 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
         cfg (DictConfig): Configuration composed by Hydra.
 
     Returns:
-        Tuple[Optional[float], Dict[str, Any]]: A tuple of metric value for hyperparameter optimization
-        and dictionary with all instantiated objects.
+        Tuple[dict, dict]: Dict with metrics and dict with all instantiated objects.
     """
 
     # set seed for random number generators in pytorch, numpy and python.random
@@ -61,30 +60,29 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
     }
 
     # send hyperparameters to loggers
-    log.info("Logging hyperparameters!")
-    utils.log_hyperparameters(object_dict)
+    if cfg.get("logger"):
+        log.info("Logging hyperparameters!")
+        utils.log_hyperparameters(object_dict)
 
     # train the model
     if cfg.get("train"):
         log.info("Starting training!")
         trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
 
-    # get metric value for hyperparameter optimization
-    metric_value = None
-    if cfg.get("optimized_metric"):
-        metric_value = utils.get_metric_value(metric_name=cfg.optimized_metric, trainer=trainer)
-        log.info(f"Retrieved metric value! <{cfg.optimized_metric}={metric_value}>")
+    train_metrics = trainer.callback_metrics
 
     # test the model
-    best_ckpt = trainer.checkpoint_callback.best_model_path
-    best_ckpt = None if best_ckpt == "" else best_ckpt
     if cfg.get("test"):
         log.info("Starting testing!")
+        best_ckpt = trainer.checkpoint_callback.best_model_path
+        best_ckpt = None if best_ckpt == "" else best_ckpt
         trainer.test(model=model, datamodule=datamodule, ckpt_path=best_ckpt)
+        log.info(f"Best ckpt path: {best_ckpt}")
 
-    # print paths
-    log.info(f"Output dir: {cfg.paths.output_dir}")
-    log.info(f"Best ckpt: {best_ckpt}")
+    test_metrics = trainer.callback_metrics
+
+    # merge train and test metrics
+    metric_dict = {**train_metrics, **test_metrics}
 
     # return metric value for hyperparameter optimization
-    return metric_value, object_dict
+    return metric_dict, object_dict
