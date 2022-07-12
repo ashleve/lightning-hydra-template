@@ -84,7 +84,6 @@ _Suggestions are always welcome!_
 - **Predefined Structure**: clean and scalable so that work can easily be extended [# Project Structure](#project-structure)
 - **Rapid Experimentation**: thanks to hydra command line superpowers | [# Your Superpowers](#your-superpowers)
 - **Little Boilerplate**: thanks to automating pipelines with config instantiation | [# How It Works](#how-it-works)
-- **Reproducibility**: easily reproduce exactly the previous experiment | [# Reproducibility](#reproducibility)
 - **Main Configs**: specify default training configuration | [# Main Config](#main-config)
 - **Experiment Configs**: override chosen hyperparameters | [# Experiment Config](#experiment-config)
 - **Workflow**: comes down to 4 simple steps | [# Workflow](#workflow)
