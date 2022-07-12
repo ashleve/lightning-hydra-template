@@ -1191,7 +1191,7 @@ Other resources:
 
 ## License
 
-This project is licensed under the MIT License.
+Lightning-Hydra-Template is licensed under the MIT License.
 
 ```
 MIT License
