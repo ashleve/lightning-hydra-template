@@ -1,5 +1,5 @@
 #!/bin/bash
-# Shedule execution of many runs
+# Schedule execution of many runs
 # Run from root folder with: bash scripts/schedule.sh
 
 python src/train.py trainer.max_epochs=5 logger=csv
