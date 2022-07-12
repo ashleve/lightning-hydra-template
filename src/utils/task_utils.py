@@ -18,7 +18,7 @@ log = pylogger.get_pylogger(__name__)
 def task_wrapper(task_func: Callable) -> Callable:
     """Optional decorator that wraps the task function in extra utilities.
 
-    Makes multiurn more resistant to failure.
+    Makes multirun more resistant to failure.
 
     Utilities:
     - Calling the `task_utils.extras()` before the task is started
@@ -129,7 +129,7 @@ def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
 def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
     """Controls which config parts are saved by lightning loggers.
 
-    Additionaly saves:
+    Additionally saves:
     - Number of model parameters
     """
 
