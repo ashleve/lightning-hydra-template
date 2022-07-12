@@ -819,7 +819,7 @@ You can use different optimization frameworks integrated with Hydra, like [Optun
 
 The `optimization_results.yaml` will be available under `logs/task_name/multirun` folder.
 
-This approach doesn't support advanced technics like prunning - for more sophisticated search, you should probably write a dedicated optimization task (without multirun feature).
+This approach doesn't support advanced techniques like prunning - for more sophisticated search, you should probably write a dedicated optimization task (without multirun feature).
 
 <br>
 
@@ -895,7 +895,7 @@ def on_train_start(self):
 <summary><b>Use Miniconda for GPU environments</b></summary>
 
 Use miniconda for your python environments (it's usually unnecessary to install full anaconda environment, miniconda should be enough).
-It makes it easier to install some dependencies, like cudatoolkit for GPU support. It also allows you to acccess your environments globally.
+It makes it easier to install some dependencies, like cudatoolkit for GPU support. It also allows you to access your environments globally.
 
 Example installation:
 
@@ -938,7 +938,7 @@ Currently template contains configurations of:
 - **pyupgrade** (upgrading python syntax to newer version)
 - **docformatter** (python docstring formatting)
 - **flake8** (python pep8 code analysis)
-- **prettier** (yaml formating)
+- **prettier** (yaml formatting)
 - **nbstripout** (clearing output from jupyter notebooks)
 - **bandit** (python security linter)
 
