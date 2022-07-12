@@ -36,7 +36,7 @@ hydra:
     n_trials: 20
 
     # choose Optuna hyperparameter sampler
-    # you can choose bayesian sampler (tpe), random sampler, grid sampler, and many others
+    # you can choose bayesian sampler (tpe), random search (without optimization), grid sampler, and others
     # docs: https://optuna.readthedocs.io/en/stable/reference/samplers.html
     sampler:
       _target_: optuna.samplers.TPESampler
