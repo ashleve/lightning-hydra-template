@@ -84,5 +84,4 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
     # merge train and test metrics
     metric_dict = {**train_metrics, **test_metrics}
 
-    # return metric value for hyperparameter optimization
     return metric_dict, object_dict
