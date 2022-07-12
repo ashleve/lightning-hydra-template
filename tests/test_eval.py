@@ -16,7 +16,7 @@ def test_train_eval(tmp_path, cfg_train, cfg_eval):
         cfg_train.trainer.max_epochs = 1
 
     HydraConfig().set_config(cfg_train)
-    train_task.train(cfg_train)
+    metric_dict, _ = train_task.train(cfg_train)
 
     assert "last.ckpt" in os.listdir(tmp_path / "checkpoints")
 
@@ -24,4 +24,6 @@ def test_train_eval(tmp_path, cfg_train, cfg_eval):
         cfg_eval.ckpt_path = str(tmp_path / "checkpoints" / "last.ckpt")
 
     HydraConfig().set_config(cfg_eval)
-    eval_task.evaluate(cfg_eval)
+    metric_dict, _ = eval_task.evaluate(cfg_eval)
+
+    assert metric_dict["test/acc"] > 0.2
