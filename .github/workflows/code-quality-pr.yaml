@@ -1,5 +1,5 @@
-# This workflow finds which files were changed, prints them, and then
-# runs `pre-commit` on those files.
+# This workflow finds which files were changed, prints them,
+# and runs `pre-commit` on those files.
 
 # Inspired by the sktime library:
 # https://github.com/alan-turing-institute/sktime/blob/main/.github/workflows/test.yml
@@ -13,15 +13,24 @@ on:
 jobs:
   code-quality:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - id: file_changes
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Find modified files
+        id: file_changes
         uses: trilom/file-changes-action@v1.2.4
         with:
           output: " "
-      - name: List changed files
+
+      - name: List modified files
         run: echo '${{ steps.file_changes.outputs.files}}'
-      - uses: pre-commit/action@v2.0.3
+
+      - name: Run pre-commits
+        uses: pre-commit/action@v2.0.3
         with:
           extra_args: --files ${{ steps.file_changes.outputs.files}}
