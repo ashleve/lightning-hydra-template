@@ -71,3 +71,12 @@ repos:
     rev: 0.5.0
     hooks:
       - id: nbstripout
+
+  # word spelling linter
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.1.0
+    hooks:
+      - id: codespell
+        args:
+          - --skip=logs/**,data/**
+          # - --ignore-words-list=abc,def
