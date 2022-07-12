@@ -615,6 +615,8 @@ For example, you can use them to version control best hyperparameters for each c
 <summary><b>Show example experiment config</b></summary>
 
 ```yaml
+# @package _global_
+
 # to execute this experiment run:
 # python train.py experiment=example
 
@@ -649,7 +651,8 @@ datamodule:
 
 logger:
   wandb:
-    tags: ["mnist", "${name}"]
+    tags: ${tags}
+    group: "mnist"
 ```
 
 </details>
@@ -658,7 +661,7 @@ logger:
 
 ## Workflow
 
-### Basic workflow
+**Basic workflow**
 
 1. Write your PyTorch Lightning module (see [models/mnist_module.py](src/models/mnist_module.py) for example)
 2. Write your PyTorch Lightning datamodule (see [datamodules/mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
@@ -668,7 +671,7 @@ logger:
    python src/train.py experiment=experiment_name.yaml
    ```
 
-### Experiment design
+**Experiment design**
 
 _Say you want to execute many runs to plot how accuracy changes in respect to batch size._
 
@@ -941,6 +944,7 @@ Currently template contains configurations of:
 - **prettier** (yaml formatting)
 - **nbstripout** (clearing output from jupyter notebooks)
 - **bandit** (python security linter)
+- **codespell** (word spellling linter)
 
 To reformat all files in the project use command:
 
