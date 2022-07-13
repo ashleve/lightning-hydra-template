@@ -34,6 +34,8 @@ _Suggestions are always welcome!_
 
 **Why you should use it:**
 
+<!-- - Doesn't constrain you more than PyTorch Lightning - it's simply a way to organize your code and configs. -->
+
 - Convenient all-in-one technology stack for deep learning prototyping - allows you to rapidly iterate over new models, datasets and tasks on most type of hardware like CPU, multi-GPU or TPU.
 - A collection of best practices for efficient workflow and reproducibility.
 - Thoroughly commented - you can use this repo as a reference and educational resource.
@@ -391,6 +393,8 @@ python train.py -m hparams_search=mnist_optuna experiment=example
 ```
 
 > **Note**: Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) doesn't require you to add any boilerplate to your code, everything is defined in a [single config file](configs/hparams_search/mnist_optuna.yaml).
+
+> **Warninig**: Optuna sweeps are not failure-resistant (if one job crashes then the whole sweep crashes).
 
 </details>
 
