@@ -25,7 +25,7 @@ def task_wrapper(task_func: Callable) -> Callable:
     - Calling the `utils.close_loggers()` after the task is finished
     - Logging the exception if occurs
     - Logging the task total execution time
-    - Loggingg the output dir
+    - Logging the output dir
     """
 
     def wrap(cfg: DictConfig):
