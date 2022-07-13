@@ -34,7 +34,7 @@ _Suggestions are always welcome!_
 
 **Why you should use it:**
 
-- Convenient all-in-one technology stack for deep learning prototyping - allows you to rapidly iterate over new models, datasets and tasks.
+- Convenient all-in-one technology stack for deep learning prototyping - allows you to rapidly iterate over new models, datasets and tasks on most type of hardware like CPU, multi-GPU or TPU.
 - A collection of best practices for efficient workflow and reproducibility.
 - Thoroughly commented - you can use this repo as a reference and educational resource.
 <!-- - Hardware-agnostic - run the same code on CPU, GPU, multi-GPU, SLURM clusters and TPU. -->
