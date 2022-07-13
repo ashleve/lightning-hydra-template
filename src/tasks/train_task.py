@@ -60,7 +60,7 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
     }
 
     # send hyperparameters to loggers
-    if cfg.get("logger"):
+    if logger:
         log.info("Logging hyperparameters!")
         utils.log_hyperparameters(object_dict)
 
@@ -76,6 +76,7 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
         log.info("Starting testing!")
         best_ckpt = trainer.checkpoint_callback.best_model_path
         best_ckpt = None if best_ckpt == "" else best_ckpt
+        # if ckpt_path is None, init weights will be used
         trainer.test(model=model, datamodule=datamodule, ckpt_path=best_ckpt)
         log.info(f"Best ckpt path: {best_ckpt}")
 
