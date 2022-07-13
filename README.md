@@ -379,7 +379,7 @@ python eval.py ckpt_path="/path/to/ckpt/name.ckpt"
 python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
 
-> **Note**: Hydra composes configs lazily at job launching time. If you change code or configs after launching a job/sweep, the final composed configs might be impacted.
+> **Note**: Hydra composes configs lazily at job launch time. If you change code or configs after launching a job/sweep, the final composed configs might be impacted.
 
 </details>
 
@@ -394,7 +394,7 @@ python train.py -m hparams_search=mnist_optuna experiment=example
 
 > **Note**: Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) doesn't require you to add any boilerplate to your code, everything is defined in a [single config file](configs/hparams_search/mnist_optuna.yaml).
 
-> **Warninig**: Optuna sweeps are not failure-resistant (if one job crashes then the whole sweep crashes).
+> **Warning**: Optuna sweeps are not failure-resistant (if one job crashes then the whole sweep crashes).
 
 </details>
 
