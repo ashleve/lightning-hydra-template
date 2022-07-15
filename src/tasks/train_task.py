@@ -66,11 +66,12 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
 
     if cfg.get("test"):
         log.info("Starting testing!")
-        best_ckpt = trainer.checkpoint_callback.best_model_path
-        best_ckpt = None if best_ckpt == "" else best_ckpt
-        # if ckpt_path is None, init weights will be used
-        trainer.test(model=model, datamodule=datamodule, ckpt_path=best_ckpt)
-        log.info(f"Best ckpt path: {best_ckpt}")
+        ckpt_path = trainer.checkpoint_callback.best_model_path
+        if ckpt_path == "":
+            log.warning("Best ckpt was not found! Using init weights for testing...")
+            ckpt_path = None
+        trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
+        log.info(f"Best ckpt path: {ckpt_path}")
 
     test_metrics = trainer.callback_metrics
 
