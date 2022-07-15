@@ -26,19 +26,15 @@ def evaluate(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
 
     assert cfg.ckpt_path
 
-    # init lightning datamodule
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
 
-    # init lightning model
     log.info(f"Instantiating model <{cfg.model._target_}>")
     model: LightningModule = hydra.utils.instantiate(cfg.model)
 
-    # init lightning loggers
     log.info("Instantiating loggers...")
     logger: List[LightningLoggerBase] = utils.instantiate_loggers(cfg.get("logger"))
 
-    # init lightning trainer
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(cfg.trainer, logger=logger)
 
@@ -50,11 +46,10 @@ def evaluate(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
         "trainer": trainer,
     }
 
-    # send hyperparameters to loggers
-    log.info("Logging hyperparameters!")
-    utils.log_hyperparameters(object_dict)
+    if logger:
+        log.info("Logging hyperparameters!")
+        utils.log_hyperparameters(object_dict)
 
-    # test the model
     log.info("Starting testing!")
     trainer.test(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
 

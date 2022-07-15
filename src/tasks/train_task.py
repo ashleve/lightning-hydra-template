@@ -30,23 +30,18 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
     if cfg.get("seed"):
         pl.seed_everything(cfg.seed, workers=True)
 
-    # init lightning datamodule
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
 
-    # init lightning model
     log.info(f"Instantiating model <{cfg.model._target_}>")
     model: LightningModule = hydra.utils.instantiate(cfg.model)
 
-    # init lightning callbacks
     log.info("Instantiating callbacks...")
     callbacks: List[Callback] = utils.instantiate_callbacks(cfg.get("callbacks"))
 
-    # init lightning loggers
     log.info("Instantiating loggers...")
     logger: List[LightningLoggerBase] = utils.instantiate_loggers(cfg.get("logger"))
 
-    # init lightning trainer
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
 
@@ -59,19 +54,16 @@ def train(cfg: DictConfig) -> Tuple[Optional[float], Dict[str, Any]]:
         "trainer": trainer,
     }
 
-    # send hyperparameters to loggers
     if logger:
         log.info("Logging hyperparameters!")
         utils.log_hyperparameters(object_dict)
 
-    # train the model
     if cfg.get("train"):
         log.info("Starting training!")
         trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
 
     train_metrics = trainer.callback_metrics
 
-    # test the model
     if cfg.get("test"):
         log.info("Starting testing!")
         best_ckpt = trainer.checkpoint_callback.best_model_path
