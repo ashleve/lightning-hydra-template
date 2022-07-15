@@ -16,7 +16,7 @@ clean-logs: ## Clean logs
 style: ## Run pre-commit hooks
 	pre-commit run -a
 
-sync: ## Merge changes from main branch
+sync: ## Merge changes from main branch to your current branch
 	git fetch --all
 	git merge main
 
