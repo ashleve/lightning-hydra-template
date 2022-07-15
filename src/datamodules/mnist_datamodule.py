@@ -132,7 +132,7 @@ if __name__ == "__main__":
     import omegaconf
     import pyrootutils
 
-    root = pyrootutils.setup_root(__file__)
+    root = pyrootutils.setup_root(__file__, pythonpath=True)
     cfg = omegaconf.OmegaConf.load(root / "configs" / "datamodule" / "mnist.yaml")
     cfg.data_dir = str(root / "data")
     _ = hydra.utils.instantiate(cfg)
