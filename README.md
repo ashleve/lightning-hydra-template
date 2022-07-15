@@ -2,7 +2,7 @@
 
 # Lightning-Hydra-Template
 
-[![python](https://img.shields.io/badge/-Python_3.7_|_3.8_|_3.9_|_3.10-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![python](https://img.shields.io/badge/-Python_3.7_%7C_3.8_%7C_3.9_%7C_3.10-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![pytorch](https://img.shields.io/badge/PyTorch_1.8+-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
 [![lightning](https://img.shields.io/badge/-Lightning_1.6+-792ee5?logo=pytorchlightning&logoColor=white)](https://pytorchlightning.ai/)
 [![hydra](https://img.shields.io/badge/Config-Hydra_1.2-89b8cd)](https://hydra.cc/)
@@ -30,7 +30,7 @@ _Suggestions are always welcome!_
 
 <br>
 
-## 📌&nbsp;&nbsp;Introduction
+## 📌  Introduction
 
 **Why you should use it:**
 
@@ -149,7 +149,7 @@ The directory structure of new project looks like this:
 
 <br>
 
-## 🚀&nbsp;&nbsp;Quickstart
+## 🚀  Quickstart
 
 ```bash
 # clone project
@@ -176,7 +176,7 @@ When running `python src/train.py` you should see something like this:
 
 </div>
 
-## ⚡&nbsp;&nbsp;Your Superpowers
+## ⚡  Your Superpowers
 
 <details>
 <summary><b>Override any config parameter from command line</b></summary>
@@ -497,7 +497,7 @@ ValueError: Specify tags before launching a multirun!
 
 <br>
 
-## ❤️&nbsp;&nbsp;Contributions
+## ❤️  Contributions
 
 Have a question? Found a bug? Missing a specific feature? Feel free to file a new issue, discussion or PR with respective title and description.
 
@@ -1227,7 +1227,7 @@ SOFTWARE.
 
 **DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
----
+______________________________________________________________________
 
 <div align="center">
 
