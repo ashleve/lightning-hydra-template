@@ -504,7 +504,7 @@ Have a question? Found a bug? Missing a specific feature? Feel free to file a ne
 Before making an issue, please verify that:
 
 - The problem still exists on the current `main` branch.
-- Your python dependencies are upgraded to recent versions.
+- Your python dependencies are updated to recent versions.
 
 Suggestions for improvements are always welcome!
 
@@ -947,6 +947,7 @@ Currently template contains configurations of:
 - **prettier** (yaml formatting)
 - **nbstripout** (clearing output from jupyter notebooks)
 - **bandit** (python security linter)
+- **mdformat** (markdown formatting)
 - **codespell** (word spellling linter)
 
 To reformat all files in the project use command:
@@ -1227,7 +1228,7 @@ SOFTWARE.
 
 **DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
-______________________________________________________________________
+---
 
 <div align="center">
 
