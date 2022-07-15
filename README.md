@@ -34,9 +34,7 @@ _Suggestions are always welcome!_
 
 **Why you should use it:**
 
-<!-- - Doesn't constrain you more than PyTorch Lightning - it's simply a way to organize your code and configs. -->
-
-- Convenient all-in-one technology stack for deep learning prototyping - allows you to rapidly iterate over new models, datasets and tasks on most type of hardware like CPU, multi-GPU or TPU.
+- Convenient all-in-one technology stack for deep learning prototyping - allows you to rapidly iterate over new models, datasets and tasks on different hardware accelerators like CPUs, multi-GPUs or TPUs.
 - A collection of best practices for efficient workflow and reproducibility.
 - Thoroughly commented - you can use this repo as a reference and educational resource.
 
@@ -413,7 +411,7 @@ python train.py -m 'experiment=glob(*)'
 <summary><b>Execute run for multiple different seeds</b></summary>
 
 ```bash
-python train.py -m seed=111,222,333,444,555 trainer.deterministic=True logger=csv tags=["exp_X"]
+python train.py -m seed=1,2,3,4,5 trainer.deterministic=True logger=csv tags=["benchmark"]
 ```
 
 > **Note**: `trainer.deterministic=True` makes pytorch more deterministic but impacts the performance.
@@ -503,7 +501,10 @@ ValueError: Specify tags before launching a multirun!
 
 Have a question? Found a bug? Missing a specific feature? Feel free to file a new issue, discussion or PR with respective title and description.
 
-Before making an issue, please verify that the problem still exists on the current `main` branch.
+Before making an issue, please verify that:
+
+- The problem still exists on the current `main` branch.
+- Your python dependencies are upgraded to recent versions.
 
 Suggestions for improvements are always welcome!
 
