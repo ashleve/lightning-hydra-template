@@ -3,7 +3,7 @@ default_language_version:
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v4.3.0
     hooks:
       # list of supported hooks: https://pre-commit.com/hooks.html
       - id: trailing-whitespace
@@ -19,7 +19,7 @@ repos:
 
   # python code formatting
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 22.6.0
     hooks:
       - id: black
         args: [--line-length, "99"]
@@ -61,7 +61,7 @@ repos:
 
   # yaml formatting
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.5.1
+    rev: v2.7.1
     hooks:
       - id: prettier
         types: [yaml]
@@ -71,6 +71,19 @@ repos:
     rev: 0.5.0
     hooks:
       - id: nbstripout
+
+  # md formatting
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.14
+    hooks:
+      - id: mdformat
+        args: ["--number"]
+        additional_dependencies:
+          - mdformat-gfm
+          - mdformat-tables
+          - mdformat_frontmatter
+          # - mdformat-toc
+          # - mdformat-black
 
   # word spelling linter
   - repo: https://github.com/codespell-project/codespell
