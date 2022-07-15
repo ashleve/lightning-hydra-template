@@ -2,7 +2,7 @@
 
 # Lightning-Hydra-Template
 
-[![python](https://img.shields.io/badge/-Python_3.7_|_3.8_|_3.9_|_3.10-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![python](https://img.shields.io/badge/-Python_3.7_%7C_3.8_%7C_3.9_%7C_3.10-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![pytorch](https://img.shields.io/badge/PyTorch_1.8+-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
 [![lightning](https://img.shields.io/badge/-Lightning_1.6+-792ee5?logo=pytorchlightning&logoColor=white)](https://pytorchlightning.ai/)
 [![hydra](https://img.shields.io/badge/Config-Hydra_1.2-89b8cd)](https://hydra.cc/)
@@ -30,14 +30,13 @@ _Suggestions are always welcome!_
 
 <br>
 
-## 📌&nbsp;&nbsp;Introduction
+## 📌  Introduction
 
 **Why you should use it:**
 
-- Convenient all-in-one technology stack for deep learning prototyping - allows you to rapidly iterate over new models, datasets and tasks.
+- Convenient all-in-one technology stack for deep learning prototyping - allows you to rapidly iterate over new models, datasets and tasks on different hardware accelerators like CPUs, multi-GPUs or TPUs.
 - A collection of best practices for efficient workflow and reproducibility.
 - Thoroughly commented - you can use this repo as a reference and educational resource.
-<!-- - Hardware-agnostic - run the same code on CPU, GPU, multi-GPU, SLURM clusters and TPU. -->
 
 **Why you shouldn't use it:**
 
@@ -84,7 +83,6 @@ _Suggestions are always welcome!_
 - **Predefined Structure**: clean and scalable so that work can easily be extended [# Project Structure](#project-structure)
 - **Rapid Experimentation**: thanks to hydra command line superpowers | [# Your Superpowers](#your-superpowers)
 - **Little Boilerplate**: thanks to automating pipelines with config instantiation | [# How It Works](#how-it-works)
-- **Reproducibility**: easily reproduce exactly the previous experiment | [# Reproducibility](#reproducibility)
 - **Main Configs**: specify default training configuration | [# Main Config](#main-config)
 - **Experiment Configs**: override chosen hyperparameters | [# Experiment Config](#experiment-config)
 - **Workflow**: comes down to 4 simple steps | [# Workflow](#workflow)
@@ -151,7 +149,7 @@ The directory structure of new project looks like this:
 
 <br>
 
-## 🚀&nbsp;&nbsp;Quickstart
+## 🚀  Quickstart
 
 ```bash
 # clone project
@@ -178,7 +176,7 @@ When running `python src/train.py` you should see something like this:
 
 </div>
 
-## ⚡&nbsp;&nbsp;Your Superpowers
+## ⚡  Your Superpowers
 
 <details>
 <summary><b>Override any config parameter from command line</b></summary>
@@ -379,7 +377,7 @@ python eval.py ckpt_path="/path/to/ckpt/name.ckpt"
 python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
 
-> **Note**: Hydra composes configs lazily at job launching time. If you change code or configs after launching a job/sweep, the final composed configs might be impacted.
+> **Note**: Hydra composes configs lazily at job launch time. If you change code or configs after launching a job/sweep, the final composed configs might be impacted.
 
 </details>
 
@@ -393,6 +391,8 @@ python train.py -m hparams_search=mnist_optuna experiment=example
 ```
 
 > **Note**: Using [Optuna Sweeper](https://hydra.cc/docs/next/plugins/optuna_sweeper) doesn't require you to add any boilerplate to your code, everything is defined in a [single config file](configs/hparams_search/mnist_optuna.yaml).
+
+> **Warning**: Optuna sweeps are not failure-resistant (if one job crashes then the whole sweep crashes).
 
 </details>
 
@@ -411,7 +411,7 @@ python train.py -m 'experiment=glob(*)'
 <summary><b>Execute run for multiple different seeds</b></summary>
 
 ```bash
-python train.py -m seed=111,222,333,444,555 trainer.deterministic=True logger=csv tags=["exp_X"]
+python train.py -m seed=1,2,3,4,5 trainer.deterministic=True logger=csv tags=["benchmark"]
 ```
 
 > **Note**: `trainer.deterministic=True` makes pytorch more deterministic but impacts the performance.
@@ -479,7 +479,7 @@ If no tags are provided, you will be asked to input them from command line:
 
 ```bash
 >>> python train.py tags=[]
-[2022-07-11 15:40:09,358][src.utils.task_utils][INFO] - Enforcing tags! <cfg.extras.enforce_tags=True>
+[2022-07-11 15:40:09,358][src.utils.utils][INFO] - Enforcing tags! <cfg.extras.enforce_tags=True>
 [2022-07-11 15:40:09,359][src.utils.rich_utils][WARNING] - No tags provided in config. Prompting user to input tags...
 Enter a list of comma separated tags (dev):
 ```
@@ -497,11 +497,14 @@ ValueError: Specify tags before launching a multirun!
 
 <br>
 
-## ❤️&nbsp;&nbsp;Contributions
+## ❤️  Contributions
 
 Have a question? Found a bug? Missing a specific feature? Feel free to file a new issue, discussion or PR with respective title and description.
 
-Before making an issue, please verify that the problem still exists on the current `main` branch.
+Before making an issue, please verify that:
+
+- The problem still exists on the current `main` branch.
+- Your python dependencies are updated to recent versions.
 
 Suggestions for improvements are always welcome!
 
@@ -615,6 +618,8 @@ For example, you can use them to version control best hyperparameters for each c
 <summary><b>Show example experiment config</b></summary>
 
 ```yaml
+# @package _global_
+
 # to execute this experiment run:
 # python train.py experiment=example
 
@@ -649,7 +654,8 @@ datamodule:
 
 logger:
   wandb:
-    tags: ["mnist", "${name}"]
+    tags: ${tags}
+    group: "mnist"
 ```
 
 </details>
@@ -658,7 +664,7 @@ logger:
 
 ## Workflow
 
-### Basic workflow
+**Basic workflow**
 
 1. Write your PyTorch Lightning module (see [models/mnist_module.py](src/models/mnist_module.py) for example)
 2. Write your PyTorch Lightning datamodule (see [datamodules/mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
@@ -668,7 +674,7 @@ logger:
    python src/train.py experiment=experiment_name.yaml
    ```
 
-### Experiment design
+**Experiment design**
 
 _Say you want to execute many runs to plot how accuracy changes in respect to batch size._
 
@@ -941,6 +947,8 @@ Currently template contains configurations of:
 - **prettier** (yaml formatting)
 - **nbstripout** (clearing output from jupyter notebooks)
 - **bandit** (python security linter)
+- **mdformat** (markdown formatting)
+- **codespell** (word spellling linter)
 
 To reformat all files in the project use command:
 
@@ -1187,7 +1195,7 @@ Other resources:
 
 ## License
 
-This project is licensed under the MIT License.
+Lightning-Hydra-Template is licensed under the MIT License.
 
 ```
 MIT License
@@ -1220,7 +1228,7 @@ SOFTWARE.
 
 **DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
----
+______________________________________________________________________
 
 <div align="center">
 
