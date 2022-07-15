@@ -11,6 +11,6 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "pytorch-lightning"
-      update-types: ["version-update:semver-minor"]
+        update-types: ["version-update:semver-minor"]
       - dependency-name: "torchmetrics"
-      update-types: ["version-update:semver-patch"]
+        update-types: ["version-update:semver-patch"]
