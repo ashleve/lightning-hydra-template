@@ -1,3 +1,8 @@
+"""Adapted from:
+
+https://github.com/PyTorchLightning/pytorch-lightning/blob/master/tests/helpers/runif.py
+"""
+
 import sys
 from typing import Optional
 
@@ -6,16 +11,16 @@ import torch
 from packaging.version import Version
 from pkg_resources import get_distribution
 
-"""
-Adapted from:
-    https://github.com/PyTorchLightning/pytorch-lightning/blob/master/tests/helpers/runif.py
-"""
-
-from tests.helpers.module_available import (
+from tests.helpers.package_available import (
+    _COMET_AVAILABLE,
     _DEEPSPEED_AVAILABLE,
     _FAIRSCALE_AVAILABLE,
     _IS_WINDOWS,
-    _RPC_AVAILABLE,
+    _MLFLOW_AVAILABLE,
+    _NEPTUNE_AVAILABLE,
+    _SH_AVAILABLE,
+    _TPU_AVAILABLE,
+    _WANDB_AVAILABLE,
 )
 
 
@@ -39,21 +44,31 @@ class RunIf:
         max_torch: Optional[str] = None,
         min_python: Optional[str] = None,
         skip_windows: bool = False,
-        rpc: bool = False,
+        sh: bool = False,
+        tpu: bool = False,
         fairscale: bool = False,
         deepspeed: bool = False,
+        wandb: bool = False,
+        neptune: bool = False,
+        comet: bool = False,
+        mlflow: bool = False,
         **kwargs,
     ):
         """
         Args:
-            min_gpus: min number of gpus required to run test
+            min_gpus: min number of GPUs required to run test
             min_torch: minimum pytorch version to run test
             max_torch: maximum pytorch version to run test
             min_python: minimum python version required to run test
             skip_windows: skip test for Windows platform
-            rpc: requires Remote Procedure Call (RPC)
+            tpu: if TPU is available
+            sh: if `sh` module is required to run the test
             fairscale: if `fairscale` module is required to run the test
             deepspeed: if `deepspeed` module is required to run the test
+            wandb: if `wandb` module is required to run the test
+            neptune: if `neptune` module is required to run the test
+            comet: if `comet` module is required to run the test
+            mlflow: if `mlflow` module is required to run the test
             kwargs: native pytest.mark.skipif keyword arguments
         """
         conditions = []
@@ -84,17 +99,37 @@ class RunIf:
             conditions.append(_IS_WINDOWS)
             reasons.append("does not run on Windows")
 
-        if rpc:
-            conditions.append(not _RPC_AVAILABLE)
-            reasons.append("RPC")
+        if tpu:
+            conditions.append(not _TPU_AVAILABLE)
+            reasons.append("TPU")
+
+        if sh:
+            conditions.append(not _SH_AVAILABLE)
+            reasons.append("sh")
 
         if fairscale:
             conditions.append(not _FAIRSCALE_AVAILABLE)
-            reasons.append("Fairscale")
+            reasons.append("fairscale")
 
         if deepspeed:
             conditions.append(not _DEEPSPEED_AVAILABLE)
-            reasons.append("Deepspeed")
+            reasons.append("deepspeed")
+
+        if wandb:
+            conditions.append(not _WANDB_AVAILABLE)
+            reasons.append("wandb")
+
+        if neptune:
+            conditions.append(not _NEPTUNE_AVAILABLE)
+            reasons.append("neptune")
+
+        if comet:
+            conditions.append(not _COMET_AVAILABLE)
+            reasons.append("comet")
+
+        if mlflow:
+            conditions.append(not _MLFLOW_AVAILABLE)
+            reasons.append("mlflow")
 
         reasons = [rs for cond, rs in zip(conditions, reasons) if cond]
         return pytest.mark.skipif(

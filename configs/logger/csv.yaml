@@ -2,6 +2,6 @@
 
 csv:
   _target_: pytorch_lightning.loggers.csv_logs.CSVLogger
-  save_dir: "."
+  save_dir: "${paths.output_dir}"
   name: "csv/"
   prefix: ""

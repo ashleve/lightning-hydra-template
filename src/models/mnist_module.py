@@ -5,18 +5,17 @@ from pytorch_lightning import LightningModule
 from torchmetrics import MaxMetric
 from torchmetrics.classification.accuracy import Accuracy
 
-from src.models.components.simple_dense_net import SimpleDenseNet
-
 
 class MNISTLitModule(LightningModule):
     """Example of LightningModule for MNIST classification.
 
-    A LightningModule organizes your PyTorch code into 5 sections:
+    A LightningModule organizes your PyTorch code into 6 sections:
         - Computations (init).
         - Train loop (training_step)
         - Validation loop (validation_step)
         - Test loop (test_step)
-        - Optimizers (configure_optimizers)
+        - Prediction Loop (predict_step)
+        - Optimizers and LR Schedulers (configure_optimizers)
 
     Read the docs:
         https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html
@@ -25,14 +24,13 @@ class MNISTLitModule(LightningModule):
     def __init__(
         self,
         net: torch.nn.Module,
-        lr: float = 0.001,
-        weight_decay: float = 0.0005,
+        optimizer: torch.optim.Optimizer,
     ):
         super().__init__()
 
         # this line allows to access init params with 'self.hparams' attribute
-        # it also ensures init params will be stored in ckpt
-        self.save_hyperparameters(logger=False)
+        # also ensures init params will be stored in ckpt
+        self.save_hyperparameters(logger=False, ignore=["net"])
 
         self.net = net
 
@@ -78,7 +76,7 @@ class MNISTLitModule(LightningModule):
 
     def training_epoch_end(self, outputs: List[Any]):
         # `outputs` is a list of dicts returned from `training_step()`
-        pass
+        self.train_acc.reset()
 
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
@@ -94,6 +92,7 @@ class MNISTLitModule(LightningModule):
         acc = self.val_acc.compute()  # get val accuracy from current epoch
         self.val_acc_best.update(acc)
         self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
+        self.val_acc.reset()
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
@@ -106,21 +105,25 @@ class MNISTLitModule(LightningModule):
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def test_epoch_end(self, outputs: List[Any]):
-        pass
-
-    def on_epoch_end(self):
-        # reset metrics at the end of every epoch
-        self.train_acc.reset()
         self.test_acc.reset()
-        self.val_acc.reset()
 
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
         Normally you'd need one. But in the case of GANs or similar you might have multiple.
 
-        See examples here:
+        Examples:
             https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
         """
-        return torch.optim.Adam(
-            params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay
-        )
+        return {
+            "optimizer": self.hparams.optimizer(params=self.parameters()),
+        }
+
+
+if __name__ == "__main__":
+    import hydra
+    import omegaconf
+    import pyrootutils
+
+    root = pyrootutils.setup_root(__file__, pythonpath=True)
+    cfg = omegaconf.OmegaConf.load(root / "configs" / "model" / "mnist.yaml")
+    _ = hydra.utils.instantiate(cfg)

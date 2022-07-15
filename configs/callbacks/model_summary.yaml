@@ -1,0 +1,7 @@
+# https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.callbacks.RichModelSummary.html
+
+# Generates a summary of all layers in a LightningModule with rich text formatting.
+# Look at the above link for more detailed information.
+model_summary:
+  _target_: pytorch_lightning.callbacks.RichModelSummary
+  max_depth: 1 # the maximum depth of layer nesting that the summary will include

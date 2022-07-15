@@ -32,3 +32,7 @@ class SimpleDenseNet(nn.Module):
         x = x.view(batch_size, -1)
 
         return self.model(x)
+
+
+if __name__ == "__main__":
+    _ = SimpleDenseNet()

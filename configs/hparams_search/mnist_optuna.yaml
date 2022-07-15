@@ -14,6 +14,8 @@ optimized_metric: "val/acc_best"
 # it optimizes for value returned from function with @hydra.main decorator
 # docs: https://hydra.cc/docs/next/plugins/optuna_sweeper
 hydra:
+  mode: "MULTIRUN" # set hydra to multirun by default if this config is attached
+
   sweeper:
     _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
 
@@ -31,30 +33,20 @@ hydra:
     direction: maximize
 
     # total number of runs that will be executed
-    n_trials: 25
+    n_trials: 20
 
     # choose Optuna hyperparameter sampler
+    # you can choose bayesian sampler (tpe), random search (without optimization), grid sampler, and others
     # docs: https://optuna.readthedocs.io/en/stable/reference/samplers.html
     sampler:
       _target_: optuna.samplers.TPESampler
-      seed: 12345
+      seed: 1234
       n_startup_trials: 10 # number of random sampling runs before optimization starts
 
-    # define range of hyperparameters
-    search_space:
-      datamodule.batch_size:
-        type: categorical
-        choices: [32, 64, 128]
-      model.lr:
-        type: float
-        low: 0.0001
-        high: 0.2
-      model.net.lin1_size:
-        type: categorical
-        choices: [32, 64, 128, 256, 512]
-      model.net.lin2_size:
-        type: categorical
-        choices: [32, 64, 128, 256, 512]
-      model.net.lin3_size:
-        type: categorical
-        choices: [32, 64, 128, 256, 512]
+    # define hyperparameter search space
+    params:
+      model.optimizer.lr: interval(0.0001, 0.1)
+      datamodule.batch_size: choice(32, 64, 128, 256)
+      model.net.lin1_size: choice(64, 128, 256)
+      model.net.lin2_size: choice(64, 128, 256)
+      model.net.lin3_size: choice(32, 64, 128, 256)

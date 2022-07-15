@@ -7,14 +7,12 @@ defaults:
   - override /datamodule: mnist.yaml
   - override /model: mnist.yaml
   - override /callbacks: default.yaml
-  - override /logger: null
   - override /trainer: default.yaml
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-# name of the run determines folder name in logs
-name: "simple_dense_net"
+tags: ["mnist", "simple_dense_net"]
 
 seed: 12345
 
@@ -24,7 +22,8 @@ trainer:
   gradient_clip_val: 0.5
 
 model:
-  lr: 0.002
+  optimizer:
+    lr: 0.002
   net:
     lin1_size: 128
     lin2_size: 256
@@ -35,4 +34,5 @@ datamodule:
 
 logger:
   wandb:
-    tags: ["mnist", "${name}"]
+    tags: ${tags}
+    group: "mnist"

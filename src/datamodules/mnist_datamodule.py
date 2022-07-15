@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import torch
 from pytorch_lightning import LightningDataModule
@@ -11,11 +11,22 @@ class MNISTDataModule(LightningDataModule):
     """Example of LightningDataModule for MNIST dataset.
 
     A DataModule implements 5 key methods:
-        - prepare_data (things to do on 1 GPU/TPU, not on every GPU/TPU in distributed mode)
-        - setup (things to do on every accelerator in distributed mode)
-        - train_dataloader (the training dataloader)
-        - val_dataloader (the validation dataloader(s))
-        - test_dataloader (the test dataloader(s))
+
+        def prepare_data(self):
+            # things to do on 1 GPU/TPU (not on every GPU/TPU in DDP)
+            # download data, pre-process, split, save to disk, etc...
+        def setup(self, stage):
+            # things to do on every process in DDP
+            # load data, set variables, etc...
+        def train_dataloader(self):
+            # return train dataloader
+        def val_dataloader(self):
+            # return validation dataloader
+        def test_dataloader(self):
+            # return test dataloader
+        def teardown(self):
+            # called on every process in DDP
+            # clean up after fit or test
 
     This allows you to share a full dataset without explaining how to download,
     split, transform and process the data.
@@ -35,6 +46,7 @@ class MNISTDataModule(LightningDataModule):
         super().__init__()
 
         # this line allows to access init params with 'self.hparams' attribute
+        # also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
 
         # data transformations
@@ -53,7 +65,6 @@ class MNISTDataModule(LightningDataModule):
     def prepare_data(self):
         """Download data if needed.
 
-        This method is called only from a single GPU.
         Do not use it to assign state (self.x = y).
         """
         MNIST(self.hparams.data_dir, train=True, download=True)
@@ -62,12 +73,10 @@ class MNISTDataModule(LightningDataModule):
     def setup(self, stage: Optional[str] = None):
         """Load data. Set variables: `self.data_train`, `self.data_val`, `self.data_test`.
 
-        This method is called by lightning when doing `trainer.fit()` and `trainer.test()`,
-        so be careful not to execute the random split twice! The `stage` can be used to
-        differentiate whether it's called before trainer.fit()` or `trainer.test()`.
+        This method is called by lightning with both `trainer.fit()` and `trainer.test()`, so be
+        careful not to execute things like random split twice!
         """
-
-        # load datasets only if they're not loaded already
+        # load and split datasets only if not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
             trainset = MNIST(self.hparams.data_dir, train=True, transform=self.transforms)
             testset = MNIST(self.hparams.data_dir, train=False, transform=self.transforms)
@@ -104,3 +113,26 @@ class MNISTDataModule(LightningDataModule):
             pin_memory=self.hparams.pin_memory,
             shuffle=False,
         )
+
+    def teardown(self, stage: Optional[str] = None):
+        """Clean up after fit or test."""
+        pass
+
+    def state_dict(self) -> Dict[str, Any]:
+        """Extra things to save to checkpoint."""
+        return {}
+
+    def load_state_dict(self, state_dict: Dict[str, Any]) -> None:
+        """Things to do when loading checkpoint."""
+        pass
+
+
+if __name__ == "__main__":
+    import hydra
+    import omegaconf
+    import pyrootutils
+
+    root = pyrootutils.setup_root(__file__, pythonpath=True)
+    cfg = omegaconf.OmegaConf.load(root / "configs" / "datamodule" / "mnist.yaml")
+    cfg.data_dir = str(root / "data")
+    _ = hydra.utils.instantiate(cfg)

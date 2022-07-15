@@ -1,12 +1,16 @@
 _target_: pytorch_lightning.Trainer
 
-gpus: 0
+default_root_dir: ${paths.output_dir}
 
-min_epochs: 1
+min_epochs: 1 # prevents early stopping
 max_epochs: 10
 
-# number of validation steps to execute at the beginning of the training
-# num_sanity_val_steps: 0
+accelerator: cpu
+devices: 1
 
-# ckpt path
-resume_from_checkpoint: null
+# mixed precision for extra speed-up
+# precision: 16
+
+# set True to to ensure deterministic results
+# makes training slower but gives more reproducibility than just setting seeds
+deterministic: False
