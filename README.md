@@ -220,6 +220,8 @@ python train.py trainer=ddp_sim trainer.devices=2
 python train.py trainer=mps
 ```
 
+> **Warning**: Currently there are problems with DDP mode, read [this issue](https://github.com/ashleve/lightning-hydra-template/issues/393) to learn more.
+
 </details>
 
 <details>
