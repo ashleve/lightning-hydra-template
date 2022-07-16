@@ -59,7 +59,7 @@ class MNISTDataModule(LightningDataModule):
         self.data_test: Optional[Dataset] = None
 
     @property
-    def num_classes(self) -> int:
+    def num_classes(self):
         return 10
 
     def prepare_data(self):
@@ -118,11 +118,11 @@ class MNISTDataModule(LightningDataModule):
         """Clean up after fit or test."""
         pass
 
-    def state_dict(self) -> Dict[str, Any]:
+    def state_dict(self):
         """Extra things to save to checkpoint."""
         return {}
 
-    def load_state_dict(self, state_dict: Dict[str, Any]) -> None:
+    def load_state_dict(self, state_dict: Dict[str, Any]):
         """Things to do when loading checkpoint."""
         pass
 
