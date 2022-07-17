@@ -84,7 +84,7 @@ def extras(cfg: DictConfig) -> None:
 
 
 @rank_zero_only
-def save_file(path, content) -> None:
+def save_file(path: str, content: str) -> None:
     """Save file in rank zero mode (only on one process in multi-GPU setup)."""
     with open(path, "w+") as file:
         file.write(content)
@@ -129,7 +129,7 @@ def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
 
 
 @rank_zero_only
-def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
+def log_hyperparameters(object_dict: dict) -> None:
     """Controls which config parts are saved by lightning loggers.
 
     Additionally saves:
