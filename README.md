@@ -775,7 +775,7 @@ There is also `@RunIf` decorator implemented, that allows you to run tests only 
 
 ## Hyperparameter Search
 
-You can define hyperparemter search by adding new config file to [configs/hparams_search](configs/hparams_search).
+You can define hyperparameter search by adding new config file to [configs/hparams_search](configs/hparams_search).
 
 <details>
 <summary><b>Show example hyperparameter search config</b></summary>
@@ -1231,7 +1231,7 @@ SOFTWARE.
 
 **DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
-______________________________________________________________________
+---
 
 <div align="center">
 
