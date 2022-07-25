@@ -753,7 +753,7 @@ Template comes with generic tests implemented with `pytest`.
 pytest
 
 # run tests from specific file
-pytest tests/shell/test_basic_commands.py
+pytest tests/test_train.py
 
 # run all tests except the ones marked as slow
 pytest -k "not slow"
