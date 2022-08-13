@@ -40,7 +40,6 @@ _Suggestions are always welcome!_
 
 **Why you shouldn't use it:**
 
-- Not fitted for data engineering - the template configuration setup is not designed for building data processing pipelines that depend on each other.
 - Limits you as much as pytorch lightning limits you.
 - Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
 
