@@ -544,6 +544,31 @@ python train.py model=mnist
 
 Example pipeline managing the instantiation logic: [src/tasks/train_task.py](src/tasks/train_task.py).
 
+**Entry files.**
+
+Notice the `pyrootutils` package which is always used in entry files (like [`src/train.py`](src/train.py)) at the beginning:
+```python
+root = pyrootutils.setup_root(__file__, dotenv=True, pythonpath=True)
+```
+
+The line above does three things:
+- Finds project root path by searching for the following files in parent dirs: `setup.cfg`,`setup.py`,`.git`,`pyproject.toml` (the root is recognized if any of these files is found).
+- Sets `PROJECT_ROOT` environment variable .
+- Adds project root to `PYTHONPATH`.
+- Loads environment variables from `.env` if it exists in root directory.
+ 
+This helps to standardize the paths in project no matter from where you run the script and prevents problems with DDP mode, since config uses `PROJECT_ROOT` to setup main paths. See [`configs/paths/default.yaml`](configs/paths/default.yaml):
+```yaml
+ # path to root directory
+root_dir: ${oc.env:PROJECT_ROOT}
+
+# path to data directory
+data_dir: ${oc.env:PROJECT_ROOT}/data/
+
+# path to logging directory
+log_dir: ${oc.env:PROJECT_ROOT}/logs/
+```
+ 
 <br>
 
 ## Main Config
