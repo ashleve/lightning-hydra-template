@@ -40,7 +40,6 @@ _Suggestions are always welcome!_
 
 **Why you shouldn't use it:**
 
-- Not fitted for data engineering - the template configuration setup is not designed for building data processing pipelines that depend on each other.
 - Limits you as much as pytorch lightning limits you.
 - Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
 
@@ -545,6 +544,31 @@ python train.py model=mnist
 
 Example pipeline managing the instantiation logic: [src/tasks/train_task.py](src/tasks/train_task.py).
 
+Notice the `pyrootutils` package which is always used in entry files (like [`src/train.py`](src/train.py)) at the beginning:
+
+```python
+root = pyrootutils.setup_root(search_from=__file__, pythonpath=True)
+```
+
+The line above does three things:
+
+- Finds project `root` path by searching for the following files in parent dirs: `setup.cfg`,`setup.py`,`.git`,`pyproject.toml` (the root is recognized if any of these files is found).
+- Sets `PROJECT_ROOT` environment variable which is used to standardize paths in hydra configs.
+- Adds project root to the `PYTHONPATH` to make sure your packages import correctly.
+
+This helps to standardize the paths in project no matter from where you run the script and prevents problems with DDP mode, since config uses `PROJECT_ROOT` to setup main paths. See [`configs/paths/default.yaml`](configs/paths/default.yaml):
+
+```yaml
+ # path to root directory
+root_dir: ${oc.env:PROJECT_ROOT}
+
+# path to data directory
+data_dir: ${oc.env:PROJECT_ROOT}/data/
+
+# path to logging directory
+log_dir: ${oc.env:PROJECT_ROOT}/logs/
+```
+
 <br>
 
 ## Main Config
@@ -753,7 +777,7 @@ Template comes with generic tests implemented with `pytest`.
 pytest
 
 # run tests from specific file
-pytest tests/shell/test_basic_commands.py
+pytest tests/test_train.py
 
 # run all tests except the ones marked as slow
 pytest -k "not slow"
@@ -775,7 +799,7 @@ There is also `@RunIf` decorator implemented, that allows you to run tests only 
 
 ## Hyperparameter Search
 
-You can define hyperparemter search by adding new config file to [configs/hparams_search](configs/hparams_search).
+You can define hyperparameter search by adding new config file to [configs/hparams_search](configs/hparams_search).
 
 <details>
 <summary><b>Show example hyperparameter search config</b></summary>
