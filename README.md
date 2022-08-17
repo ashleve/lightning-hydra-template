@@ -550,7 +550,7 @@ root = pyrootutils.setup_root(search_from=__file__, pythonpath=True)
 ```
 
 The line above does three things:
-- Finds project `root` path by searching for the following files in parent dirs: `setup.cfg`,`setup.py`,`.git`,`pyproject.toml` (the root is recognized if any of these files is found). -
+- Finds project `root` path by searching for the following files in parent dirs: `setup.cfg`,`setup.py`,`.git`,`pyproject.toml` (the root is recognized if any of these files is found).
 - Sets `PROJECT_ROOT` environment variable which is used to standardize paths in hydra configs.
 - Adds project root to the `PYTHONPATH` to make sure your packages import correctly.
  
