@@ -546,14 +546,13 @@ Example pipeline managing the instantiation logic: [src/tasks/train_task.py](src
 
 Notice the `pyrootutils` package which is always used in entry files (like [`src/train.py`](src/train.py)) at the beginning:
 ```python
-root = pyrootutils.setup_root(__file__, dotenv=True, pythonpath=True)
+root = pyrootutils.setup_root(search_from=__file__, pythonpath=True)
 ```
 
-The line above does four things:
-- Finds project root path by searching for the following files in parent dirs: `setup.cfg`,`setup.py`,`.git`,`pyproject.toml` (the root is recognized if any of these files is found).
-- Sets `PROJECT_ROOT` environment variable .
-- Adds project root to `PYTHONPATH`.
-- Loads environment variables from `.env` if it exists in root directory.
+The line above does three things:
+- Finds project `root` path by searching for the following files in parent dirs: `setup.cfg`,`setup.py`,`.git`,`pyproject.toml` (the root is recognized if any of these files is found). -
+- Sets `PROJECT_ROOT` environment variable which is used to standardize paths in hydra configs.
+- Adds project root to the `PYTHONPATH` to make sure your packages import correctly.
  
 This helps to standardize the paths in project no matter from where you run the script and prevents problems with DDP mode, since config uses `PROJECT_ROOT` to setup main paths. See [`configs/paths/default.yaml`](configs/paths/default.yaml):
 ```yaml
