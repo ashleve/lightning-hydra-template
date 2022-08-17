@@ -544,14 +544,12 @@ python train.py model=mnist
 
 Example pipeline managing the instantiation logic: [src/tasks/train_task.py](src/tasks/train_task.py).
 
-**Entry files.**
-
 Notice the `pyrootutils` package which is always used in entry files (like [`src/train.py`](src/train.py)) at the beginning:
 ```python
 root = pyrootutils.setup_root(__file__, dotenv=True, pythonpath=True)
 ```
 
-The line above does three things:
+The line above does four things:
 - Finds project root path by searching for the following files in parent dirs: `setup.cfg`,`setup.py`,`.git`,`pyproject.toml` (the root is recognized if any of these files is found).
 - Sets `PROJECT_ROOT` environment variable .
 - Adds project root to `PYTHONPATH`.
