@@ -1,4 +1,6 @@
-This branch contains example wandb callbacks.
+Example wandb callbacks.
+
+> **Warning**: **These callbacks are not maintained and might not work anymore (but you can still use them as a reference for writing your own callbacks).**
 
 Callbacks which support reproducibility:
 
@@ -17,4 +19,3 @@ To try all of the callbacks at once, run the following command:
 ```bash
 python train.py logger=wandb callbacks=wandb
 ```
-> **Warning**: These callbacks are not maintained and might not work anymore. You can still use them as a reference for writing your own callbacks.
