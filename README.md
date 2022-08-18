@@ -554,7 +554,7 @@ The line above does three things:
 
 - Finds project `root` path by searching for the following files in parent dirs: `setup.cfg`,`setup.py`,`.git`,`pyproject.toml` (the root is recognized if any of these files is found).
 - Sets `PROJECT_ROOT` environment variable which is used to standardize paths in hydra configs.
-- Adds project root to the `PYTHONPATH` to make sure your packages import correctly.
+- Adds project root to the `PYTHONPATH` to make sure you can always import modules without installing project.
 
 This helps to standardize the paths in project no matter from where you run the script and prevents problems with DDP mode, since config uses `PROJECT_ROOT` to setup main paths. See [`configs/paths/default.yaml`](configs/paths/default.yaml):
 
