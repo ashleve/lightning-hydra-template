@@ -35,11 +35,6 @@ jobs:
           pip install protobuf==3.20.0
           pip install sh
 
-      - name: Install sh package if bash available
-        shell: bash
-        run: |
-          pip install sh
-
       - name: List dependencies
         run: |
           python -m pip list
