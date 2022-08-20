@@ -95,7 +95,7 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
           pip install pytest-cov[toml]
-          pip install protobuf==3.20.0
+          pip install sh
 
       - name: Run tests and collect coverage
         run: pytest --cov src # NEEDS TO BE UPDATED WHEN CHANGING THE NAME OF "src" FOLDER
