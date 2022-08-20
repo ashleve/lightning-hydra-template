@@ -8,21 +8,20 @@ import pyrootutils
 #
 # adds root dir to the PYTHONPATH (if `pythonpath=True`)
 # so this file can be run from any place without installing project as a package
-# otherwise modules would need to be imported relatively to the current work dir
 #
 # sets PROJECT_ROOT environment variable
 # used in "configs/paths/default.yaml"
-# this makes all paths relative to project root
+# this makes all paths relative to the project root
 #
 # additionally loads environment variables from ".env" file (if `dotenv=True`)
-
+#
 root = pyrootutils.setup_root(
     search_from=__file__,
     indicator=[".git", "pyproject.toml"],
     pythonpath=True,
     dotenv=True,
 )
-
+#
 # you can get away without using `pyrootutils.setup_root(...)` if you:
 # - move this file to the project root dir
 # - always run this file from the project root dir

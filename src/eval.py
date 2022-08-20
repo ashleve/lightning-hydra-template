@@ -9,11 +9,10 @@ import pyrootutils
 #
 # adds root dir to the PYTHONPATH (if `pythonpath=True`)
 # so this file can be run from any place without installing project as a package
-# otherwise modules would need to be imported relatively to the current work dir
 #
 # sets PROJECT_ROOT environment variable
 # used in "configs/paths/default.yaml"
-# this makes all paths relative to project root
+# this makes all paths relative to the project root
 #
 # additionally loads environment variables from ".env" file (if `dotenv=True`)
 #
