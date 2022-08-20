@@ -34,6 +34,11 @@ jobs:
           pip install pytest
           pip install protobuf==3.20.0
 
+      - name: Install sh package if bash available
+        shell: bash
+        run: |
+          pip install sh
+
       - name: List dependencies
         run: |
           python -m pip list
