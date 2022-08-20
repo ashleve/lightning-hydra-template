@@ -129,7 +129,6 @@ The directory structure of new project looks like this:
 ├── src                    <- Source code
 │   ├── datamodules              <- Lightning datamodules
 │   ├── models                   <- Lightning models
-│   ├── tasks                    <- Different scenarios, like training, evaluation, etc.
 │   ├── utils                    <- Utility scripts
 │   │
 │   ├── eval.py                  <- Run evaluation
@@ -542,7 +541,7 @@ Switch between models and datamodules with command line arguments:
 python train.py model=mnist
 ```
 
-Example pipeline managing the instantiation logic: [src/tasks/train_task.py](src/tasks/train_task.py).
+Example pipeline managing the instantiation logic: [src/train.py](src/train.py).
 
 <br>
 
@@ -862,7 +861,7 @@ python train.py trainer=ddp
 The simplest way is to pass datamodule attribute directly to model on initialization:
 
 ```python
-# ./src/tasks/train_task.py
+# ./src/train.py
 datamodule = hydra.utils.instantiate(config.datamodule)
 model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
 ```
@@ -872,7 +871,7 @@ model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
 Similarly, you can pass a whole datamodule config as an init parameter:
 
 ```python
-# ./src/tasks/train_task.py
+# ./src/train.py
 model = hydra.utils.instantiate(config.model, dm_conf=config.datamodule, _recursive_=False)
 ```
 
