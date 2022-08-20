@@ -16,14 +16,14 @@ import pyrootutils
 # this makes all paths relative to project root
 #
 # additionally loads environment variables from ".env" file (if `dotenv=True`)
-#
+
 root = pyrootutils.setup_root(
     search_from=__file__,
     indicator=[".git", "pyproject.toml"],
     pythonpath=True,
     dotenv=True,
 )
-#
+
 # you can get away without using `pyrootutils.setup_root(...)` if you:
 # - move this file to the project root dir
 # - always run this file from the project root dir
