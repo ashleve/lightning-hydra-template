@@ -1,4 +1,5 @@
 import pyrootutils
+
 # --------------------------------------------------------------------------------------
 # `pyrootutils.setup_root(...)` is recommended at the top of each entry file!
 # https://github.com/ashleve/pyrootutils
