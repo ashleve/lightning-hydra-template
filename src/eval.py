@@ -1,6 +1,6 @@
 import pyrootutils
 
-# -------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 # `pyrootutils.setup_root(...)` is recommended at the top of each entry file!
 # https://github.com/ashleve/pyrootutils
 #
@@ -29,7 +29,7 @@ root = pyrootutils.setup_root(
 # - always run this file from the project root dir
 # - modify paths in "configs/paths/default.yaml" to not use PROJECT_ROOT
 #
-# -------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 
 from typing import List, Tuple
 
