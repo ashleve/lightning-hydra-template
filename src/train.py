@@ -1,8 +1,7 @@
 import pyrootutils
 
 # --------------------------------------------------------------------------------------
-# `pyrootutils.setup_root(...)` is recommended at the top of each entry file!
-# https://github.com/ashleve/pyrootutils
+# `pyrootutils.setup_root(...)` is recommended at the top of each start file
 #
 # searches for ".git" or "pyproject.toml" in present and parent dirs
 # to determine the project root dir
