@@ -129,7 +129,6 @@ The directory structure of new project looks like this:
 ├── src                    <- Source code
 │   ├── datamodules              <- Lightning datamodules
 │   ├── models                   <- Lightning models
-│   ├── tasks                    <- Different scenarios, like training, evaluation, etc.
 │   ├── utils                    <- Utility scripts
 │   │
 │   ├── eval.py                  <- Run evaluation
@@ -542,32 +541,7 @@ Switch between models and datamodules with command line arguments:
 python train.py model=mnist
 ```
 
-Example pipeline managing the instantiation logic: [src/tasks/train_task.py](src/tasks/train_task.py).
-
-Notice the `pyrootutils` package which is always used in entry files (like [`src/train.py`](src/train.py)) at the beginning:
-
-```python
-root = pyrootutils.setup_root(search_from=__file__, pythonpath=True)
-```
-
-The line above does three things:
-
-- Finds project `root` path by searching for the following files in parent dirs: `setup.cfg`,`setup.py`,`.git`,`pyproject.toml` (the root is recognized if any of these files is found).
-- Sets `PROJECT_ROOT` environment variable which is used to standardize paths in hydra configs.
-- Adds project root to the `PYTHONPATH` to make sure your packages import correctly.
-
-This helps to standardize the paths in project no matter from where you run the script and prevents problems with DDP mode, since config uses `PROJECT_ROOT` to setup main paths. See [`configs/paths/default.yaml`](configs/paths/default.yaml):
-
-```yaml
- # path to root directory
-root_dir: ${oc.env:PROJECT_ROOT}
-
-# path to data directory
-data_dir: ${oc.env:PROJECT_ROOT}/data/
-
-# path to logging directory
-log_dir: ${oc.env:PROJECT_ROOT}/logs/
-```
+Example pipeline managing the instantiation logic: [src/train.py](src/train.py).
 
 <br>
 
@@ -887,7 +861,7 @@ python train.py trainer=ddp
 The simplest way is to pass datamodule attribute directly to model on initialization:
 
 ```python
-# ./src/tasks/train_task.py
+# ./src/train.py
 datamodule = hydra.utils.instantiate(config.datamodule)
 model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
 ```
@@ -897,7 +871,7 @@ model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
 Similarly, you can pass a whole datamodule config as an init parameter:
 
 ```python
-# ./src/tasks/train_task.py
+# ./src/train.py
 model = hydra.utils.instantiate(config.model, dm_conf=config.datamodule, _recursive_=False)
 ```
 
