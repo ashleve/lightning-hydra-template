@@ -2,6 +2,7 @@ import pyrootutils
 
 # --------------------------------------------------------------------------------------
 # `pyrootutils.setup_root(...)` is recommended at the top of each start file
+# to make the environment more robust and consistent
 #
 # searches for ".git" or "pyproject.toml" in present and parent dirs
 # to determine the project root dir
@@ -23,7 +24,7 @@ root = pyrootutils.setup_root(
 )
 #
 # you can get away without using `pyrootutils.setup_root(...)` if you:
-# - move this file to the project root dir
+# - move this file to the project root dir or install project as a package
 # - always run this file from the project root dir
 # - modify paths in "configs/paths/default.yaml" to not use PROJECT_ROOT
 #
