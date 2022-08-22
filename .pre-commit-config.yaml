@@ -67,6 +67,12 @@ repos:
       - id: prettier
         types: [yaml]
 
+  # shell scripts linter
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.8.0.4
+    hooks:
+      - id: shellcheck
+
   # jupyter notebook cell output clearing
   - repo: https://github.com/kynan/nbstripout
     rev: 0.5.0
