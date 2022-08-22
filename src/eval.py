@@ -27,7 +27,6 @@ root = pyrootutils.setup_root(
 # - move this file to the project root dir or install project as a package
 # - always run this file from the project root dir
 # - modify paths in "configs/paths/default.yaml" to not use PROJECT_ROOT
-#
 # --------------------------------------------------------------------------------------
 
 from typing import List, Tuple
