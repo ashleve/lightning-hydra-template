@@ -2,7 +2,7 @@ from typing import Any, List
 
 import torch
 from pytorch_lightning import LightningModule
-from torchmetrics import MaxMetric
+from torchmetrics import MaxMetric, MeanMetric
 from torchmetrics.classification.accuracy import Accuracy
 
 
@@ -10,7 +10,7 @@ class MNISTLitModule(LightningModule):
     """Example of LightningModule for MNIST classification.
 
     A LightningModule organizes your PyTorch code into 6 sections:
-        - Computations (init).
+        - Computations (init)
         - Train loop (training_step)
         - Validation loop (validation_step)
         - Test loop (test_step)
@@ -42,6 +42,11 @@ class MNISTLitModule(LightningModule):
         self.train_acc = Accuracy()
         self.val_acc = Accuracy()
         self.test_acc = Accuracy()
+        
+        # for averaging loss across batches
+        self.train_loss = MeanMetric()
+        self.val_loss = MeanMetric()
+        self.test_loss = MeanMetric()
 
         # for logging best so far validation accuracy
         self.val_acc_best = MaxMetric()
@@ -64,49 +69,47 @@ class MNISTLitModule(LightningModule):
     def training_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
 
-        # log train metrics
-        acc = self.train_acc(preds, targets)
-        self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+        # update metrics
+        self.train_loss.update(loss)
+        self.train_acc(preds, targets)
 
         # we can return here dict with any tensors
         # and then read it in some callback or in `training_epoch_end()` below
-        # remember to always return loss from `training_step()` or else backpropagation will fail!
+        # remember to always return loss from `training_step()` or backpropagation will fail!
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def training_epoch_end(self, outputs: List[Any]):
-        # `outputs` is a list of dicts returned from `training_step()`
-        self.train_acc.reset()
+    def training_epoch_end(self, outputs: List[Any]): # `outputs` is a list of dicts returned from `training_step()`
+        self.log("train/loss", self.train_loss, prog_bar=False)
+        self.log("train/acc", self.train_acc, prog_bar=True)
 
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
 
-        # log val metrics
-        acc = self.val_acc(preds, targets)
-        self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+        # update metrics
+        self.val_loss.update(loss)
+        self.val_acc(preds, targets)
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        acc = self.val_acc.compute()  # get val accuracy from current epoch
-        self.val_acc_best.update(acc)
-        self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
-        self.val_acc.reset()
+        self.val_acc_best.update(self.val_acc.compute())
+        self.log("val/loss", self.val_loss, prog_bar=False)
+        self.log("val/acc", self.val_acc, prog_bar=True)
+        self.log("val/acc_best", self.val_acc_best, prog_bar=True)
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
 
-        # log test metrics
-        acc = self.test_acc(preds, targets)
-        self.log("test/loss", loss, on_step=False, on_epoch=True)
-        self.log("test/acc", acc, on_step=False, on_epoch=True)
+        # update metrics
+        self.test_loss.update(loss)
+        self.test_acc(preds, targets)
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def test_epoch_end(self, outputs: List[Any]):
-        self.test_acc.reset()
-
+        self.log("test/loss", self.test_loss, prog_bar=False)
+        self.log("test/acc", self.test_acc, prog_bar=True)
+        
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
         Normally you'd need one. But in the case of GANs or similar you might have multiple.
