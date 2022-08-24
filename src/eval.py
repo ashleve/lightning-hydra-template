@@ -7,7 +7,7 @@ root = pyrootutils.setup_root(
     dotenv=True,
 )
 
-# --------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------ #
 # `pyrootutils.setup_root(...)` is recommended at the top of each start file
 # to make the environment more robust and consistent
 #
@@ -24,11 +24,11 @@ root = pyrootutils.setup_root(
 # additionally loads environment variables from ".env" file (if `dotenv=True`)
 #
 # you can get away without using `pyrootutils.setup_root(...)` if you:
-# - move this file to the project root dir or install project as a package
-# - always run this file from the project root dir
-# - modify paths in "configs/paths/default.yaml" to not use PROJECT_ROOT
+# 1. move this file to the project root dir or install project as a package
+# 2. modify paths in "configs/paths/default.yaml" to not use PROJECT_ROOT
+# 3. always run this file from the project root dir
 #
-# --------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------ #
 
 from typing import List, Tuple
 
