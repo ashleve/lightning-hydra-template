@@ -96,7 +96,11 @@ class MNISTLitModule(LightningModule):
         self.val_acc_best.update(self.val_acc.compute())
         self.log("val/loss", self.val_loss, prog_bar=True)
         self.log("val/acc", self.val_acc, prog_bar=True)
-        self.log("val/acc_best", self.val_acc_best, prog_bar=True)
+        
+        # log `val_acc_best` as value through `.compute()` mehthod, instead of as a metric object
+        # otherwise it would be resetted by lightning after each epoch
+        # since it's not logged as metric object, set `sync_dist=True` for proper reduction over processes in DDP mode
+        self.log("val/acc_best", self.val_acc_best.compute(), prog_bar=True, sync_dist=True)
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
