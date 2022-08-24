@@ -42,7 +42,7 @@ class MNISTLitModule(LightningModule):
         self.train_acc = Accuracy()
         self.val_acc = Accuracy()
         self.test_acc = Accuracy()
-        
+
         # for averaging loss across batches
         self.train_loss = MeanMetric()
         self.val_loss = MeanMetric()
@@ -78,7 +78,8 @@ class MNISTLitModule(LightningModule):
         # remember to always return loss from `training_step()` or backpropagation will fail!
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def training_epoch_end(self, outputs: List[Any]): # `outputs` is a list of dicts returned from `training_step()`
+    def training_epoch_end(self, outputs: List[Any]):
+        # `outputs` is a list of dicts returned from `training_step()`
         self.log("train/loss", self.train_loss, prog_bar=False)
         self.log("train/acc", self.train_acc, prog_bar=True)
 
@@ -93,7 +94,7 @@ class MNISTLitModule(LightningModule):
 
     def validation_epoch_end(self, outputs: List[Any]):
         self.val_acc_best.update(self.val_acc.compute())
-        self.log("val/loss", self.val_loss, prog_bar=False)
+        self.log("val/loss", self.val_loss, prog_bar=True)
         self.log("val/acc", self.val_acc, prog_bar=True)
         self.log("val/acc_best", self.val_acc_best, prog_bar=True)
 
@@ -108,8 +109,8 @@ class MNISTLitModule(LightningModule):
 
     def test_epoch_end(self, outputs: List[Any]):
         self.log("test/loss", self.test_loss, prog_bar=False)
-        self.log("test/acc", self.test_acc, prog_bar=True)
-        
+        self.log("test/acc", self.test_acc, prog_bar=False)
+
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
         Normally you'd need one. But in the case of GANs or similar you might have multiple.
