@@ -70,7 +70,7 @@ class MNISTLitModule(LightningModule):
         loss, preds, targets = self.step(batch)
 
         # update metrics
-        self.train_loss.update(loss)
+        self.train_loss(loss)
         self.train_acc(preds, targets)
 
         # we can return here dict with any tensors
@@ -87,13 +87,13 @@ class MNISTLitModule(LightningModule):
         loss, preds, targets = self.step(batch)
 
         # update metrics
-        self.val_loss.update(loss)
+        self.val_loss(loss)
         self.val_acc(preds, targets)
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        self.val_acc_best.update(self.val_acc.compute())
+        self.val_acc_best(self.val_acc.compute())
         self.log("val/loss", self.val_loss, prog_bar=True)
         self.log("val/acc", self.val_acc, prog_bar=True)
 
@@ -106,7 +106,7 @@ class MNISTLitModule(LightningModule):
         loss, preds, targets = self.step(batch)
 
         # update metrics
-        self.test_loss.update(loss)
+        self.test_loss(loss)
         self.test_acc(preds, targets)
 
         return {"loss": loss, "preds": preds, "targets": targets}
