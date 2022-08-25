@@ -98,7 +98,7 @@ class MNISTLitModule(LightningModule):
         self.log("val/acc", self.val_acc, prog_bar=True)
 
         # log `val_acc_best` as a value through `.compute()` method, instead of as a metric object
-        # otherwise it would be reset by lightning after each epoch
+        # otherwise metric would be reset by lightning after each epoch
         # when logging as a value, set `sync_dist=True` for proper reduction over processes in DDP mode
         self.log("val/acc_best", self.val_acc_best.compute(), prog_bar=True, sync_dist=True)
 
