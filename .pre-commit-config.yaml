@@ -53,7 +53,7 @@ repos:
         args:
           [
             "--extend-ignore",
-            "E402,E501,F401,F841",
+            "E203,E402,E501,F401,F841",
             "--exclude",
             "logs/*,data/*",
           ]
@@ -108,4 +108,8 @@ repos:
       - id: nbqa-isort
         args: ["--profile=black"]
       - id: nbqa-flake8
-        args: ["--extend-ignore=E402,E501,F401,F841", "--exclude=logs/*,data/*"]
+        args:
+          [
+            "--extend-ignore=E203,E402,E501,F401,F841",
+            "--exclude=logs/*,data/*",
+          ]
