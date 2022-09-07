@@ -37,8 +37,7 @@ class MNISTLitModule(LightningModule):
         # loss function
         self.criterion = torch.nn.CrossEntropyLoss()
 
-        # use separate metric instance for train, val and test step
-        # to ensure a proper reduction over the epoch
+        # use separate metric instances for train, val and test step
         self.train_acc = Accuracy()
         self.val_acc = Accuracy()
         self.test_acc = Accuracy()
