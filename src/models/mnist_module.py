@@ -62,10 +62,10 @@ class MNISTLitModule(LightningModule):
 
     def training_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
-        
+
         # set `sync_dist=True` when logging through value, to ensure proper calculation in DDP mode
         self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=True, sync_dist=True)
-        
+
         self.train_acc(preds, targets)
         self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
 
@@ -77,20 +77,20 @@ class MNISTLitModule(LightningModule):
     def training_epoch_end(self, outputs: List[Any]):
         # `outputs` is a list of dicts returned from `training_step()`
         pass
-    
+
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
 
         # set `sync_dist=True` when logging through value, to ensure proper calculation in DDP mode
         self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=True, sync_dist=True)
-        
+
         self.val_acc(preds, targets)
         self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
-        
+
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        acc = self.val_acc.compute() # get current validation accuracy
+        acc = self.val_acc.compute()  # get current validation accuracy
         self.val_acc_best.update(acc)
         self.log("val/acc_best", self.val_acc_best, on_epoch=True, prog_bar=True)
 
@@ -99,7 +99,7 @@ class MNISTLitModule(LightningModule):
 
         # set `sync_dist=True` when logging through value, to ensure proper calculation in DDP mode
         self.log("test/loss", loss, on_step=False, on_epoch=True, prog_bar=True, sync_dist=True)
-        
+
         self.test_acc(preds, targets)
         self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
 
@@ -107,7 +107,7 @@ class MNISTLitModule(LightningModule):
 
     def test_epoch_end(self, outputs: List[Any]):
         pass
-    
+
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
         Normally you'd need one. But in the case of GANs or similar you might have multiple.
