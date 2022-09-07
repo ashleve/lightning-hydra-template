@@ -37,8 +37,7 @@ class MNISTLitModule(LightningModule):
         # loss function
         self.criterion = torch.nn.CrossEntropyLoss()
 
-        # use separate metric instance for train, val and test step
-        # to ensure a proper reduction over the epoch
+        # metric objects for calculating and averaging accuracy across batches
         self.train_acc = Accuracy()
         self.val_acc = Accuracy()
         self.test_acc = Accuracy()
@@ -48,7 +47,7 @@ class MNISTLitModule(LightningModule):
         self.val_loss = MeanMetric()
         self.test_loss = MeanMetric()
 
-        # for logging best so far validation accuracy
+        # for tracking best so far validation accuracy
         self.val_acc_best = MaxMetric()
 
     def forward(self, x: torch.Tensor):
@@ -99,8 +98,7 @@ class MNISTLitModule(LightningModule):
 
         # log `val_acc_best` as a value through `.compute()` method, instead of as a metric object
         # otherwise metric would be reset by lightning after each epoch
-        # when logging as a value, set `sync_dist=True` for proper reduction over processes in DDP mode
-        self.log("val/acc_best", self.val_acc_best.compute(), prog_bar=True, sync_dist=True)
+        self.log("val/acc_best", self.val_acc_best.compute(), prog_bar=True)
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
