@@ -72,11 +72,11 @@ repos:
       - id: prettier
         types: [yaml]
 
-  # jupyter notebook cell output clearing
-  - repo: https://github.com/kynan/nbstripout
-    rev: 0.5.0
+  # shell scripts linter
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.8.0.4
     hooks:
-      - id: nbstripout
+      - id: shellcheck
 
   # md formatting
   - repo: https://github.com/executablebooks/mdformat
@@ -99,6 +99,12 @@ repos:
         args:
           - --skip=logs/**,data/**,*.ipynb
           # - --ignore-words-list=abc,def
+
+  # jupyter notebook cell output clearing
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.5.0
+    hooks:
+      - id: nbstripout
 
   # jupyter notebook linting
   - repo: https://github.com/nbQA-dev/nbQA
