@@ -10,7 +10,7 @@ class MNISTLitModule(LightningModule):
     """Example of LightningModule for MNIST classification.
 
     A LightningModule organizes your PyTorch code into 6 sections:
-        - Computations (init).
+        - Computations (init)
         - Train loop (training_step)
         - Validation loop (validation_step)
         - Test loop (test_step)
