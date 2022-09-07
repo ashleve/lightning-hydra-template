@@ -71,7 +71,7 @@ class MNISTLitModule(LightningModule):
         # update metrics
         self.train_loss(loss)
         self.train_acc(preds, targets)
-        
+
         # log metrics
         self.log("train/loss", self.train_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
@@ -91,7 +91,7 @@ class MNISTLitModule(LightningModule):
         # update metrics
         self.val_loss(loss)
         self.val_acc(preds, targets)
-        
+
         # log metrics
         self.log("val/loss", self.val_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
@@ -99,8 +99,8 @@ class MNISTLitModule(LightningModule):
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        acc = self.val_acc.compute() # get current val acc
-        self.val_acc_best(acc) # update best so far val acc
+        acc = self.val_acc.compute()  # get current val acc
+        self.val_acc_best(acc)  # update best so far val acc
         # log `val_acc_best` as a value through `.compute()` method, instead of as a metric object
         # otherwise metric would be reset by lightning after each epoch
         self.log("val/acc_best", self.val_acc_best.compute(), prog_bar=True)
@@ -111,7 +111,7 @@ class MNISTLitModule(LightningModule):
         # update metrics
         self.test_loss(loss)
         self.test_acc(preds, targets)
-        
+
         # log metrics
         self.log("test/loss", self.test_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
