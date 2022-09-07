@@ -51,7 +51,12 @@ repos:
     hooks:
       - id: flake8
         args:
-          ["--ignore", "E402,E501,F401,F841,W504", "--exclude", "logs/*,data/*"]
+          [
+            "--extend-ignore",
+            "E203,E402,E501,F401,F841",
+            "--exclude",
+            "logs/*,data/*",
+          ]
 
   # python security linter
   - repo: https://github.com/PyCQA/bandit
@@ -98,5 +103,20 @@ repos:
     hooks:
       - id: codespell
         args:
-          - --skip=logs/**,data/**
+          - --skip=logs/**,data/**,*.ipynb
           # - --ignore-words-list=abc,def
+
+  # jupyter notebook linting
+  - repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.4.0
+    hooks:
+      - id: nbqa-black
+        args: ["--line-length=99"]
+      - id: nbqa-isort
+        args: ["--profile=black"]
+      - id: nbqa-flake8
+        args:
+          [
+            "--extend-ignore=E203,E402,E501,F401,F841",
+            "--exclude=logs/*,data/*",
+          ]
