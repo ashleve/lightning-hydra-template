@@ -71,6 +71,10 @@ class MNISTLitModule(LightningModule):
         # update metrics
         self.train_loss(loss)
         self.train_acc(preds, targets)
+        
+        # log metrics
+        self.log("train/loss", self.train_loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         # we can return here dict with any tensors
         # and then read it in some callback or in `training_epoch_end()` below
@@ -79,8 +83,7 @@ class MNISTLitModule(LightningModule):
 
     def training_epoch_end(self, outputs: List[Any]):
         # `outputs` is a list of dicts returned from `training_step()`
-        self.log("train/loss", self.train_loss, prog_bar=False)
-        self.log("train/acc", self.train_acc, prog_bar=True)
+        pass
 
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
@@ -88,14 +91,16 @@ class MNISTLitModule(LightningModule):
         # update metrics
         self.val_loss(loss)
         self.val_acc(preds, targets)
+        
+        # log metrics
+        self.log("val/loss", self.val_loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        self.val_acc_best(self.val_acc.compute())
-        self.log("val/loss", self.val_loss, prog_bar=True)
-        self.log("val/acc", self.val_acc, prog_bar=True)
-
+        acc = self.val_acc.compute() # get current val acc
+        self.val_acc_best(acc) # update best so far val acc
         # log `val_acc_best` as a value through `.compute()` method, instead of as a metric object
         # otherwise metric would be reset by lightning after each epoch
         self.log("val/acc_best", self.val_acc_best.compute(), prog_bar=True)
@@ -106,12 +111,15 @@ class MNISTLitModule(LightningModule):
         # update metrics
         self.test_loss(loss)
         self.test_acc(preds, targets)
+        
+        # log metrics
+        self.log("test/loss", self.test_loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def test_epoch_end(self, outputs: List[Any]):
-        self.log("test/loss", self.test_loss, prog_bar=False)
-        self.log("test/acc", self.test_acc, prog_bar=False)
+        pass
 
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
