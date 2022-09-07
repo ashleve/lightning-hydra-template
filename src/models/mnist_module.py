@@ -17,7 +17,7 @@ class MNISTLitModule(LightningModule):
         - Prediction Loop (predict_step)
         - Optimizers and LR Schedulers (configure_optimizers)
 
-    Read the docs:
+    Docs:
         https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html
     """
 
@@ -63,11 +63,12 @@ class MNISTLitModule(LightningModule):
 
     def training_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
-
-        # log train metrics
-        acc = self.train_acc(preds, targets)
-        self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+        
+        # set `sync_dist=True` when logging through value, to ensure proper calculation in DDP mode
+        self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=True, sync_dist=True)
+        
+        self.train_acc(preds, targets)
+        self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         # we can return here dict with any tensors
         # and then read it in some callback or in `training_epoch_end()` below
@@ -76,37 +77,38 @@ class MNISTLitModule(LightningModule):
 
     def training_epoch_end(self, outputs: List[Any]):
         # `outputs` is a list of dicts returned from `training_step()`
-        self.train_acc.reset()
-
+        pass
+    
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
 
-        # log val metrics
-        acc = self.val_acc(preds, targets)
-        self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=False)
-        self.log("val/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
-
+        # set `sync_dist=True` when logging through value, to ensure proper calculation in DDP mode
+        self.log("val/loss", loss, on_step=False, on_epoch=True, prog_bar=True, sync_dist=True)
+        
+        self.val_acc(preds, targets)
+        self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
+        
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        acc = self.val_acc.compute()  # get val accuracy from current epoch
+        acc = self.val_acc.compute() # get current validation accuracy
         self.val_acc_best.update(acc)
-        self.log("val/acc_best", self.val_acc_best.compute(), on_epoch=True, prog_bar=True)
-        self.val_acc.reset()
+        self.log("val/acc_best", self.val_acc_best, on_epoch=True, prog_bar=True)
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.step(batch)
 
-        # log test metrics
-        acc = self.test_acc(preds, targets)
-        self.log("test/loss", loss, on_step=False, on_epoch=True)
-        self.log("test/acc", acc, on_step=False, on_epoch=True)
+        # set `sync_dist=True` when logging through value, to ensure proper calculation in DDP mode
+        self.log("test/loss", loss, on_step=False, on_epoch=True, prog_bar=True, sync_dist=True)
+        
+        self.test_acc(preds, targets)
+        self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def test_epoch_end(self, outputs: List[Any]):
-        self.test_acc.reset()
-
+        pass
+    
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
         Normally you'd need one. But in the case of GANs or similar you might have multiple.
