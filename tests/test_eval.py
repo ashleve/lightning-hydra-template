@@ -10,7 +10,7 @@ from src.train import train
 
 @pytest.mark.slow
 def test_train_eval(tmp_path, cfg_train, cfg_eval):
-    """Train for 1 epoch with `train_task.py` and evaluate with `eval_task.py`"""
+    """Train for 1 epoch with `train.py` and evaluate with `eval.py`"""
     assert str(tmp_path) == cfg_train.paths.output_dir == cfg_eval.paths.output_dir
 
     with open_dict(cfg_train):
