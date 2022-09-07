@@ -17,7 +17,7 @@ class MNISTLitModule(LightningModule):
         - Prediction Loop (predict_step)
         - Optimizers and LR Schedulers (configure_optimizers)
 
-    Read the docs:
+    Docs:
         https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html
     """
 
