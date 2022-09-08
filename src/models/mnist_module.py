@@ -25,6 +25,7 @@ class MNISTLitModule(LightningModule):
         self,
         net: torch.nn.Module,
         optimizer: torch.optim.Optimizer,
+        scheduler: torch.optim.lr_scheduler,
     ):
         super().__init__()
 
@@ -122,8 +123,17 @@ class MNISTLitModule(LightningModule):
         Examples:
             https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
         """
+        optimizer = self.hparams.optimizer(params=self.parameters())
+        scheduler = self.hparams.scheduler(optimizer=optimizer)
+
         return {
-            "optimizer": self.hparams.optimizer(params=self.parameters()),
+            "optimizer": optimizer,
+            "lr_scheduler": {
+                "scheduler": scheduler,
+                "monitor": "val/acc_best",
+                "interval": "epoch",
+                "frequency": 1,
+            },
         }
 
 
