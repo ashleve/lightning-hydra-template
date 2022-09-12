@@ -8,24 +8,27 @@ root = pyrootutils.setup_root(
 )
 
 # ------------------------------------------------------------------------------------ #
-# `pyrootutils.setup_root(...)` is recommended at the top of each start file
-# to make the environment more robust and consistent
+# `pyrootutils.setup_root(...)` is optional line at the top of each entry file 
+# that helps to make the environment more robust and convenient
 #
-# the line above searches for ".git" or "pyproject.toml" in present and parent dirs
-# to determine the project root dir
+# the main advantages are:
+# - allows you to keep all entry files in "src/" without installing project as a package
+# - makes paths and scripts always work no matter where is your current work dir
+# - automatically loads environment variables from ".env" file if exists
 #
-# adds root dir to the PYTHONPATH (if `pythonpath=True`)
-# so this file can be run from any place without installing project as a package
+# how it works:
+# - the line above recursively searches for either ".git" or "pyproject.toml" in present 
+#   and parent dirs, to determine the project root dir
+# - adds root dir to the PYTHONPATH (if `pythonpath=True`), so this file can be run from 
+#   any place without installing project as a package
+# - sets PROJECT_ROOT environment variable which is used in "configs/paths/default.yaml"
+#   to make all paths always relative to the project root
+# - loads environment variables from ".env" file in root dir (if `dotenv=True`)
 #
-# sets PROJECT_ROOT environment variable which is used in "configs/paths/default.yaml"
-# this makes all paths relative to the project root
-#
-# additionally loads environment variables from ".env" file (if `dotenv=True`)
-#
-# you can get away without using `pyrootutils.setup_root(...)` if you:
-# 1. move this file to the project root dir or install project as a package
-# 2. modify paths in "configs/paths/default.yaml" to not use PROJECT_ROOT
-# 3. always run this file from the project root dir
+# you can remove `pyrootutils.setup_root(...)` if you:
+# 1. either install project as a package or move each entry file to the project root dir
+# 2. simply remove PROJECT_ROOT variable from paths in "configs/paths/default.yaml"
+# 3. always run entry files from the project root dir
 #
 # https://github.com/ashleve/pyrootutils
 # ------------------------------------------------------------------------------------ #
