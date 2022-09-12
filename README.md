@@ -40,8 +40,12 @@ _Suggestions are always welcome!_
 
 **Why you shouldn't use it:**
 
-- Limits you as much as pytorch lightning limits you.
 - Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
+- Template is not adjusted for data science and building data pipelines that depend on each other (it's much more useful for model prototyping on ready-to-use data).
+- The configuration setup is built with default lightning training in mind (you might need to put some effort to adjust it for different use cases, e.g. lightning lite)
+- Limits you as much as pytorch lightning limits you.
+
+_\*keep in mind this is unofficial community project_
 
 <br>
 
@@ -1177,7 +1181,6 @@ This template was inspired by:
 - [PyTorchLightning/deep-learninig-project-template](https://github.com/PyTorchLightning/deep-learning-project-template)
 - [drivendata/cookiecutter-data-science](https://github.com/drivendata/cookiecutter-data-science)
 - [lucmos/nn-template](https://github.com/lucmos/nn-template)
-- [kedro-org/kedro](https://github.com/kedro-org/kedro)
 
 Useful repositories:
 
