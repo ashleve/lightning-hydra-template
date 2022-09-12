@@ -42,7 +42,7 @@ _Suggestions are always welcome!_
 
 - Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
 - Template is not really adjusted for data science and building data pipelines that depend on each other (it's much more useful for model prototyping on ready-to-use data).
-- The configuration setup is built with default lightning training in mind (you might need to put some effort to adjust it for different use cases, e.g. lightning lite)
+- The configuration setup is built with simple lightning training in mind (you might need to put some effort to adjust it for different use cases, e.g. lightning lite).
 - Limits you as much as pytorch lightning limits you.
 
 _\*keep in mind this is unofficial community project_
