@@ -8,7 +8,7 @@ root = pyrootutils.setup_root(
 )
 
 # ------------------------------------------------------------------------------------ #
-# `pyrootutils.setup_root(...)` is optional line at the top of each entry file 
+# `pyrootutils.setup_root(...)` is optional line at the top of each entry file
 # that helps to make the environment more robust and convenient
 #
 # the main advantages are:
@@ -17,9 +17,9 @@ root = pyrootutils.setup_root(
 # - automatically loads environment variables from ".env" file if exists
 #
 # how it works:
-# - the line above recursively searches for either ".git" or "pyproject.toml" in present 
+# - the line above recursively searches for either ".git" or "pyproject.toml" in present
 #   and parent dirs, to determine the project root dir
-# - adds root dir to the PYTHONPATH (if `pythonpath=True`), so this file can be run from 
+# - adds root dir to the PYTHONPATH (if `pythonpath=True`), so this file can be run from
 #   any place without installing project as a package
 # - sets PROJECT_ROOT environment variable which is used in "configs/paths/default.yaml"
 #   to make all paths always relative to the project root
