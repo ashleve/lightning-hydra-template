@@ -8,7 +8,7 @@ root = pyrootutils.setup_root(
 )
 
 # ------------------------------------------------------------------------------------ #
-# `pyrootutils.setup_root(...)` is optional line at the top of each entry file
+# `pyrootutils.setup_root(...)` is an optional line at the top of each entry file
 # that helps to make the environment more robust and convenient
 #
 # the main advantages are:
