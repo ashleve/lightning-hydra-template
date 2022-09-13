@@ -11,7 +11,7 @@ devices: 1
 # mixed precision for extra speed-up
 # precision: 16
 
-# Perform a validation loop every every N training epochs
+# perform a validation loop every N training epochs
 check_val_every_n_epoch: 1
 
 # set True to to ensure deterministic results
