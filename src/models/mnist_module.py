@@ -130,7 +130,7 @@ class MNISTLitModule(LightningModule):
             "optimizer": optimizer,
             "lr_scheduler": {
                 "scheduler": scheduler,
-                "monitor": "val/acc_best",
+                "monitor": "val/loss",
                 "interval": "epoch",
                 "frequency": 1,
             },
