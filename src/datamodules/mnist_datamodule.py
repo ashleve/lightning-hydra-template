@@ -32,7 +32,7 @@ class MNISTDataModule(LightningDataModule):
     split, transform and process the data.
 
     Read the docs:
-        https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html
+        https://pytorch-lightning.readthedocs.io/en/latest/data/datamodule.html
     """
 
     def __init__(
