@@ -100,12 +100,6 @@ repos:
           - --skip=logs/**,data/**,*.ipynb
           # - --ignore-words-list=abc,def
 
-  # jupyter notebook cell output clearing
-  - repo: https://github.com/kynan/nbstripout
-    rev: 0.5.0
-    hooks:
-      - id: nbstripout
-
   # jupyter notebook linting
   - repo: https://github.com/nbQA-dev/nbQA
     rev: 1.4.0
