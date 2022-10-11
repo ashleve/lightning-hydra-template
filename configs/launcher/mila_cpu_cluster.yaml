@@ -1,0 +1,20 @@
+# @package _global_
+#
+defaults:
+  - override /hydra/launcher: submitit_slurm
+
+hydra:
+  launcher:
+    partition: unkillable #long
+    #tasks_per_node: 1
+    #additional_parameters: {array: 1-50%10}
+    cpus_per_task: 1
+    mem_gb: 5
+    #    gres: gpu:1
+    timeout_min: 300
+    #max_num_timeout: 50
+    array_parallelism: 64 # max num of tasks to run in parallel (via job array)
+    setup:
+      - "module purge"
+      - "module load miniconda/3"
+      - "conda activate structure_recovery"
