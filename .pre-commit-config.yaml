@@ -98,7 +98,7 @@ repos:
       - id: codespell
         args:
           - --skip=logs/**,data/**,*.ipynb
-          # - --ignore-words-list=abc,def
+          - --ignore-words-list=ot
 
   # jupyter notebook linting
   - repo: https://github.com/nbQA-dev/nbQA

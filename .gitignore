@@ -150,3 +150,6 @@ data/
 logs/
 .env
 .autoenv
+
+# vim
+*.sw?

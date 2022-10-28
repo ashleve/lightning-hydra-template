@@ -14,4 +14,4 @@ hydra:
     setup:
       - "module purge"
       - "module load miniconda/3"
-      - "conda activate structure_recovery"
+      - "conda activate my_env"
