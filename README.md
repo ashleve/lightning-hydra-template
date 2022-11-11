@@ -477,7 +477,7 @@ pytest -k "not slow"
 Each experiment should be tagged in order to easily filter them across files or in logger UI:
 
 ```bash
-python train.py tags=["mnist", "experiment_X"]
+python train.py tags=["mnist","experiment_X"]
 ```
 
 If no tags are provided, you will be asked to input them from command line:
