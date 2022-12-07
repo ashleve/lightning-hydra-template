@@ -59,7 +59,7 @@ class MNISTLitModule(LightningModule):
         # so we need to make sure val_acc_best doesn't store accuracy from these checks
         self.val_acc_best.reset()
 
-    def step(self, batch: Any):
+    def model_step(self, batch: Any):
         x, y = batch
         logits = self.forward(x)
         loss = self.criterion(logits, y)
@@ -67,7 +67,7 @@ class MNISTLitModule(LightningModule):
         return loss, preds, y
 
     def training_step(self, batch: Any, batch_idx: int):
-        loss, preds, targets = self.step(batch)
+        loss, preds, targets = self.model_step(batch)
 
         # update and log metrics
         self.train_loss(loss)
@@ -85,7 +85,7 @@ class MNISTLitModule(LightningModule):
         pass
 
     def validation_step(self, batch: Any, batch_idx: int):
-        loss, preds, targets = self.step(batch)
+        loss, preds, targets = self.model_step(batch)
 
         # update and log metrics
         self.val_loss(loss)
@@ -103,7 +103,7 @@ class MNISTLitModule(LightningModule):
         self.log("val/acc_best", self.val_acc_best.compute(), prog_bar=True)
 
     def test_step(self, batch: Any, batch_idx: int):
-        loss, preds, targets = self.step(batch)
+        loss, preds, targets = self.model_step(batch)
 
         # update and log metrics
         self.test_loss(loss)
