@@ -1,7 +1,7 @@
 import platform
 
 import pkg_resources
-from pytorch_lightning.utilities.xla_device import XLADeviceUtils
+from pytorch_lightning.accelerators import TPUAccelerator
 
 
 def _package_available(package_name: str) -> bool:
@@ -12,7 +12,7 @@ def _package_available(package_name: str) -> bool:
         return False
 
 
-_TPU_AVAILABLE = XLADeviceUtils.tpu_device_exists()
+_TPU_AVAILABLE = TPUAccelerator.is_available()
 
 _IS_WINDOWS = platform.system() == "Windows"
 
