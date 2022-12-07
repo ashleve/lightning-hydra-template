@@ -7,13 +7,48 @@ on:
     branches: [main, "release/*"]
 
 jobs:
-  run_tests:
+  run_tests_ubuntu:
     runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest", "macos-latest"]
+        os: ["ubuntu-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+          pip install sh
+
+      - name: List dependencies
+        run: |
+          python -m pip list
+
+      - name: Run pytest
+        run: |
+          pytest -v
+
+  run_tests_macos:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["macos-latest"]
         python-version: ["3.7", "3.8", "3.9", "3.10"]
 
     timeout-minutes: 10
