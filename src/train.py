@@ -14,7 +14,7 @@ root = pyrootutils.setup_root(
 # main advantages:
 # - allows you to keep all entry files in "src/" without installing project as a package
 # - launching python file works no matter where is your current work dir
-# - automatically loads environment variables from ".env" file if exists
+# - automatically loads environment variables from ".env" if exists
 #
 # how it works:
 # - `setup_root()` above recursively searches for either ".git" or "pyproject.toml" in present
@@ -23,7 +23,7 @@ root = pyrootutils.setup_root(
 #   any place without installing project as a package
 # - sets PROJECT_ROOT environment variable which is used in "configs/paths/default.yaml"
 #   to make all paths always relative to project root
-# - loads environment variables from ".env" file in root dir (if `dotenv=True`)
+# - loads environment variables from ".env" in root dir (if `dotenv=True`)
 #
 # you can remove `pyrootutils.setup_root(...)` if you:
 # 1. either install project as a package or move each entry file to the project root dir
