@@ -39,9 +39,9 @@ class MNISTLitModule(LightningModule):
         self.criterion = torch.nn.CrossEntropyLoss()
 
         # metric objects for calculating and averaging accuracy across batches
-        self.train_acc = Accuracy()
-        self.val_acc = Accuracy()
-        self.test_acc = Accuracy()
+        self.train_acc = Accuracy(task="multiclass")
+        self.val_acc = Accuracy(task="multiclass")
+        self.test_acc = Accuracy(task="multiclass")
 
         # for averaging loss across batches
         self.train_loss = MeanMetric()
