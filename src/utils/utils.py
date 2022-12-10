@@ -2,7 +2,7 @@ import time
 import warnings
 from importlib.util import find_spec
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List
 
 import hydra
 from omegaconf import DictConfig
@@ -129,7 +129,7 @@ def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
 
 
 @rank_zero_only
-def log_hyperparameters(object_dict: dict) -> Optional[Dict]:
+def log_hyperparameters(object_dict: dict) -> None:
     """Controls which config parts are saved by lightning loggers.
 
     Additionally saves:
@@ -168,7 +168,11 @@ def log_hyperparameters(object_dict: dict) -> Optional[Dict]:
     hparams["ckpt_path"] = cfg.get("ckpt_path")
     hparams["seed"] = cfg.get("seed")
 
-    return hparams
+    # send hparams to all loggers
+    for logger in trainer.loggers:
+        logger.log_hyperparams(hparams)
+
+
 
 
 def get_metric_value(metric_dict: dict, metric_name: str) -> float:

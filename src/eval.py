@@ -82,9 +82,7 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
 
     if logger:
         log.info("Logging hyperparameters!")
-        hparams = utils.log_hyperparameters(object_dict)
-        for logs in logger:
-            logs.log_hyperparams(hparams)
+        utils.log_hyperparameters(object_dict)
 
     log.info("Starting testing!")
     trainer.test(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
