@@ -90,7 +90,9 @@ def train(cfg: DictConfig) -> Tuple[dict, dict]:
 
     if logger:
         log.info("Logging hyperparameters!")
-        utils.log_hyperparameters(object_dict)
+        hparams = utils.log_hyperparameters(object_dict)
+        for logs in logger:
+            logs.log_hyperparams(hparams)
 
     if cfg.get("train"):
         log.info("Starting training!")
