@@ -173,8 +173,6 @@ def log_hyperparameters(object_dict: dict) -> None:
         logger.log_hyperparams(hparams)
 
 
-
-
 def get_metric_value(metric_dict: dict, metric_name: str) -> float:
     """Safely retrieves value of the metric logged in LightningModule."""
 
