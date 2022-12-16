@@ -95,7 +95,7 @@ def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
     callbacks: List[Callback] = []
 
     if not callbacks_cfg:
-        log.warning("Callbacks config is empty.")
+        log.warning("No callback configs found! Skipping..")
         return callbacks
 
     if not isinstance(callbacks_cfg, DictConfig):
@@ -114,7 +114,7 @@ def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
     logger: List[LightningLoggerBase] = []
 
     if not logger_cfg:
-        log.warning("Logger config is empty.")
+        log.warning("No logger configs found! Skipping...")
         return logger
 
     if not isinstance(logger_cfg, DictConfig):
