@@ -1,0 +1,6 @@
+coverage:
+  status:
+    project:
+      default:
+        # target: 60%
+        threshold: 10% # how much decrease in coverage is needed to fail the CI pipeline
