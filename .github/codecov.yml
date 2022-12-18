@@ -1,13 +1,16 @@
 coverage:
   status:
-    # measures overall project coverage
-    project:
-      default:
-        threshold: 10% # how much decrease in coverage is needed to not consider success
-        if_ci_failed: success # whether to fail CI pipeline if no success (success, error)
+    project: off
+    patch: off
 
-    # measures PR or single commit coverage
-    patch:
-      default:
-        threshold: 10% # how much decrease in coverage is needed to not consider success
-        if_ci_failed: success # whether to fail CI pipeline if no success (success, error)
+    # # measures overall project coverage
+    # project:
+    #   default:
+    #     threshold: 10% # how much decrease in coverage is needed to not consider success
+    #     if_ci_failed: success # whether to fail CI pipeline if no success (success, error)
+
+    # # measures PR or single commit coverage
+    # patch:
+    #   default:
+    #     threshold: 10% # how much decrease in coverage is needed to not consider success
+    #     if_ci_failed: success # whether to fail CI pipeline if no success (success, error)
