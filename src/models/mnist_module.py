@@ -82,6 +82,14 @@ class MNISTLitModule(LightningModule):
 
     def training_epoch_end(self, outputs: List[Any]):
         # `outputs` is a list of dicts returned from `training_step()`
+
+        # Warning: when overriding `training_epoch_end()`, lightning accumulates outputs from all batches of the epoch
+        # this may not be an issue when training on mnist
+        # but on larger datasets/models it's easy to run into out-of-memory errors
+
+        # consider detaching tensors before returning them from `training_step()`
+        # or using `on_train_epoch_end()` instead which doesn't accumulate outputs
+
         pass
 
     def validation_step(self, batch: Any, batch_idx: int):
