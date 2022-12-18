@@ -1,0 +1,15 @@
+coverage:
+  status:
+    # measures overall project coverage
+    project:
+      default:
+        threshold: 100% # how much decrease in coverage is needed to not consider success
+
+    # measures PR or single commit coverage
+    patch:
+      default:
+        threshold: 100% # how much decrease in coverage is needed to not consider success
+
+
+    # project: off
+    # patch: off
