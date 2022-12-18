@@ -22,9 +22,8 @@ def task_wrapper(task_func: Callable) -> Callable:
 
     Utilities:
     - Calling the `utils.extras()` before the task is started
-    - Calling the `utils.close_loggers()` after the task is finished
+    - Calling the `utils.close_loggers()` after the task is finished or failed
     - Logging the exception if occurs
-    - Logging the task total execution time
     - Logging the output dir
     """
 
@@ -33,20 +32,25 @@ def task_wrapper(task_func: Callable) -> Callable:
         # apply extra utilities
         extras(cfg)
 
-        # execute the task
         try:
-            start_time = time.time()
-            metric_dict, object_dict = task_func(cfg=cfg)
-        except Exception as ex:
-            log.exception("")  # save exception to `.log` file
-            raise ex
-        finally:
-            path = Path(cfg.paths.output_dir, "exec_time.log")
-            content = f"'{cfg.task_name}' execution time: {time.time() - start_time} (s)"
-            save_file(path, content)  # save task execution time (even if exception occurs)
-            close_loggers()  # close loggers (even if exception occurs so multirun won't fail)
 
-        log.info(f"Output dir: {cfg.paths.output_dir}")
+            # execute the task
+            metric_dict, object_dict = task_func(cfg=cfg)
+
+        except Exception as ex:
+
+            # save exception to `.log` file
+            log.exception("")
+
+            raise ex
+
+        finally:
+
+            # display output dir path in terminal
+            log.info(f"Output dir: {cfg.paths.output_dir}")
+
+            # close loggers (even if exception occurs so multirun won't fail)
+            close_loggers()
 
         return metric_dict, object_dict
 
