@@ -2,5 +2,5 @@ coverage:
   status:
     project:
       default:
-        threshold: 100% # how much decrease in coverage is needed to fail the CI pipeline
-        target: 0% # how much code needs to be covered to not fail the pipeline
+        threshold: 99% # how much decrease in coverage is needed to fail the CI pipeline
+        target: 0% # how much code needs to be covered overeall to not fail the CI pipeline
