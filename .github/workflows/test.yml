@@ -16,7 +16,7 @@ jobs:
         os: ["ubuntu-latest"]
         python-version: ["3.7", "3.8", "3.9", "3.10"]
 
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -51,7 +51,7 @@ jobs:
         os: ["macos-latest"]
         python-version: ["3.7", "3.8", "3.9", "3.10"]
 
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -86,7 +86,7 @@ jobs:
         os: ["windows-latest"]
         python-version: ["3.7", "3.8", "3.9", "3.10"]
 
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
