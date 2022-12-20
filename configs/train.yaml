@@ -30,6 +30,9 @@ defaults:
 # task name, determines output directory path
 task_name: "train"
 
+# compile flag (feature Pytorch 2.0) https://pytorch.org/get-started/pytorch-2.0/
+compile: False
+
 # tags to help you identify your experiments
 # you can overwrite this in experiment configs
 # overwrite from command line with `python train.py tags="[first_tag, second_tag]"`
