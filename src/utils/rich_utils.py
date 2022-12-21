@@ -6,7 +6,7 @@ import rich.syntax
 import rich.tree
 from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig, OmegaConf, open_dict
-from pytorch_lightning.utilities import rank_zero_only
+from lightning.pytorch.utilities import rank_zero_only
 from rich.prompt import Prompt
 
 from src.utils import pylogger

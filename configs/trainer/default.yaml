@@ -1,4 +1,4 @@
-_target_: pytorch_lightning.Trainer
+_target_: lightning.Trainer
 
 default_root_dir: ${paths.output_dir}
 

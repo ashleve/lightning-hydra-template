@@ -36,10 +36,10 @@ root = pyrootutils.setup_root(
 from typing import List, Optional, Tuple
 
 import hydra
-import pytorch_lightning as pl
+import lightning as pl
 from omegaconf import DictConfig
-from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
-from pytorch_lightning.loggers import LightningLoggerBase
+from lightning import Callback, LightningDataModule, LightningModule, Trainer
+from lightning.pytorch.loggers import LightningLoggerBase
 
 from src import utils
 
