@@ -1,0 +1,21 @@
+categories:
+  - title: "🚀 Features"
+    label: "feature"
+  - title: "🐛 Bug Fixes"
+    labels:
+      - "fix"
+      - "bugfix"
+      - "bug"
+
+autolabeler:
+  - label: "documentation"
+    files:
+      - "*.md"
+    branch:
+      - '/docs{0,1}\/.+/'
+  - label: "bug"
+    branch:
+      - '/fix\/.+/'
+  - label: "enhancement"
+    branch:
+      - '/feature\/.+/'
