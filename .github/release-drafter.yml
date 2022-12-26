@@ -14,15 +14,16 @@ categories:
   - title: "🧹Maintenance"
     labels:
       - "maintenance"
-      - "refactoring"
       - "dependencies"
+      - "refactoring"
+      - "cosmetic"
       - "chore"
   - title: "📝️ Documentation"
     labels:
       - "documentation"
       - "docs"
 
-change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
+change-template: "- $TITLE (#$NUMBER)"
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions
 
 version-resolver:
