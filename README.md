@@ -866,8 +866,8 @@ The simplest way is to pass datamodule attribute directly to model on initializa
 
 ```python
 # ./src/train.py
-datamodule = hydra.utils.instantiate(config.datamodule)
-model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
+datamodule = hydra.utils.instantiate(cfg.datamodule)
+model = hydra.utils.instantiate(cfg.model, some_param=cfg.datamodule.some_param)
 ```
 
 > **Note**: Not a very robust solution, since it assumes all your datamodules have `some_param` attribute available.
@@ -876,7 +876,7 @@ Similarly, you can pass a whole datamodule config as an init parameter:
 
 ```python
 # ./src/train.py
-model = hydra.utils.instantiate(config.model, dm_conf=config.datamodule, _recursive_=False)
+model = hydra.utils.instantiate(cfg.model, dm_conf=cfg.datamodule, _recursive_=False)
 ```
 
 You can also pass a datamodule config parameter to your model through variable interpolation:
