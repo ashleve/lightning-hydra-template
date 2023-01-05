@@ -19,7 +19,7 @@ pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # - loading environment variables from ".env" in root dir
 #
 # you can remove it if you:
-# 1. install project as a package
+# 1. either install project as a package or move entry files to project root dir
 # 2. set `root_dir` to "." in "configs/paths/default.yaml"
 #
 # more info: https://github.com/ashleve/pyrootutils
@@ -107,7 +107,9 @@ def main(cfg: DictConfig) -> Optional[float]:
     metric_dict, _ = train(cfg)
 
     # safely retrieve metric value for hydra-based hyperparameter optimization
-    metric_value = utils.get_metric_value(metric_dict=metric_dict, metric_name=cfg.get("optimized_metric"))
+    metric_value = utils.get_metric_value(
+        metric_dict=metric_dict, metric_name=cfg.get("optimized_metric")
+    )
 
     # return optimized metric
     return metric_value
