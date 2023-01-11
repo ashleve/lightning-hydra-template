@@ -21,7 +21,7 @@
 <a href="https://hydra.cc/"><img alt="Config: hydra" src="https://img.shields.io/badge/config-hydra 1.2-89b8cd?style=for-the-badge&labelColor=gray"></a>
 <a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge&labelColor=gray"></a> -->
 
-A clean and scalable template to kickstart your deep learning project 🚀⚡🔥<br>
+A clean template to kickstart your deep learning project 🚀⚡🔥<br>
 Click on [<kbd>Use this template</kbd>](https://github.com/ashleve/lightning-hydra-template/generate) to initialize new repository.
 
 _Suggestions are always welcome!_
@@ -83,18 +83,18 @@ _\*keep in mind this is unofficial community project_
 
 ## Main Ideas Of This Template
 
-- **Predefined Structure**: clean and scalable so that work can easily be extended [# Project Structure](#project-structure)
-- **Rapid Experimentation**: thanks to hydra command line superpowers | [# Your Superpowers](#your-superpowers)
-- **Little Boilerplate**: thanks to automating pipelines with config instantiation | [# How It Works](#how-it-works)
-- **Main Configs**: specify default training configuration | [# Main Config](#main-config)
-- **Experiment Configs**: override chosen hyperparameters | [# Experiment Config](#experiment-config)
-- **Workflow**: comes down to 4 simple steps | [# Workflow](#workflow)
-- **Experiment Tracking**: Tensorboard, W&B, Neptune, Comet, MLFlow and CSVLogger | [# Experiment Tracking](#experiment-tracking)
-- **Logs**: all logs (checkpoints, configs, etc.) are stored in a dynamically generated folder structure | [# Logs](#logs)
-- **Hyperparameter Search**: made easier with Hydra plugins like Optuna Sweeper | [# Hyperparameter Search](#hyperparameter-search)
-- **Tests**: generic, easy-to-adapt tests for speeding up the development | [# Tests](#tests)
-- **Continuous Integration**: automatically test your repo with Github Actions | [# Continuous Integration](#continuous-integration)
-- **Best Practices**: a couple of recommended tools, practices and standards | [# Best Practices](#best-practices)
+- [**Predefined Structure**](#project-structure): clean and scalable so that work can easily be extended
+- [**Rapid Experimentation**](#your-superpowers): thanks to hydra command line superpowers
+- [**Little Boilerplate**](#how-it-works): thanks to automating pipelines with config instantiation
+- [**Main Configs**](#main-config): specify default training configuration
+- [**Experiment Configs**](#experiment-config): override chosen hyperparameters
+- [**Workflow**](#workflow): comes down to 4 simple steps
+- [**Experiment Tracking**](#experiment-tracking): Tensorboard, W&B, Neptune, Comet, MLFlow and CSVLogger
+- [**Logs**](#logs): all logs (checkpoints, configs, etc.) are stored in a dynamically generated folder structure
+- [**Hyperparameter Search**](#hyperparameter-search): made easier with Hydra plugins like Optuna Sweeper
+- [**Tests**](#tests): generic, easy-to-adapt tests for speeding up the development
+- [**Continuous Integration**](#continuous-integration): automatically test your repo with Github Actions
+- [**Best Practices**](#best-practices): a couple of recommended tools, practices and standards
 
 <br>
 
@@ -503,6 +503,10 @@ ValueError: Specify tags before launching a multirun!
 <br>
 
 ## ❤️  Contributions
+
+This project exists thanks to all the people who contribute.
+
+![Contributors](https://readme-contributors.now.sh/ashleve/lightning-hydra-template?extension=jpg&width=100)
 
 Have a question? Found a bug? Missing a specific feature? Feel free to file a new issue, discussion or PR with respective title and description.
 
@@ -1228,7 +1232,7 @@ SOFTWARE.
 
 **DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
-______________________________________________________________________
+---
 
 <div align="center">
 
