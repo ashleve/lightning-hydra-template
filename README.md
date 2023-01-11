@@ -506,7 +506,7 @@ ValueError: Specify tags before launching a multirun!
 
 This project exists thanks to all the people who contribute.
 
-![Contributors](https://readme-contributors.now.sh/ashleve/lightning-hydra-template?extension=jpg&width=100)
+![Contributors](https://readme-contributors.now.sh/ashleve/lightning-hydra-template?extension=jpg&width=300&aspectRatio=1)
 
 Have a question? Found a bug? Missing a specific feature? Feel free to file a new issue, discussion or PR with respective title and description.
 
