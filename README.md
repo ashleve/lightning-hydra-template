@@ -49,30 +49,6 @@ _\*keep in mind this is unofficial community project_
 
 <br>
 
-<!-- ## Table Of Contents
-
-- [📌&nbsp;&nbsp;Introduction](#introduction)
-- [Main Technologies](#main-technologies)
-- [Main Ideas Of This Template](#main-ideas-of-this-template)
-- [Project Structure](#project-structure)
-- [🚀&nbsp;&nbsp;Quickstart](#quickstart)
-- [⚡&nbsp;&nbsp;Your Superpowers](#your-superpowers)
-- [❤️&nbsp;&nbsp;Contributions](#️contributions)
-- [How It Works](#how-it-works)
-- [Main Config](#main-config)
-- [Experiment Config](#experiment-config)
-- [Workflow](#workflow)
-- [Logs](#logs)
-- [Experiment Tracking](#experiment-tracking)
-- [Tests](#tests)
-- [Hyperparameter Search](#hyperparameter-search)
-- [Continuous Integration](#continuous-integration)
-- [Distributed Training](#distributed-training)
-- [Best Practices](#best-practices)
-- [Resources](#resources)
-
-<br> -->
-
 ## Main Technologies
 
 [PyTorch Lightning](https://github.com/PyTorchLightning/pytorch-lightning) - a lightweight PyTorch wrapper for high-performance AI research. Think of it as a framework for organizing your PyTorch code.
@@ -81,7 +57,7 @@ _\*keep in mind this is unofficial community project_
 
 <br>
 
-## Main Ideas Of This Template
+## Main Ideas
 
 - [**Predefined Structure**](#project-structure): clean and scalable so that work can easily be extended
 - [**Rapid Experimentation**](#your-superpowers): thanks to hydra command line superpowers
