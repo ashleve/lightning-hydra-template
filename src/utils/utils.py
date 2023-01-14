@@ -158,7 +158,7 @@ def log_hyperparameters(object_dict: dict) -> None:
         p.numel() for p in model.parameters() if not p.requires_grad
     )
 
-    hparams["datamodule"] = cfg["datamodule"]
+    hparams["data"] = cfg["data"]
     hparams["trainer"] = cfg["trainer"]
 
     hparams["callbacks"] = cfg.get("callbacks")

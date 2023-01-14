@@ -23,7 +23,7 @@ categories:
       - "documentation"
       - "docs"
 
-change-template: "- $TITLE (#$NUMBER)"
+change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions
 
 version-resolver:

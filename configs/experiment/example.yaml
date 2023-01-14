@@ -4,7 +4,7 @@
 # python train.py experiment=example
 
 defaults:
-  - override /datamodule: mnist.yaml
+  - override /data: mnist.yaml
   - override /model: mnist.yaml
   - override /callbacks: default.yaml
   - override /trainer: default.yaml
@@ -29,7 +29,7 @@ model:
     lin2_size: 256
     lin3_size: 64
 
-datamodule:
+data:
   batch_size: 64
 
 logger:
