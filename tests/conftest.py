@@ -1,3 +1,5 @@
+"""This file prepares config fixtures for other tests."""
+
 import pyrootutils
 import pytest
 from hydra import compose, initialize
@@ -12,15 +14,15 @@ def cfg_train_global() -> DictConfig:
 
         # set defaults for all tests
         with open_dict(cfg):
-            cfg.paths.root_dir = str(pyrootutils.find_root())
+            cfg.paths.root_dir = str(pyrootutils.find_root(indicator=".project-root"))
             cfg.trainer.max_epochs = 1
             cfg.trainer.limit_train_batches = 0.01
             cfg.trainer.limit_val_batches = 0.1
             cfg.trainer.limit_test_batches = 0.1
             cfg.trainer.accelerator = "cpu"
             cfg.trainer.devices = 1
-            cfg.datamodule.num_workers = 0
-            cfg.datamodule.pin_memory = False
+            cfg.data.num_workers = 0
+            cfg.data.pin_memory = False
             cfg.extras.print_config = False
             cfg.extras.enforce_tags = False
             cfg.logger = None
@@ -35,13 +37,13 @@ def cfg_eval_global() -> DictConfig:
 
         # set defaults for all tests
         with open_dict(cfg):
-            cfg.paths.root_dir = str(pyrootutils.find_root())
+            cfg.paths.root_dir = str(pyrootutils.find_root(indicator=".project-root"))
             cfg.trainer.max_epochs = 1
             cfg.trainer.limit_test_batches = 0.1
             cfg.trainer.accelerator = "cpu"
             cfg.trainer.devices = 1
-            cfg.datamodule.num_workers = 0
-            cfg.datamodule.pin_memory = False
+            cfg.data.num_workers = 0
+            cfg.data.pin_memory = False
             cfg.extras.print_config = False
             cfg.extras.enforce_tags = False
             cfg.logger = None
