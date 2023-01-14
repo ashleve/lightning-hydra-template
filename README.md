@@ -25,18 +25,17 @@ _Suggestions are always welcome!_
 
 ## 📌  Introduction
 
-**Why you should use it:**
+**Why you might want to use it:**
 
-- Convenient all-in-one technology stack for deep learning prototyping - allows you to rapidly iterate over new models, datasets and tasks on different hardware accelerators like CPUs, multi-GPUs or TPUs.
-- A collection of best practices for efficient workflow and reproducibility.
-- Thoroughly commented - you can use this repo as a reference and educational resource.
+- Convenient technology stack for deep learning prototyping - allows you to rapidly iterate over new models, datasets and tasks on different hardware accelerators like CPUs, multi-GPUs or TPUs.
+- Thoroughly commented - you can use this repo as an educational resource.
+- A collection of useful tools, configs, and code snippets - you can use this repo as a reference for various utilities, e.g. Makefile, pre-commit hooks or smoke tests.
 
-**Why you shouldn't use it:**
+**Why you might not want to use it:**
 
 - Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
-- Template is not really adjusted for data science and building data pipelines that depend on each other (it's much more useful for model prototyping on ready-to-use data).
-- The configuration setup is built with simple lightning training in mind (you might need to put some effort to adjust it for different use cases, e.g. lightning lite).
-- Limits you as much as pytorch lightning limits you.
+- Template is not really adjusted for data science and building data pipelines that depend on each other - it's much efficient to use it for model prototyping on ready-to-use data.
+- The configuration setup is built with simple lightning training in mind - you might need to put some effort to adjust it for different use cases, e.g. lightning lite.
 
 _\*keep in mind this is unofficial community project_
 
@@ -55,8 +54,8 @@ _\*keep in mind this is unofficial community project_
 - [**Predefined Structure**](#project-structure): clean and scalable so that work can easily be extended
 - [**Rapid Experimentation**](#your-superpowers): thanks to hydra command line superpowers
 - [**Little Boilerplate**](#how-it-works): thanks to automating pipelines with config instantiation
-- [**Main Configs**](#main-config): specify default training configuration
-- [**Experiment Configs**](#experiment-config): override chosen hyperparameters
+- [**Main Configs**](#main-config): allow to specify default training configuration
+- [**Experiment Configs**](#experiment-config): allow to override chosen hyperparameters
 - [**Workflow**](#workflow): comes down to 4 simple steps
 - [**Experiment Tracking**](#experiment-tracking): Tensorboard, W&B, Neptune, Comet, MLFlow and CSVLogger
 - [**Logs**](#logs): all logs (checkpoints, configs, etc.) are stored in a dynamically generated folder structure
@@ -475,7 +474,7 @@ ValueError: Specify tags before launching a multirun!
 
 This project exists thanks to all the people who contribute.
 
-![Contributors](https://readme-contributors.now.sh/ashleve/lightning-hydra-template?extension=jpg&width=300&aspectRatio=1)
+![Contributors](https://readme-contributors.now.sh/ashleve/lightning-hydra-template?extension=jpg&width=400&aspectRatio=1)
 
 Have a question? Found a bug? Missing a specific feature? Feel free to file a new issue, discussion or PR with respective title and description.
 
@@ -1200,7 +1199,7 @@ SOFTWARE.
 
 **DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
-______________________________________________________________________
+---
 
 <div align="center">
 
