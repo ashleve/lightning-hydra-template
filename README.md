@@ -73,7 +73,7 @@ The directory structure of new project looks like this:
 ```
 ├── configs                   <- Hydra configuration files
 │   ├── callbacks                <- Callbacks configs
-│   ├── datamodule               <- Datamodule configs
+│   ├── data                     <- Data configs
 │   ├── debug                    <- Debugging configs
 │   ├── experiment               <- Experiment configs
 │   ├── extras                   <- Extra utilities configs
@@ -99,7 +99,7 @@ The directory structure of new project looks like this:
 ├── scripts                <- Shell scripts
 │
 ├── src                    <- Source code
-│   ├── datamodules              <- Lightning datamodules
+│   ├── data                     <- Lightning datamodules
 │   ├── models                   <- Lightning models
 │   ├── utils                    <- Utility scripts
 │   │
@@ -347,7 +347,7 @@ python eval.py ckpt_path="/path/to/ckpt/name.ckpt"
 ```bash
 # this will run 6 experiments one after the other,
 # each with different combination of batch_size and learning rate
-python train.py -m datamodule.batch_size=32,64,128 model.lr=0.001,0.0005
+python train.py -m data.batch_size=32,64,128 model.lr=0.001,0.0005
 ```
 
 > **Note**: Hydra composes configs lazily at job launch time. If you change code or configs after launching a job/sweep, the final composed configs might be impacted.
@@ -534,7 +534,7 @@ It determines how config is composed when simply executing command `python train
 # order of defaults determines the order in which configs override each other
 defaults:
   - _self_
-  - datamodule: mnist.yaml
+  - data: mnist.yaml
   - model: mnist.yaml
   - callbacks: default.yaml
   - logger: null # set logger here or use command line (e.g. `python train.py logger=csv`)
@@ -601,7 +601,7 @@ For example, you can use them to version control best hyperparameters for each c
 # python train.py experiment=example
 
 defaults:
-  - override /datamodule: mnist.yaml
+  - override /data: mnist.yaml
   - override /model: mnist.yaml
   - override /callbacks: default.yaml
   - override /trainer: default.yaml
@@ -626,7 +626,7 @@ model:
     lin2_size: 256
     lin3_size: 64
 
-datamodule:
+data:
   batch_size: 64
 
 logger:
@@ -644,7 +644,7 @@ logger:
 **Basic workflow**
 
 1. Write your PyTorch Lightning module (see [models/mnist_module.py](src/models/mnist_module.py) for example)
-2. Write your PyTorch Lightning datamodule (see [datamodules/mnist_datamodule.py](src/datamodules/mnist_datamodule.py) for example)
+2. Write your PyTorch Lightning datamodule (see [data/mnist_datamodule.py](src/data/mnist_datamodule.py) for example)
 3. Write your experiment config, containing paths to model and datamodule
 4. Run training with chosen experiment config:
    ```bash
@@ -658,7 +658,7 @@ _Say you want to execute many runs to plot how accuracy changes in respect to ba
 1. Execute the runs with some config parameter that allows you to identify them easily, like tags:
 
    ```bash
-   python train.py -m logger=csv datamodule.batch_size=16,32,64,128 tags=["batch_size_exp"]
+   python train.py -m logger=csv data.batch_size=16,32,64,128 tags=["batch_size_exp"]
    ```
 
 2. Write a script or notebook that searches over the `logs/` folder and retrieves csv logs from runs containing given tags in config. Plot the results.
@@ -786,7 +786,7 @@ hydra:
     # define hyperparameter search space
     params:
       model.optimizer.lr: interval(0.0001, 0.1)
-      datamodule.batch_size: choice(32, 64, 128, 256)
+      data.batch_size: choice(32, 64, 128, 256)
       model.net.lin1_size: choice(64, 128, 256)
       model.net.lin2_size: choice(64, 128, 256)
       model.net.lin3_size: choice(32, 64, 128, 256)
@@ -838,7 +838,7 @@ The simplest way is to pass datamodule attribute directly to model on initializa
 
 ```python
 # ./src/train.py
-datamodule = hydra.utils.instantiate(config.datamodule)
+datamodule = hydra.utils.instantiate(config.data)
 model = hydra.utils.instantiate(config.model, some_param=datamodule.some_param)
 ```
 
@@ -848,7 +848,7 @@ Similarly, you can pass a whole datamodule config as an init parameter:
 
 ```python
 # ./src/train.py
-model = hydra.utils.instantiate(config.model, dm_conf=config.datamodule, _recursive_=False)
+model = hydra.utils.instantiate(config.model, dm_conf=config.data, _recursive_=False)
 ```
 
 You can also pass a datamodule config parameter to your model through variable interpolation:
@@ -857,7 +857,7 @@ You can also pass a datamodule config parameter to your model through variable i
 # ./configs/model/my_model.yaml
 _target_: src.models.my_module.MyLitModule
 lr: 0.01
-some_param: ${datamodule.some_param}
+some_param: ${data.some_param}
 ```
 
 Another approach is to access datamodule in LightningModule directly through Trainer:
@@ -1111,7 +1111,7 @@ So any file can be easily imported into any other file like so:
 
 ```python
 from project_name.models.mnist_module import MNISTLitModule
-from project_name.datamodules.mnist_datamodule import MNISTDataModule
+from project_name.data.mnist_datamodule import MNISTDataModule
 ```
 
 </details>
@@ -1199,7 +1199,7 @@ SOFTWARE.
 
 **DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
----
+______________________________________________________________________
 
 <div align="center">
 
@@ -1257,5 +1257,5 @@ python src/train.py experiment=experiment_name.yaml
 You can override any parameter from command line like this
 
 ```bash
-python src/train.py trainer.max_epochs=20 datamodule.batch_size=64
+python src/train.py trainer.max_epochs=20 data.batch_size=64
 ```
