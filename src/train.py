@@ -1,5 +1,6 @@
 import pyrootutils
 import torch
+from lightning.pytorch.loggers import Logger
 
 root = pyrootutils.setup_root(
     search_from=__file__,
@@ -39,7 +40,7 @@ import hydra
 import lightning as pl
 from omegaconf import DictConfig
 from lightning import Callback, LightningDataModule, LightningModule, Trainer
-from lightning.pytorch.loggers import LightningLoggerBase
+
 
 from src import utils
 
@@ -75,7 +76,7 @@ def train(cfg: DictConfig) -> Tuple[dict, dict]:
     callbacks: List[Callback] = utils.instantiate_callbacks(cfg.get("callbacks"))
 
     log.info("Instantiating loggers...")
-    logger: List[LightningLoggerBase] = utils.instantiate_loggers(cfg.get("logger"))
+    logger: List[Logger] = utils.instantiate_loggers(cfg.get("logger"))
 
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger)

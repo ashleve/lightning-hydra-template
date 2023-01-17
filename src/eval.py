@@ -37,7 +37,7 @@ from typing import List, Tuple
 import hydra
 from omegaconf import DictConfig
 from lightning import LightningDataModule, LightningModule, Trainer
-from lightning.pytorch.loggers import LightningLoggerBase
+from lightning.pytorch.loggers import Logger
 
 from src import utils
 
@@ -67,7 +67,7 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
     model: LightningModule = hydra.utils.instantiate(cfg.model)
 
     log.info("Instantiating loggers...")
-    logger: List[LightningLoggerBase] = utils.instantiate_loggers(cfg.get("logger"))
+    logger: List[Logger] = utils.instantiate_loggers(cfg.get("logger"))
 
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(cfg.trainer, logger=logger)
