@@ -83,6 +83,7 @@ The directory structure of new project looks like this:
 │   ├── logger                   <- Logger configs
 │   ├── model                    <- Model configs
 │   ├── paths                    <- Project paths configs
+│   ├── profiler                 <- Profiler configs
 │   ├── trainer                  <- Trainer configs
 │   │
 │   ├── eval.yaml             <- Main config for evaluation
