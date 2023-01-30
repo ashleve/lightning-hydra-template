@@ -1,0 +1,5 @@
+# https://pytorch-lightning.readthedocs.io/en/1.6.4/api/pytorch_lightning.profiler.SimpleProfiler.html#pytorch_lightning.profiler.SimpleProfiler
+
+_target_: pytorch_lightning.profiler.SimpleProfiler
+dirpath: "${paths.output_dir}/" # Default will use from the trainer.log_dir (from TensorBoardLogger) will be used.
+filename: profiler

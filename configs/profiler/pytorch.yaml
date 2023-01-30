@@ -1,0 +1,11 @@
+# understanding Pytorch Profiler :
+#  https://pytorch.org/tutorials/intermediate/tensorboard_profiler_tutorial.html#use-profiler-to-record-execution-events
+# https://pytorch-lightning.readthedocs.io/en/stable/api/pytorch_lightning.profilers.PyTorchProfiler.html#pytorch_lightning.profilers.PyTorchProfiler
+
+_target_: pytorch_lightning.profiler.PyTorchProfiler
+
+# Use with Tensorboard for Loafing profile results
+dirpath: "${paths.output_dir}/" # Default will use from the trainer.log_dir (from TensorBoardLogger) will be used.
+filename: profiler
+record_shapes: True
+profile_memory: True

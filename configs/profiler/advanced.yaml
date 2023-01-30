@@ -1,0 +1,7 @@
+#  Details
+# https://pytorch.org/tutorials/intermediate/tensorboard_profiler_tutorial.html#use-profiler-to-record-execution-events
+# https://pytorch-lightning.readthedocs.io/en/stable/tuning/profiler.html
+
+_target_: pytorch_lightning.profiler.AdvancedProfiler
+dirpath: "${paths.output_dir}/" # Default will use from the trainer.log_dir (from TensorBoardLogger) will be used.
+filename: profiler
