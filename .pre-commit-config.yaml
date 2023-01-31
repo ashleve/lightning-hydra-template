@@ -50,20 +50,16 @@ repos:
     rev: 4.0.1
     hooks:
       - id: flake8
-        args:
-          [
-            "--extend-ignore",
-            "E203,E402,E501,F401,F841",
-            "--exclude",
-            "logs/*,data/*",
-          ]
+        entry: pflake8
+        additional_dependencies: ["pyproject-flake8"]
 
   # python security linter
   - repo: https://github.com/PyCQA/bandit
     rev: "1.7.1"
     hooks:
       - id: bandit
-        args: ["-s", "B101"]
+        args: ["-c", "pyproject.toml"]
+        additional_dependencies: ["bandit[toml]"]
 
   # yaml formatting
   - repo: https://github.com/pre-commit/mirrors-prettier

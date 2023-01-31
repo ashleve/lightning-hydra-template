@@ -23,3 +23,15 @@ exclude_lines = [
     "raise NotImplementedError()",
     "if __name__ == .__main__.:",
 ]
+
+[tool.flake8]
+extend-ignore = ["E203", "E402", "E501", "F401", "F841"]
+exclude = ["logs/*","data/*"]
+per-file-ignores = [
+    '__init__.py:F401',
+]
+max-line-length = 99
+count = true
+
+[tool.bandit]
+skips = ["B101", "B311"]
