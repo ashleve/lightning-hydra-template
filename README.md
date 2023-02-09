@@ -124,7 +124,7 @@ The directory structure of new project looks like this:
 
 ```bash
 # clone project
-git clone https://github.com/ashleve/lightning-hydra-template
+git clone https://github.com/MoustHolmes/GraphNet-lightning-hydra
 cd lightning-hydra-template
 
 # [OPTIONAL] create conda environment
