@@ -29,13 +29,13 @@ _Suggestions are always welcome!_
 **Why you might want to use it:**
 
 ✅ Speed <br>
-Rapidly iterate over new models, datasets and tasks on different accelerators like CPUs, multi-GPUs or TPUs.
+Rapidly iterate over models, datasets, tasks and experiments on different accelerators like multi-GPUs or TPUs.
 
 ✅ Education <br>
-Thoroughly commented - you can use this repo as a learning resource.
+Thoroughly commented. You can use this repo as a learning resource.
 
 ✅ Reusability <br>
-Collection of useful MLOps tools, configs, and code snippets - you can use this repo as a reference for various utilities.
+Collection of useful MLOps tools, configs, and code snippets. You can use this repo as a reference for various utilities.
 
 **Why you might not want to use it:**
 
