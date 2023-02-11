@@ -26,20 +26,20 @@ _Suggestions are always welcome!_
 
 ## 📌  Introduction
 
-### **Why you might want to use it:**
+**Why you might want to use it:**
 
-✅ **Speed** <br>
+✅ Speed <br>
 Rapidly iterate over new models, datasets and tasks on different accelerators like CPUs, multi-GPUs or TPUs.
 
-✅ **Education** <br>
+✅ Education <br>
 Thoroughly commented - you can use this repo as a learning resource.
 
-✅ **Reusability** <br>
+✅ Reusability <br>
 Collection of useful tools, configs, and code snippets - you can use this repo as a reference for various utilities, e.g. pre-commit hooks.
 
-### **Why you might not want to use it:**
+**Why you might not want to use it:**
 
-❌ **Things break from time to time** <br>
+❌ Things break from time to time <br>
 Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break. For the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
 
 ❌ Not adjusted for data engineering <br>
