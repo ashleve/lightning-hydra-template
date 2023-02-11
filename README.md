@@ -2,15 +2,16 @@
 
 # Lightning-Hydra-Template
 
-[![python](https://img.shields.io/badge/-Python_3.7_%7C_3.8_%7C_3.9_%7C_3.10-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![python](https://img.shields.io/badge/-Python_3.8_%7C_3.9_%7C_3.10-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![pytorch](https://img.shields.io/badge/PyTorch_1.10+-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
-[![lightning](https://img.shields.io/badge/-Lightning_1.8+-792ee5?logo=pytorchlightning&logoColor=white)](https://pytorchlightning.ai/)
+[![lightning](https://img.shields.io/badge/-Lightning_1.9+-792ee5?logo=pytorchlightning&logoColor=white)](https://pytorchlightning.ai/)
 [![hydra](https://img.shields.io/badge/Config-Hydra_1.3-89b8cd)](https://hydra.cc/)
 [![black](https://img.shields.io/badge/Code%20Style-Black-black.svg?labelColor=gray)](https://black.readthedocs.io/en/stable/)
-[![pre-commit](https://img.shields.io/badge/Pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+
 [![tests](https://github.com/ashleve/lightning-hydra-template/actions/workflows/test.yml/badge.svg)](https://github.com/ashleve/lightning-hydra-template/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/ashleve/lightning-hydra-template/branch/main/graph/badge.svg)](https://codecov.io/gh/ashleve/lightning-hydra-template)
 [![code-quality](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality-main.yaml/badge.svg)](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality-main.yaml)
+[![codecov](https://codecov.io/gh/ashleve/lightning-hydra-template/branch/main/graph/badge.svg)](https://codecov.io/gh/ashleve/lightning-hydra-template)
 [![license](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/ashleve/lightning-hydra-template#license)
 [![contributors](https://img.shields.io/github/contributors/ashleve/lightning-hydra-template.svg)](https://github.com/ashleve/lightning-hydra-template/graphs/contributors)
 
@@ -27,15 +28,19 @@ _Suggestions are always welcome!_
 
 **Why you might want to use it:**
 
-- Convenient technology stack for deep learning prototyping - allows you to rapidly iterate over new models, datasets and tasks on different hardware accelerators like CPUs, multi-GPUs or TPUs.
-- Thoroughly commented - you can use this repo as an educational resource.
-- A collection of useful tools, configs, and code snippets - you can use this repo as a reference for various utilities, e.g. Makefile, pre-commit hooks or smoke tests.
+Allows you to rapidly iterate over new models, datasets and tasks on different hardware accelerators like CPUs, multi-GPUs or TPUs.
+
+Thoroughly commented - you can use this repo as an educational resource.
+
+A collection of useful tools, configs, and code snippets - you can use this repo as a reference for various utilities, e.g. Makefile, pre-commit hooks or smoke tests.
 
 **Why you might not want to use it:**
 
-- Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
-- Template is not really adjusted for data science and building data pipelines that depend on each other - it's much efficient to use it for model prototyping on ready-to-use data.
-- The configuration setup is built with simple lightning training in mind - you might need to put some effort to adjust it for different use cases, e.g. lightning lite.
+Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
+
+Template is not really adjusted for data science and building data pipelines that depend on each other - it's more efficient to use it for model prototyping on ready-to-use data.
+
+The configuration setup is built with simple lightning training in mind - you might need to put some effort to adjust it for different use cases, e.g. lightning lite.
 
 _\*keep in mind this is unofficial community project_
 
@@ -51,17 +56,16 @@ _\*keep in mind this is unofficial community project_
 
 ## Main Ideas
 
-- [**Predefined Structure**](#project-structure): clean and scalable so that work can easily be extended
 - [**Rapid Experimentation**](#your-superpowers): thanks to hydra command line superpowers
-- [**Little Boilerplate**](#how-it-works): thanks to automating pipelines with config instantiation
-- [**Main Configs**](#main-config): allow to specify default training configuration
-- [**Experiment Configs**](#experiment-config): allow to override chosen hyperparameters
+- [**Minimal Boilerplate**](#how-it-works): thanks to automating pipelines with config instantiation
+- [**Main Configs**](#main-config): allow you to specify default training configuration
+- [**Experiment Configs**](#experiment-config): allow you to override chosen hyperparameters and version control experiments
 - [**Workflow**](#workflow): comes down to 4 simple steps
 - [**Experiment Tracking**](#experiment-tracking): Tensorboard, W&B, Neptune, Comet, MLFlow and CSVLogger
 - [**Logs**](#logs): all logs (checkpoints, configs, etc.) are stored in a dynamically generated folder structure
-- [**Hyperparameter Search**](#hyperparameter-search): made easier with Hydra plugins like Optuna Sweeper
-- [**Tests**](#tests): generic, easy-to-adapt tests for speeding up the development
-- [**Continuous Integration**](#continuous-integration): automatically test your repo with Github Actions
+- [**Hyperparameter Search**](#hyperparameter-search): simple search is effortless with Hydra plugins like Optuna Sweeper
+- [**Tests**](#tests): generic, easy-to-adapt smoke tests for speeding up the development
+- [**Continuous Integration**](#continuous-integration): automatically test and lint your repo with Github Actions
 - [**Best Practices**](#best-practices): a couple of recommended tools, practices and standards
 
 <br>
@@ -71,7 +75,9 @@ _\*keep in mind this is unofficial community project_
 The directory structure of new project looks like this:
 
 ```
-├── configs                   <- Hydra configuration files
+├── .github                   <- Github Actions workflows
+│
+├── configs                   <- Hydra configs
 │   ├── callbacks                <- Callbacks configs
 │   ├── data                     <- Data configs
 │   ├── debug                    <- Debugging configs
@@ -99,8 +105,8 @@ The directory structure of new project looks like this:
 ├── scripts                <- Shell scripts
 │
 ├── src                    <- Source code
-│   ├── data                     <- Lightning datamodules
-│   ├── models                   <- Lightning models
+│   ├── data                     <- Data scripts
+│   ├── models                   <- Model scripts
 │   ├── utils                    <- Utility scripts
 │   │
 │   ├── eval.py                  <- Run evaluation
@@ -111,6 +117,7 @@ The directory structure of new project looks like this:
 ├── .env.example              <- Example of file for storing private environment variables
 ├── .gitignore                <- List of files ignored by git
 ├── .pre-commit-config.yaml   <- Configuration of pre-commit hooks for code formatting
+├── .project-root             <- File for inferring the position of project root directory
 ├── Makefile                  <- Makefile with commands like `make train` or `make test`
 ├── pyproject.toml            <- Configuration options for testing and linting
 ├── requirements.txt          <- File for installing python dependencies
@@ -447,6 +454,8 @@ Each experiment should be tagged in order to easily filter them across files or 
 ```bash
 python train.py tags=["mnist","experiment_X"]
 ```
+
+> **Note**: You might need to escape the bracket characters in your shell with `python train.py tags=\["mnist","experiment_X"\]`.
 
 If no tags are provided, you will be asked to input them from command line:
 
@@ -814,8 +823,6 @@ Template comes with CI workflows implemented in Github Actions:
 - `.github/workflows/code-quality-main.yaml`: running pre-commits on main branch for all files
 - `.github/workflows/code-quality-pr.yaml`: running pre-commits on pull requests for modified files only
 
-> **Note**: You need to enable the GitHub Actions from the settings in your repository.
-
 <br>
 
 ## Distributed Training
@@ -877,8 +884,8 @@ def on_train_start(self):
 <details>
 <summary><b>Use Miniconda for GPU environments</b></summary>
 
-Use miniconda for your python environments (it's usually unnecessary to install full anaconda environment, miniconda should be enough).
-It makes it easier to install some dependencies, like cudatoolkit for GPU support. It also allows you to access your environments globally.
+It's usually unnecessary to install full anaconda environment, miniconda should be enough.
+It often makes it easier to install some dependencies, like cudatoolkit for GPU support. It also allows you to access your environments globally.
 
 Example installation:
 
@@ -890,7 +897,7 @@ bash Miniconda3-latest-Linux-x86_64.sh
 Create new conda environment:
 
 ```bash
-conda create -n myenv python=3.8
+conda create -n myenv python=3.10
 conda activate myenv
 ```
 
@@ -913,19 +920,6 @@ pre-commit install
 ```
 
 After that your code will be automatically reformatted on every new commit.
-
-Currently template contains configurations of:
-
-- **black** (python code formatting)
-- **isort** (python import sorting)
-- **pyupgrade** (upgrading python syntax to newer version)
-- **docformatter** (python docstring formatting)
-- **flake8** (python pep8 code analysis)
-- **prettier** (yaml formatting)
-- **nbstripout** (clearing output from jupyter notebooks)
-- **bandit** (python security linter)
-- **mdformat** (markdown formatting)
-- **codespell** (word spellling linter)
 
 To reformat all files in the project use command:
 
@@ -1121,7 +1115,7 @@ from project_name.data.mnist_datamodule import MNISTDataModule
 
 Some configurations are user/machine/installation specific (e.g. configuration of local cluster, or harddrive paths on a specific machine). For such scenarios, a file [configs/local/default.yaml](configs/local/) can be created which is automatically loaded but not tracked by Git.
 
-Example SLURM cluster config:
+For example, you can use it for a SLURM cluster config:
 
 ```yaml
 # @package _global_
@@ -1157,8 +1151,6 @@ This template was inspired by:
 Other useful repositories:
 
 - [jxpress/lightning-hydra-template-vertex-ai](https://github.com/jxpress/lightning-hydra-template-vertex-ai) - lightning-hydra-template integration with Vertex AI hyperparameter tuning and custom training job
-- [pytorch/hydra-torch](https://github.com/pytorch/hydra-torch) - safely configuring PyTorch classes with Hydra
-- [romesco/hydra-lightning](https://github.com/romesco/hydra-lightning) - safely configuring PyTorch Lightning classes with Hydra
 
 </details>
 
@@ -1199,7 +1191,7 @@ SOFTWARE.
 
 **DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
-______________________________________________________________________
+---
 
 <div align="center">
 
