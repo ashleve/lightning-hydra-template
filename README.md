@@ -1197,7 +1197,7 @@ SOFTWARE.
 
 **DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
----
+______________________________________________________________________
 
 <div align="center">
 
