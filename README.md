@@ -35,7 +35,7 @@ Rapidly iterate over new models, datasets and tasks on different accelerators li
 Thoroughly commented - you can use this repo as a learning resource.
 
 ✅ Reusability <br>
-Collection of useful tools, configs, and code snippets - you can use this repo as a reference for various utilities, e.g. pre-commit hooks.
+Collection of useful MLOps tools, configs, and code snippets - you can use this repo as a reference for various utilities.
 
 **Why you might not want to use it:**
 
