@@ -12,7 +12,9 @@
 [![tests](https://github.com/ashleve/lightning-hydra-template/actions/workflows/test.yml/badge.svg)](https://github.com/ashleve/lightning-hydra-template/actions/workflows/test.yml)
 [![code-quality](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality-main.yaml/badge.svg)](https://github.com/ashleve/lightning-hydra-template/actions/workflows/code-quality-main.yaml)
 [![codecov](https://codecov.io/gh/ashleve/lightning-hydra-template/branch/main/graph/badge.svg)](https://codecov.io/gh/ashleve/lightning-hydra-template)
+
 [![license](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/ashleve/lightning-hydra-template#license)
+[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/ashleve/lightning-hydra-template/pulls)
 [![contributors](https://img.shields.io/github/contributors/ashleve/lightning-hydra-template.svg)](https://github.com/ashleve/lightning-hydra-template/graphs/contributors)
 
 A clean template to kickstart your deep learning project 🚀⚡🔥<br>
@@ -28,21 +30,29 @@ _Suggestions are always welcome!_
 
 **Why you might want to use it:**
 
-Allows you to rapidly iterate over new models, datasets and tasks on different hardware accelerators like CPUs, multi-GPUs or TPUs.
+a) Speed <br>
+Rapidly iterate over new models, datasets and tasks on different accelerators like CPUs, multi-GPUs or TPUs.
 
-Thoroughly commented - you can use this repo as an educational resource.
+b) Education <br>
+Thoroughly commented - you can use this repo as a learning resource.
 
-A collection of useful tools, configs, and code snippets - you can use this repo as a reference for various utilities, e.g. Makefile, pre-commit hooks or smoke tests.
+c) Reusability <br>
+Collection of useful tools, configs, and code snippets - you can use this repo as a reference for various utilities, e.g. pre-commit hooks.
 
 **Why you might not want to use it:**
 
-Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break - for the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
+a) Things break from time to time <br>
+Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break. For the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
 
-Template is not really adjusted for data science and building data pipelines that depend on each other - it's more efficient to use it for model prototyping on ready-to-use data.
+b) Not adjusted for data engineering <br>
+Template is not really adjusted for building data pipelines that depend on each other. It's more efficient to use it for model prototyping on ready-to-use data.
 
-The configuration setup is built with simple lightning training in mind - you might need to put some effort to adjust it for different use cases, e.g. lightning lite.
+c) Overfitted to simple use case <br>
+The configuration setup is built with simple lightning training in mind. You might need to put some effort to adjust it for different use cases, e.g. lightning lite.
 
-_\*keep in mind this is unofficial community project_
+<br>
+
+> **Note**: _Keep in mind this is unofficial community project._
 
 <br>
 
