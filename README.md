@@ -30,27 +30,25 @@ _Suggestions are always welcome!_
 
 **Why you might want to use it:**
 
-a) Speed <br>
+✅ Speed <br>
 Rapidly iterate over new models, datasets and tasks on different accelerators like CPUs, multi-GPUs or TPUs.
 
-b) Education <br>
+✅ Education <br>
 Thoroughly commented - you can use this repo as a learning resource.
 
-c) Reusability <br>
+✅ Reusability <br>
 Collection of useful tools, configs, and code snippets - you can use this repo as a reference for various utilities, e.g. pre-commit hooks.
 
 **Why you might not want to use it:**
 
-a) Things break from time to time <br>
+❌ Things break from time to time <br>
 Lightning and Hydra are still evolving and integrate many libraries, which means sometimes things break. For the list of currently known problems visit [this page](https://github.com/ashleve/lightning-hydra-template/labels/bug).
 
-b) Not adjusted for data engineering <br>
+❌ Not adjusted for data engineering <br>
 Template is not really adjusted for building data pipelines that depend on each other. It's more efficient to use it for model prototyping on ready-to-use data.
 
-c) Overfitted to simple use case <br>
+❌ Overfitted to simple use case <br>
 The configuration setup is built with simple lightning training in mind. You might need to put some effort to adjust it for different use cases, e.g. lightning lite.
-
-<br>
 
 > **Note**: _Keep in mind this is unofficial community project._
 
