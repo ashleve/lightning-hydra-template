@@ -1,0 +1,12 @@
+_target_: src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamodule
+db_path: str, 
+event_no_list: 
+pulsemap: 
+input_cols: [charge, dom_tim, dom_x, dom_y, dom_z, pmt_dir_x, pmt_dir_y, pmt_dir_z]
+target_cols: [energy]
+truth_table: truth
+data_dir: ${paths.data_dir}
+batch_size: 128
+train_val_test_split: [55_000, 5_000, 10_000]
+num_workers: 0
+pin_memory: False

@@ -1,0 +1,22 @@
+_target_: src.models.simple_transformer_encoder_pooling_module.SimpleTransformerEncoderPoolingLitModule
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.001
+  weight_decay: 0.0
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  _partial_: true
+  mode: min
+  factor: 0.1
+  patience: 10
+
+net:
+  _target_: src.models.components.simple_transformer_encoder_pooling.SimpleTransformerEncoderPooling
+  input_size: 8
+  d_model: 64, 
+  nhead: 8,
+  num_layers: 6,
+  output_size: 1
