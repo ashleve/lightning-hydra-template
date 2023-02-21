@@ -1216,9 +1216,9 @@ ______________________________________________________________________
 
 What it does
 
-## How to run
+## Installation
 
-Install dependencies
+#### Pip
 
 ```bash
 # clone project
@@ -1235,6 +1235,22 @@ conda activate myenv
 # install requirements
 pip install -r requirements.txt
 ```
+
+#### Conda
+
+```bash
+# clone project
+git clone https://github.com/YourGithubName/your-repo-name
+cd your-repo-name
+
+# create conda environment and install dependencies
+conda env create -f environment.yaml
+
+# activate conda environment
+conda activate lightning-hydra-template
+```
+
+## How to run
 
 Train model with default configuration
 
