@@ -2,6 +2,7 @@ from typing import Any, List
 
 import torch
 from pytorch_lightning import LightningModule
+from pytorch_lightning.callbacks.progress.rich_progress import RichProgressBar
 from torchmetrics import MaxMetric, MeanMetric
 from torchmetrics.classification.accuracy import Accuracy
 
@@ -58,6 +59,16 @@ class MNISTLitModule(LightningModule):
         # by default lightning executes validation step sanity checks before training starts,
         # so we need to make sure val_acc_best doesn't store accuracy from these checks
         self.val_acc_best.reset()
+
+        # although val_loss and val_acc are automatically reset at end of sanity check (since they're fed as
+        # torchmetrics.Metric objects to self.log in validation_step with on_epoch=True), reset them anyways
+        self.val_loss.reset()
+        self.val_acc.reset()
+
+        # Avoids having stale validation metrics shown in progress bar when training starts
+        if isinstance(self.trainer.progress_bar_callback, RichProgressBar):
+            self.trainer.progress_bar_callback._update_metrics(self.trainer, self)
+            self.trainer.progress_bar_callback.refresh()
 
     def model_step(self, batch: Any):
         x, y = batch
