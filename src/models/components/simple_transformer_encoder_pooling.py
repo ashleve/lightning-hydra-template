@@ -20,9 +20,9 @@ class SimpleTransformerEncoderPooling(nn.Module):
         self.transformer_encoder = nn.TransformerEncoder(self.encoder_layer, num_layers=num_layers)
         self.fc_out = nn.Linear(d_model, output_size)
 
-    def forward(self, x):
+    def forward(self, x, pad_mask = None):
         x = self.fc_in(x)
-        x = self.transformer_encoder(x)
+        x = self.transformer_encoder(x,src_key_padding_mask = pad_mask)
         x = x[:, 0, :]
         x = self.fc_out(x)
         return x.squeeze()

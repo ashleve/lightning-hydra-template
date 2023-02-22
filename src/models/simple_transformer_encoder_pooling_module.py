@@ -3,8 +3,7 @@ from typing import Any, List
 import torch
 from pytorch_lightning import LightningModule
 from torchmetrics import MaxMetric, MeanMetric
-from torchmetrics.classification.accuracy import Accuracy
-
+# from torchmetrics.classification.accuracy import Accuracy
 
 class SimpleTransformerEncoderPoolingLitModule(LightningModule):
     """Example of LightningModule for MNIST classification.
@@ -23,7 +22,7 @@ class SimpleTransformerEncoderPoolingLitModule(LightningModule):
 
     def __init__(
         self,
-        net: torch.nn.Module,
+        model: torch.nn.Module,
         optimizer: torch.optim.Optimizer,
         scheduler: torch.optim.lr_scheduler,
     ):
@@ -33,15 +32,15 @@ class SimpleTransformerEncoderPoolingLitModule(LightningModule):
         # also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
 
-        self.net = net
+        self.model = model
 
         # loss function
-        self.criterion = torch.nn.CrossEntropyLoss()
+        self.loss_fn = torch.nn.MSELoss()#CrossEntropyLoss()
 
         # metric objects for calculating and averaging accuracy across batches
-        self.train_acc = Accuracy(task="multiclass", num_classes=10)
-        self.val_acc = Accuracy(task="multiclass", num_classes=10)
-        self.test_acc = Accuracy(task="multiclass", num_classes=10)
+        # self.train_acc = Accuracy(task="multiclass", num_classes=10)
+        # self.val_acc = Accuracy(task="multiclass", num_classes=10)
+        # self.test_acc = Accuracy(task="multiclass", num_classes=10)
 
         # for averaging loss across batches
         self.train_loss = MeanMetric()
@@ -49,21 +48,23 @@ class SimpleTransformerEncoderPoolingLitModule(LightningModule):
         self.test_loss = MeanMetric()
 
         # for tracking best so far validation accuracy
-        self.val_acc_best = MaxMetric()
+        # self.val_acc_best = MaxMetric()
 
-    def forward(self, x: torch.Tensor):
-        return self.net(x)
+    def forward(self, x: torch.Tensor,pad_mask=None):
+        return self.model(x,pad_mask)
 
     def on_train_start(self):
         # by default lightning executes validation step sanity checks before training starts,
         # so we need to make sure val_acc_best doesn't store accuracy from these checks
-        self.val_acc_best.reset()
+        # self.val_acc_best.reset()
+        pass
 
     def model_step(self, batch: Any):
-        x, y = batch
-        logits = self.forward(x)
-        loss = self.criterion(logits, y)
-        preds = torch.argmax(logits, dim=1)
+        x, y, pad_mask = batch
+        # print(x.shape, pad_mask.shape)
+        preds = self.forward(x, pad_mask)
+        loss = self.loss_fn(preds, y)
+        # preds = torch.argmax(logits, dim=1)
         return loss, preds, y
 
     def training_step(self, batch: Any, batch_idx: int):
@@ -71,9 +72,9 @@ class SimpleTransformerEncoderPoolingLitModule(LightningModule):
 
         # update and log metrics
         self.train_loss(loss)
-        self.train_acc(preds, targets)
+        # self.train_acc(preds, targets)
         self.log("train/loss", self.train_loss, on_step=False, on_epoch=True, prog_bar=True)
-        self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
+        # self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         # we can return here dict with any tensors
         # and then read it in some callback or in `training_epoch_end()` below
@@ -97,27 +98,30 @@ class SimpleTransformerEncoderPoolingLitModule(LightningModule):
 
         # update and log metrics
         self.val_loss(loss)
-        self.val_acc(preds, targets)
+        # self.val_acc(preds, targets)
         self.log("val/loss", self.val_loss, on_step=False, on_epoch=True, prog_bar=True)
-        self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
+        # self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
     def validation_epoch_end(self, outputs: List[Any]):
-        acc = self.val_acc.compute()  # get current val acc
-        self.val_acc_best(acc)  # update best so far val acc
+        # acc = self.val_acc.compute()  # get current val acc
+        # self.val_acc_best(acc)  # update best so far val acc
+
         # log `val_acc_best` as a value through `.compute()` method, instead of as a metric object
         # otherwise metric would be reset by lightning after each epoch
-        self.log("val/acc_best", self.val_acc_best.compute(), prog_bar=True)
+
+        # self.log("val/acc_best", self.val_acc_best.compute(), prog_bar=True)
+        pass
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.model_step(batch)
 
         # update and log metrics
         self.test_loss(loss)
-        self.test_acc(preds, targets)
+        # self.test_acc(preds, targets)
         self.log("test/loss", self.test_loss, on_step=False, on_epoch=True, prog_bar=True)
-        self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
+        # self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
@@ -148,3 +152,4 @@ class SimpleTransformerEncoderPoolingLitModule(LightningModule):
 
 if __name__ == "__main__":
     _ = SimpleTransformerEncoderPoolingLitModule(None, None, None)
+

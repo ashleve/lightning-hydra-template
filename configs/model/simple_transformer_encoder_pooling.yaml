@@ -13,10 +13,10 @@ scheduler:
   factor: 0.1
   patience: 10
 
-net:
+model:
   _target_: src.models.components.simple_transformer_encoder_pooling.SimpleTransformerEncoderPooling
   input_size: 8
-  d_model: 64, 
-  nhead: 8,
-  num_layers: 6,
+  d_model: 64
+  nhead: 4
+  num_layers: 1
   output_size: 1
