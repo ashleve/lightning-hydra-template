@@ -1,8 +1,5 @@
-import time
 import warnings
-from importlib.util import find_spec
-from pathlib import Path
-from typing import Any, Callable, Dict, List
+from typing import List
 
 import hydra
 from omegaconf import DictConfig
@@ -13,52 +10,6 @@ from pytorch_lightning.utilities import rank_zero_only
 from src.utils import pylogger, rich_utils
 
 log = pylogger.get_pylogger(__name__)
-
-
-def task_wrapper(task_func: Callable) -> Callable:
-    """Optional decorator that wraps the task function in extra utilities.
-
-    Makes multirun more resistant to failure.
-
-    Utilities:
-    - Calling the `utils.extras()` before the task is started
-    - Calling the `utils.close_loggers()` after the task is finished or failed
-    - Logging the exception if occurs
-    - Logging the output dir
-    """
-
-    def wrap(cfg: DictConfig):
-
-        # execute the task
-        try:
-
-            # apply extra utilities
-            extras(cfg)
-
-            metric_dict, object_dict = task_func(cfg=cfg)
-
-        # things to do if exception occurs
-        except Exception as ex:
-
-            # save exception to `.log` file
-            log.exception("")
-
-            # when using hydra plugins like Optuna, you might want to disable raising exception
-            # to avoid multirun failure
-            raise ex
-
-        # things to always do after either success or exception
-        finally:
-
-            # display output dir path in terminal
-            log.info(f"Output dir: {cfg.paths.output_dir}")
-
-            # close loggers (even if exception occurs so multirun won't fail)
-            close_loggers()
-
-        return metric_dict, object_dict
-
-    return wrap
 
 
 def extras(cfg: DictConfig) -> None:
@@ -89,8 +40,8 @@ def extras(cfg: DictConfig) -> None:
     if cfg.extras.get("print_config"):
         log.info("Printing config tree with Rich! <cfg.extras.print_config=True>")
         rich_utils.print_config_tree(cfg, resolve=True, save_to_file=True)
-
-
+        
+        
 def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
     """Instantiates callbacks from config."""
     callbacks: List[Callback] = []
@@ -192,23 +143,3 @@ def get_metric_value(metric_dict: dict, metric_name: str) -> float:
     log.info(f"Retrieved metric value! <{metric_name}={metric_value}>")
 
     return metric_value
-
-
-def close_loggers() -> None:
-    """Makes sure all loggers closed properly (prevents logging failure during multirun)."""
-
-    log.info("Closing loggers...")
-
-    if find_spec("wandb"):  # if wandb is installed
-        import wandb
-
-        if wandb.run:
-            log.info("Closing wandb!")
-            wandb.finish()
-
-
-@rank_zero_only
-def save_file(path: str, content: str) -> None:
-    """Save file in rank zero mode (only on one process in multi-GPU setup)."""
-    with open(path, "w+") as file:
-        file.write(content)
