@@ -34,7 +34,7 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
     """Evaluates given checkpoint on a datamodule testset.
 
     This method is wrapped in optional @task_wrapper decorator, that controls the behavior during
-    failure. Useful for multiruns, saving info about the cause of crash, etc.
+    failure. Useful for multiruns, saving info about the crash, etc.
 
     Args:
         cfg (DictConfig): Configuration composed by Hydra.

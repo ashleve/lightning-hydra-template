@@ -1,10 +1,9 @@
-from importlib.util import find_spec
 from typing import Callable
 
 from omegaconf import DictConfig
-from pytorch_lightning.utilities import rank_zero_only
 
 from src.utils import pylogger
+from src.utils.utils import close_loggers
 
 log = pylogger.get_pylogger(__name__)
 
@@ -29,7 +28,6 @@ def task_wrapper(task_func: Callable) -> Callable:
 
         return metric_dict, object_dict
     ```
-
     """
 
     def wrap(cfg: DictConfig):
@@ -46,7 +44,7 @@ def task_wrapper(task_func: Callable) -> Callable:
             log.exception("")
 
             # some hyperparameter combinations might be invalid or cause out-of-memory errors
-            # when using hyperparameter search plugins like Optuna, you might want to disable raising exception
+            # when using hyperparameter search plugins like Optuna you might want to disable raising exception
             # to avoid multirun failure
             raise ex
 
@@ -62,23 +60,3 @@ def task_wrapper(task_func: Callable) -> Callable:
         return metric_dict, object_dict
 
     return wrap
-
-
-def close_loggers() -> None:
-    """Makes sure all loggers closed properly (prevents logging failure during multirun)."""
-
-    log.info("Closing loggers...")
-
-    if find_spec("wandb"):  # if wandb is installed
-        import wandb
-
-        if wandb.run:
-            log.info("Closing wandb!")
-            wandb.finish()
-
-
-@rank_zero_only
-def save_file(path: str, content: str) -> None:
-    """Save file in rank zero mode (only on one process in multi-GPU setup)."""
-    with open(path, "w+") as file:
-        file.write(content)
