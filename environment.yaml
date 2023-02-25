@@ -1,33 +1,35 @@
-name: lightning-hydra-template
+# reasons you might want to use `environment.yaml` instead of `requirements.txt`:
+# - pip installs packages in a loop, without ensuring dependencies across all packages
+#   are fulfilled simultaneously, but conda achieves proper dependency control across
+#   all packages
+# - conda allows for installing packages without requiring certain compilers or
+#   libraries to be available in the system, since it installs precompiled binaries
+
+name: myenv
+
 channels:
   - pytorch
   - conda-forge
   - defaults
+
 dependencies:
-  # --------- pytorch --------- #
   - pytorch>=1.10.0
   - torchvision>=0.11.0
   - pytorch-lightning=1.9
   - torchmetrics=0.11
-  # --------- hydra --------- #
   - hydra-core=1.3
-  # --------- others --------- #
-  - rich=13.3                             # beautiful text formatting in terminal
-  - pre-commit=3.0                        # hooks for applying linters on commit
-  - pytest=7.2 # tests
+  - rich=13.3
+  - pre-commit=3.0
+  - pytest=7.2
+
   # --------- loggers --------- #
   # - wandb
   # - neptune-client
   # - mlflow
   # - comet-ml
-  # --------- others --------- #
-  # - sh                                  # for running bash commands in some tests (linux/macos only)
-  # --------- pip --------- #
+
   - pip>=23.0
   - pip:
-    # --------- hydra (pip) --------- #
-    - hydra-submitit-launcher==1.2.0
-    - hydra-colorlog==1.2.0
-    - hydra-optuna-sweeper==1.2.0
-    # --------- others (pip) --------- #
-    - pyrootutils==1.0.4                  # standardizing the project root setup
+      - hydra-optuna-sweeper==1.2.0
+      - hydra-colorlog==1.2.0
+      - pyrootutils==1.0.4

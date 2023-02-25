@@ -124,6 +124,7 @@ The directory structure of new project looks like this:
 ├── .gitignore                <- List of files ignored by git
 ├── .pre-commit-config.yaml   <- Configuration of pre-commit hooks for code formatting
 ├── .project-root             <- File for inferring the position of project root directory
+├── environment.yaml          <- File for installing conda environment
 ├── Makefile                  <- Makefile with commands like `make train` or `make test`
 ├── pyproject.toml            <- Configuration options for testing and linting
 ├── requirements.txt          <- File for installing python dependencies
@@ -1197,7 +1198,7 @@ SOFTWARE.
 
 **DELETE EVERYTHING ABOVE FOR YOUR PROJECT**
 
-______________________________________________________________________
+---
 
 <div align="center">
 
@@ -1247,7 +1248,7 @@ cd your-repo-name
 conda env create -f environment.yaml
 
 # activate conda environment
-conda activate lightning-hydra-template
+conda activate myenv
 ```
 
 ## How to run
