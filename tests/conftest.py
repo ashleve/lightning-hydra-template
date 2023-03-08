@@ -9,7 +9,7 @@ from omegaconf import DictConfig, open_dict
 
 @pytest.fixture(scope="package")
 def cfg_train_global() -> DictConfig:
-    with initialize(version_base="1.2", config_path="../configs"):
+    with initialize(version_base="1.3", config_path="../configs"):
         cfg = compose(config_name="train.yaml", return_hydra_config=True, overrides=[])
 
         # set defaults for all tests
@@ -32,7 +32,7 @@ def cfg_train_global() -> DictConfig:
 
 @pytest.fixture(scope="package")
 def cfg_eval_global() -> DictConfig:
-    with initialize(version_base="1.2", config_path="../configs"):
+    with initialize(version_base="1.3", config_path="../configs"):
         cfg = compose(config_name="eval.yaml", return_hydra_config=True, overrides=["ckpt_path=."])
 
         # set defaults for all tests
