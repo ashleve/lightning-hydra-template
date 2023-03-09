@@ -3,6 +3,9 @@
 # example usage in lightning module:
 # https://github.com/aimhubio/aim/blob/main/examples/pytorch_lightning_track.py
 
+# open the Aim UI with the following command (run in the folder containing the `.aim` folder):
+# `aim up`
+
 aim:
   _target_: aim.pytorch_lightning.AimLogger
   repo: ${paths.root_dir} # .aim folder will be created here
