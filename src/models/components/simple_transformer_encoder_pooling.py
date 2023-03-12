@@ -4,10 +4,12 @@ class SimpleTransformerEncoderPooling(nn.Module):
     def __init__(
         self,
         input_size: int = 8,
-        d_model: int = 64, 
+        d_model: int = 64,
         nhead: int = 8,
+        dim_feedforward: int = 516,
+        dropout: float = 0.1,
         num_layers: int = 6,
-        output_size = 1
+        output_size: int = 1
     ):
         super(SimpleTransformerEncoderPooling, self).__init__()
 
@@ -16,7 +18,13 @@ class SimpleTransformerEncoderPooling(nn.Module):
         self.nhead = nhead
 
         self.fc_in = nn.Linear(input_size, d_model)
-        self.encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=nhead, batch_first=True)
+        self.encoder_layer = nn.TransformerEncoderLayer(
+            d_model = d_model,
+            nhead = nhead,
+            dim_feedforward = dim_feedforward,
+            dropout = dropout,
+            batch_first=True
+            )
         self.transformer_encoder = nn.TransformerEncoder(self.encoder_layer, num_layers=num_layers)
         self.fc_out = nn.Linear(d_model, output_size)
 
