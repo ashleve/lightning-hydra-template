@@ -1,5 +1,7 @@
 from typing import Any, Dict, Optional, Tuple, List
 import numpy as np
+
+import pandas as pd
 import torch
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, SequentialSampler #random_split
@@ -78,10 +80,10 @@ def pad_collate(batch):
 class SimpleDataset(Dataset):
   def __init__(self, 
                db_path: str, 
-               event_no_list: List[int], #event_no_list_path: str,
                pulsemap: str,
                input_cols: List[str],
                target_cols: List[str],
+               event_no_list: List[int] = None, #event_no_list_path: str,
                truth_table: str = "truth"
                ):
     self.db_path = db_path
@@ -149,10 +151,10 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
     def __init__(
         self,
         db_path: str,
-        event_no_list_path: str,
         pulsemap: str,
         input_cols: List[str],
         target_cols: List[str],
+        event_no_list_path: Optional[str] = None,
         truth_table: str = "truth",
         data_dir: str = "data/",
         # train_val_test_split: Tuple[float, float, float] = (0.8, 0.1, 0.1),# train_val_test_split_rate: Tuple[float, float, float] = (0.8, 0.1, 0.1),
@@ -165,18 +167,22 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
         # this line allows to access init params with 'self.hparams' attribute
         # also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
-
         # data transformations here if any
-
-        self.event_no_list = np.genfromtxt(self.hparams.event_no_list_path,dtype=int)
-
+        if self.hparams.event_no_list_path == "all":
+           with sqlite3.connect(self.hparams.db_path) as conn:
+                self.event_no_list = pd.read_sql_query(f"SELECT event_no FROM {self.hparams.truth_table}",conn).values
+                # self.event_no_list =conn.execute(f"SELECT event_no FROM {self.hparams.truth_table}").fetchall()
+        else:
+            self.event_no_list = pd.read_csv(self.hparams.event_no_list_path,header=0,names=["event_no"],index_col=None)["event_no"].to_numpy()
+        # self.event_no_list = np.genfromtxt(self.hparams.event_no_list_path,dtype=int)
+    
         self.data_train: Optional[Dataset] = None
         self.data_val: Optional[Dataset] = None
         self.data_test: Optional[Dataset] = None
 
-    @property
-    def num_classes(self):
-        return 10
+    # @property
+    # def num_classes(self):
+    #     return 10
 
     def prepare_data(self):
         """Download data if needed.
@@ -195,7 +201,7 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
         if not self.data_train and not self.data_val and not self.data_test:
             self.data_train= SimpleDataset(
                 db_path = self.hparams.db_path, 
-                event_no_list = self.event_no_list % 10 > 1, #event_no_list_path = self.hparams.event_no_list_path,
+                event_no_list = self.event_no_list[self.event_no_list % 10 > 1], #event_no_list_path = self.hparams.event_no_list_path,
                 pulsemap = self.hparams.pulsemap,
                 input_cols = self.hparams.input_cols,
                 target_cols = self.hparams.target_cols,
@@ -203,7 +209,7 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
             )
             self.data_val= SimpleDataset(
                 db_path = self.hparams.db_path,
-                event_no_list = self.event_no_list % 10 == 1, #event_no_list_path = self.hparams.event_no_list_path,
+                event_no_list = self.event_no_list[self.event_no_list % 10 == 1], #event_no_list_path = self.hparams.event_no_list_path,
                 pulsemap = self.hparams.pulsemap,
                 input_cols = self.hparams.input_cols,
                 target_cols = self.hparams.target_cols,
@@ -211,7 +217,7 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
             )
             self.data_test= SimpleDataset(
                 db_path = self.hparams.db_path,
-                event_no_list = self.event_no_list% 10 == 0, #event_no_list_path = self.hparams.event_no_list_path,
+                event_no_list = self.event_no_list[self.event_no_list% 10 == 0], #event_no_list_path = self.hparams.event_no_list_path,
                 pulsemap = self.hparams.pulsemap,
                 input_cols = self.hparams.input_cols,
                 target_cols = self.hparams.target_cols,
@@ -235,7 +241,6 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
         #         lengths= self.hparams.train_val_test_split, # revert when upgrading torch
         #         generator=torch.Generator().manual_seed(42),
         #     )
-
     def train_dataloader(self):
         return DataLoader(
             dataset=self.data_train,
@@ -244,7 +249,6 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
             pin_memory=self.hparams.pin_memory,
             collate_fn= pad_collate,
             shuffle=True,
-            sampler=SequentialSampler()
         )
 
     def val_dataloader(self):
@@ -255,7 +259,6 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
             pin_memory=self.hparams.pin_memory,
             collate_fn= pad_collate,
             shuffle=False,
-            sampler=SequentialSampler()
         )
 
     def test_dataloader(self):
@@ -266,8 +269,36 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
             pin_memory=self.hparams.pin_memory,
             collate_fn= pad_collate,
             shuffle=False,
-            sampler=SequentialSampler()
         )
+    # def train_dataloader(self):
+    #     return DataLoader(
+    #         dataset=self.data_train,
+    #         batch_size=self.hparams.batch_size,
+    #         num_workers=self.hparams.num_workers,
+    #         pin_memory=self.hparams.pin_memory,
+    #         collate_fn= pad_collate,
+    #         sampler=SequentialSampler(self.data_train)
+    #     )
+
+    # def val_dataloader(self):
+    #     return DataLoader(
+    #         dataset=self.data_val,
+    #         batch_size=self.hparams.batch_size,
+    #         num_workers=self.hparams.num_workers,
+    #         pin_memory=self.hparams.pin_memory,
+    #         collate_fn= pad_collate,
+    #         sampler=SequentialSampler(self.data_val)
+    #     )
+
+    # def test_dataloader(self):
+    #     return DataLoader(
+    #         dataset=self.data_test,
+    #         batch_size=self.hparams.batch_size,
+    #         num_workers=self.hparams.num_workers,
+    #         pin_memory=self.hparams.pin_memory,
+    #         collate_fn= pad_collate,
+    #         sampler=SequentialSampler(self.data_test)
+    #     )
 
     def teardown(self, stage: Optional[str] = None):
         """Clean up after fit or test."""

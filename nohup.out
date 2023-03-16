@@ -1,0 +1,1016 @@
+/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: libc10_hip.so: cannot open shared object file: No such file or directory
+  warn(f"Failed to load image Python extension: {e}")
+[[36m2023-03-02 21:46:03,576[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Enforcing tags! <cfg.extras.enforce_tags=True>[0m
+[[36m2023-03-02 21:46:03,581[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Printing config tree with Rich! <cfg.extras.print_config=True>[0m
+CONFIG
+├── data
+│   └── _target_: src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamod
+│       db_path: /groups/icecube/petersen/GraphNetDatabaseRepository/Upgrade_Dat
+│       event_no_list_path: /groups/icecube/moust/storage/event_selections/event
+│       pulsemap: SplitInIcePulses_dynedge_v2_Pulses                            
+│       input_cols:                                                             
+│       - charge                                                                
+│       - dom_time                                                              
+│       - dom_x                                                                 
+│       - dom_y                                                                 
+│       - dom_z                                                                 
+│       - pmt_dir_x                                                             
+│       - pmt_dir_y                                                             
+│       - pmt_dir_z                                                             
+│       target_cols: energy                                                     
+│       truth_table: truth                                                      
+│       data_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/data/ 
+│       batch_size: 32                                                          
+│       num_workers: 16                                                         
+│       pin_memory: false                                                       
+│                                                                               
+├── model
+│   └── _target_: src.models.simple_transformer_encoder_pooling_module.SimpleTra
+│       optimizer:                                                              
+│         _target_: torch.optim.Adam                                            
+│         _partial_: true                                                       
+│         lr: 0.001                                                             
+│         weight_decay: 0.0                                                     
+│       scheduler:                                                              
+│         _target_: torch.optim.lr_scheduler.ReduceLROnPlateau                  
+│         _partial_: true                                                       
+│         mode: min                                                             
+│         factor: 0.1                                                           
+│         patience: 10                                                          
+│       model:                                                                  
+│         _target_: src.models.components.simple_transformer_encoder_pooling.Sim
+│         input_size: 8                                                         
+│         d_model: 16                                                           
+│         nhead: 2                                                              
+│         dim_feedforward: 256                                                  
+│         dropout: 0.1                                                          
+│         num_layers: 1                                                         
+│         output_size: 1                                                        
+│                                                                               
+├── callbacks
+│   └── model_checkpoint:                                                       
+│         _target_: pytorch_lightning.callbacks.ModelCheckpoint                 
+│         dirpath: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/
+│         filename: epoch_{epoch:03d}                                           
+│         monitor: val/acc                                                      
+│         verbose: false                                                        
+│         save_last: true                                                       
+│         save_top_k: 1                                                         
+│         mode: max                                                             
+│         auto_insert_metric_name: false                                        
+│         save_weights_only: false                                              
+│         every_n_train_steps: null                                             
+│         train_time_interval: null                                             
+│         every_n_epochs: null                                                  
+│         save_on_train_epoch_end: null                                         
+│       early_stopping:                                                         
+│         _target_: pytorch_lightning.callbacks.EarlyStopping                   
+│         monitor: val/acc                                                      
+│         min_delta: 0.0                                                        
+│         patience: 100                                                         
+│         verbose: false                                                        
+│         mode: max                                                             
+│         strict: true                                                          
+│         check_finite: true                                                    
+│         stopping_threshold: null                                              
+│         divergence_threshold: null                                            
+│         check_on_train_epoch_end: null                                        
+│       model_summary:                                                          
+│         _target_: pytorch_lightning.callbacks.RichModelSummary                
+│         max_depth: -1                                                         
+│       rich_progress_bar:                                                      
+│         _target_: pytorch_lightning.callbacks.RichProgressBar                 
+│                                                                               
+├── logger
+│   └── wandb:                                                                  
+│         _target_: pytorch_lightning.loggers.wandb.WandbLogger                 
+│         save_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs
+│         offline: false                                                        
+│         id: null                                                              
+│         anonymous: null                                                       
+│         project: lightning-hydra-template                                     
+│         log_model: false                                                      
+│         prefix: ''                                                            
+│         entity: graphnet-team                                                 
+│         group: transformer                                                    
+│         tags: []                                                              
+│         job_type: ''                                                          
+│                                                                               
+├── trainer
+│   └── _target_: pytorch_lightning.Trainer                                     
+│       default_root_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydr
+│       min_epochs: 1                                                           
+│       max_epochs: 10                                                          
+│       accelerator: gpu                                                        
+│       devices: 1                                                              
+│       check_val_every_n_epoch: 1                                              
+│       deterministic: false                                                    
+│                                                                               
+├── paths
+│   └── root_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra       
+│       data_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/data/ 
+│       log_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/  
+│       output_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs
+│       work_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra       
+│                                                                               
+├── extras
+│   └── ignore_warnings: false                                                  
+│       enforce_tags: true                                                      
+│       print_config: true                                                      
+│                                                                               
+├── task_name
+│   └── train                                                                   
+├── tags
+│   └── ['dev']                                                                 
+├── train
+│   └── True                                                                    
+├── test
+│   └── True                                                                    
+├── ckpt_path
+│   └── None                                                                    
+└── seed
+    └── None                                                                    
+[[36m2023-03-02 21:46:03,641[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating datamodule <src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamodule>[0m
+[[36m2023-03-02 21:46:05,025[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating model <src.models.simple_transformer_encoder_pooling_module.SimpleTransformerEncoderPoolingLitModule>[0m
+[[36m2023-03-02 21:46:05,070[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Created a temporary directory at /tmp/tmp41nq9_a3[0m
+[[36m2023-03-02 21:46:05,070[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Writing /tmp/tmp41nq9_a3/_remote_module_non_sriptable.py[0m
+/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/utilities/parsing.py:263: UserWarning: Attribute 'model' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['model'])`.
+  rank_zero_warn(
+[[36m2023-03-02 21:46:05,101[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating callbacks...[0m
+[[36m2023-03-02 21:46:05,102[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.ModelCheckpoint>[0m
+[[36m2023-03-02 21:46:05,105[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.EarlyStopping>[0m
+[[36m2023-03-02 21:46:05,105[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichModelSummary>[0m
+[[36m2023-03-02 21:46:05,106[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichProgressBar>[0m
+[[36m2023-03-02 21:46:05,106[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating loggers...[0m
+[[36m2023-03-02 21:46:05,106[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating logger <pytorch_lightning.loggers.wandb.WandbLogger>[0m
+wandb: Currently logged in as: moustholmes (graphnet-team). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.13.10
+wandb: Run data is saved locally in /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/train/runs/2023-03-02_21-46-03/wandb/run-20230302_214608-9nddi5rl
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run expert-lion-2
+wandb: ⭐️ View project at https://wandb.ai/graphnet-team/lightning-hydra-template
+wandb: 🚀 View run at https://wandb.ai/graphnet-team/lightning-hydra-template/runs/9nddi5rl
+[[36m2023-03-02 21:46:14,298[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating trainer <pytorch_lightning.Trainer>[0m
+/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/lightning_fabric/plugins/environments/slurm.py:166: PossibleUserWarning: The `srun` command is available on your system but is not used. HINT: If your intention is to run Lightning on SLURM, prepend your python command with `srun` like so: srun python src/train.py trainer=gpu ...
+  rank_zero_warn(
+Trainer already configured with model summary callbacks: [<class 'pytorch_lightning.callbacks.rich_model_summary.RichModelSummary'>]. Skipping setting a default `ModelSummary` callback.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+[[36m2023-03-02 21:46:14,362[0m][[34m__main__[0m][[32mINFO[0m] - Logging hyperparameters![0m
+[[36m2023-03-02 21:46:14,368[0m][[34m__main__[0m][[32mINFO[0m] - Starting training![0m
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
+┏━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┓
+┃    ┃ Name                                                  ┃ Type   ┃ Params ┃
+┡━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━┩
+│ 0  │ model                                                 │ Simpl… │ 19.4 K │
+│ 1  │ model.fc_in                                           │ Linear │    144 │
+│ 2  │ model.encoder_layer                                   │ Trans… │  9.6 K │
+│ 3  │ model.encoder_layer.self_attn                         │ Multi… │  1.1 K │
+│ 4  │ model.encoder_layer.self_attn.out_proj                │ NonDy… │    272 │
+│ 5  │ model.encoder_layer.linear1                           │ Linear │  4.4 K │
+│ 6  │ model.encoder_layer.dropout                           │ Dropo… │      0 │
+│ 7  │ model.encoder_layer.linear2                           │ Linear │  4.1 K │
+│ 8  │ model.encoder_layer.norm1                             │ Layer… │     32 │
+│ 9  │ model.encoder_layer.norm2                             │ Layer… │     32 │
+│ 10 │ model.encoder_layer.dropout1                          │ Dropo… │      0 │
+│ 11 │ model.encoder_layer.dropout2                          │ Dropo… │      0 │
+│ 12 │ model.transformer_encoder                             │ Trans… │  9.6 K │
+│ 13 │ model.transformer_encoder.layers                      │ Modul… │  9.6 K │
+│ 14 │ model.transformer_encoder.layers.0                    │ Trans… │  9.6 K │
+│ 15 │ model.transformer_encoder.layers.0.self_attn          │ Multi… │  1.1 K │
+│ 16 │ model.transformer_encoder.layers.0.self_attn.out_proj │ NonDy… │    272 │
+│ 17 │ model.transformer_encoder.layers.0.linear1            │ Linear │  4.4 K │
+│ 18 │ model.transformer_encoder.layers.0.dropout            │ Dropo… │      0 │
+│ 19 │ model.transformer_encoder.layers.0.linear2            │ Linear │  4.1 K │
+│ 20 │ model.transformer_encoder.layers.0.norm1              │ Layer… │     32 │
+│ 21 │ model.transformer_encoder.layers.0.norm2              │ Layer… │     32 │
+│ 22 │ model.transformer_encoder.layers.0.dropout1           │ Dropo… │      0 │
+│ 23 │ model.transformer_encoder.layers.0.dropout2           │ Dropo… │      0 │
+│ 24 │ model.fc_out                                          │ Linear │     17 │
+│ 25 │ loss_fn                                               │ MSELo… │      0 │
+│ 26 │ train_loss                                            │ MeanM… │      0 │
+│ 27 │ val_loss                                              │ MeanM… │      0 │
+│ 28 │ test_loss                                             │ MeanM… │      0 │
+└────┴───────────────────────────────────────────────────────┴────────┴────────┘
+Trainable params: 19.4 K                                                        
+Non-trainable params: 0                                                         
+Total params: 19.4 K                                                            
+Total estimated model params size (MB): 0                                       
+Epoch 0/9  ━━━━━━━━━━━━━━━ 15267/15267 8:22:52 •       1.11it/s loss: 1.04e+03  
+                                       0:00:00                  v_num: i5rl     
+                                                                val/loss:       
+                                                                1987.679        
+[[36m2023-03-03 06:11:58,263[0m][[34msrc.utils.utils[0m][[31mERROR[0m] - [0m
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/utils/utils.py", line 38, in wrap
+    metric_dict, object_dict = task_func(cfg=cfg)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/train.py", line 82, in train
+    trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 608, in fit
+    call._call_and_handle_interrupt(
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/call.py", line 38, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 650, in _fit_impl
+    self._run(model, ckpt_path=self.ckpt_path)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1112, in _run
+    results = self._run_stage()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1191, in _run_stage
+    self._run_train()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1214, in _run_train
+    self.fit_loop.run()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/loop.py", line 200, in run
+    self.on_advance_end()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/fit_loop.py", line 295, in on_advance_end
+    self.trainer._call_callback_hooks("on_train_epoch_end")
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1394, in _call_callback_hooks
+    fn(self, self.lightning_module, *args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/callbacks/early_stopping.py", line 184, in on_train_epoch_end
+    self._run_early_stopping_check(trainer)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/callbacks/early_stopping.py", line 195, in _run_early_stopping_check
+    if trainer.fast_dev_run or not self._validate_condition_metric(  # disable early_stopping with fast_dev_run
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/callbacks/early_stopping.py", line 150, in _validate_condition_metric
+    raise RuntimeError(error_msg)
+RuntimeError: Early stopping conditioned on metric `val/acc` which is not available. Pass in or modify your `EarlyStopping` callback to use any of the following: `val/loss`, `train/loss`
+[[36m2023-03-03 06:11:58,455[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Output dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/train/runs/2023-03-02_21-46-03[0m
+[[36m2023-03-03 06:11:58,455[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Closing loggers...[0m
+[[36m2023-03-03 06:11:58,456[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Closing wandb![0m
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:               epoch ▁
+wandb: trainer/global_step ▁
+wandb:            val/loss ▁
+wandb: 
+wandb: Run summary:
+wandb:               epoch 0
+wandb: trainer/global_step 13576
+wandb:            val/loss 1987.67883
+wandb: 
+wandb: 🚀 View run expert-lion-2 at: https://wandb.ai/graphnet-team/lightning-hydra-template/runs/9nddi5rl
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./logs/train/runs/2023-03-02_21-46-03/wandb/run-20230302_214608-9nddi5rl/logs
+Error executing job with overrides: ['trainer=gpu']
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/train.py", line 107, in main
+    metric_dict, _ = train(cfg)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/utils/utils.py", line 48, in wrap
+    raise ex
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/utils/utils.py", line 38, in wrap
+    metric_dict, object_dict = task_func(cfg=cfg)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/train.py", line 82, in train
+    trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 608, in fit
+    call._call_and_handle_interrupt(
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/call.py", line 38, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 650, in _fit_impl
+    self._run(model, ckpt_path=self.ckpt_path)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1112, in _run
+    results = self._run_stage()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1191, in _run_stage
+    self._run_train()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1214, in _run_train
+    self.fit_loop.run()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/loop.py", line 200, in run
+    self.on_advance_end()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/fit_loop.py", line 295, in on_advance_end
+    self.trainer._call_callback_hooks("on_train_epoch_end")
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1394, in _call_callback_hooks
+    fn(self, self.lightning_module, *args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/callbacks/early_stopping.py", line 184, in on_train_epoch_end
+    self._run_early_stopping_check(trainer)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/callbacks/early_stopping.py", line 195, in _run_early_stopping_check
+    if trainer.fast_dev_run or not self._validate_condition_metric(  # disable early_stopping with fast_dev_run
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/callbacks/early_stopping.py", line 150, in _validate_condition_metric
+    raise RuntimeError(error_msg)
+RuntimeError: Early stopping conditioned on metric `val/acc` which is not available. Pass in or modify your `EarlyStopping` callback to use any of the following: `val/loss`, `train/loss`
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: libc10_hip.so: cannot open shared object file: No such file or directory
+  warn(f"Failed to load image Python extension: {e}")
+[[36m2023-03-05 20:57:38,307[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Enforcing tags! <cfg.extras.enforce_tags=True>[0m
+[[36m2023-03-05 20:57:38,336[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Printing config tree with Rich! <cfg.extras.print_config=True>[0m
+CONFIG
+├── data
+│   └── _target_: src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamod
+│       db_path: /groups/icecube/petersen/GraphNetDatabaseRepository/Upgrade_Dat
+│       event_no_list_path: /groups/icecube/moust/storage/event_selections/event
+│       input_cols:                                                             
+│       - charge                                                                
+│       - dom_time                                                              
+│       - dom_x                                                                 
+│       - dom_y                                                                 
+│       - dom_z                                                                 
+│       - pmt_dir_x                                                             
+│       - pmt_dir_y                                                             
+│       - pmt_dir_z                                                             
+│       target_cols: energy                                                     
+│       truth_table: truth                                                      
+│       data_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/data/ 
+│       batch_size: 32                                                          
+│       num_workers: 16                                                         
+│       pin_memory: False¶                                                      
+│                                                                               
+├── model
+│   └── _target_: src.models.simple_transformer_encoder_pooling_module.SimpleTra
+│       optimizer:                                                              
+│         _target_: torch.optim.Adam                                            
+│         _partial_: true                                                       
+│         lr: 0.001                                                             
+│         weight_decay: 0.0                                                     
+│       scheduler:                                                              
+│         _target_: torch.optim.lr_scheduler.ReduceLROnPlateau                  
+│         _partial_: true                                                       
+│         mode: min                                                             
+│         factor: 0.1                                                           
+│         patience: 10                                                          
+│       model:                                                                  
+│         _target_: src.models.components.simple_transformer_encoder_pooling.Sim
+│         input_size: 8                                                         
+│         d_model: 16                                                           
+│         nhead: 2                                                              
+│         dim_feedforward: 256                                                  
+│         dropout: 0.1                                                          
+│         num_layers: 1                                                         
+│         output_size: 1                                                        
+│                                                                               
+├── callbacks
+│   └── model_checkpoint:                                                       
+│         _target_: pytorch_lightning.callbacks.ModelCheckpoint                 
+│         dirpath: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/
+│         filename: epoch_{epoch:03d}                                           
+│         monitor: val/acc                                                      
+│         verbose: false                                                        
+│         save_last: true                                                       
+│         save_top_k: 1                                                         
+│         mode: max                                                             
+│         auto_insert_metric_name: false                                        
+│         save_weights_only: false                                              
+│         every_n_train_steps: null                                             
+│         train_time_interval: null                                             
+│         every_n_epochs: null                                                  
+│         save_on_train_epoch_end: null                                         
+│       early_stopping:                                                         
+│         _target_: pytorch_lightning.callbacks.EarlyStopping                   
+│         monitor: val/acc                                                      
+│         min_delta: 0.0                                                        
+│         patience: 100                                                         
+│         verbose: false                                                        
+│         mode: max                                                             
+│         strict: true                                                          
+│         check_finite: true                                                    
+│         stopping_threshold: null                                              
+│         divergence_threshold: null                                            
+│         check_on_train_epoch_end: null                                        
+│       model_summary:                                                          
+│         _target_: pytorch_lightning.callbacks.RichModelSummary                
+│         max_depth: -1                                                         
+│       rich_progress_bar:                                                      
+│         _target_: pytorch_lightning.callbacks.RichProgressBar                 
+│                                                                               
+├── logger
+│   └── wandb:                                                                  
+│         _target_: pytorch_lightning.loggers.wandb.WandbLogger                 
+│         save_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs
+│         offline: false                                                        
+│         id: null                                                              
+│         anonymous: null                                                       
+│         project: lightning-hydra-template                                     
+│         log_model: false                                                      
+│         prefix: ''                                                            
+│         entity: graphnet-team                                                 
+│         group: transformer                                                    
+│         tags: []                                                              
+│         job_type: ''                                                          
+│                                                                               
+├── trainer
+│   └── _target_: pytorch_lightning.Trainer                                     
+│       default_root_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydr
+│       min_epochs: 1                                                           
+│       max_epochs: 10                                                          
+│       accelerator: gpu                                                        
+│       devices: 1                                                              
+│       check_val_every_n_epoch: 1                                              
+│       deterministic: false                                                    
+│                                                                               
+├── paths
+│   └── root_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra       
+│       data_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/data/ 
+│       log_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/  
+│       output_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs
+│       work_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra       
+│                                                                               
+├── extras
+│   └── ignore_warnings: false                                                  
+│       enforce_tags: true                                                      
+│       print_config: true                                                      
+│                                                                               
+├── task_name
+│   └── train                                                                   
+├── tags
+│   └── ['dev']                                                                 
+├── train
+│   └── True                                                                    
+├── test
+│   └── True                                                                    
+├── ckpt_path
+│   └── None                                                                    
+└── seed
+    └── None                                                                    
+[[36m2023-03-05 20:57:38,409[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating datamodule <src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamodule>[0m
+[[36m2023-03-05 20:57:44,984[0m][[34msrc.utils.utils[0m][[31mERROR[0m] - [0m
+Traceback (most recent call last):
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/hydra/_internal/instantiate/_instantiate2.py", line 92, in _call_target
+    return _target_(*args, **kwargs)
+TypeError: __init__() missing 1 required positional argument: 'pulsemap'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/utils/utils.py", line 38, in wrap
+    metric_dict, object_dict = task_func(cfg=cfg)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/train.py", line 53, in train
+    datamodule: LightningDataModule = hydra.utils.instantiate(cfg.data)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/hydra/_internal/instantiate/_instantiate2.py", line 226, in instantiate
+    return instantiate_node(
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/hydra/_internal/instantiate/_instantiate2.py", line 347, in instantiate_node
+    return _call_target(_target_, partial, args, kwargs, full_key)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/hydra/_internal/instantiate/_instantiate2.py", line 97, in _call_target
+    raise InstantiationException(msg) from e
+hydra.errors.InstantiationException: Error in call to target 'src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamodule':
+TypeError("__init__() missing 1 required positional argument: 'pulsemap'")
+full_key: data
+[[36m2023-03-05 20:57:45,008[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Output dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/train/runs/2023-03-05_20-57-38[0m
+[[36m2023-03-05 20:57:45,009[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Closing loggers...[0m
+Error executing job with overrides: ['trainer=gpu']
+Error in call to target 'src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamodule':
+TypeError("__init__() missing 1 required positional argument: 'pulsemap'")
+full_key: data
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: libc10_hip.so: cannot open shared object file: No such file or directory
+  warn(f"Failed to load image Python extension: {e}")
+[[36m2023-03-07 10:07:11,403[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Enforcing tags! <cfg.extras.enforce_tags=True>[0m
+[[36m2023-03-07 10:07:11,432[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Printing config tree with Rich! <cfg.extras.print_config=True>[0m
+CONFIG
+├── data
+│   └── _target_: src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamod
+│       db_path: /groups/icecube/petersen/GraphNetDatabaseRepository/Upgrade_Dat
+│       event_no_list_path: /groups/icecube/moust/storage/event_selections/event
+│       pulsemap: SplitInIcePulses_dynedge_v2_Pulses                            
+│       input_cols:                                                             
+│       - charge                                                                
+│       - dom_time                                                              
+│       - dom_x                                                                 
+│       - dom_y                                                                 
+│       - dom_z                                                                 
+│       - pmt_dir_x                                                             
+│       - pmt_dir_y                                                             
+│       - pmt_dir_z                                                             
+│       target_cols: energy                                                     
+│       truth_table: truth                                                      
+│       data_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/data/ 
+│       batch_size: 64                                                          
+│       num_workers: 16                                                         
+│       pin_memory: false                                                       
+│                                                                               
+├── model
+│   └── _target_: src.models.simple_transformer_encoder_pooling_module.SimpleTra
+│       optimizer:                                                              
+│         _target_: torch.optim.Adam                                            
+│         _partial_: true                                                       
+│         lr: 0.001                                                             
+│         weight_decay: 0.0                                                     
+│       scheduler:                                                              
+│         _target_: torch.optim.lr_scheduler.ReduceLROnPlateau                  
+│         _partial_: true                                                       
+│         mode: min                                                             
+│         factor: 0.1                                                           
+│         patience: 10                                                          
+│       model:                                                                  
+│         _target_: src.models.components.simple_transformer_encoder_pooling.Sim
+│         input_size: 5                                                         
+│         d_model: 16                                                           
+│         nhead: 2                                                              
+│         dim_feedforward: 256                                                  
+│         dropout: 0.1                                                          
+│         num_layers: 1                                                         
+│         output_size: 1                                                        
+│                                                                               
+├── callbacks
+│   └── model_checkpoint:                                                       
+│         _target_: pytorch_lightning.callbacks.ModelCheckpoint                 
+│         dirpath: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/
+│         filename: epoch_{epoch:03d}                                           
+│         monitor: val/loss                                                     
+│         verbose: false                                                        
+│         save_last: true                                                       
+│         save_top_k: 1                                                         
+│         mode: min                                                             
+│         auto_insert_metric_name: false                                        
+│         save_weights_only: false                                              
+│         every_n_train_steps: null                                             
+│         train_time_interval: null                                             
+│         every_n_epochs: null                                                  
+│         save_on_train_epoch_end: null                                         
+│       early_stopping:                                                         
+│         _target_: pytorch_lightning.callbacks.EarlyStopping                   
+│         monitor: val/loss                                                     
+│         min_delta: 0.0                                                        
+│         patience: 100                                                         
+│         verbose: false                                                        
+│         mode: min                                                             
+│         strict: true                                                          
+│         check_finite: true                                                    
+│         stopping_threshold: null                                              
+│         divergence_threshold: null                                            
+│         check_on_train_epoch_end: null                                        
+│       model_summary:                                                          
+│         _target_: pytorch_lightning.callbacks.RichModelSummary                
+│         max_depth: -1                                                         
+│       rich_progress_bar:                                                      
+│         _target_: pytorch_lightning.callbacks.RichProgressBar                 
+│                                                                               
+├── logger
+│   └── wandb:                                                                  
+│         _target_: pytorch_lightning.loggers.wandb.WandbLogger                 
+│         save_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs
+│         offline: false                                                        
+│         id: null                                                              
+│         anonymous: null                                                       
+│         project: lightning-hydra-template                                     
+│         log_model: false                                                      
+│         prefix: ''                                                            
+│         entity: graphnet-team                                                 
+│         group: transformer                                                    
+│         tags: []                                                              
+│         job_type: ''                                                          
+│                                                                               
+├── trainer
+│   └── _target_: pytorch_lightning.Trainer                                     
+│       default_root_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydr
+│       min_epochs: 1                                                           
+│       max_epochs: 2                                                           
+│       accelerator: gpu                                                        
+│       devices: 1                                                              
+│       check_val_every_n_epoch: 1                                              
+│       deterministic: false                                                    
+│                                                                               
+├── paths
+│   └── root_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra       
+│       data_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/data/ 
+│       log_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/  
+│       output_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs
+│       work_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra       
+│                                                                               
+├── extras
+│   └── ignore_warnings: false                                                  
+│       enforce_tags: true                                                      
+│       print_config: true                                                      
+│                                                                               
+├── task_name
+│   └── train                                                                   
+├── tags
+│   └── ['dev']                                                                 
+├── train
+│   └── True                                                                    
+├── test
+│   └── True                                                                    
+├── ckpt_path
+│   └── None                                                                    
+└── seed
+    └── None                                                                    
+[[36m2023-03-07 10:07:11,555[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating datamodule <src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamodule>[0m
+/groups/icecube/moust/storage/event_selections/event_no_numu_track_energy_15_200_nhits_4_400_sorted.csv
+[[36m2023-03-07 10:07:18,259[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating model <src.models.simple_transformer_encoder_pooling_module.SimpleTransformerEncoderPoolingLitModule>[0m
+[[36m2023-03-07 10:07:18,663[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Created a temporary directory at /tmp/tmpvb2i7pn6[0m
+[[36m2023-03-07 10:07:18,664[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Writing /tmp/tmpvb2i7pn6/_remote_module_non_sriptable.py[0m
+/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/utilities/parsing.py:263: UserWarning: Attribute 'model' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['model'])`.
+  rank_zero_warn(
+[[36m2023-03-07 10:07:18,949[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating callbacks...[0m
+[[36m2023-03-07 10:07:18,950[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.ModelCheckpoint>[0m
+[[36m2023-03-07 10:07:18,952[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.EarlyStopping>[0m
+[[36m2023-03-07 10:07:18,953[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichModelSummary>[0m
+[[36m2023-03-07 10:07:18,953[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichProgressBar>[0m
+[[36m2023-03-07 10:07:18,954[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating loggers...[0m
+[[36m2023-03-07 10:07:18,954[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating logger <pytorch_lightning.loggers.wandb.WandbLogger>[0m
+wandb: Currently logged in as: moustholmes (graphnet-team). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.13.10
+wandb: Run data is saved locally in /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/train/runs/2023-03-07_10-07-11/wandb/run-20230307_100722-vwhwwvw0
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run rural-puddle-8
+wandb: ⭐️ View project at https://wandb.ai/graphnet-team/lightning-hydra-template
+wandb: 🚀 View run at https://wandb.ai/graphnet-team/lightning-hydra-template/runs/vwhwwvw0
+[[36m2023-03-07 10:07:32,075[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating trainer <pytorch_lightning.Trainer>[0m
+/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/lightning_fabric/plugins/environments/slurm.py:166: PossibleUserWarning: The `srun` command is available on your system but is not used. HINT: If your intention is to run Lightning on SLURM, prepend your python command with `srun` like so: srun python src/train.py trainer=gpu ...
+  rank_zero_warn(
+Trainer already configured with model summary callbacks: [<class 'pytorch_lightning.callbacks.rich_model_summary.RichModelSummary'>]. Skipping setting a default `ModelSummary` callback.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+[[36m2023-03-07 10:07:32,135[0m][[34m__main__[0m][[32mINFO[0m] - Logging hyperparameters![0m
+[[36m2023-03-07 10:07:32,140[0m][[34m__main__[0m][[32mINFO[0m] - Starting training![0m
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
+┏━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┓
+┃    ┃ Name                                                  ┃ Type   ┃ Params ┃
+┡━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━┩
+│ 0  │ model                                                 │ Simpl… │ 19.3 K │
+│ 1  │ model.fc_in                                           │ Linear │     96 │
+│ 2  │ model.encoder_layer                                   │ Trans… │  9.6 K │
+│ 3  │ model.encoder_layer.self_attn                         │ Multi… │  1.1 K │
+│ 4  │ model.encoder_layer.self_attn.out_proj                │ NonDy… │    272 │
+│ 5  │ model.encoder_layer.linear1                           │ Linear │  4.4 K │
+│ 6  │ model.encoder_layer.dropout                           │ Dropo… │      0 │
+│ 7  │ model.encoder_layer.linear2                           │ Linear │  4.1 K │
+│ 8  │ model.encoder_layer.norm1                             │ Layer… │     32 │
+│ 9  │ model.encoder_layer.norm2                             │ Layer… │     32 │
+│ 10 │ model.encoder_layer.dropout1                          │ Dropo… │      0 │
+│ 11 │ model.encoder_layer.dropout2                          │ Dropo… │      0 │
+│ 12 │ model.transformer_encoder                             │ Trans… │  9.6 K │
+│ 13 │ model.transformer_encoder.layers                      │ Modul… │  9.6 K │
+│ 14 │ model.transformer_encoder.layers.0                    │ Trans… │  9.6 K │
+│ 15 │ model.transformer_encoder.layers.0.self_attn          │ Multi… │  1.1 K │
+│ 16 │ model.transformer_encoder.layers.0.self_attn.out_proj │ NonDy… │    272 │
+│ 17 │ model.transformer_encoder.layers.0.linear1            │ Linear │  4.4 K │
+│ 18 │ model.transformer_encoder.layers.0.dropout            │ Dropo… │      0 │
+│ 19 │ model.transformer_encoder.layers.0.linear2            │ Linear │  4.1 K │
+│ 20 │ model.transformer_encoder.layers.0.norm1              │ Layer… │     32 │
+│ 21 │ model.transformer_encoder.layers.0.norm2              │ Layer… │     32 │
+│ 22 │ model.transformer_encoder.layers.0.dropout1           │ Dropo… │      0 │
+│ 23 │ model.transformer_encoder.layers.0.dropout2           │ Dropo… │      0 │
+│ 24 │ model.fc_out                                          │ Linear │     17 │
+│ 25 │ loss_fn                                               │ MSELo… │      0 │
+│ 26 │ train_loss                                            │ MeanM… │      0 │
+│ 27 │ val_loss                                              │ MeanM… │      0 │
+│ 28 │ test_loss                                             │ MeanM… │      0 │
+└────┴───────────────────────────────────────────────────────┴────────┴────────┘
+Trainable params: 19.3 K                                                        
+Non-trainable params: 0                                                         
+Total params: 19.3 K                                                            
+Total estimated model params size (MB): 0                                       
+
+[[36m2023-03-07 10:07:54,285[0m][[34msrc.utils.utils[0m][[31mERROR[0m] - [0m
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/utils/utils.py", line 38, in wrap
+    metric_dict, object_dict = task_func(cfg=cfg)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/train.py", line 82, in train
+    trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 608, in fit
+    call._call_and_handle_interrupt(
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/call.py", line 38, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 650, in _fit_impl
+    self._run(model, ckpt_path=self.ckpt_path)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1112, in _run
+    results = self._run_stage()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1191, in _run_stage
+    self._run_train()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1204, in _run_train
+    self._run_sanity_check()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1276, in _run_sanity_check
+    val_loop.run()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/loop.py", line 199, in run
+    self.advance(*args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/dataloader/evaluation_loop.py", line 152, in advance
+    dl_outputs = self.epoch_loop.run(self._data_fetcher, dl_max_batches, kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/loop.py", line 199, in run
+    self.advance(*args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/epoch/evaluation_epoch_loop.py", line 137, in advance
+    output = self._evaluation_step(**kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/epoch/evaluation_epoch_loop.py", line 234, in _evaluation_step
+    output = self.trainer._call_strategy_hook(hook_name, *kwargs.values())
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1494, in _call_strategy_hook
+    output = fn(*args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/strategies/strategy.py", line 390, in validation_step
+    return self.model.validation_step(*args, **kwargs)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/models/simple_transformer_encoder_pooling_module.py", line 97, in validation_step
+    loss, preds, targets = self.model_step(batch)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/models/simple_transformer_encoder_pooling_module.py", line 65, in model_step
+    preds = self.forward(x, pad_mask)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/models/simple_transformer_encoder_pooling_module.py", line 54, in forward
+    return self.model(x,pad_mask)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/models/components/simple_transformer_encoder_pooling.py", line 32, in forward
+    x = self.fc_in(x)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/torch/nn/modules/linear.py", line 103, in forward
+    return F.linear(input, self.weight, self.bias)
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (12800x8 and 5x16)
+[[36m2023-03-07 10:07:54,494[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Output dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/train/runs/2023-03-07_10-07-11[0m
+[[36m2023-03-07 10:07:54,494[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Closing loggers...[0m
+[[36m2023-03-07 10:07:54,494[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Closing wandb![0m
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.008 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: \ 0.008 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: | 0.008 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: / 0.008 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: - 0.008 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: \ 0.008 MB of 0.008 MB uploaded (0.000 MB deduped)wandb: 🚀 View run rural-puddle-8 at: https://wandb.ai/graphnet-team/lightning-hydra-template/runs/vwhwwvw0
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./logs/train/runs/2023-03-07_10-07-11/wandb/run-20230307_100722-vwhwwvw0/logs
+Error executing job with overrides: ['trainer=gpu']
+Traceback (most recent call last):
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/train.py", line 107, in main
+    metric_dict, _ = train(cfg)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/utils/utils.py", line 48, in wrap
+    raise ex
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/utils/utils.py", line 38, in wrap
+    metric_dict, object_dict = task_func(cfg=cfg)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/train.py", line 82, in train
+    trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 608, in fit
+    call._call_and_handle_interrupt(
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/call.py", line 38, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 650, in _fit_impl
+    self._run(model, ckpt_path=self.ckpt_path)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1112, in _run
+    results = self._run_stage()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1191, in _run_stage
+    self._run_train()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1204, in _run_train
+    self._run_sanity_check()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1276, in _run_sanity_check
+    val_loop.run()
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/loop.py", line 199, in run
+    self.advance(*args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/dataloader/evaluation_loop.py", line 152, in advance
+    dl_outputs = self.epoch_loop.run(self._data_fetcher, dl_max_batches, kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/loop.py", line 199, in run
+    self.advance(*args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/epoch/evaluation_epoch_loop.py", line 137, in advance
+    output = self._evaluation_step(**kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/loops/epoch/evaluation_epoch_loop.py", line 234, in _evaluation_step
+    output = self.trainer._call_strategy_hook(hook_name, *kwargs.values())
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/trainer/trainer.py", line 1494, in _call_strategy_hook
+    output = fn(*args, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/strategies/strategy.py", line 390, in validation_step
+    return self.model.validation_step(*args, **kwargs)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/models/simple_transformer_encoder_pooling_module.py", line 97, in validation_step
+    loss, preds, targets = self.model_step(batch)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/models/simple_transformer_encoder_pooling_module.py", line 65, in model_step
+    preds = self.forward(x, pad_mask)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/models/simple_transformer_encoder_pooling_module.py", line 54, in forward
+    return self.model(x,pad_mask)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/src/models/components/simple_transformer_encoder_pooling.py", line 32, in forward
+    x = self.fc_in(x)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/torch/nn/modules/linear.py", line 103, in forward
+    return F.linear(input, self.weight, self.bias)
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (12800x8 and 5x16)
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: libc10_hip.so: cannot open shared object file: No such file or directory
+  warn(f"Failed to load image Python extension: {e}")
+[[36m2023-03-07 11:51:48,599[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Enforcing tags! <cfg.extras.enforce_tags=True>[0m
+[[36m2023-03-07 11:51:48,604[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Printing config tree with Rich! <cfg.extras.print_config=True>[0m
+CONFIG
+├── data
+│   └── _target_: src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamod
+│       db_path: /groups/icecube/petersen/GraphNetDatabaseRepository/Upgrade_Dat
+│       event_no_list_path: /groups/icecube/moust/storage/event_selections/event
+│       pulsemap: SplitInIcePulses_dynedge_v2_Pulses                            
+│       input_cols:                                                             
+│       - charge                                                                
+│       - dom_time                                                              
+│       - dom_x                                                                 
+│       - dom_y                                                                 
+│       - dom_z                                                                 
+│       - pmt_dir_x                                                             
+│       - pmt_dir_y                                                             
+│       - pmt_dir_z                                                             
+│       target_cols: energy                                                     
+│       truth_table: truth                                                      
+│       data_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/data/ 
+│       batch_size: 256                                                         
+│       num_workers: 16                                                         
+│       pin_memory: false                                                       
+│                                                                               
+├── model
+│   └── _target_: src.models.simple_transformer_encoder_pooling_module.SimpleTra
+│       optimizer:                                                              
+│         _target_: torch.optim.Adam                                            
+│         _partial_: true                                                       
+│         lr: 0.001                                                             
+│         weight_decay: 0.0                                                     
+│       scheduler:                                                              
+│         _target_: torch.optim.lr_scheduler.ReduceLROnPlateau                  
+│         _partial_: true                                                       
+│         mode: min                                                             
+│         factor: 0.1                                                           
+│         patience: 10                                                          
+│       model:                                                                  
+│         _target_: src.models.components.simple_transformer_encoder_pooling.Sim
+│         input_size: 8                                                         
+│         d_model: 32                                                           
+│         nhead: 2                                                              
+│         dim_feedforward: 256                                                  
+│         dropout: 0.1                                                          
+│         num_layers: 2                                                         
+│         output_size: 1                                                        
+│                                                                               
+├── callbacks
+│   └── model_checkpoint:                                                       
+│         _target_: pytorch_lightning.callbacks.ModelCheckpoint                 
+│         dirpath: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/
+│         filename: epoch_{epoch:03d}                                           
+│         monitor: val/loss                                                     
+│         verbose: false                                                        
+│         save_last: true                                                       
+│         save_top_k: 1                                                         
+│         mode: min                                                             
+│         auto_insert_metric_name: false                                        
+│         save_weights_only: false                                              
+│         every_n_train_steps: null                                             
+│         train_time_interval: null                                             
+│         every_n_epochs: null                                                  
+│         save_on_train_epoch_end: null                                         
+│       early_stopping:                                                         
+│         _target_: pytorch_lightning.callbacks.EarlyStopping                   
+│         monitor: val/loss                                                     
+│         min_delta: 0.0                                                        
+│         patience: 100                                                         
+│         verbose: false                                                        
+│         mode: min                                                             
+│         strict: true                                                          
+│         check_finite: true                                                    
+│         stopping_threshold: null                                              
+│         divergence_threshold: null                                            
+│         check_on_train_epoch_end: null                                        
+│       model_summary:                                                          
+│         _target_: pytorch_lightning.callbacks.RichModelSummary                
+│         max_depth: -1                                                         
+│       rich_progress_bar:                                                      
+│         _target_: pytorch_lightning.callbacks.RichProgressBar                 
+│                                                                               
+├── logger
+│   └── wandb:                                                                  
+│         _target_: pytorch_lightning.loggers.wandb.WandbLogger                 
+│         save_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs
+│         offline: false                                                        
+│         id: null                                                              
+│         anonymous: null                                                       
+│         project: lightning-hydra-template                                     
+│         log_model: false                                                      
+│         prefix: ''                                                            
+│         entity: graphnet-team                                                 
+│         group: transformer                                                    
+│         tags: []                                                              
+│         job_type: ''                                                          
+│                                                                               
+├── trainer
+│   └── _target_: pytorch_lightning.Trainer                                     
+│       default_root_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydr
+│       min_epochs: 1                                                           
+│       max_epochs: 30                                                          
+│       accelerator: gpu                                                        
+│       devices: 1                                                              
+│       check_val_every_n_epoch: 1                                              
+│       deterministic: false                                                    
+│                                                                               
+├── paths
+│   └── root_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra       
+│       data_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/data/ 
+│       log_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/  
+│       output_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs
+│       work_dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra       
+│                                                                               
+├── extras
+│   └── ignore_warnings: false                                                  
+│       enforce_tags: true                                                      
+│       print_config: true                                                      
+│                                                                               
+├── task_name
+│   └── train                                                                   
+├── tags
+│   └── ['dev']                                                                 
+├── train
+│   └── True                                                                    
+├── test
+│   └── True                                                                    
+├── ckpt_path
+│   └── None                                                                    
+└── seed
+    └── None                                                                    
+[[36m2023-03-07 11:51:48,648[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating datamodule <src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamodule>[0m
+/groups/icecube/moust/storage/event_selections/event_no_numu_track_energy_15_200_nhits_4_400_sorted.csv
+[[36m2023-03-07 11:51:49,156[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating model <src.models.simple_transformer_encoder_pooling_module.SimpleTransformerEncoderPoolingLitModule>[0m
+[[36m2023-03-07 11:51:49,196[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Created a temporary directory at /tmp/tmpxj_4ttwl[0m
+[[36m2023-03-07 11:51:49,196[0m][[34mtorch.distributed.nn.jit.instantiator[0m][[32mINFO[0m] - Writing /tmp/tmpxj_4ttwl/_remote_module_non_sriptable.py[0m
+/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/pytorch_lightning/utilities/parsing.py:263: UserWarning: Attribute 'model' is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=['model'])`.
+  rank_zero_warn(
+[[36m2023-03-07 11:51:49,219[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating callbacks...[0m
+[[36m2023-03-07 11:51:49,219[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.ModelCheckpoint>[0m
+[[36m2023-03-07 11:51:49,221[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.EarlyStopping>[0m
+[[36m2023-03-07 11:51:49,222[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichModelSummary>[0m
+[[36m2023-03-07 11:51:49,222[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating callback <pytorch_lightning.callbacks.RichProgressBar>[0m
+[[36m2023-03-07 11:51:49,223[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating loggers...[0m
+[[36m2023-03-07 11:51:49,223[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Instantiating logger <pytorch_lightning.loggers.wandb.WandbLogger>[0m
+wandb: Currently logged in as: moustholmes (graphnet-team). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.13.10
+wandb: Run data is saved locally in /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/train/runs/2023-03-07_11-51-48/wandb/run-20230307_115150-u6bcsj52
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run leafy-bee-13
+wandb: ⭐️ View project at https://wandb.ai/graphnet-team/lightning-hydra-template
+wandb: 🚀 View run at https://wandb.ai/graphnet-team/lightning-hydra-template/runs/u6bcsj52
+[[36m2023-03-07 11:51:55,039[0m][[34m__main__[0m][[32mINFO[0m] - Instantiating trainer <pytorch_lightning.Trainer>[0m
+/groups/icecube/moust/miniconda3/envs/hydra/lib/python3.9/site-packages/lightning_fabric/plugins/environments/slurm.py:166: PossibleUserWarning: The `srun` command is available on your system but is not used. HINT: If your intention is to run Lightning on SLURM, prepend your python command with `srun` like so: srun python src/train.py trainer=gpu ...
+  rank_zero_warn(
+Trainer already configured with model summary callbacks: [<class 'pytorch_lightning.callbacks.rich_model_summary.RichModelSummary'>]. Skipping setting a default `ModelSummary` callback.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+[[36m2023-03-07 11:51:55,108[0m][[34m__main__[0m][[32mINFO[0m] - Logging hyperparameters![0m
+[[36m2023-03-07 11:51:55,113[0m][[34m__main__[0m][[32mINFO[0m] - Starting training![0m
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
+┏━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┓
+┃    ┃ Name                                                  ┃ Type   ┃ Params ┃
+┡━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━┩
+│ 0  │ model                                                 │ Simpl… │ 63.4 K │
+│ 1  │ model.fc_in                                           │ Linear │    288 │
+│ 2  │ model.encoder_layer                                   │ Trans… │ 21.0 K │
+│ 3  │ model.encoder_layer.self_attn                         │ Multi… │  4.2 K │
+│ 4  │ model.encoder_layer.self_attn.out_proj                │ NonDy… │  1.1 K │
+│ 5  │ model.encoder_layer.linear1                           │ Linear │  8.4 K │
+│ 6  │ model.encoder_layer.dropout                           │ Dropo… │      0 │
+│ 7  │ model.encoder_layer.linear2                           │ Linear │  8.2 K │
+│ 8  │ model.encoder_layer.norm1                             │ Layer… │     64 │
+│ 9  │ model.encoder_layer.norm2                             │ Layer… │     64 │
+│ 10 │ model.encoder_layer.dropout1                          │ Dropo… │      0 │
+│ 11 │ model.encoder_layer.dropout2                          │ Dropo… │      0 │
+│ 12 │ model.transformer_encoder                             │ Trans… │ 42.0 K │
+│ 13 │ model.transformer_encoder.layers                      │ Modul… │ 42.0 K │
+│ 14 │ model.transformer_encoder.layers.0                    │ Trans… │ 21.0 K │
+│ 15 │ model.transformer_encoder.layers.0.self_attn          │ Multi… │  4.2 K │
+│ 16 │ model.transformer_encoder.layers.0.self_attn.out_proj │ NonDy… │  1.1 K │
+│ 17 │ model.transformer_encoder.layers.0.linear1            │ Linear │  8.4 K │
+│ 18 │ model.transformer_encoder.layers.0.dropout            │ Dropo… │      0 │
+│ 19 │ model.transformer_encoder.layers.0.linear2            │ Linear │  8.2 K │
+│ 20 │ model.transformer_encoder.layers.0.norm1              │ Layer… │     64 │
+│ 21 │ model.transformer_encoder.layers.0.norm2              │ Layer… │     64 │
+│ 22 │ model.transformer_encoder.layers.0.dropout1           │ Dropo… │      0 │
+│ 23 │ model.transformer_encoder.layers.0.dropout2           │ Dropo… │      0 │
+│ 24 │ model.transformer_encoder.layers.1                    │ Trans… │ 21.0 K │
+│ 25 │ model.transformer_encoder.layers.1.self_attn          │ Multi… │  4.2 K │
+│ 26 │ model.transformer_encoder.layers.1.self_attn.out_proj │ NonDy… │  1.1 K │
+│ 27 │ model.transformer_encoder.layers.1.linear1            │ Linear │  8.4 K │
+│ 28 │ model.transformer_encoder.layers.1.dropout            │ Dropo… │      0 │
+│ 29 │ model.transformer_encoder.layers.1.linear2            │ Linear │  8.2 K │
+│ 30 │ model.transformer_encoder.layers.1.norm1              │ Layer… │     64 │
+│ 31 │ model.transformer_encoder.layers.1.norm2              │ Layer… │     64 │
+│ 32 │ model.transformer_encoder.layers.1.dropout1           │ Dropo… │      0 │
+│ 33 │ model.transformer_encoder.layers.1.dropout2           │ Dropo… │      0 │
+│ 34 │ model.fc_out                                          │ Linear │     33 │
+│ 35 │ loss_fn                                               │ MSELo… │      0 │
+│ 36 │ train_loss                                            │ MeanM… │      0 │
+│ 37 │ val_loss                                              │ MeanM… │      0 │
+│ 38 │ test_loss                                             │ MeanM… │      0 │
+└────┴───────────────────────────────────────────────────────┴────────┴────────┘
+Trainable params: 63.4 K                                                        
+Non-trainable params: 0                                                         
+Total params: 63.4 K                                                            
+Total estimated model params size (MB): 0                                       
+`Trainer.fit` stopped: `max_epochs=30` reached.
+Epoch 29/29 ━━━━━━━━━━━━━━━ 1910/1910 0:01:34 •       24.51it/s loss: 968 v_num:
+                                      0:00:00                   sj52 val/loss:  
+                                                                1096.283        
+                                                                train/loss:     
+                                                                978.182         
+[[36m2023-03-07 12:34:25,260[0m][[34m__main__[0m][[32mINFO[0m] - Starting testing![0m
+Restoring states from the checkpoint path at /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/train/runs/2023-03-07_11-51-48/checkpoints/epoch_028.ckpt
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1]
+Loaded model weights from checkpoint at /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/train/runs/2023-03-07_11-51-48/checkpoints/epoch_028.ckpt
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃        Test metric        ┃       DataLoader 0        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│         test/loss         │     968.3566284179688     │
+└───────────────────────────┴───────────────────────────┘
+Testing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 211/211 0:00:06 • 0:00:00 34.23it/s 
+[[36m2023-03-07 12:34:36,183[0m][[34m__main__[0m][[32mINFO[0m] - Best ckpt path: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/train/runs/2023-03-07_11-51-48/checkpoints/epoch_028.ckpt[0m
+[[36m2023-03-07 12:34:36,184[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Output dir: /lustre/hpc/icecube/moust/work/GraphNet-lightning-hydra/logs/train/runs/2023-03-07_11-51-48[0m
+[[36m2023-03-07 12:34:36,184[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Closing loggers...[0m
+[[36m2023-03-07 12:34:36,184[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Closing wandb![0m
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:               epoch ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇███
+wandb:           test/loss ▁
+wandb:          train/loss █▃▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: trainer/global_step ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇████
+wandb:            val/loss ██▇▅▅▄▄▃▃▄▄▃▃▃▂▂▁▂▁▂▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:               epoch 30
+wandb:           test/loss 968.35663
+wandb:          train/loss 978.18201
+wandb: trainer/global_step 50940
+wandb:            val/loss 1096.28296
+wandb: 
+wandb: 🚀 View run leafy-bee-13 at: https://wandb.ai/graphnet-team/lightning-hydra-template/runs/u6bcsj52
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./logs/train/runs/2023-03-07_11-51-48/wandb/run-20230307_115150-u6bcsj52/logs
+[[36m2023-03-07 12:34:45,504[0m][[34msrc.utils.utils[0m][[32mINFO[0m] - Metric name is None! Skipping metric value retrieval...[0m

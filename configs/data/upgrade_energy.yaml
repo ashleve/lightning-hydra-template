@@ -1,7 +1,7 @@
 _target_: src.data.simple_icecube_SQL_datamodule.SimpleIceCubeSQLDatamodule
 db_path: /groups/icecube/petersen/GraphNetDatabaseRepository/Upgrade_Data/sqlite3/dev_step4_upgrade_028_with_noise_dynedge_pulsemap_v3_merger_aftercrash.db
 event_no_list_path: /groups/icecube/moust/storage/event_selections/event_no_numu_track_energy_15_200_nhits_4_400_sorted.csv
-pulsemap: SplitInIcePulses_dynedge_v2_Pulses 
+pulsemap: SplitInIcePulses_dynedge_v2_Pulses
 input_cols: 
   - charge
   - dom_time
@@ -14,7 +14,7 @@ input_cols:
 target_cols: energy
 truth_table: truth
 data_dir: ${paths.data_dir}
-batch_size: 8
+batch_size: 256
 # train_val_test_split: [879064,109884,109884] #[0.8, 0.1, 0.1]
 num_workers: 16
 pin_memory: False
