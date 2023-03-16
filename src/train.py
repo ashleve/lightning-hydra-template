@@ -2,10 +2,11 @@ from typing import List, Optional, Tuple
 
 import hydra
 import pyrootutils
-import pytorch_lightning as pl
+import lightning as pl
+import torch
 from omegaconf import DictConfig
-from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
-from pytorch_lightning.loggers import Logger
+from lightning import Callback, LightningDataModule, LightningModule, Trainer
+from lightning.pytorch.loggers import Logger
 
 pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # ------------------------------------------------------------------------------------ #
@@ -54,6 +55,12 @@ def train(cfg: DictConfig) -> Tuple[dict, dict]:
 
     log.info(f"Instantiating model <{cfg.model._target_}>")
     model: LightningModule = hydra.utils.instantiate(cfg.model)
+
+    """
+    if pl.__version__ >= "2.0.0":
+        log.info(f"Compile model <{cfg.model._target_}>")
+        model = torch.compile(model, mode=cfg.get("compile_model").mode)
+    """
 
     log.info("Instantiating callbacks...")
     callbacks: List[Callback] = utils.instantiate_callbacks(cfg.get("callbacks"))

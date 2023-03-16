@@ -1,7 +1,7 @@
 from typing import Any, List
 
 import torch
-from pytorch_lightning import LightningModule
+from lightning import LightningModule
 from torchmetrics import MaxMetric, MeanMetric
 from torchmetrics.classification.accuracy import Accuracy
 
@@ -78,14 +78,14 @@ class MNISTLitModule(LightningModule):
         self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         # we can return here dict with any tensors
-        # and then read it in some callback or in `training_epoch_end()` below
+        # and then read it in some callback or in `on_train_epoch_end()` below
         # remember to always return loss from `training_step()` or backpropagation will fail!
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def training_epoch_end(self, outputs: List[Any]):
+    def on_train_epoch_end(self):
         # `outputs` is a list of dicts returned from `training_step()`
 
-        # Warning: when overriding `training_epoch_end()`, lightning accumulates outputs from all batches of the epoch
+        # Warning: when overriding `on_train_epoch_end()`, lightning accumulates outputs from all batches of the epoch
         # this may not be an issue when training on mnist
         # but on larger datasets/models it's easy to run into out-of-memory errors
 
@@ -105,7 +105,7 @@ class MNISTLitModule(LightningModule):
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def validation_epoch_end(self, outputs: List[Any]):
+    def on_validation_epoch_end(self):
         acc = self.val_acc.compute()  # get current val acc
         self.val_acc_best(acc)  # update best so far val acc
         # log `val_acc_best` as a value through `.compute()` method, instead of as a metric object
@@ -123,7 +123,7 @@ class MNISTLitModule(LightningModule):
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def test_epoch_end(self, outputs: List[Any]):
+    def on_test_epoch_end(self, outputs: List[Any]):
         pass
 
     def configure_optimizers(self):

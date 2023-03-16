@@ -1,9 +1,9 @@
-# https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.callbacks.EarlyStopping.html
+# https://pytorch-lightning.readthedocs.io/en/latest/api/lightning.callbacks.EarlyStopping.html
 
 # Monitor a metric and stop training when it stops improving.
 # Look at the above link for more detailed information.
 early_stopping:
-  _target_: pytorch_lightning.callbacks.EarlyStopping
+  _target_: lightning.pytorch.callbacks.EarlyStopping
   monitor: ??? # quantity to be monitored, must be specified !!!
   min_delta: 0. # minimum change in the monitored quantity to qualify as an improvement
   patience: 3 # number of checks with no improvement after which training will be stopped
