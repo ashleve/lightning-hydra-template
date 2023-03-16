@@ -56,11 +56,9 @@ def train(cfg: DictConfig) -> Tuple[dict, dict]:
     log.info(f"Instantiating model <{cfg.model._target_}>")
     model: LightningModule = hydra.utils.instantiate(cfg.model)
 
-    """
-    if pl.__version__ >= "2.0.0":
+    if pl.__version__ >= "2.0.0" and torch.cuda.is_available():
         log.info(f"Compile model <{cfg.model._target_}>")
         model = torch.compile(model, mode=cfg.get("compile_model").mode)
-    """
 
     log.info("Instantiating callbacks...")
     callbacks: List[Callback] = utils.instantiate_callbacks(cfg.get("callbacks"))
@@ -109,7 +107,6 @@ def train(cfg: DictConfig) -> Tuple[dict, dict]:
 
 @hydra.main(version_base="1.3", config_path="../configs", config_name="train.yaml")
 def main(cfg: DictConfig) -> Optional[float]:
-
     # train the model
     metric_dict, _ = train(cfg)
 
