@@ -123,7 +123,7 @@ class MNISTLitModule(LightningModule):
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def on_test_epoch_end(self, outputs: List[Any]):
+    def on_test_epoch_end(self):
         pass
 
     def configure_optimizers(self):
