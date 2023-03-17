@@ -2,9 +2,9 @@ from typing import List, Tuple
 
 import hydra
 import pyrootutils
-from omegaconf import DictConfig
 from lightning import LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
+from omegaconf import DictConfig
 
 pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # ------------------------------------------------------------------------------------ #

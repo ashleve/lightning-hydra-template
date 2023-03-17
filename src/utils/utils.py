@@ -5,10 +5,10 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List
 
 import hydra
-from omegaconf import DictConfig
 from lightning import Callback
 from lightning.pytorch.loggers import Logger
 from lightning.pytorch.utilities import rank_zero_only
+from omegaconf import DictConfig
 
 from src.utils import pylogger, rich_utils
 
