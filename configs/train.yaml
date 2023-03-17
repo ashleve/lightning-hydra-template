@@ -49,7 +49,3 @@ ckpt_path: null
 
 # seed for random number generators in pytorch, numpy and python.random
 seed: null
-
-# compile model
-compile_model:
-  mode: "default"
