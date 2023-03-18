@@ -911,6 +911,7 @@ bash Miniconda3-latest-Linux-x86_64.sh
 ```
 
 Update conda:
+
 ```bash
 conda update -n base -c defaults conda
 ```
