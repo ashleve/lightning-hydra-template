@@ -28,8 +28,8 @@ _Suggestions are always welcome!_
 
 **Why you might want to use it:**
 
-✅ Speed <br>
-Rapidly iterate over models, datasets, tasks and experiments on different accelerators like multi-GPUs or TPUs.
+✅ Save on boilerplate <br>
+Easily add new models, datasets, tasks and experiments.
 
 ✅ Education <br>
 Thoroughly commented. You can use this repo as a learning resource.
@@ -46,7 +46,10 @@ Lightning and Hydra are still evolving and integrate many libraries, which means
 Template is not really adjusted for building data pipelines that depend on each other. It's more efficient to use it for model prototyping on ready-to-use data.
 
 ❌ Overfitted to simple use case <br>
-The configuration setup is built with simple lightning training in mind. You might need to put some effort to adjust it for different use cases, e.g. lightning lite.
+The configuration setup is built with simple lightning training in mind. You might need to put some effort to adjust it for different use cases, e.g. lightning fabric.
+
+❌ Might not support your workflow <br>
+For example, you can't resume hydra-based multirun or hyperparameter search.
 
 > **Note**: _Keep in mind this is unofficial community project._
 
@@ -318,9 +321,6 @@ python train.py debug=overfit
 
 # raise exception if there are any numerical anomalies in tensors, like NaN or +/-inf
 python train.py +trainer.detect_anomaly=true
-
-# log second gradient norm of the model
-python train.py +trainer.track_grad_norm=2
 
 # use only 20% of the data
 python train.py +trainer.limit_train_batches=0.2 \
