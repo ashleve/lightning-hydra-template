@@ -1,7 +1,7 @@
 from typing import List, Optional, Tuple
 
 import hydra
-import lightning as pl
+import lightning as L
 import pyrootutils
 import torch
 from lightning import Callback, LightningDataModule, LightningModule, Trainer
@@ -48,7 +48,7 @@ def train(cfg: DictConfig) -> Tuple[dict, dict]:
 
     # set seed for random number generators in pytorch, numpy and python.random
     if cfg.get("seed"):
-        pl.seed_everything(cfg.seed, workers=True)
+        L.seed_everything(cfg.seed, workers=True)
 
     log.info(f"Instantiating datamodule <{cfg.data._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.data)
@@ -115,9 +115,7 @@ def main(cfg: DictConfig) -> Optional[float]:
     metric_dict, _ = train(cfg)
 
     # safely retrieve metric value for hydra-based hyperparameter optimization
-    metric_value = utils.get_metric_value(
-        metric_dict=metric_dict, metric_name=cfg.get("optimized_metric")
-    )
+    metric_value = utils.get_metric_value(metric_dict=metric_dict, metric_name=cfg.get("optimized_metric"))
 
     # return optimized metric
     return metric_value
