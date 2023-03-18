@@ -22,7 +22,7 @@ channels:
 
 dependencies:
   - pytorch=2.*
-  - torchvision>=0.15
+  - torchvision=0.*
   - lightning=2.*
   - torchmetrics=0.*
   - hydra-core=1.*
