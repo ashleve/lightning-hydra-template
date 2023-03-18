@@ -28,8 +28,8 @@ _Suggestions are always welcome!_
 
 **Why you might want to use it:**
 
-✅ Speed <br>
-Rapidly iterate over models, datasets, tasks and experiments on different accelerators like multi-GPUs or TPUs.
+✅ Save on boilerplate <br>
+Easily add new models, datasets, tasks, experiments, and train on different accelerators, like multi-GPU, TPU or SLURM clusters.
 
 ✅ Education <br>
 Thoroughly commented. You can use this repo as a learning resource.
@@ -46,7 +46,10 @@ Lightning and Hydra are still evolving and integrate many libraries, which means
 Template is not really adjusted for building data pipelines that depend on each other. It's more efficient to use it for model prototyping on ready-to-use data.
 
 ❌ Overfitted to simple use case <br>
-The configuration setup is built with simple lightning training in mind. You might need to put some effort to adjust it for different use cases, e.g. lightning lite.
+The configuration setup is built with simple lightning training in mind. You might need to put some effort to adjust it for different use cases, e.g. lightning fabric.
+
+❌ Might not support your workflow <br>
+For example, you can't resume hydra-based multirun or hyperparameter search.
 
 > **Note**: _Keep in mind this is unofficial community project._
 
@@ -319,9 +322,6 @@ python train.py debug=overfit
 # raise exception if there are any numerical anomalies in tensors, like NaN or +/-inf
 python train.py +trainer.detect_anomaly=true
 
-# log second gradient norm of the model
-python train.py +trainer.track_grad_norm=2
-
 # use only 20% of the data
 python train.py +trainer.limit_train_batches=0.2 \
 +trainer.limit_val_batches=0.2 +trainer.limit_test_batches=0.2
@@ -434,6 +434,12 @@ pre-commit run -a
 ```
 
 > **Note**: Apply pre-commit hooks to do things like auto-formatting code and configs, performing code analysis or removing output from jupyter notebooks. See [# Best Practices](#best-practices) for more.
+
+Update pre-commit hook versions in `.pre-commit-config.yaml` with:
+
+```bash
+pre-commit autoupdate
+```
 
 </details>
 
@@ -818,7 +824,7 @@ You can use different optimization frameworks integrated with Hydra, like [Optun
 
 The `optimization_results.yaml` will be available under `logs/task_name/multirun` folder.
 
-This approach doesn't support advanced techniques like prunning - for more sophisticated search, you should probably write a dedicated optimization task (without multirun feature).
+This approach doesn't support resuming interrupted search and advanced techniques like prunning - for more sophisticated search and workflows, you should probably write a dedicated optimization task (without multirun feature).
 
 <br>
 
@@ -889,16 +895,25 @@ def on_train_start(self):
 ## Best Practices
 
 <details>
-<summary><b>Use Miniconda for GPU environments</b></summary>
+<summary><b>Use Miniconda</b></summary>
 
-It's usually unnecessary to install full anaconda environment, miniconda should be enough.
-It often makes it easier to install some dependencies, like cudatoolkit for GPU support. It also allows you to access your environments globally.
+It's usually unnecessary to install full anaconda environment, miniconda should be enough (weights around 80MB).
+
+Big advantage of conda is that it allows for installing packages without requiring certain compilers or libraries to be available in the system (since it installs precompiled binaries), so it often makes it easier to install some dependencies e.g. cudatoolkit for GPU support.
+
+It also allows you to access your environments globally which might be more convenient than creating new local environment for every project.
 
 Example installation:
 
 ```bash
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
+```
+
+Update conda:
+
+```bash
+conda update -n base -c defaults conda
 ```
 
 Create new conda environment:
@@ -932,6 +947,12 @@ To reformat all files in the project use command:
 
 ```bash
 pre-commit run -a
+```
+
+To update hook versions in [.pre-commit-config.yaml](.pre-commit-config.yaml) use:
+
+```bash
+pre-commit autoupdate
 ```
 
 </details>
@@ -1035,7 +1056,7 @@ The style guide is available [here](https://pytorch-lightning.readthedocs.io/en/
        def training_step_end():
            ...
 
-       def training_epoch_end():
+       def on_train_epoch_end():
            ...
 
        def validation_step():
@@ -1044,7 +1065,7 @@ The style guide is available [here](https://pytorch-lightning.readthedocs.io/en/
        def validation_step_end():
            ...
 
-       def validation_epoch_end():
+       def on_validation_epoch_end():
            ...
 
        def test_step():
@@ -1053,7 +1074,7 @@ The style guide is available [here](https://pytorch-lightning.readthedocs.io/en/
        def test_step_end():
            ...
 
-       def test_epoch_end():
+       def on_test_epoch_end():
            ...
 
        def configure_optimizers():
@@ -1245,7 +1266,7 @@ git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
 # create conda environment and install dependencies
-conda env create -f environment.yaml
+conda env create -f environment.yaml -n myenv
 
 # activate conda environment
 conda activate myenv
