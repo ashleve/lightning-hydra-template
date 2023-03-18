@@ -1035,7 +1035,7 @@ The style guide is available [here](https://pytorch-lightning.readthedocs.io/en/
        def training_step_end():
            ...
 
-       def training_epoch_end():
+       def on_train_epoch_end():
            ...
 
        def validation_step():
@@ -1044,7 +1044,7 @@ The style guide is available [here](https://pytorch-lightning.readthedocs.io/en/
        def validation_step_end():
            ...
 
-       def validation_epoch_end():
+       def on_validation_epoch_end():
            ...
 
        def test_step():
@@ -1053,7 +1053,7 @@ The style guide is available [here](https://pytorch-lightning.readthedocs.io/en/
        def test_step_end():
            ...
 
-       def test_epoch_end():
+       def on_test_epoch_end():
            ...
 
        def configure_optimizers():

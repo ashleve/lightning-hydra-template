@@ -3,10 +3,10 @@ from importlib.util import find_spec
 from typing import Callable, List
 
 import hydra
+from lightning import Callback
+from lightning.pytorch.loggers import Logger
+from lightning.pytorch.utilities import rank_zero_only
 from omegaconf import DictConfig
-from pytorch_lightning import Callback
-from pytorch_lightning.loggers import Logger
-from pytorch_lightning.utilities import rank_zero_only
 
 from src.utils import pylogger, rich_utils
 
