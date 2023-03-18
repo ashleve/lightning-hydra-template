@@ -435,6 +435,12 @@ pre-commit run -a
 
 > **Note**: Apply pre-commit hooks to do things like auto-formatting code and configs, performing code analysis or removing output from jupyter notebooks. See [# Best Practices](#best-practices) for more.
 
+Update pre-commit hook versions in `.pre-commit-config.yaml` with:
+
+```bash
+pre-commit autoupdate
+```
+
 </details>
 
 <details>
@@ -932,6 +938,12 @@ To reformat all files in the project use command:
 
 ```bash
 pre-commit run -a
+```
+
+To update hook versions in [.pre-commit-config.yaml](.pre-commit-config.yaml) use:
+
+```bash
+pre-commit autoupdate
 ```
 
 </details>
