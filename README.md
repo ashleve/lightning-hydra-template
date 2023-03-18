@@ -910,6 +910,11 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
 
+Update conda:
+```bash
+conda update -n base -c defaults conda
+```
+
 Create new conda environment:
 
 ```bash
@@ -1260,7 +1265,7 @@ git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
 # create conda environment and install dependencies
-conda env create -f environment.yaml
+conda env create -f environment.yaml -n myenv
 
 # activate conda environment
 conda activate myenv
