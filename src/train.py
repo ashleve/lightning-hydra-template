@@ -3,6 +3,7 @@ from typing import List, Optional, Tuple
 import hydra
 import lightning as pl
 import pyrootutils
+import torch
 from lightning import Callback, LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
@@ -76,6 +77,10 @@ def train(cfg: DictConfig) -> Tuple[dict, dict]:
     if logger:
         log.info("Logging hyperparameters!")
         utils.log_hyperparameters(object_dict)
+
+    if cfg.get("compile"):
+        log.info("Compiling model!")
+        model = torch.compile(model)
 
     if cfg.get("train"):
         log.info("Starting training!")
