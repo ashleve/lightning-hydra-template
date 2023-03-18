@@ -29,7 +29,7 @@ _Suggestions are always welcome!_
 **Why you might want to use it:**
 
 ✅ Save on boilerplate <br>
-Easily add new models, datasets, tasks and experiments.
+Easily add new models, datasets, tasks, experiments, and train on different accelerators, like multi-GPU, TPU or SLURM clusters.
 
 ✅ Education <br>
 Thoroughly commented. You can use this repo as a learning resource.
