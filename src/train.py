@@ -1,11 +1,12 @@
 from typing import List, Optional, Tuple
 
 import hydra
+import lightning as pl
 import pyrootutils
-import pytorch_lightning as pl
+import torch
+from lightning import Callback, LightningDataModule, LightningModule, Trainer
+from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
-from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
-from pytorch_lightning.loggers import Logger
 
 pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # ------------------------------------------------------------------------------------ #
