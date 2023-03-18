@@ -10,8 +10,7 @@ from torchvision.transforms import transforms
 class MNISTDataModule(LightningDataModule):
     """Example of LightningDataModule for MNIST dataset.
 
-    A DataModule implements 5 key methods:
-
+    A DataModule implements 6 key methods:
         def prepare_data(self):
             # things to do on 1 GPU/TPU (not on every GPU/TPU in DDP)
             # download data, pre-process, split, save to disk, etc...
@@ -32,7 +31,7 @@ class MNISTDataModule(LightningDataModule):
     split, transform and process the data.
 
     Read the docs:
-        https://pytorch-lightning.readthedocs.io/en/latest/data/datamodule.html
+        https://lightning.ai/docs/pytorch/latest/data/datamodule.html
     """
 
     def __init__(
