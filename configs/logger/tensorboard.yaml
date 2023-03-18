@@ -1,7 +1,7 @@
 # https://www.tensorflow.org/tensorboard/
 
 tensorboard:
-  _target_: lightning.pytorch.loggers.tensorboard.TensorBoardLogger
+  _target_: pytorch_lightning.loggers.tensorboard.TensorBoardLogger
   save_dir: "${paths.output_dir}/tensorboard/"
   name: null
   log_graph: False

@@ -1,7 +1,7 @@
-from typing import Any
+from typing import Any, List
 
 import torch
-from lightning import LightningModule
+from pytorch_lightning import LightningModule
 from torchmetrics import MaxMetric, MeanMetric
 from torchmetrics.classification.accuracy import Accuracy
 
@@ -10,15 +10,15 @@ class MNISTLitModule(LightningModule):
     """Example of LightningModule for MNIST classification.
 
     A LightningModule organizes your PyTorch code into 6 sections:
-        - Initialization (__init__)
-        - Train Loop (training_step)
+        - Computations (init)
+        - Train loop (training_step)
         - Validation loop (validation_step)
         - Test loop (test_step)
         - Prediction Loop (predict_step)
         - Optimizers and LR Schedulers (configure_optimizers)
 
     Docs:
-        https://lightning.ai/docs/pytorch/latest/common/lightning_module.html
+        https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html
     """
 
     def __init__(
@@ -77,10 +77,21 @@ class MNISTLitModule(LightningModule):
         self.log("train/loss", self.train_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
 
-        # return loss or backpropagation will fail
-        return loss
+        # we can return here dict with any tensors
+        # and then read it in some callback or in `training_epoch_end()` below
+        # remember to always return loss from `training_step()` or backpropagation will fail!
+        return {"loss": loss, "preds": preds, "targets": targets}
 
-    def on_train_epoch_end(self):
+    def training_epoch_end(self, outputs: List[Any]):
+        # `outputs` is a list of dicts returned from `training_step()`
+
+        # Warning: when overriding `training_epoch_end()`, lightning accumulates outputs from all batches of the epoch
+        # this may not be an issue when training on mnist
+        # but on larger datasets/models it's easy to run into out-of-memory errors
+
+        # consider detaching tensors before returning them from `training_step()`
+        # or using `on_train_epoch_end()` instead which doesn't accumulate outputs
+
         pass
 
     def validation_step(self, batch: Any, batch_idx: int):
@@ -92,7 +103,9 @@ class MNISTLitModule(LightningModule):
         self.log("val/loss", self.val_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
 
-    def on_validation_epoch_end(self):
+        return {"loss": loss, "preds": preds, "targets": targets}
+
+    def validation_epoch_end(self, outputs: List[Any]):
         acc = self.val_acc.compute()  # get current val acc
         self.val_acc_best(acc)  # update best so far val acc
         # log `val_acc_best` as a value through `.compute()` method, instead of as a metric object
@@ -108,7 +121,9 @@ class MNISTLitModule(LightningModule):
         self.log("test/loss", self.test_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
 
-    def on_test_epoch_end(self):
+        return {"loss": loss, "preds": preds, "targets": targets}
+
+    def test_epoch_end(self, outputs: List[Any]):
         pass
 
     def configure_optimizers(self):
@@ -116,7 +131,7 @@ class MNISTLitModule(LightningModule):
         Normally you'd need one. But in the case of GANs or similar you might have multiple.
 
         Examples:
-            https://lightning.ai/docs/pytorch/latest/common/lightning_module.html#configure-optimizers
+            https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
         """
         optimizer = self.hparams.optimizer(params=self.parameters())
         if self.hparams.scheduler is not None:

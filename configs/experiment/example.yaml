@@ -36,5 +36,3 @@ logger:
   wandb:
     tags: ${tags}
     group: "mnist"
-  aim:
-    experiment: "mnist"

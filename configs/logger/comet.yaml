@@ -1,7 +1,7 @@
 # https://www.comet.ml
 
 comet:
-  _target_: lightning.pytorch.loggers.comet.CometLogger
+  _target_: pytorch_lightning.loggers.comet.CometLogger
   api_key: ${oc.env:COMET_API_TOKEN} # api key is loaded from environment variable
   save_dir: "${paths.output_dir}"
   project_name: "lightning-hydra-template"
