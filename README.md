@@ -895,13 +895,13 @@ def on_train_start(self):
 ## Best Practices
 
 <details>
-<summary><b>Use Miniconda for GPU environments</b></summary>
+<summary><b>Use Miniconda</b></summary>
 
 It's usually unnecessary to install full anaconda environment, miniconda should be enough (weights around 80 MB).
 
-Big advantage of conda, is that it allows for installing packages without requiring certain compilers or libraries to be available in the system (since it installs precompiled binaries), so it often makes it easier to install some dependencies, like cudatoolkit for GPU support.
+Big advantage of conda is that it allows for installing packages without requiring certain compilers or libraries to be available in the system (since it installs precompiled binaries), so it often makes it easier to install some dependencies, like cudatoolkit for GPU support.
 
-It also allows you to access your environments globally.
+It also allows you to access your environments globally which might be more convenient than creating new local environment for every project.
 
 Example installation:
 
