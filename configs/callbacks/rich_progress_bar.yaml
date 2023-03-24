@@ -1,4 +1,4 @@
-# https://pytorch-lightning.readthedocs.io/en/latest/api/lightning.callbacks.RichProgressBar.html
+# https://pytorch-lightning.readthedocs.io/en/latest/api/lightning.pytorch.callbacks.RichProgressBar.html
 
 # Create a progress bar with rich text formatting.
 # Look at the above link for more detailed information.
