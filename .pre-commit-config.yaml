@@ -71,6 +71,7 @@ repos:
     hooks:
       - id: prettier
         types: [yaml]
+        exclude: "environment.yaml"
 
   # shell scripts linter
   - repo: https://github.com/shellcheck-py/shellcheck-py
