@@ -270,35 +270,6 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
             collate_fn= pad_collate,
             shuffle=False,
         )
-    # def train_dataloader(self):
-    #     return DataLoader(
-    #         dataset=self.data_train,
-    #         batch_size=self.hparams.batch_size,
-    #         num_workers=self.hparams.num_workers,
-    #         pin_memory=self.hparams.pin_memory,
-    #         collate_fn= pad_collate,
-    #         sampler=SequentialSampler(self.data_train)
-    #     )
-
-    # def val_dataloader(self):
-    #     return DataLoader(
-    #         dataset=self.data_val,
-    #         batch_size=self.hparams.batch_size,
-    #         num_workers=self.hparams.num_workers,
-    #         pin_memory=self.hparams.pin_memory,
-    #         collate_fn= pad_collate,
-    #         sampler=SequentialSampler(self.data_val)
-    #     )
-
-    # def test_dataloader(self):
-    #     return DataLoader(
-    #         dataset=self.data_test,
-    #         batch_size=self.hparams.batch_size,
-    #         num_workers=self.hparams.num_workers,
-    #         pin_memory=self.hparams.pin_memory,
-    #         collate_fn= pad_collate,
-    #         sampler=SequentialSampler(self.data_test)
-    #     )
 
     def teardown(self, stage: Optional[str] = None):
         """Clean up after fit or test."""
