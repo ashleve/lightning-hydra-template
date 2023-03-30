@@ -1,6 +1,4 @@
 # https://lightning.ai/docs/pytorch/latest/api/lightning.pytorch.callbacks.RichProgressBar.html
 
-# Create a progress bar with rich text formatting.
-# Look at the above link for more detailed information.
 rich_progress_bar:
   _target_: lightning.pytorch.callbacks.RichProgressBar
