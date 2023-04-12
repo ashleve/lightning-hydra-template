@@ -54,7 +54,7 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
         input_cols: List[str],
         target_cols: List[str],
         truth_table: str = "truth",
-        batch_size: int = 64,
+        max_token_count: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
     ):
