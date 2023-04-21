@@ -33,8 +33,6 @@ task_name: "train"
 # tags to help you identify your experiments
 # you can overwrite this in experiment configs
 # overwrite from command line with `python train.py tags="[first_tag, second_tag]"`
-# appending lists from command line is currently not supported :(
-# https://github.com/facebookresearch/hydra/issues/1547
 tags: ["dev"]
 
 # set False to skip model training
@@ -43,6 +41,9 @@ train: True
 # evaluate on test set, using best model weights achieved during training
 # lightning chooses best weights based on the metric specified in checkpoint callback
 test: True
+
+# compile model for faster training with pytorch 2.0
+compile: False
 
 # simply provide checkpoint path to resume training
 ckpt_path: null
