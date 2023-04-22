@@ -25,13 +25,18 @@ dependencies:
   - torchvision=0.*
   - pytorch-lightning=2.*
   - torchmetrics=0.*
+  - torch-cluster==1.6.0
+  - torch_scatter==2.0.9
+  - torch-sparse==0.6.13
+  - torch_geometric==2.2.0
+  - torchdata==0.6.0
   - hydra-core=1.*
   - rich=13.*
   - pre-commit=3.*
   - pytest=7.*
 
   # --------- loggers --------- #
-  # - wandb
+  - wandb
   # - neptune-client
   # - mlflow
   # - comet-ml
