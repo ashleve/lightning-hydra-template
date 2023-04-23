@@ -145,8 +145,8 @@ git clone https://github.com/MoustHolmes/GraphNet-lightning-hydra
 cd lightning-hydra-template
 
 # [OPTIONAL] create conda environment
-conda create -n myenv python=3.9
-conda activate myenv
+conda create --name icet python=3.8 gcc_linux-64 gxx_linux-64 libgcc cudatoolkit=11.5 -c conda-forge -y
+conda activate myenvs
 
 # install pytorch according to instructions
 # https://pytorch.org/get-started/
@@ -1248,7 +1248,7 @@ git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
 # [OPTIONAL] create conda environment
-conda create -n myenv python=3.9
+conda create --name icet python=3.8 gcc_linux-64 gxx_linux-64 libgcc cudatoolkit=11.5 -c conda-forge -y
 conda activate myenv
 
 # install pytorch according to instructions

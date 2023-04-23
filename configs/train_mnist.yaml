@@ -4,9 +4,9 @@
 # order of defaults determines the order in which configs override each other
 defaults:
   - _self_
-  - data: minst.yaml # OSCnext_norminal_energy.yaml #mnist.yaml
-  - model: minst.yaml # mnist.yaml
-  - callbacks: default.yaml
+  - data: mnist.yaml # OSCnext_norminal_energy.yaml #mnist.yaml
+  - model: mnist.yaml # mnist.yaml
+  - callbacks: default_mnist.yaml
   - logger: wandb # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml
   - paths: default.yaml
