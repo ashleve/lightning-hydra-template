@@ -34,3 +34,7 @@ class SimpleTransformerEncoderPooling(nn.Module):
         x = x[:, 0, :]
         x = self.fc_out(x)
         return x.squeeze()
+    
+
+if __name__ == "__main__":
+    _ = SimpleTransformerEncoderPooling()

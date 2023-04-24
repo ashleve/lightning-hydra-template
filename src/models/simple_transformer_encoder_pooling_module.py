@@ -1,8 +1,8 @@
 from typing import Any, List
 
 import torch
-from pytorch_lightning import LightningModule
-from torchmetrics import MaxMetric, MeanMetric
+from lightning import LightningModule
+from torchmetrics import MaxMetric, MinMetric, MeanMetric
 # from torchmetrics.classification.accuracy import Accuracy
 
 class SimpleTransformerEncoderPoolingLitModule(LightningModule):
@@ -48,15 +48,15 @@ class SimpleTransformerEncoderPoolingLitModule(LightningModule):
         self.test_loss = MeanMetric()
 
         # for tracking best so far validation accuracy
-        # self.val_acc_best = MaxMetric()
+        self.val_loss_best = MinMetric()
 
     def forward(self, x: torch.Tensor,pad_mask=None):
         return self.model(x,pad_mask)
 
     def on_train_start(self):
         # by default lightning executes validation step sanity checks before training starts,
-        # so we need to make sure val_acc_best doesn't store accuracy from these checks
-        # self.val_acc_best.reset()
+        # so it's worth to make sure validation metrics don't store results from these checks
+        self.val_loss.reset()
         pass
 
     def model_step(self, batch: Any):
@@ -81,16 +81,7 @@ class SimpleTransformerEncoderPoolingLitModule(LightningModule):
         # remember to always return loss from `training_step()` or backpropagation will fail!
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def training_epoch_end(self, outputs: List[Any]):
-        # `outputs` is a list of dicts returned from `training_step()`
-
-        # Warning: when overriding `training_epoch_end()`, lightning accumulates outputs from all batches of the epoch
-        # this may not be an issue when training on mnist
-        # but on larger datasets/models it's easy to run into out-of-memory errors
-
-        # consider detaching tensors before returning them from `training_step()`
-        # or using `on_train_epoch_end()` instead which doesn't accumulate outputs
-
+    def on_train_epoch_end(self):
         pass
 
     def validation_step(self, batch: Any, batch_idx: int):
@@ -104,15 +95,12 @@ class SimpleTransformerEncoderPoolingLitModule(LightningModule):
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def validation_epoch_end(self, outputs: List[Any]):
-        # acc = self.val_acc.compute()  # get current val acc
-        # self.val_acc_best(acc)  # update best so far val acc
-
+    def on_validation_epoch_end(self):
+        acc = self.val_loss.compute()  # get current val acc
+        self.val_loss_best(acc)  # update best so far val acc
         # log `val_acc_best` as a value through `.compute()` method, instead of as a metric object
         # otherwise metric would be reset by lightning after each epoch
-
-        # self.log("val/acc_best", self.val_acc_best.compute(), prog_bar=True)
-        pass
+        self.log("val/loss_best", self.val_loss_best.compute(), prog_bar=True)
 
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, targets = self.model_step(batch)
@@ -125,7 +113,7 @@ class SimpleTransformerEncoderPoolingLitModule(LightningModule):
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def test_epoch_end(self, outputs: List[Any]):
+    def on_test_epoch_end(self):
         pass
 
     def configure_optimizers(self):
@@ -133,7 +121,7 @@ class SimpleTransformerEncoderPoolingLitModule(LightningModule):
         Normally you'd need one. But in the case of GANs or similar you might have multiple.
 
         Examples:
-            https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#configure-optimizers
+            https://lightning.ai/docs/pytorch/latest/common/lightning_module.html#configure-optimizers
         """
         optimizer = self.hparams.optimizer(params=self.parameters())
         if self.hparams.scheduler is not None:
