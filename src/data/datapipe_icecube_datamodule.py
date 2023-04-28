@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
-from pytorch_lightning import LightningDataModule
+from lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, SequentialSampler #random_split
 from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
 from torch.utils.data import Dataset, DataLoader, random_split
@@ -269,7 +269,8 @@ class IceCubeDatamodule(LightningDataModule):
         target_cols: List[str],
         truth_table: str = "truth",
         max_token_count: int = 64,
-        num_workers: int = 0,
+        num_workers: int = 16,
+        multi_processing_reading_service_num_workers: int = 4,
         pin_memory: bool = False,
     ):
         super().__init__()
@@ -280,18 +281,13 @@ class IceCubeDatamodule(LightningDataModule):
 
         # data transformations here if any
 
-
-        # self.event_no_list = np.genfromtxt(self.hparams.event_no_list_path,dtype=int)
-    
         self.datapipe_train: Optional[IterDataPipe] = None
         self.datapipe_val: Optional[IterDataPipe] = None
         self.datapipe_test: Optional[IterDataPipe] = None
 
-        self.rs = MultiProcessingReadingService(num_workers=2)
-
-    # @property
-    # def num_classes(self):
-    #     return 10
+        self.rs = MultiProcessingReadingService(
+            num_workers = self.hparams.multi_processing_reading_service_num_workers
+            )
 
     def prepare_data(self):
         """Download data if needed.
@@ -306,56 +302,44 @@ class IceCubeDatamodule(LightningDataModule):
         This method is called by lightning with both `trainer.fit()` and `trainer.test()`, so be
         careful not to execute things like random split twice!
         """
+
         # sampler = SequentialSampler()
         if not self.datapipe_train and not self.datapipe_val and not self.datapipe_test:
             self.datapipe_train, self.datapipe_val, self.datapipe_test = make_train_test_val_datapipe(
-                self.hparams.train_csv_file,
-                self.hparams.test_csv_file,
-                self.hparams.val_csv_file,
-                self.hparams.db_path, 
-                self.hparams.input_cols, 
-                self.hparams.pulsemap, 
-                self.hparams.target_cols, 
-                self.hparams.truth_table, 
-                self.hparams.max_token_count,
-                upgrade_feature_transform,
-                truth_transform = None
+                train_csv_file = self.hparams.train_csv_file,
+                test_csv_file = self.hparams.test_csv_file,
+                val_csv_file = self.hparams.val_csv_file,
+                db_path = self.hparams.db_path, 
+                input_cols = self.hparams.input_cols, 
+                pulsemap = self.hparams.pulsemap, 
+                target_cols = self.hparams.target_cols, 
+                truth_table = self.hparams.truth_table, 
+                max_token_count = self.hparams.max_token_count,
+                feature_transform = upgrade_feature_transform,
+                truth_transform = None,
             )
 
     def train_dataloader(self):
         self.icecube_train_dataloader = DataLoader2(
-            self.datapipe_train,
-            # self.rs
+            datapipe = self.datapipe_train,
+            reading_service = self.rs,
         )
-        print()
-        for i, batch in enumerate(self.datapipe_train):
-
-            xx, y, pad, = batch
-            print(sum([len(x) for x in xx]))
-            print(len(y))
-            print()
-            if i == 2:
-                break
-
-        print()
-        print()
-        print(iter(self.icecube_train_dataloader))
-        print()
         return self.icecube_train_dataloader
 
     def val_dataloader(self):
         self.icecube_val_dataloader = DataLoader2( 
-            self.datapipe_val
+            datapipe = self.datapipe_val,
+            reading_service = self.rs,
             )
         return self.icecube_val_dataloader
 
     def test_dataloader(self):
         self.icecube_test_dataloader = DataLoader2( 
-            self.datapipe_val
+            datapipe = self.datapipe_val,
+            reading_service = self.rs,
             )
         return self.icecube_test_dataloader
             
-
     def teardown(self, stage: Optional[str] = None):
         """Clean up after fit or test."""
 
