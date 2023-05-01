@@ -17,8 +17,8 @@ model:
   _target_: src.models.components.simple_transformer_encoder_pooling.SimpleTransformerEncoderPooling
   input_size: 8
   d_model: 32
-  nhead: 2
+  nhead: 4
   dim_feedforward: 256
   dropout: 0.1 
-  num_layers: 2
+  num_layers: 17
   output_size: 1

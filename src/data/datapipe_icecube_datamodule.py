@@ -322,21 +322,21 @@ class IceCubeDatamodule(LightningDataModule):
     def train_dataloader(self):
         self.icecube_train_dataloader = DataLoader2(
             datapipe = self.datapipe_train,
-            reading_service = self.rs,
+            # reading_service = self.rs,
         )
         return self.icecube_train_dataloader
 
     def val_dataloader(self):
         self.icecube_val_dataloader = DataLoader2( 
             datapipe = self.datapipe_val,
-            reading_service = self.rs,
+            # reading_service = self.rs,
             )
         return self.icecube_val_dataloader
 
     def test_dataloader(self):
         self.icecube_test_dataloader = DataLoader2( 
             datapipe = self.datapipe_val,
-            reading_service = self.rs,
+            # reading_service = self.rs,
             )
         return self.icecube_test_dataloader
             
