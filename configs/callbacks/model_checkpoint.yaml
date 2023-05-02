@@ -1,7 +1,9 @@
+<<<<<<< HEAD
 # https://pytorch-lightning.readthedocs.io/en/latest/api/lightning.callbacks.ModelCheckpoint.html
+=======
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.callbacks.ModelCheckpoint.html
+>>>>>>> main
 
-# Save the model periodically by monitoring a quantity.
-# Look at the above link for more detailed information.
 model_checkpoint:
   _target_: lightning.pytorch.callbacks.ModelCheckpoint
   dirpath: null # directory to save the model file
