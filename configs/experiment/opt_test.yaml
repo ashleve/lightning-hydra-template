@@ -27,15 +27,15 @@ trainer:
 
 model:
   model:
-    num_layers: 2
-    nhead: 2
+    num_layers: 17
+    nhead: 4
     d_model: 64
     dim_feedforward: 256
 
 data:
   max_token_count: 16384
   num_workers: 16
-  multi_processing_reading_service_num_workers: 4
+  multi_processing_reading_service_num_workers: 16
 
 
 logger:

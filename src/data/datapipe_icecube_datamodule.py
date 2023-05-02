@@ -345,10 +345,15 @@ class IceCubeDatamodule(LightningDataModule):
             
     def teardown(self, stage: Optional[str] = None):
         """Clean up after fit or test."""
+        self.rs.finalize()
         # self.dataloader_train.shutdown()
         # self.dataloader_test.shutdown()
         # self.dataloader_val.shutdown()
         # pass
+    def dataloader_shutdown(self):
+        self.dataloader_train.shutdown()
+        self.dataloader_test.shutdown()
+        self.dataloader_val.shutdown()
 
     def state_dict(self):
         """Extra things to save to checkpoint."""
