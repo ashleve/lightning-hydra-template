@@ -1,0 +1,44 @@
+# @package _global_
+
+# to execute this experiment run:
+# python src/train.py experiment=opt_test
+
+defaults:
+  - override /data: upgrade_energy.yaml
+  - override /model: simple_transformer_encoder_pooling.yaml
+  - override /callbacks: default.yaml
+  - override /trainer: default.yaml
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["transformer", "optimizer_test"]
+
+seed: 12345
+
+trainer:
+  min_epochs: 1
+  max_epochs: 2
+  accelerator: gpu
+  precision: 16-mixed
+  limit_train_batches: 1000
+  limit_val_batches: 100
+  limit_test_batches: 100
+
+model:
+  model:
+    num_layers: 2
+    nhead: 2
+    d_model: 64
+    dim_feedforward: 256
+
+data:
+  max_token_count: 16384
+  num_workers: 16
+  multi_processing_reading_service_num_workers: 4
+
+
+logger:
+  wandb:
+    tags: ${tags}
+    group: "transformer"

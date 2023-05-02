@@ -9,7 +9,7 @@ accelerator: cpu
 devices: 1
 
 # mixed precision for extra speed-up
-# precision: 16
+# precision: 16-mixed
 
 # perform a validation loop every N training epochs
 check_val_every_n_epoch: 1

@@ -59,6 +59,20 @@ class QuerySQL(IterDataPipe):
                 features = torch.Tensor(conn.execute(f"SELECT {self.input_cols_str} FROM {self.pulsemap} WHERE event_no == {event_no}").fetchall())
                 truth = torch.Tensor(conn.execute(f"SELECT {self.target_cols_str} FROM {self.truth_table} WHERE event_no == {event_no}").fetchall())
                 yield (features, truth)
+def upgrade_transform_func(x):
+    features, truth = x
+    features[:, 0] = torch.log10(features[:, 0]) / 2.0  # charge
+    features[:, 1] /= 2e04  # dom_time
+    features[:, 1] -= 1.0
+    features[:, 2] /= 500.0  # dom_x
+    features[:, 3] /= 500.0  # dom_y
+    features[:, 4] /= 500.0  # dom_z
+    features[:, 5] /= 0.05  # pmt_area
+    # features[:,6] /= 1.  # pmt_dir_x
+    # features[:,7] /= 1.  # pmt_dir_y
+    # features[:,8] /= 1.  # pmt_dir_z
+    truth = torch.log10(truth)
+    return (features, truth)
 
 @functional_datapipe("transform_data")
 class TransfromData(IterDataPipe):
@@ -133,22 +147,6 @@ class PadBatch(IterDataPipe):
 def len_fn(datapipe):
   features, _ = datapipe
   return features.shape[0]
-
-# def make_train_test_val_datapipe(
-#         csv_file, db_path, 
-#         input_cols, 
-#         pulsemap, 
-#         target_cols, 
-#         truth_table, 
-#         max_token_count,
-#         feature_transform,
-#         truth_transform = None
-# ):
-#     datapipe = ReadCSV( csv_file)
-#     datapipe = QuerySQL( db_path, datapipe, input_cols, pulsemap, target_cols, truth_table)
-#     datapipe = TransfromData( datapipe, feature_transform, truth_transform)
-#     datapipe = MaxTokenBucketizer( datapipe, max_token_count = max_token_count, len_fn = len_fn, include_padding = True)
-#     datapipe = PadBatch(datapipe)
     
 def make_datapipe(
         csv_file, 
@@ -169,9 +167,7 @@ def make_datapipe(
         target_cols = target_cols,
         truth_table = truth_table,
         ) \
-        .transform_data(
-        feature_transform, 
-        truth_transform
+        .map(upgrade_transform_func
         ) \
         .max_token_bucketize(
         max_token_count = max_token_count,
@@ -285,6 +281,10 @@ class IceCubeDatamodule(LightningDataModule):
         self.datapipe_val: Optional[IterDataPipe] = None
         self.datapipe_test: Optional[IterDataPipe] = None
 
+        self.dataloader_train: Optional[DataLoader2] = None
+        self.dataloader_val: Optional[DataLoader2] = None
+        self.dataloader_test: Optional[DataLoader2] = None
+
         self.rs = MultiProcessingReadingService(
             num_workers = self.hparams.multi_processing_reading_service_num_workers
             )
@@ -318,35 +318,37 @@ class IceCubeDatamodule(LightningDataModule):
                 feature_transform = upgrade_feature_transform,
                 truth_transform = None,
             )
+        if not self.dataloader_train and not self.dataloader_val and not self.dataloader_test:
+            self.dataloader_train = DataLoader2(
+            datapipe = self.datapipe_train,
+            reading_service = self.rs,
+            )
+            self.dataloader_val = DataLoader2( 
+            datapipe = self.datapipe_val,
+            reading_service = self.rs,
+            )
+            self.dataloader_test = DataLoader2( 
+            datapipe = self.datapipe_test,
+            reading_service = self.rs,
+            )
 
     def train_dataloader(self):
-        self.icecube_train_dataloader = DataLoader2(
-            datapipe = self.datapipe_train,
-            # reading_service = self.rs,
-        )
-        return self.icecube_train_dataloader
+        
+        return self.dataloader_train
 
     def val_dataloader(self):
-        self.icecube_val_dataloader = DataLoader2( 
-            datapipe = self.datapipe_val,
-            # reading_service = self.rs,
-            )
-        return self.icecube_val_dataloader
+        
+        return self.dataloader_val
 
     def test_dataloader(self):
-        self.icecube_test_dataloader = DataLoader2( 
-            datapipe = self.datapipe_val,
-            # reading_service = self.rs,
-            )
-        return self.icecube_test_dataloader
+        return self.dataloader_test
             
     def teardown(self, stage: Optional[str] = None):
         """Clean up after fit or test."""
-
-        self.icecube_train_dataloader.shutdown()
-        self.icecube_test_dataloader.shutdown()
-        self.icecube_val_dataloader.shutdown()
-        pass
+        # self.dataloader_train.shutdown()
+        # self.dataloader_test.shutdown()
+        # self.dataloader_val.shutdown()
+        # pass
 
     def state_dict(self):
         """Extra things to save to checkpoint."""
