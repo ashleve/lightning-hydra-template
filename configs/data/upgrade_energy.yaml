@@ -18,7 +18,7 @@ target_cols:
 truth_table: truth
 max_token_count: 4096 #16384
 num_workers: 16
-multi_processing_reading_service_num_workers: 4
+# multi_processing_reading_service_num_workers: 4
 # data_dir: ${paths.data_dir}
 # batch_size: 256
 # # train_val_test_split: [879064,109884,109884] #[0.8, 0.1, 0.1]

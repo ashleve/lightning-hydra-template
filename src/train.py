@@ -86,6 +86,7 @@ def train(cfg: DictConfig) -> Tuple[dict, dict]:
         log.info("Starting training!")
         trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
 
+
     train_metrics = trainer.callback_metrics
 
     if cfg.get("test"):
@@ -97,11 +98,18 @@ def train(cfg: DictConfig) -> Tuple[dict, dict]:
         trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
         log.info(f"Best ckpt path: {ckpt_path}")
 
+        
+    
     test_metrics = trainer.callback_metrics
 
     # merge train and test metrics
     metric_dict = {**train_metrics, **test_metrics}
 
+    
+    # datamodule.shutdown()
+    datamodule.val_dataloader2.shutdown()
+    datamodule.test_dataloader2.shutdown()
+    datamodule.train_dataloader2.shutdown()
     return metric_dict, object_dict
 
 
