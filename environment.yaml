@@ -29,6 +29,7 @@ dependencies:
   - rich=13.*
   - pre-commit=3.*
   - pytest=7.*
+  - pydantic=1.10
 
   # --------- loggers --------- #
   # - wandb

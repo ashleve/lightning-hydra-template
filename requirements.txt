@@ -21,4 +21,5 @@ pyrootutils     # standardizing the project root setup
 pre-commit      # hooks for applying linters on commit
 rich            # beautiful text formatting in terminal
 pytest          # tests
+pydantic>=1.10, < 2.0  # needed by pytest
 # sh            # for running bash commands in some tests (linux/macos only)
