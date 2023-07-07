@@ -9,6 +9,7 @@ name: myenv
 
 channels:
   - pytorch
+  - nvidia  # comment this out if using cpuonly
   - conda-forge
   - defaults
 
@@ -20,8 +21,12 @@ channels:
 # users, but allows for different minor and patch versions of packages where backwards
 # compatibility is usually guaranteed
 
+# Note: this is assuming a Linux-based installation, for other platforms see https://pytorch.org/get-started/locally/
+
 dependencies:
   - pytorch=2.*
+  - pytorch-cuda=11.8  # comment this out if using cpuonly
+  # - cpuonly          # uncomment if you want a cpu-only installation
   - torchvision=0.*
   - lightning=2.*
   - torchmetrics=0.*
