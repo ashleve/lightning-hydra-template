@@ -1,4 +1,5 @@
 # --------- pytorch --------- #
+python~=3.10.0
 torch>=2.0.0
 torchvision>=0.15.0
 lightning>=2.0.0

@@ -26,6 +26,7 @@ class MNISTLitModule(LightningModule):
         net: torch.nn.Module,
         optimizer: torch.optim.Optimizer,
         scheduler: torch.optim.lr_scheduler,
+        compile: bool,
     ):
         super().__init__()
 
@@ -111,6 +112,18 @@ class MNISTLitModule(LightningModule):
     def on_test_epoch_end(self):
         pass
 
+    def setup(self, stage: str):
+        """Lightning hook that is called at the beginning of fit (train + validate), validate,
+        test, or predict.
+
+        This is a good hook when you need to build models dynamically or adjust something about them. This hook is
+        called on every process when using DDP.
+
+        :param stage: Either `"fit"`, `"validate"`, `"test"`, or `"predict"`.
+        """
+        if self.hparams.compile and stage == "fit":
+            self.net = torch.compile(self.net)
+
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
         Normally you'd need one. But in the case of GANs or similar you might have multiple.
@@ -134,4 +147,4 @@ class MNISTLitModule(LightningModule):
 
 
 if __name__ == "__main__":
-    _ = MNISTLitModule(None, None, None)
+    _ = MNISTLitModule(None, None, None, None)
