@@ -224,23 +224,7 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
                 truth_table = self.hparams.truth_table,
             )
 
-        # dataset = SimpleDataset(
-        #     db_path = self.hparams.db_path, 
-        #     event_no_list_path = self.hparams.event_no_list_path,
-        #     pulsemap = self.hparams.pulsemap,
-        #     input_cols = self.hparams.input_cols,
-        #     target_cols = self.hparams.target_cols,
-        #     truth_table = self.hparams.truth_table,
-        # )
-
-        # # load and split datasets only if not loaded already
-        # if not self.data_train and not self.data_val and not self.data_test:
-            
-        #     self.data_train, self.data_val, self.data_test = random_split(
-        #         dataset=dataset,
-        #         lengths= self.hparams.train_val_test_split, # revert when upgrading torch
-        #         generator=torch.Generator().manual_seed(42),
-        #     )
+ 
     def train_dataloader(self):
         return DataLoader(
             dataset=self.data_train,
@@ -270,7 +254,43 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
             collate_fn= pad_collate,
             shuffle=False,
         )
-    # def train_dataloader(self):
+
+
+    def teardown(self, stage: Optional[str] = None):
+        """Clean up after fit or test."""
+        pass
+
+    def state_dict(self):
+        """Extra things to save to checkpoint."""
+        return {}
+
+    def load_state_dict(self, state_dict: Dict[str, Any]):
+        """Things to do when loading checkpoint."""
+        pass
+
+
+if __name__ == "__main__":
+    _ = SimpleIceCubeSQLDatamodule()
+
+       # dataset = SimpleDataset(
+        #     db_path = self.hparams.db_path, 
+        #     event_no_list_path = self.hparams.event_no_list_path,
+        #     pulsemap = self.hparams.pulsemap,
+        #     input_cols = self.hparams.input_cols,
+        #     target_cols = self.hparams.target_cols,
+        #     truth_table = self.hparams.truth_table,
+        # )
+
+        # # load and split datasets only if not loaded already
+        # if not self.data_train and not self.data_val and not self.data_test:
+            
+        #     self.data_train, self.data_val, self.data_test = random_split(
+        #         dataset=dataset,
+        #         lengths= self.hparams.train_val_test_split, # revert when upgrading torch
+        #         generator=torch.Generator().manual_seed(42),
+        #     )
+
+            # def train_dataloader(self):
     #     return DataLoader(
     #         dataset=self.data_train,
     #         batch_size=self.hparams.batch_size,
@@ -299,19 +319,3 @@ class SimpleIceCubeSQLDatamodule(LightningDataModule):
     #         collate_fn= pad_collate,
     #         sampler=SequentialSampler(self.data_test)
     #     )
-
-    def teardown(self, stage: Optional[str] = None):
-        """Clean up after fit or test."""
-        pass
-
-    def state_dict(self):
-        """Extra things to save to checkpoint."""
-        return {}
-
-    def load_state_dict(self, state_dict: Dict[str, Any]):
-        """Things to do when loading checkpoint."""
-        pass
-
-
-if __name__ == "__main__":
-    _ = SimpleIceCubeSQLDatamodule()

@@ -175,7 +175,7 @@ def make_datapipe(
         len_fn = len_fn,
         include_padding = True
         ) \
-        .pad_batch()
+        .pad_batch()#.fullsync()
     return datapipe
 
 def make_train_test_val_datapipe(
@@ -343,22 +343,38 @@ class IceCubeDatamodule(LightningDataModule):
                 datapipe = self.test_datapipe,
                 reading_service = self.rs,
             )
-            # print("Dataloaders created")
+        #     # print("Dataloaders created")
 
     def train_dataloader(self):
-        
+        # return DataLoader2(
+        #         datapipe = self.train_datapipe,
+        #         reading_service = self.rs,
+        #     ) 
         return self.train_dataloader2
 
     def val_dataloader(self):
-        
+        # return DataLoader2( 
+        #         datapipe = self.val_datapipe,
+        #         reading_service = self.rs,
+        #     ) 
         return self.val_dataloader2
 
     def test_dataloader(self):
+        # return DataLoader2( 
+        #         datapipe = self.test_datapipe,
+        #         reading_service = self.rs,
+        #     ) 
         return self.test_dataloader2
             
     def teardown(self, stage: Optional[str] = None):
         """Clean up after fit or test."""
-        pass
+        
+        print("Shutting down dataloaders")
+        self.rs.finalize()
+        # self.train_dataloader2.shutdown()
+        # self.val_dataloader2.shutdown()
+        # self.test_dataloader2.shutdown()
+        # pass
 
     def shutdown(self):
         self.train_dataloader2.shutdown()

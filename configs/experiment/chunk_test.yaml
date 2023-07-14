@@ -4,7 +4,7 @@
 # python src/train.py experiment=opt_test
 
 defaults:
-  - override /data: upgrade_energy.yaml
+  - override /data: chunk_dataset.yaml
   - override /model: simple_transformer_encoder_pooling.yaml
   - override /callbacks: default.yaml
   - override /trainer: default.yaml
@@ -12,7 +12,7 @@ defaults:
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-tags: ["transformer", "optimizer_test"]
+tags: ["transformer", "chunk_test"]
 
 seed: 12345
 
@@ -26,19 +26,19 @@ trainer:
   num_nodes: 1
   reload_dataloaders_every_n_epochs: 1
   # sync_batchnorm: True
-  limit_train_batches: 20
-  limit_val_batches: 10
-  limit_test_batches: 10
+  # limit_train_batches: 20
+  # limit_val_batches: 10
+  # limit_test_batches: 10
   
 model:
   model:
+    input_size: 5
     num_layers: 2
     nhead: 2
     d_model: 64
     dim_feedforward: 256
 
 data:
-  max_token_count: 50000
   num_workers: 2
 
 

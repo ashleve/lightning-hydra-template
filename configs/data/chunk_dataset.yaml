@@ -1,0 +1,33 @@
+_target_: data.chunk_datamodule.ChunkIceCubeSQLDatamodule
+db_path: "/groups/icecube/petersen/GraphNetDatabaseRepository/Upgrade_Data/sqlite3/dev_step4_upgrade_028_with_noise_dynedge_pulsemap_v3_merger_aftercrash.db"
+pulsemap: "SplitInIcePulses_dynedge_v2_Pulses"
+input_cols: ["dom_x", "dom_y", "dom_z", "dom_time", "charge"]
+target_cols: "inelasticity"
+chunk_csv_train: 
+  # - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/train/output_1.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/train/output_2.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/train/output_3.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/train/output_4.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/train/output_5.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/train/output_6.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/train/output_7.csv
+chunk_csv_test:
+  # - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/test/output_1.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/test/output_2.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/test/output_3.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/test/output_4.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/test/output_5.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/test/output_6.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/test/output_7.csv
+chunk_csv_val:
+  # - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/val/output_1.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/val/output_2.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/val/output_3.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/val/output_4.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/val/output_5.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/val/output_6.csv
+  - /groups/icecube/moust/storage/cached_event_no/upgrade_numu/val/output_7.csv
+batch_sizes: [512, 256, 128, 64, 32, 16]
+truth_table: "truth"
+num_workers: 16
+pin_memory: False

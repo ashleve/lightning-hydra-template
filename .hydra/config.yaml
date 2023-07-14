@@ -1,0 +1,124 @@
+task_name: train
+tags:
+- transformer
+- optimizer_test
+train: true
+test: true
+compile: false
+ckpt_path: null
+seed: 12345
+data:
+  _target_: src.data.datapipe_icecube_datamodule.IceCubeDatamodule
+  db_path: /groups/icecube/petersen/GraphNetDatabaseRepository/Upgrade_Data/sqlite3/dev_step4_upgrade_028_with_noise_dynedge_pulsemap_v3_merger_aftercrash.db
+  pulsemap: SplitInIcePulses_dynedge_v2_Pulses
+  train_csv_file: /groups/icecube/moust/work/IceCubeEncoderTransformer/selections/train_upgrade_pure_numu_selection_event_no.csv
+  test_csv_file: /groups/icecube/moust/work/IceCubeEncoderTransformer/selections/test_upgrade_pure_numu_selection_event_no.csv
+  val_csv_file: /groups/icecube/moust/work/IceCubeEncoderTransformer/selections/valid_upgrade_pure_numu_selection_event_no.csv
+  input_cols:
+  - charge
+  - dom_time
+  - dom_x
+  - dom_y
+  - dom_z
+  - pmt_dir_x
+  - pmt_dir_y
+  - pmt_dir_z
+  target_cols:
+  - energy
+  truth_table: truth
+  max_token_count: 50000
+  num_workers: 4
+model:
+  _target_: src.models.simple_transformer_encoder_pooling_module.SimpleTransformerEncoderPoolingLitModule
+  optimizer:
+    _target_: torch.optim.Adam
+    _partial_: true
+    lr: 0.001
+    weight_decay: 0.0
+  scheduler:
+    _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+    _partial_: true
+    mode: min
+    factor: 0.1
+    patience: 10
+  model:
+    _target_: src.models.components.simple_transformer_encoder_pooling.SimpleTransformerEncoderPooling
+    input_size: 8
+    d_model: 64
+    nhead: 2
+    dim_feedforward: 256
+    dropout: 0.1
+    num_layers: 2
+    output_size: 1
+callbacks:
+  model_checkpoint:
+    _target_: lightning.pytorch.callbacks.ModelCheckpoint
+    dirpath: ${paths.output_dir}/checkpoints
+    filename: epoch_{epoch:03d}
+    monitor: val/loss
+    verbose: false
+    save_last: true
+    save_top_k: 1
+    mode: min
+    auto_insert_metric_name: false
+    save_weights_only: false
+    every_n_train_steps: null
+    train_time_interval: null
+    every_n_epochs: null
+    save_on_train_epoch_end: null
+  early_stopping:
+    _target_: lightning.pytorch.callbacks.EarlyStopping
+    monitor: val/loss
+    min_delta: 0.0
+    patience: 100
+    verbose: false
+    mode: min
+    strict: true
+    check_finite: true
+    stopping_threshold: null
+    divergence_threshold: null
+    check_on_train_epoch_end: null
+  model_summary:
+    _target_: lightning.pytorch.callbacks.RichModelSummary
+    max_depth: -1
+  rich_progress_bar:
+    _target_: lightning.pytorch.callbacks.RichProgressBar
+logger:
+  wandb:
+    _target_: lightning.pytorch.loggers.wandb.WandbLogger
+    save_dir: ${paths.output_dir}
+    offline: false
+    id: null
+    anonymous: null
+    project: lightning-hydra-template
+    log_model: false
+    prefix: ''
+    entity: graphnet-team
+    group: transformer
+    tags: ${tags}
+    job_type: ''
+trainer:
+  _target_: lightning.pytorch.trainer.Trainer
+  default_root_dir: ${paths.output_dir}
+  min_epochs: 1
+  max_epochs: 3
+  accelerator: gpu
+  devices: 2
+  check_val_every_n_epoch: 1
+  deterministic: false
+  strategy: ddp
+  num_nodes: 1
+  sync_batchnorm: true
+  limit_train_batches: 20
+  limit_val_batches: 10
+  limit_test_batches: 10
+paths:
+  root_dir: ${oc.env:PROJECT_ROOT}
+  data_dir: ${paths.root_dir}/data/
+  log_dir: ${paths.root_dir}/logs/
+  output_dir: ${hydra:runtime.output_dir}
+  work_dir: ${hydra:runtime.cwd}
+extras:
+  ignore_warnings: false
+  enforce_tags: true
+  print_config: true
