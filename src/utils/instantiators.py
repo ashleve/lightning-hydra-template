@@ -11,8 +11,11 @@ log = pylogger.get_pylogger(__name__)
 
 
 def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
-    """Instantiates callbacks from config."""
+    """Instantiates callbacks from config.
 
+    :param callbacks_cfg: A DictConfig object containing callback configurations.
+    :return: A list of instantiated callbacks.
+    """
     callbacks: List[Callback] = []
 
     if not callbacks_cfg:
@@ -31,8 +34,11 @@ def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
 
 
 def instantiate_loggers(logger_cfg: DictConfig) -> List[Logger]:
-    """Instantiates loggers from config."""
+    """Instantiates loggers from config.
 
+    :param logger_cfg: A DictConfig object containing logger configurations.
+    :return: A list of instantiated loggers.
+    """
     logger: List[Logger] = []
 
     if not logger_cfg:
