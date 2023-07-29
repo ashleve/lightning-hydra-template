@@ -2,13 +2,13 @@ from typing import List, Optional, Tuple
 
 import hydra
 import lightning as L
-import pyrootutils
+import rootutils
 import torch
 from lightning import Callback, LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
 
-pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
+rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # ------------------------------------------------------------------------------------ #
 # the setup_root above is equivalent to:
 # - adding project root dir to PYTHONPATH
@@ -23,7 +23,7 @@ pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # 1. either install project as a package or move entry files to project root dir
 # 2. set `root_dir` to "." in "configs/paths/default.yaml"
 #
-# more info: https://github.com/ashleve/pyrootutils
+# more info: https://github.com/ashleve/rootutils
 # ------------------------------------------------------------------------------------ #
 
 from src import utils
