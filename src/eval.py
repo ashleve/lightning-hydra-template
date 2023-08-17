@@ -1,12 +1,12 @@
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 import hydra
-import pyrootutils
+import rootutils
 from lightning import LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
 
-pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
+rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # ------------------------------------------------------------------------------------ #
 # the setup_root above is equivalent to:
 # - adding project root dir to PYTHONPATH
@@ -21,7 +21,7 @@ pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # 1. either install project as a package or move entry files to project root dir
 # 2. set `root_dir` to "." in "configs/paths/default.yaml"
 #
-# more info: https://github.com/ashleve/pyrootutils
+# more info: https://github.com/ashleve/rootutils
 # ------------------------------------------------------------------------------------ #
 
 from src import utils
@@ -30,19 +30,15 @@ log = utils.get_pylogger(__name__)
 
 
 @utils.task_wrapper
-def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
+def evaluate(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """Evaluates given checkpoint on a datamodule testset.
 
     This method is wrapped in optional @task_wrapper decorator, that controls the behavior during
     failure. Useful for multiruns, saving info about the crash, etc.
 
-    Args:
-        cfg (DictConfig): Configuration composed by Hydra.
-
-    Returns:
-        Tuple[dict, dict]: Dict with metrics and dict with all instantiated objects.
+    :param cfg: DictConfig configuration composed by Hydra.
+    :return: Tuple[dict, dict] with metrics and dict with all instantiated objects.
     """
-
     assert cfg.ckpt_path
 
     log.info(f"Instantiating datamodule <{cfg.data._target_}>")
@@ -82,6 +78,10 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
 
 @hydra.main(version_base="1.3", config_path="../configs", config_name="eval.yaml")
 def main(cfg: DictConfig) -> None:
+    """Main entry point for evaluation.
+
+    :param cfg: DictConfig configuration composed by Hydra.
+    """
     # apply extra utilities
     # (e.g. ask for tags if none are provided in cfg, print cfg tree, etc.)
     utils.extras(cfg)
