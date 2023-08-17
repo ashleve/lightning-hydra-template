@@ -7,7 +7,7 @@ from omegaconf import DictConfig
 
 from src.utils import pylogger
 
-log = pylogger.get_pylogger(__name__)
+log = pylogger.get_ranked_pylogger(__name__)
 
 
 def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:

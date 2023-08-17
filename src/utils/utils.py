@@ -6,7 +6,7 @@ from omegaconf import DictConfig
 
 from src.utils import pylogger, rich_utils
 
-log = pylogger.get_pylogger(__name__)
+log = pylogger.get_ranked_pylogger(__name__)
 
 
 def extras(cfg: DictConfig) -> None:

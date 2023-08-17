@@ -5,13 +5,13 @@ import rich
 import rich.syntax
 import rich.tree
 from hydra.core.hydra_config import HydraConfig
-from lightning.pytorch.utilities import rank_zero_only
+from lightning_utilities.core.rank_zero import rank_zero_only
 from omegaconf import DictConfig, OmegaConf, open_dict
 from rich.prompt import Prompt
 
 from src.utils import pylogger
 
-log = pylogger.get_pylogger(__name__)
+log = pylogger.get_ranked_pylogger(__name__)
 
 
 @rank_zero_only
