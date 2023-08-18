@@ -37,7 +37,7 @@ def test_train_fast_dev_run_gpu(cfg_train: DictConfig) -> None:
 @RunIf(min_gpus=1)
 @pytest.mark.slow
 def test_train_epoch_gpu_amp(cfg_train: DictConfig) -> None:
-    """Train 1 epoch on GPU with mixed-precision.
+    """Train 1 epoch on CPU with mixed-precision.
 
     :param cfg_train: A DictConfig containing a valid training configuration.
     """
