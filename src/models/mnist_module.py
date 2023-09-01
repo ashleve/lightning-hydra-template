@@ -44,6 +44,7 @@ class MNISTLitModule(LightningModule):
         net: torch.nn.Module,
         optimizer: torch.optim.Optimizer,
         scheduler: torch.optim.lr_scheduler,
+        compile: bool,
     ) -> None:
         """Initialize a `MNISTLitModule`.
 
@@ -176,10 +177,21 @@ class MNISTLitModule(LightningModule):
         """Lightning hook that is called when a test epoch ends."""
         pass
 
-    def configure_optimizers(self) -> Dict[str, Any]:
-        """Configures optimizers and learning-rate schedulers to be used for training.
+    def setup(self, stage: str) -> None:
+        """Lightning hook that is called at the beginning of fit (train + validate), validate,
+        test, or predict.
 
-        Normally you'd need one, but in the case of GANs or similar you might need multiple.
+        This is a good hook when you need to build models dynamically or adjust something about
+        them. This hook is called on every process when using DDP.
+
+        :param stage: Either `"fit"`, `"validate"`, `"test"`, or `"predict"`.
+        """
+        if self.hparams.compile and stage == "fit":
+            self.net = torch.compile(self.net)
+
+    def configure_optimizers(self) -> Dict[str, Any]:
+        """Choose what optimizers and learning-rate schedulers to use in your optimization.
+        Normally you'd need one. But in the case of GANs or similar you might have multiple.
 
         Examples:
             https://lightning.ai/docs/pytorch/latest/common/lightning_module.html#configure-optimizers
@@ -202,4 +214,4 @@ class MNISTLitModule(LightningModule):
 
 
 if __name__ == "__main__":
-    _ = MNISTLitModule(None, None, None)
+    _ = MNISTLitModule(None, None, None, None)
