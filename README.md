@@ -840,7 +840,7 @@ Template comes with CI workflows implemented in Github Actions:
 
 ## Distributed Training
 
-Lightning supports multiple ways of doing distributed training. The most common one is DDP, which spawns separate process for each GPU and averages gradients between them. To learn about other approaches read the [lightning docs](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
+Lightning supports multiple ways of doing distributed training. The most common one is DDP, which spawns separate process for each GPU and averages gradients between them. To learn about other approaches read the [lightning docs](https://lightning.ai/docs/pytorch/latest/advanced/speed.html).
 
 You can run DDP on mnist example with 4 GPUs like this:
 
@@ -848,7 +848,7 @@ You can run DDP on mnist example with 4 GPUs like this:
 python train.py trainer=ddp
 ```
 
-> **Note**: When using DDP you have to be careful how you write your models - read the [docs](https://pytorch-lightning.readthedocs.io/en/latest/advanced/multi_gpu.html).
+> **Note**: When using DDP you have to be careful how you write your models - read the [docs](https://lightning.ai/docs/pytorch/latest/advanced/speed.html).
 
 <br>
 
