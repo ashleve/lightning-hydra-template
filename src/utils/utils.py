@@ -95,12 +95,12 @@ def task_wrapper(task_func: Callable) -> Callable:
     return wrap
 
 
-def get_metric_value(metric_dict: Dict[str, Any], metric_name: Optional[str]) -> float:
+def get_metric_value(metric_dict: Dict[str, Any], metric_name: Optional[str]) -> Optional[float]:
     """Safely retrieves value of the metric logged in LightningModule.
 
     :param metric_dict: A dict containing metric values.
-    :param metric_name: The name of the metric to retrieve, optional.
-    :return: The value of the metric.
+    :param metric_name: If provided, the name of the metric to retrieve.
+    :return: If a metric name was provided, the value of the metric.
     """
     if not metric_name:
         log.info("Metric name is None! Skipping metric value retrieval...")
