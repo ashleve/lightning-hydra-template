@@ -9,6 +9,7 @@ defaults:
   - override /callbacks: default
   - override /trainer: gpu
   - override /paths: default
+  - override /logger: aim
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
@@ -18,8 +19,8 @@ tags: ["coffee", "ms_tcn"]
 seed: 12345
 
 trainer:
-  min_epochs: 100
-  max_epochs: 100
+  min_epochs: 5
+  max_epochs: 5
 
 
 model:
@@ -34,7 +35,8 @@ paths:
   data_dir: '/data/users/hannah.defazio/ptg_nas/data_copy/TCN_data/coffee_conf_10_hands_dist'
 
 logger:
-  tensorboard:
-    prefix: "recreation_test"
   aim:
     experiment: "recreation_test"
+    capture_terminal_logs: true
+
+task_name: "recreation_test"

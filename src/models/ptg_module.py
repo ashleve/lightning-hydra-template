@@ -1,3 +1,4 @@
+from aim import Image
 from typing import Any, Dict, Tuple
 
 import torch
@@ -6,6 +7,10 @@ import torch.nn.functional as F
 from lightning import LightningModule
 from torchmetrics import MaxMetric, MeanMetric
 from torchmetrics.classification.accuracy import Accuracy
+from torchmetrics.classification import MulticlassConfusionMatrix
+
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 class PTGLitModule(LightningModule):
@@ -51,7 +56,7 @@ class PTGLitModule(LightningModule):
         num_classes: int,
         compile: bool,
     ) -> None:
-        """Initialize a `COFFEELitModule`.
+        """Initialize a `PTGLitModule`.
 
         :param net: The model to train.
         :param criterion: Loss Computation
@@ -82,6 +87,10 @@ class PTGLitModule(LightningModule):
 
         # for tracking best so far validation accuracy
         self.val_acc_best = MaxMetric()
+
+
+        self.validation_step_outputs_pred = []
+        self.validation_step_outputs_target = []
 
     def forward(self, x: torch.Tensor, m: torch.Tensor) -> torch.Tensor:
         """Perform a forward pass through the model `self.net`.
@@ -191,6 +200,8 @@ class PTGLitModule(LightningModule):
         self.val_acc(preds, targets[:,-1])
         self.log("val/loss", self.val_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
+        self.validation_step_outputs_target.append(targets[:,-1])
+        self.validation_step_outputs_pred.append(preds)
 
     def on_validation_epoch_end(self) -> None:
         "Lightning hook that is called when a validation epoch ends."
@@ -199,6 +210,27 @@ class PTGLitModule(LightningModule):
         # log `val_acc_best` as a value through `.compute()` method, instead of as a metric object
         # otherwise metric would be reset by lightning after each epoch
         self.log("val/acc_best", self.val_acc_best.compute(), sync_dist=True, prog_bar=True)
+
+        all_targets = torch.concat(self.validation_step_outputs_target)
+        all_preds = torch.concat(self.validation_step_outputs_pred)
+
+        cm = MulticlassConfusionMatrix(num_classes=self.hparams.num_classes)
+        cm_data = cm(all_preds.cpu(), all_targets.cpu()).numpy()
+        cm_data = cm_data.astype(int)
+        fig, ax = plt.subplots(figsize=(10,10))
+        ax= plt.subplot()
+        sns.heatmap(cm_data, annot=True, ax = ax,fmt="d")
+        # labels, title and ticks
+        ax.set_xlabel('Predicted labels')
+        ax.set_ylabel('True labels')
+        ax.set_title(f'CM Validation Epoch {self.current_epoch}')
+        # ax.xaxis.set_ticklabels(classes,rotation=90)
+        # ax.yaxis.set_ticklabels(classes,rotation=0)
+        self.logger.experiment.track(Image(fig), name=f'CM Validation Epoch {self.current_epoch}')
+
+        self.validation_step_outputs_target.clear()
+        self.validation_step_outputs_pred.clear()
+        
 
     def test_step(self, batch: Tuple[torch.Tensor, torch.Tensor], batch_idx: int) -> None:
         """Perform a single test step on a batch of data from the test set.
@@ -214,10 +246,34 @@ class PTGLitModule(LightningModule):
         self.test_acc(preds, targets[:,-1])
         self.log("test/loss", self.test_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
+        
+        self.validation_step_outputs_target.append(targets[:,-1])
+        self.validation_step_outputs_pred.append(preds)
+        
 
     def on_test_epoch_end(self) -> None:
         """Lightning hook that is called when a test epoch ends."""
-        pass
+        # update and log metrics
+
+        all_targets = torch.concat(self.validation_step_outputs_target)
+        all_preds = torch.concat(self.validation_step_outputs_pred)
+
+        cm = MulticlassConfusionMatrix(num_classes=self.hparams.num_classes)
+        cm_data = cm(all_preds.cpu(), all_targets.cpu()).numpy()
+        cm_data = cm_data.astype(int)
+        fig, ax = plt.subplots(figsize=(10,10))
+        ax= plt.subplot()
+        sns.heatmap(cm_data, annot=True, ax = ax,fmt="d")
+        # labels, title and ticks
+        ax.set_xlabel('Predicted labels')
+        ax.set_ylabel('True labels')
+        ax.set_title(f'CM Test Epoch {self.current_epoch}')
+        # ax.xaxis.set_ticklabels(classes,rotation=90)
+        # ax.yaxis.set_ticklabels(classes,rotation=0)
+        self.logger.experiment.track(Image(fig), name=f'CM Test Epoch {self.current_epoch}')
+
+        self.validation_step_outputs_target.clear()
+        self.validation_step_outputs_pred.clear()
 
     def setup(self, stage: str) -> None:
         """Lightning hook that is called at the beginning of fit (train + validate), validate,
