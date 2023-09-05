@@ -1,0 +1,39 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /data: coffee
+  - override /callbacks: default
+  - override /trainer: gpu
+  - override /paths: default
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["coffee", "ms_tcn"]
+
+seed: 12345
+
+trainer:
+  min_epochs: 10
+  max_epochs: 10
+
+
+model:
+  compile: false
+
+data:
+  batch_size: 1024
+  num_workers: 12
+  epoch_length: 20000
+
+paths:
+  data_dir: '/data/users/hannah.defazio/ptg_nas/data_copy/TCN_data/coffee_conf_10_hands_dist'
+
+logger:
+  tensorboard:
+    prefix: "recreation_test"
+  aim:
+    experiment: "recreation_test"

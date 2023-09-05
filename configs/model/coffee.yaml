@@ -1,0 +1,38 @@
+_target_: src.models.coffee_module.CoffeeLitModule
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.001
+  weight_decay: 0.0
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  _partial_: true
+  mode: min
+  factor: 0.1
+  patience: 10
+
+net:
+  _target_: src.models.components.ms_tcs_net.MultiStageModel
+  num_stages: 4 
+  num_layers: 10 
+  num_f_maps: 64
+  dim: 204
+  num_classes: ${data.num_classes}
+
+criterion:
+  _target_: src.models.components.focal_loss.FocalLoss
+  alpha: 0.25 
+  gamma: 2
+  weight: None 
+  reduction: "mean"
+
+# Smoothing loss weight
+smoothing_loss: 0.015
+
+# Number of classes
+num_classes: ${data.num_classes}
+
+# compile model for faster training with pytorch 2.0
+compile: false

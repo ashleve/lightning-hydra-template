@@ -1,0 +1,10 @@
+_target_: src.data.coffee_datamodule.CoffeeDataModule
+data_dir: ${paths.data_dir}
+batch_size: 128
+num_workers: 0
+num_classes: 25
+sample_rate: 1
+window_size: 30
+split: 1
+epoch_length: 10000
+pin_memory: True
