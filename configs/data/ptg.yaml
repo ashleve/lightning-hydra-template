@@ -1,4 +1,4 @@
-_target_: src.data.coffee_datamodule.CoffeeDataModule
+_target_: src.data.ptg_datamodule.PTGDataModule
 data_dir: ${paths.data_dir}
 batch_size: 128
 num_workers: 0

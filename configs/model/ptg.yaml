@@ -1,4 +1,4 @@
-_target_: src.models.coffee_module.CoffeeLitModule
+_target_: src.models.ptg_module.PTGLitModule
 
 optimizer:
   _target_: torch.optim.Adam

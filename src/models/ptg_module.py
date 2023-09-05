@@ -8,7 +8,7 @@ from torchmetrics import MaxMetric, MeanMetric
 from torchmetrics.classification.accuracy import Accuracy
 
 
-class CoffeeLitModule(LightningModule):
+class PTGLitModule(LightningModule):
     """Example of a `LightningModule` for MNIST classification.
 
     A `LightningModule` implements 8 key methods:
@@ -256,4 +256,4 @@ class CoffeeLitModule(LightningModule):
 
 
 if __name__ == "__main__":
-    _ = CoffeeLitModule(None, None, None, None)
+    _ = PTGLitModule(None, None, None, None)

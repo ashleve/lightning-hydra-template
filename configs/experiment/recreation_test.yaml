@@ -4,7 +4,8 @@
 # python train.py experiment=example
 
 defaults:
-  - override /data: coffee
+  - override /data: ptg
+  - override /model: ptg
   - override /callbacks: default
   - override /trainer: gpu
   - override /paths: default
@@ -17,8 +18,8 @@ tags: ["coffee", "ms_tcn"]
 seed: 12345
 
 trainer:
-  min_epochs: 10
-  max_epochs: 10
+  min_epochs: 100
+  max_epochs: 100
 
 
 model:

@@ -5,7 +5,7 @@ from lightning import LightningDataModule
 from torch.utils.data import DataLoader, Dataset
 from .components.PTG_dataset import PTG_Dataset
 
-class CoffeeDataModule(LightningDataModule):
+class PTGDataModule(LightningDataModule):
     """`LightningDataModule` for the MNIST dataset.
 
     The MNIST database of handwritten digits has a training set of 60,000 examples, and a test set of 10,000 examples.
@@ -238,4 +238,4 @@ class CoffeeDataModule(LightningDataModule):
 
 
 if __name__ == "__main__":
-    _ = MNISTDataModule()
+    _ = PTGDataModule()
