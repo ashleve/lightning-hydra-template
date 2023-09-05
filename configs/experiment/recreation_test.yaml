@@ -37,5 +37,6 @@ paths:
 logger:
   aim:
     experiment: "recreation_test"
+    capture_terminal_logs: true
 
 task_name: "recreation_test"
