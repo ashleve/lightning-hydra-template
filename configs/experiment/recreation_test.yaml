@@ -13,6 +13,7 @@ defaults:
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
+exp_name: "recreation_test"
 
 tags: ["coffee", "ms_tcn"]
 
@@ -32,11 +33,12 @@ data:
   epoch_length: 20000
 
 paths:
-  data_dir: '/data/users/hannah.defazio/ptg_nas/data_copy/TCN_data/coffee_conf_10_hands_dist'
+  data_dir: "/data/users/hannah.defazio/ptg_nas/data_copy/TCN_data/coffee_conf_10_hands_dist"
+  root_dir: "/data/PTG/cooking/training/activity_classifier/TCN_HPL"
 
 logger:
   aim:
-    experiment: "recreation_test"
+    experiment: ${exp_name}
     capture_terminal_logs: true
 
-task_name: "recreation_test"
+task_name: ${exp_name}
