@@ -211,7 +211,7 @@ class CoffeeLitModule(LightningModule):
 
         # update and log metrics
         self.test_loss(loss)
-        self.test_acc(preds, targets)
+        self.test_acc(preds, targets[:,-1])
         self.log("test/loss", self.test_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
 
