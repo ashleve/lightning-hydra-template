@@ -4,10 +4,12 @@ from typing import Any, Dict, Tuple
 import torch
 from torch import nn
 import torch.nn.functional as F
+
 from lightning import LightningModule
 from torchmetrics import MaxMetric, MeanMetric
 from torchmetrics.classification.accuracy import Accuracy
 from torchmetrics.classification import MulticlassConfusionMatrix
+from sklearn.metrics import confusion_matrix
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -53,6 +55,7 @@ class PTGLitModule(LightningModule):
         optimizer: torch.optim.Optimizer,
         scheduler: torch.optim.lr_scheduler,
         smoothing_loss: float,
+        data_dir: str,
         num_classes: int,
         compile: bool,
     ) -> None:
@@ -70,6 +73,17 @@ class PTGLitModule(LightningModule):
         self.save_hyperparameters(logger=False)
 
         self.net = net
+
+        # Get Action Names
+        mapping_file = f"{self.hparams.data_dir}/mapping.txt"
+        file_ptr = open(mapping_file, "r")
+        actions = file_ptr.read().split("\n")[:-1]
+        file_ptr.close()
+        actions_dict = dict()
+        for a in actions:
+            actions_dict[a.split()[1]] = int(a.split()[0])
+        self.class_ids = list(actions_dict.values())
+        self.classes = list(actions_dict.keys())
 
         # loss functions
         self.criterion = criterion
@@ -213,20 +227,25 @@ class PTGLitModule(LightningModule):
 
         all_targets = torch.concat(self.validation_step_outputs_target)
         all_preds = torch.concat(self.validation_step_outputs_pred)
+        
+        # Create confusion matrix
+        cm = confusion_matrix(
+            all_targets.cpu().numpy(), all_preds.cpu().numpy(),
+            labels=self.class_ids,
+            normalize="true"
+        )
 
-        cm = MulticlassConfusionMatrix(num_classes=self.hparams.num_classes)
-        cm_data = cm(all_preds.cpu(), all_targets.cpu()).numpy()
-        cm_data = cm_data.astype(int)
-        fig, ax = plt.subplots(figsize=(10,10))
-        ax= plt.subplot()
-        sns.heatmap(cm_data, annot=True, ax = ax,fmt="d")
+        fig, ax = plt.subplots(figsize=(20,20))
+        sns.heatmap(cm, annot=True, ax=ax, fmt=".2f")
+
         # labels, title and ticks
         ax.set_xlabel('Predicted labels')
         ax.set_ylabel('True labels')
         ax.set_title(f'CM Validation Epoch {self.current_epoch}')
-        # ax.xaxis.set_ticklabels(classes,rotation=90)
-        # ax.yaxis.set_ticklabels(classes,rotation=0)
-        self.logger.experiment.track(Image(fig), name=f'CM Validation Epoch {self.current_epoch}')
+        ax.xaxis.set_ticklabels(self.classes, rotation=90)
+        ax.yaxis.set_ticklabels(self.classes, rotation=0)
+        
+        self.logger.experiment.track(Image(fig), name=f'CM Validation Epoch')
 
         self.validation_step_outputs_target.clear()
         self.validation_step_outputs_pred.clear()
@@ -258,19 +277,24 @@ class PTGLitModule(LightningModule):
         all_targets = torch.concat(self.validation_step_outputs_target)
         all_preds = torch.concat(self.validation_step_outputs_pred)
 
-        cm = MulticlassConfusionMatrix(num_classes=self.hparams.num_classes)
-        cm_data = cm(all_preds.cpu(), all_targets.cpu()).numpy()
-        cm_data = cm_data.astype(int)
-        fig, ax = plt.subplots(figsize=(10,10))
-        ax= plt.subplot()
-        sns.heatmap(cm_data, annot=True, ax = ax,fmt="d")
+        # Create confusion matrix
+        cm = confusion_matrix(
+            all_targets.cpu().numpy(), all_preds.cpu().numpy(),
+            labels=self.class_ids,
+            normalize="true"
+        )
+        
+        fig, ax = plt.subplots(figsize=(20,20))
+        sns.heatmap(cm, annot=True, ax=ax, fmt=".2f")
+
         # labels, title and ticks
         ax.set_xlabel('Predicted labels')
         ax.set_ylabel('True labels')
         ax.set_title(f'CM Test Epoch {self.current_epoch}')
-        # ax.xaxis.set_ticklabels(classes,rotation=90)
-        # ax.yaxis.set_ticklabels(classes,rotation=0)
-        self.logger.experiment.track(Image(fig), name=f'CM Test Epoch {self.current_epoch}')
+        ax.xaxis.set_ticklabels(self.classes, rotation=90)
+        ax.yaxis.set_ticklabels(self.classes, rotation=0)
+
+        self.logger.experiment.track(Image(fig), name=f'CM Test Epoch')
 
         self.validation_step_outputs_target.clear()
         self.validation_step_outputs_pred.clear()

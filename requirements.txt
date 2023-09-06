@@ -24,3 +24,4 @@ pytest            # tests
 # sh              # for running bash commands in some tests (linux/macos only)
 matplotlib==3.7.1 # for confusion matrix
 seaborn==0.12.2   # for confusion matrix
+scikit_learn==1.2.1

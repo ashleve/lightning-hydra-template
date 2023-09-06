@@ -3,7 +3,7 @@ _target_: src.models.ptg_module.PTGLitModule
 optimizer:
   _target_: torch.optim.Adam
   _partial_: true
-  lr: 0.001
+  lr: 0.0005
   weight_decay: 0.0
 
 scheduler:
@@ -27,6 +27,8 @@ criterion:
   gamma: 2
   weight: None 
   reduction: "mean"
+
+data_dir: ${paths.data_dir}
 
 # Smoothing loss weight
 smoothing_loss: 0.015
