@@ -61,6 +61,13 @@ class PTGDataModule(LightningDataModule):
         split: int,
         epoch_length: int,
         pin_memory: bool,
+        im_w: int, 
+        im_h: int,
+        feat_version: int,
+        num_obj_classes: int,
+        hand_dist_delta: float, 
+        obj_dist_delta: float, 
+        conf_delta: float
     ) -> None:
         """Initialize a `CoffeeDataModule`.
 
@@ -152,17 +159,26 @@ class PTGDataModule(LightningDataModule):
 
             self.data_train = PTG_Dataset(
                 train_videos, self.hparams.num_classes, actions_dict, gt_path,
-                features_path, self.hparams.sample_rate, self.hparams.window_size
+                features_path, self.hparams.sample_rate, self.hparams.window_size,
+                self.hparams.im_w, self.hparams.im_h, self.hparams.num_obj_classes, self.hparams.feat_version,
+                self.hparams.hand_dist_delta, self.hparams.obj_dist_delta, self.hparams.conf_delta,
+                augmentation=True
             )
 
             self.data_val = PTG_Dataset(
                 val_videos, self.hparams.num_classes, actions_dict, gt_path,
-                features_path, self.hparams.sample_rate, self.hparams.window_size
+                features_path, self.hparams.sample_rate, self.hparams.window_size,
+                self.hparams.im_w, self.hparams.im_h, self.hparams.num_obj_classes, self.hparams.feat_version,
+                self.hparams.hand_dist_delta, self.hparams.obj_dist_delta, self.hparams.conf_delta,
+                augmentation=False
             )
 
             self.data_test = PTG_Dataset(
                 test_videos, self.hparams.num_classes, actions_dict, gt_path,
-                features_path, self.hparams.sample_rate, self.hparams.window_size
+                features_path, self.hparams.sample_rate, self.hparams.window_size,
+                self.hparams.im_w, self.hparams.im_h, self.hparams.num_obj_classes, self.hparams.feat_version,
+                self.hparams.hand_dist_delta, self.hparams.obj_dist_delta, self.hparams.conf_delta,
+                augmentation=False    
             )
  
 

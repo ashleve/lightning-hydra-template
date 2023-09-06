@@ -8,3 +8,11 @@ window_size: 30
 split: 1
 epoch_length: 10000
 pin_memory: True
+# For augmentations
+feat_version: 2
+num_obj_classes: 42
+im_w: 1280
+im_h: 720
+hand_dist_delta: 0.05
+obj_dist_delta: 0.05
+conf_delta: 0.1
