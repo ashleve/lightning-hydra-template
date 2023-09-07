@@ -27,6 +27,7 @@ class PTG_Dataset(torch.utils.data.Dataset):
         self.transform = transform
         self.target_transform = target_transform
         self.dataset_size = -1
+        self.norm_stats = dict()
 
         input_frames_list = []
         target_frames_list = []
@@ -55,7 +56,11 @@ class PTG_Dataset(torch.utils.data.Dataset):
         self.target_frames = np.concatenate(target_frames_list, axis=0, dtype=int, casting='unsafe')
         self.mask_frames = np.concatenate(mask_frames_list, axis=0, dtype=int, casting='unsafe')
 
-    
+        self.norm_stats['mean'] = self.feature_frames.mean(axis=0)
+        self.norm_stats['std'] = self.feature_frames.std(axis=0)
+        self.norm_stats['max'] = self.feature_frames.max(axis=0)
+        self.norm_stats['min'] = self.feature_frames.min(axis=0)
+
         self.dataset_size = self.target_frames.shape[0] - self.window_size
 
         # Get weights for sampler by inverse count.  

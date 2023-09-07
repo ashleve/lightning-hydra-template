@@ -143,16 +143,16 @@ class ActivationDelta(torch.nn.Module):
         if self.feat_version == 1:
             window[:] = np.where(
                 window[:] != 0,
-                np.clip(window[:] * delta, 0, 1),
+                np.clip(window[:] + delta, 0, 1),
                 window[:]
             )
 
         elif self.feat_version == 2:
-            num_obj_feats = num_obj_classes - 2 # not including hands in count
+            num_obj_feats = self.num_obj_classes - 2 # not including hands in count
             num_obj_points = num_obj_feats * 2
 
             obj_acts_idx = num_obj_points + 1 + num_obj_points + 2 + 1
-            activation_idxs = [0, num_obj_points+1] + list(range(obj_acts_idx, len(features)))
+            activation_idxs = [0, num_obj_points+1] + list(range(obj_acts_idx, len(window)))
 
             window[:, activation_idxs] = np.where(
                 window[:, activation_idxs] != 0,
