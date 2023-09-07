@@ -1,9 +1,14 @@
-from typing import Any, Dict, Optional, Tuple
-
 import torch
+import torchvision
+
 from lightning import LightningDataModule
 from torch.utils.data import DataLoader, Dataset
+from torchvision.transforms import transforms
+from typing import Any, Dict, Optional, Tuple
+
 from .components.PTG_dataset import PTG_Dataset
+from .components.augmentations import MoveCenterPts, NormalizePixelPts
+
 
 class PTGDataModule(LightningDataModule):
     """`LightningDataModule` for the MNIST dataset.
@@ -84,7 +89,17 @@ class PTGDataModule(LightningDataModule):
         self.save_hyperparameters(logger=False)
 
         # data transformations
-        self.transforms = None
+        self.train_transform = transforms.Compose([
+            MoveCenterPts(
+                hand_dist_delta, obj_dist_delta,
+                im_w, im_h, num_obj_classes, feat_version
+            ),
+            NormalizePixelPts(im_w, im_h, num_obj_classes, feat_version)
+        ])
+
+        self.val_transform = transforms.Compose([
+            NormalizePixelPts(im_w, im_h, num_obj_classes, feat_version)
+        ])
 
         self.data_train: Optional[Dataset] = None
         self.data_val: Optional[Dataset] = None
@@ -156,29 +171,22 @@ class PTGDataModule(LightningDataModule):
             with open(vid_list_file_tst, "r") as test_f:
                 test_videos = test_f.read().split("\n")[:-1]
 
-
             self.data_train = PTG_Dataset(
                 train_videos, self.hparams.num_classes, actions_dict, gt_path,
                 features_path, self.hparams.sample_rate, self.hparams.window_size,
-                self.hparams.im_w, self.hparams.im_h, self.hparams.num_obj_classes, self.hparams.feat_version,
-                self.hparams.hand_dist_delta, self.hparams.obj_dist_delta, self.hparams.conf_delta,
-                augmentation=True
+                transform=self.train_transform
             )
 
             self.data_val = PTG_Dataset(
                 val_videos, self.hparams.num_classes, actions_dict, gt_path,
                 features_path, self.hparams.sample_rate, self.hparams.window_size,
-                self.hparams.im_w, self.hparams.im_h, self.hparams.num_obj_classes, self.hparams.feat_version,
-                self.hparams.hand_dist_delta, self.hparams.obj_dist_delta, self.hparams.conf_delta,
-                augmentation=False
+                transform=self.val_transform
             )
 
             self.data_test = PTG_Dataset(
                 test_videos, self.hparams.num_classes, actions_dict, gt_path,
-                features_path, self.hparams.sample_rate, self.hparams.window_size,
-                self.hparams.im_w, self.hparams.im_h, self.hparams.num_obj_classes, self.hparams.feat_version,
-                self.hparams.hand_dist_delta, self.hparams.obj_dist_delta, self.hparams.conf_delta,
-                augmentation=False    
+                features_path, self.hparams.sample_rate, self.hparams.window_size,   
+                transform=self.val_transform
             )
  
 
