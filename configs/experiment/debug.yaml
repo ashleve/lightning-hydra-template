@@ -15,7 +15,7 @@ defaults:
 # this allows you to overwrite only specified parameters
 exp_name: "debug"
 
-tags: ["coffee", "ms_tcn"]
+tags: ["coffee", "ms_tcn", "debug"]
 
 seed: 12345
 
@@ -35,7 +35,7 @@ data:
 
 paths:
   data_dir: "/data/users/hannah.defazio/ptg_nas/data_copy/TCN_data/coffee_conf_10_hands_dist"
-  # root_dir: "/data/PTG/cooking/training/activity_classifier/TCN_HPL"
+  root_dir: "/data/PTG/cooking/training/activity_classifier/TCN_HPL"
 
 logger:
   aim:
