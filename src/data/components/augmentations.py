@@ -54,6 +54,7 @@ class MoveCenterPts(torch.nn.Module):
         return [rhand_delta_x, rhand_delta_y], [lhand_delta_x, lhand_delta_y], [obj_delta_x, obj_delta_y]
 
     def forward(self, window):
+        
         ( [rhand_delta_x, rhand_delta_y],
           [lhand_delta_x, lhand_delta_y],
           [obj_delta_x, obj_delta_y] ) = self.init_deltas()
@@ -130,10 +131,7 @@ class ActivationDelta(torch.nn.Module):
         self.feat_version = feat_version
 
     def init_delta(self):
-        min_conf_delta = 1 - self.conf_delta
-        max_conf_delta = 1 + self.conf_delta
-
-        delta = random.uniform(min_conf_delta, max_conf_delta)
+        delta = random.uniform(-self.conf_delta, self.conf_delta)
 
         return delta
 
@@ -156,7 +154,7 @@ class ActivationDelta(torch.nn.Module):
 
             window[:, activation_idxs] = np.where(
                 window[:, activation_idxs] != 0,
-                np.clip(window[:, activation_idxs] * delta, 0, 1),
+                np.clip(window[:, activation_idxs] + delta, 0, 1),
                 window[:, activation_idxs]
             ) 
 
