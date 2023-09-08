@@ -1,3 +1,6 @@
+defaults:
+ - all_transforms: default
+
 _target_: src.data.ptg_datamodule.PTGDataModule
 data_dir: ${paths.data_dir}
 batch_size: 128
@@ -16,3 +19,4 @@ im_h: 720
 hand_dist_delta: 0.05
 obj_dist_delta: 0.05
 conf_delta: 0.1
+

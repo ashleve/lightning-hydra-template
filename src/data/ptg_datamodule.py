@@ -66,15 +66,9 @@ class PTGDataModule(LightningDataModule):
         split: int,
         epoch_length: int,
         pin_memory: bool,
-        im_w: int, 
-        im_h: int,
-        feat_version: int,
-        num_obj_classes: int,
-        hand_dist_delta: float, 
-        obj_dist_delta: float, 
-        conf_delta: float
+        all_transforms: Any,
     ) -> None:
-        """Initialize a `CoffeeDataModule`.
+        """Initialize a `PTGDataModule`.
 
         :param data_dir: The data directory. Defaults to `"data/"`.
         :param train_val_test_split: The train, validation and test split. Defaults to `(55_000, 5_000, 10_000)`.
@@ -89,17 +83,17 @@ class PTGDataModule(LightningDataModule):
         self.save_hyperparameters(logger=False)
 
         # data transformations
-        self.train_transform = transforms.Compose([
-            MoveCenterPts(
-                hand_dist_delta, obj_dist_delta,
-                im_w, im_h, num_obj_classes, feat_version
-            ),
-            NormalizePixelPts(im_w, im_h, num_obj_classes, feat_version)
-        ])
+        transforms_list = []
+        for transform_name in all_transforms['train_order']:
+            transforms_list.append(all_transforms[transform_name])
+        self.train_transform = transforms.Compose(transforms_list)
 
-        self.val_transform = transforms.Compose([
-            NormalizePixelPts(im_w, im_h, num_obj_classes, feat_version)
-        ])
+
+        transforms_list = []
+        for transform_name in all_transforms['test_order']:
+            transforms_list.append(all_transforms[transform_name])
+        self.val_transform = transforms.Compose(transforms_list)
+
 
         self.data_train: Optional[Dataset] = None
         self.data_val: Optional[Dataset] = None

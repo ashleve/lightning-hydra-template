@@ -1,0 +1,7 @@
+defaults:
+  - MoveCenterPts
+  - NormalizePixelPts
+  - _self_
+
+train_order: ['MoveCenterPts', 'NormalizePixelPts']
+test_order: ['NormalizePixelPts']
