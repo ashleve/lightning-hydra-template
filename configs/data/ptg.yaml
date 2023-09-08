@@ -1,3 +1,6 @@
+defaults:
+ - all_transforms: default
+
 _target_: src.data.ptg_datamodule.PTGDataModule
 data_dir: ${paths.data_dir}
 batch_size: 128
@@ -8,3 +11,4 @@ window_size: 30
 split: 1
 epoch_length: 10000
 pin_memory: True
+

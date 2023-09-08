@@ -1,0 +1,8 @@
+MoveCenterPts:
+  _target_: src.data.components.augmentations.MoveCenterPts
+  hand_dist_delta: 0.1
+  obj_dist_delta: 0.1
+  im_w: 1280
+  im_h: 720
+  num_obj_classes: 42
+  feat_version: 2

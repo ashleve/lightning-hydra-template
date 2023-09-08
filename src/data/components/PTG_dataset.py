@@ -1,24 +1,40 @@
 
 import torch
+
 import numpy as np
 
+from typing import Optional, Callable, Dict, List
+
 class PTG_Dataset(torch.utils.data.Dataset):
-    def __init__(self, videos, num_classes, actions_dict, gt_path, features_path, sample_rate, window_size,
-                 transform=None, target_transform=None):
+    def __init__(
+        self,
+        videos: List[str], 
+        num_classes: int,
+        actions_dict: Dict[str, int],
+        gt_path: str, 
+        features_path: str,
+        sample_rate: int,
+        window_size: int,
+        transform: Optional[Callable]=None,
+        target_transform: Optional[Callable]=None
+    ):
         self.num_classes = num_classes
         self.actions_dict = actions_dict
         self.gt_path = gt_path
         self.features_path = features_path
         self.sample_rate = sample_rate
         self.window_size = window_size
+        self.transform = transform
+        self.target_transform = target_transform
         self.dataset_size = -1
-
+        self.norm_stats = dict()
 
         input_frames_list = []
         target_frames_list = []
         mask_frames_list = []
         for vid in videos:
             features = np.load(self.features_path + vid.split(".")[0] + ".npy")
+            
             file_ptr = open(self.gt_path + vid, "r")
             content = file_ptr.read().split("\n")[:-1]
 
@@ -40,7 +56,11 @@ class PTG_Dataset(torch.utils.data.Dataset):
         self.target_frames = np.concatenate(target_frames_list, axis=0, dtype=int, casting='unsafe')
         self.mask_frames = np.concatenate(mask_frames_list, axis=0, dtype=int, casting='unsafe')
 
-    
+        self.norm_stats['mean'] = self.feature_frames.mean(axis=0)
+        self.norm_stats['std'] = self.feature_frames.std(axis=0)
+        self.norm_stats['max'] = self.feature_frames.max(axis=0)
+        self.norm_stats['min'] = self.feature_frames.min(axis=0)
+
         self.dataset_size = self.target_frames.shape[0] - self.window_size
 
         # Get weights for sampler by inverse count.  
@@ -65,12 +85,16 @@ class PTG_Dataset(torch.utils.data.Dataset):
 
         :param idx: The first index of the time window
 
-        :return: features, tarets, and mask of the windw
+        :return: features, targets, and mask of the windw
         """
         features = self.feature_frames[idx:idx+self.window_size,:]
         target = self.target_frames[idx:idx+self.window_size]
         mask = self.mask_frames[idx:idx+self.window_size]
 
-        # TODO: Add Transforms/Augmentations
+        # Transforms/Augmentations
+        if self.transform is not None:
+            features = self.transform(features)
+        if self.target_transform is not None:
+            target = self.target_transform(target)
         
         return features, target, mask

@@ -1,9 +1,14 @@
-from typing import Any, Dict, Optional, Tuple
-
 import torch
+import torchvision
+
 from lightning import LightningDataModule
 from torch.utils.data import DataLoader, Dataset
+from torchvision.transforms import transforms
+from typing import Any, Dict, Optional, Tuple
+
 from .components.PTG_dataset import PTG_Dataset
+from .components.augmentations import MoveCenterPts, NormalizePixelPts
+
 
 class PTGDataModule(LightningDataModule):
     """`LightningDataModule` for the MNIST dataset.
@@ -61,8 +66,9 @@ class PTGDataModule(LightningDataModule):
         split: int,
         epoch_length: int,
         pin_memory: bool,
+        all_transforms: Any,
     ) -> None:
-        """Initialize a `CoffeeDataModule`.
+        """Initialize a `PTGDataModule`.
 
         :param data_dir: The data directory. Defaults to `"data/"`.
         :param train_val_test_split: The train, validation and test split. Defaults to `(55_000, 5_000, 10_000)`.
@@ -77,7 +83,17 @@ class PTGDataModule(LightningDataModule):
         self.save_hyperparameters(logger=False)
 
         # data transformations
-        self.transforms = None
+        transforms_list = []
+        for transform_name in all_transforms['train_order']:
+            transforms_list.append(all_transforms[transform_name])
+        self.train_transform = transforms.Compose(transforms_list)
+
+
+        transforms_list = []
+        for transform_name in all_transforms['test_order']:
+            transforms_list.append(all_transforms[transform_name])
+        self.val_transform = transforms.Compose(transforms_list)
+
 
         self.data_train: Optional[Dataset] = None
         self.data_val: Optional[Dataset] = None
@@ -149,20 +165,22 @@ class PTGDataModule(LightningDataModule):
             with open(vid_list_file_tst, "r") as test_f:
                 test_videos = test_f.read().split("\n")[:-1]
 
-
             self.data_train = PTG_Dataset(
                 train_videos, self.hparams.num_classes, actions_dict, gt_path,
-                features_path, self.hparams.sample_rate, self.hparams.window_size
+                features_path, self.hparams.sample_rate, self.hparams.window_size,
+                transform=self.train_transform
             )
 
             self.data_val = PTG_Dataset(
                 val_videos, self.hparams.num_classes, actions_dict, gt_path,
-                features_path, self.hparams.sample_rate, self.hparams.window_size
+                features_path, self.hparams.sample_rate, self.hparams.window_size,
+                transform=self.val_transform
             )
 
             self.data_test = PTG_Dataset(
                 test_videos, self.hparams.num_classes, actions_dict, gt_path,
-                features_path, self.hparams.sample_rate, self.hparams.window_size
+                features_path, self.hparams.sample_rate, self.hparams.window_size,   
+                transform=self.val_transform
             )
  
 

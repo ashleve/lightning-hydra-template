@@ -13,15 +13,15 @@ defaults:
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
-exp_name: "recreation_test"
+exp_name: "debug"
 
-tags: ["coffee", "ms_tcn"]
+tags: ["coffee", "ms_tcn", "debug"]
 
 seed: 12345
 
 trainer:
-  min_epochs: 5
-  max_epochs: 5
+  min_epochs: 50
+  max_epochs: 50
 
 
 model:
@@ -31,6 +31,7 @@ data:
   batch_size: 1024
   num_workers: 12
   epoch_length: 20000
+  window_size: 75
 
 paths:
   data_dir: "/data/users/hannah.defazio/ptg_nas/data_copy/TCN_data/coffee_conf_10_hands_dist"
