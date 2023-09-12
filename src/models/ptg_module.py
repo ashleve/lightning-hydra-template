@@ -90,9 +90,9 @@ class PTGLitModule(LightningModule):
         self.mse = nn.MSELoss(reduction="none")
 
         # metric objects for calculating and averaging accuracy across batches
-        self.train_acc = Accuracy(task="multiclass", num_classes=num_classes)
-        self.val_acc = Accuracy(task="multiclass", num_classes=num_classes)
-        self.test_acc = Accuracy(task="multiclass", num_classes=num_classes)
+        self.train_acc = Accuracy(task="multiclass", average="weighted", num_classes=num_classes)
+        self.val_acc = Accuracy(task="multiclass", average="weighted", num_classes=num_classes)
+        self.test_acc = Accuracy(task="multiclass", average="weighted", num_classes=num_classes)
 
         # for averaging loss across batches
         self.train_loss = MeanMetric()
