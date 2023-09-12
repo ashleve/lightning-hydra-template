@@ -48,7 +48,7 @@ feat_version = 2
 #####################
 # Output
 #####################
-exp_name = f"coffee_conf_10_all_hands_feat_v{str(feat_version)}"
+exp_name = f"coffee_conf_10_all_hands_feat_v{str(feat_version)}_fixed"
 output_data_dir = f"{data_dir}/TCN_data/{exp_name}"
 if not os.path.exists(output_data_dir):
     os.makedirs(output_data_dir)
@@ -130,13 +130,7 @@ for split in training_split.keys():
             feat_version=feat_version
         )
 
-        # TODO: normalize to 0-1
-
-        # num obj det classes x num frames
-        if feat_version == 1:
-            X = X.reshape(num_classes, -1)
-        if feat_version == 2:
-            X = X.reshape(204, -1)
+        X = X.T
 
         np.save(f"{features_dir}/{video_name}.npy", X)
 

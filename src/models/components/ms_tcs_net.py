@@ -6,11 +6,11 @@ import copy
 
 class MultiStageModel(nn.Module):
     def __init__(self, 
-                 num_stages=4, 
-                 num_layers=10, 
-                 num_f_maps=64, 
-                 dim=204, 
-                 num_classes=25):
+                 num_stages, 
+                 num_layers, 
+                 num_f_maps, 
+                 dim, 
+                 num_classes):
         """Initialize a `MultiStageModel` module.
 
         :param num_stages: Nubmer of State Model Layers.
