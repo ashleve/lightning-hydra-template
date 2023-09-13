@@ -56,6 +56,12 @@ class PTG_Dataset(torch.utils.data.Dataset):
         self.target_frames = np.concatenate(target_frames_list, axis=0, dtype=int, casting='unsafe')
         self.mask_frames = np.concatenate(mask_frames_list, axis=0, dtype=int, casting='unsafe')
 
+        # Transforms/Augmentations
+        if self.transform is not None:
+            self.feature_frames = self.transform(self.feature_frames)
+        if self.target_transform is not None:
+            self.target_frames = self.target_transform(self.target_frames)
+
         self.norm_stats['mean'] = self.feature_frames.mean(axis=0)
         self.norm_stats['std'] = self.feature_frames.std(axis=0)
         self.norm_stats['max'] = self.feature_frames.max(axis=0)
@@ -90,11 +96,5 @@ class PTG_Dataset(torch.utils.data.Dataset):
         features = self.feature_frames[idx:idx+self.window_size,:]
         target = self.target_frames[idx:idx+self.window_size]
         mask = self.mask_frames[idx:idx+self.window_size]
-
-        # Transforms/Augmentations
-        if self.transform is not None:
-            features = self.transform(features)
-        if self.target_transform is not None:
-            target = self.target_transform(target)
         
         return features, target, mask
