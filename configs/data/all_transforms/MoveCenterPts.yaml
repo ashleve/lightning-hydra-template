@@ -1,7 +1,8 @@
 MoveCenterPts:
   _target_: src.data.components.augmentations.MoveCenterPts
-  hand_dist_delta: 0.1
-  obj_dist_delta: 0.1
+  hand_dist_delta: 0.05
+  obj_dist_delta: 0.05
+  window_size: ${data.window_size}
   im_w: 1280
   im_h: 720
   num_obj_classes: 42
