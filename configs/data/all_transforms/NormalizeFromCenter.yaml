@@ -1,0 +1,5 @@
+NormalizeFromCenter:
+  _target_: src.data.components.augmentations.NormalizeFromCenter
+  im_w: 1280
+  im_h: 720
+  feat_version: 3

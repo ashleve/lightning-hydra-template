@@ -223,11 +223,71 @@ class NormalizePixelPts(torch.nn.Module):
             window[:, hands_dist_idx] = window[:, hands_dist_idx] / self.im_w
             window[:, hands_dist_idx + 1] = window[:, hands_dist_idx + 1] / self.im_h
 
+        elif self.feat_version == 3:
+            pass
+
+        else:
+            NotImplementedError(f"Unhandled version '{self.feat_version}'")
+
+        
+        return window
+
+    def __repr__(self) -> str:
+        detail = f"(im_w={self.im_w}, im_h={self.im_h}, num_obj_classes={self.num_obj_classes}, feat_version={self.feat_version})"
+        return f"{self.__class__.__name__}{detail}"
+
+class NormalizeFromCenter(torch.nn.Module):
+    """Normalize the distances from -1 to 1 with respect to the image center
+    
+    Missing objects will be set to (2, 2)
+    """
+
+    def __init__(self, im_w, im_h, feat_version):
+        """
+        :param w: Width of the frames
+        :param h: Height of the frames
+        :param feat_version: Algorithm version used to generate the input features
+        """
+        super().__init__()
+
+        self.im_w = im_w
+        self.half_w = im_w / 2
+        self.im_h = im_h
+        self.half_h = im_h / 2
+
+        self.feat_version = feat_version
+
+    def forward(self, window):
+        if self.feat_version == 1:
+            pass
+
+        elif self.feat_version == 2:
+            pass
+
+        elif self.feat_version == 3:
+            # Right and left hand distances
+            start_idx = 3; end_idx = 7
+            window[:, start_idx:end_idx:2] = (
+                window[:, start_idx:end_idx:2] / self.half_w
+            )
+            
+            window[:, start_idx + 1 : end_idx : 2] = (
+                window[:, start_idx + 1 : end_idx : 2] / self.half_h
+            )
+
+            # Object distances
+            start_idx = 10
+            while start_idx < window.shape[1]:
+                window[:, start_idx] = window[:, start_idx] / self.half_w
+                window[:, start_idx + 1] = window[:, start_idx + 1] / self.half_h
+                start_idx += 5
+
         else:
             NotImplementedError(f"Unhandled version '{self.feat_version}'")
 
         return window
 
     def __repr__(self) -> str:
-        detail = f"(im_w={self.im_w}, im_h={self.im_h}, num_obj_classes={self.num_obj_classes}, feat_version={self.feat_version})"
+        detail = f"(im_w={self.im_w}, im_h={self.im_h}, feat_version={self.feat_version})"
         return f"{self.__class__.__name__}{detail}"
+   
