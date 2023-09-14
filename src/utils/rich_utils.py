@@ -11,7 +11,7 @@ from rich.prompt import Prompt
 
 from src.utils import pylogger
 
-log = pylogger.get_ranked_pylogger(__name__)
+log = pylogger.RankedLogger(__name__, rank_zero_only=True)
 
 
 @rank_zero_only

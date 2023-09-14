@@ -27,16 +27,16 @@ rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # ------------------------------------------------------------------------------------ #
 
 from src.utils import (
+    RankedLogger,
     extras,
     get_metric_value,
-    get_ranked_pylogger,
     instantiate_callbacks,
     instantiate_loggers,
     log_hyperparameters,
     task_wrapper,
 )
 
-log = get_ranked_pylogger(__name__)
+log = RankedLogger(__name__, rank_zero_only=True)
 
 
 @task_wrapper

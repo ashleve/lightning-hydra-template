@@ -1,50 +1,42 @@
 import logging
-from functools import wraps
-from typing import Callable, Optional, ParamSpec, TypeVar
 
 from lightning_utilities.core.rank_zero import rank_prefixed_message, rank_zero_only
 
 
-def get_ranked_pylogger(name: str = __name__) -> logging.Logger:
-    """Initializes a multi-GPU-friendly python command line logger that logs on all processes with
-    their rank prefixed in the log message.
+class RankedLogger(logging.LoggerAdapter):
+    def __init__(self, name: str = __name__, rank_zero_only: bool = False) -> None:
+        """Initializes a multi-GPU-friendly python command line logger that logs on all processes
+        with their rank prefixed in the log message.
 
-    :param name: The name of the logger, defaults to ``__name__``.
-
-    :return: A logger object.
-    """
-    T = TypeVar("T")
-    P = ParamSpec("P")
-
-    def _rank_prefixed_log(fn: Callable[P, T]) -> Callable[P, Optional[T]]:
-        """Wrap a logging function to prefix its message with the rank of the process it's being
-        logged from.
-
-        If `'rank'` is provided in the wrapped functions kwargs, then the log will only occur on
-        that rank/process.
+        :param name: The name of the logger. Default is ``__name__``.
+        :param rank_zero_only: Whether to force all logs to only occur on the rank zero process. Default is `False`.
         """
+        logger = logging.getLogger(name)
+        super().__init__(logger)
+        self.rank_zero_only = rank_zero_only
 
-        @wraps(fn)
-        def wrapped_fn(*args: P.args, **kwargs: P.kwargs) -> Optional[T]:
-            rank = getattr(rank_zero_only, "rank", None)
-            if rank is None:
+    def log(self, level, msg, rank=None, *args, **kwargs) -> None:
+        """Delegate a log call to the underlying logger, after prefixing its message with the rank
+        of the process it's being logged from. If `'rank'` is provided, then the log will only
+        occur on that rank/process.
+
+        :param level: The level to log at. Look at `logging.__init__.py` for more information.
+        :param msg: The message to log.
+        :param rank: The rank to log at.
+        :param args: Additional args to pass to the underlying logging function.
+        :param kwargs: Any additional keyword args to pass to the underlying logging function.
+        """
+        if self.isEnabledFor(level):
+            msg, kwargs = self.process(msg, kwargs)
+            current_rank = getattr(rank_zero_only, "rank", None)
+            if current_rank is None:
                 raise RuntimeError("The `rank_zero_only.rank` needs to be set before use")
-            rank_to_log = kwargs.get("rank", None)
-            msg = rank_prefixed_message(args[0], rank)
-            if rank_to_log is None:
-                return fn(msg=msg, *args[1:], **kwargs)
-            elif rank == rank_to_log:
-                return fn(msg=msg, *args[1:], **kwargs)
+            msg = rank_prefixed_message(msg, current_rank)
+            if self.rank_zero_only:
+                if current_rank == 0:
+                    self.logger.log(level, msg, *args, **kwargs)
             else:
-                return None
-
-        return wrapped_fn
-
-    logger = logging.getLogger(name)
-
-    # This ensures all logging levels get marked with the _rank_prefixed_log decorator.
-    logging_levels = ("debug", "info", "warning", "error", "exception", "fatal", "critical")
-    for level in logging_levels:
-        setattr(logger, level, _rank_prefixed_log(getattr(logger, level)))
-
-    return logger
+                if rank is None:
+                    self.logger.log(level, msg, *args, **kwargs)
+                elif current_rank == rank:
+                    self.logger.log(level, msg, *args, **kwargs)
