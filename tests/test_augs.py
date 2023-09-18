@@ -36,7 +36,7 @@ class MoveCenterPts(torch.nn.Module):
             if self.feat_version == 1:
                 pass
 
-            elif self.feat_version == 2:
+            elif self.feat_version == 2 or self.feat_version == 5:
                 num_obj_feats = self.num_obj_classes - 2  # not including hands in count
                 num_obj_points = num_obj_feats * 2
 
@@ -118,7 +118,15 @@ class ActivationDelta(torch.nn.Module):
             activation_idxs = [0, 3] + list(range(7, features.shape[1], 5))
 
             features[:, activation_idxs] += " + delta"
+        elif self.feat_version == 5:
+            num_obj_feats = self.num_obj_classes - 2  # not including hands in count
+            num_obj_points = num_obj_feats * 2
 
+            obj_acts_idx = num_obj_points + 1 + num_obj_points + 2 + 1 + 1
+            activation_idxs = [0, num_obj_points + 1] + list(
+                range(obj_acts_idx, features.shape[1], 3)
+            )
+            features[:, activation_idxs] += " + delta"
         else:
             NotImplementedError(f"Unhandled version '{self.feat_version}'")
 
@@ -146,7 +154,7 @@ class NormalizePixelPts(torch.nn.Module):
         if self.feat_version == 1:
             pass
 
-        elif self.feat_version == 2:
+        elif self.feat_version == 2 or self.feat_version == 5:
             num_obj_feats = self.num_obj_classes - 2  # not including hands in count
             num_obj_points = num_obj_feats * 2
 
@@ -197,7 +205,7 @@ class NormalizeFromCenter(torch.nn.Module):
         if self.feat_version == 1:
             pass
 
-        elif self.feat_version == 2:
+        elif self.feat_version == 2 or self.feat_version == 5:
             pass
 
         elif self.feat_version == 3:
@@ -228,7 +236,12 @@ class NormalizeFromCenter(torch.nn.Module):
    
 def main():
     num_obj_classes = 40
-    feat_version = 3
+    feat_version = 5
+
+    mv_center = MoveCenterPts(num_obj_classes+2, feat_version)
+    act_delta = ActivationDelta(num_obj_classes+2, feat_version)
+    norm = NormalizePixelPts(num_obj_classes+2, feat_version)
+
     if feat_version == 2:
         feat_v2 = ["A[right hand]"]
         for i in range(num_obj_classes):
@@ -249,13 +262,8 @@ def main():
         feat_v2 = np.array([feat_v2], dtype='object')
         assert feat_v2.shape == (1, 204)
 
-        #mv_center = MoveCenterPts(num_obj_classes+2, feat_version)
         #feat_v2_mv_center = mv_center(feat_v2)
-
-        #act_delta = ActivationDelta(num_obj_classes+2, feat_version)
         #feat_v2_act_delta = act_delta(feat_v2)
-
-        norm = NormalizePixelPts(num_obj_classes+2, feat_version)
         feat_v2_norm = norm(feat_v2)
         
         for i, e in enumerate(feat_v2_norm[0]):
@@ -279,18 +287,45 @@ def main():
         feat_v3 = np.array([feat_v3], dtype='object')
         assert feat_v3.shape == (1, 207)
 
-        #mv_center = MoveCenterPts(num_obj_classes+2, feat_version)
         #feat_v3_mv_center = mv_center(feat_v3)
-
-        #act_delta = ActivationDelta(num_obj_classes+2, feat_version)
         #feat_v3_act_delta = act_delta(feat_v3)
-
-        norm_center = NormalizeFromCenter(feat_version)
         feat_v3_norm_center = norm_center(feat_v3)
 
 
         for i, e in enumerate(feat_v3_norm_center[0]):
             print(f"{i}: {e}")
+
+    elif feat_version == 5:
+        feat_v5 = ["A[right hand]"]
+        for i in range(num_obj_classes):
+            feat_v5.append(f"D[right hand, obj{i+1}]x")
+            feat_v5.append(f"D[right hand, obj{i+1}]y")
+                
+        feat_v5.append("A[left hand]")
+        for i in range(num_obj_classes):
+            feat_v5.append(f"D[left hand, obj{i+1}]x")
+            feat_v5.append(f"D[left hand, obj{i+1}]y")
+        
+        feat_v5.append("D[right hand, left hand]x")
+        feat_v5.append("D[right hand, left hand]y")
+
+        feat_v5.append("I[right hand, left hand]")
+
+        for i in range(num_obj_classes):
+            feat_v5.append(f"A[obj{i+1}]")
+            feat_v5.append(f"I[right hand, obj{i+1}]")
+            feat_v5.append(f"I[left hand, obj{i+1}]")
+
+        feat_v5 = np.array([feat_v5], dtype='object')
+        assert feat_v5.shape == (1, 285)
+
+        #feat_v5_mv_center = mv_center(feat_v5)
+        #feat_v5_act_delta = act_delta(feat_v5)
+        feat_v5_norm = norm(feat_v5)
+
+        for i, e in enumerate(feat_v5_norm[0]):
+            print(f"{i}: {e}")
+
 
 if __name__ == "__main__":
     main()
