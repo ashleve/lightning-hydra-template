@@ -99,7 +99,7 @@ class MoveCenterPts(torch.nn.Module):
                     )
 
                 # Distance between hands
-                hands_dist_idx = left_dist_idx2 + 1
+                hands_dist_idx = left_dist_idx2
 
                 frame[hands_dist_idx] = np.where(
                     frame[hands_dist_idx] != 0,
@@ -115,20 +115,20 @@ class MoveCenterPts(torch.nn.Module):
 
             elif self.feat_version == 3:
                 # Right and left hand distances
-                right_idx1 = 3; right_idx2 = 5; 
-                left_idx1 = 5; left_idx2 = 7
+                right_idx1 = 1; right_idx2 = 2; 
+                left_idx1 = 4; left_idx2 = 5
                 for hand_delta_x, hand_delta_y, start_idx, end_idx in zip(
                     [rhand_delta_x, lhand_delta_x],
                     [rhand_delta_y, lhand_delta_y],
                     [right_idx1, left_idx1],
                     [right_idx2, left_idx2],
                 ):
-                    frame[start_idx:end_idx:2] = (
-                        frame[start_idx:end_idx:2] + hand_delta_x
+                    frame[start_idx] = (
+                        frame[start_idx] + hand_delta_x
                     )
                     
-                    frame[start_idx + 1 : end_idx : 2] = (
-                        frame[start_idx + 1 : end_idx : 2] + hand_delta_y
+                    frame[end_idx] = (
+                        frame[end_idx] + hand_delta_y
                     )
 
                 # Object distances
@@ -186,8 +186,17 @@ class ActivationDelta(torch.nn.Module):
 
             obj_acts_idx = num_obj_points + 1 + num_obj_points + 2 + 1
             activation_idxs = [0, num_obj_points + 1] + list(
-                range(obj_acts_idx, len(features))
+                range(obj_acts_idx, features.shape[1])
             )
+
+            features[:, activation_idxs] = np.where(
+                features[:, activation_idxs] != 0,
+                np.clip(features[:, activation_idxs] + delta, 0, 1),
+                features[:, activation_idxs],
+            )
+
+        elif self.feat_version == 3:
+            activation_idxs = [0, 3] + list(range(7, features.shape[1], 5))
 
             features[:, activation_idxs] = np.where(
                 features[:, activation_idxs] != 0,
@@ -248,7 +257,7 @@ class NormalizePixelPts(torch.nn.Module):
                 )
 
             # Distance between hands
-            hands_dist_idx = left_dist_idx2 + 1
+            hands_dist_idx = left_dist_idx2 
 
             features[:, hands_dist_idx] = features[:, hands_dist_idx] / self.im_w
             features[:, hands_dist_idx + 1] = features[:, hands_dist_idx + 1] / self.im_h
@@ -296,14 +305,19 @@ class NormalizeFromCenter(torch.nn.Module):
 
         elif self.feat_version == 3:
             # Right and left hand distances
-            start_idx = 3; end_idx = 7
-            features[:, start_idx:end_idx:2] = (
-                features[:, start_idx:end_idx:2] / self.half_w
-            )
+            right_idx1 = 1; right_idx2 = 2; 
+            left_idx1 = 4; left_idx2 = 5
+            for start_idx, end_idx in zip(
+                [right_idx1, left_idx1],
+                [right_idx2, left_idx2],
+            ):
             
-            features[:, start_idx + 1 : end_idx : 2] = (
-                features[:, start_idx + 1 : end_idx : 2] / self.half_h
-            )
+                features[:, start_idx] = (
+                    features[:, start_idx] / self.half_w
+                )
+                features[:, end_idx] = (
+                    features[:, end_idx] / self.half_h
+                )
 
             # Object distances
             start_idx = 10
