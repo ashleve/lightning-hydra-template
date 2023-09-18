@@ -24,12 +24,18 @@ rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # more info: https://github.com/ashleve/rootutils
 # ------------------------------------------------------------------------------------ #
 
-from src import utils
+from src.utils import (
+    RankedLogger,
+    extras,
+    instantiate_loggers,
+    log_hyperparameters,
+    task_wrapper,
+)
 
-log = utils.get_pylogger(__name__)
+log = RankedLogger(__name__, rank_zero_only=True)
 
 
-@utils.task_wrapper
+@task_wrapper
 def evaluate(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """Evaluates given checkpoint on a datamodule testset.
 
@@ -48,7 +54,7 @@ def evaluate(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     model: LightningModule = hydra.utils.instantiate(cfg.model)
 
     log.info("Instantiating loggers...")
-    logger: List[Logger] = utils.instantiate_loggers(cfg.get("logger"))
+    logger: List[Logger] = instantiate_loggers(cfg.get("logger"))
 
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(cfg.trainer, logger=logger)
@@ -63,7 +69,7 @@ def evaluate(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
 
     if logger:
         log.info("Logging hyperparameters!")
-        utils.log_hyperparameters(object_dict)
+        log_hyperparameters(object_dict)
 
     log.info("Starting testing!")
     trainer.test(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
@@ -84,7 +90,7 @@ def main(cfg: DictConfig) -> None:
     """
     # apply extra utilities
     # (e.g. ask for tags if none are provided in cfg, print cfg tree, etc.)
-    utils.extras(cfg)
+    extras(cfg)
 
     evaluate(cfg)
 

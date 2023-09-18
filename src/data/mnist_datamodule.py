@@ -83,6 +83,8 @@ class MNISTDataModule(LightningDataModule):
         self.data_val: Optional[Dataset] = None
         self.data_test: Optional[Dataset] = None
 
+        self.batch_size_per_device = batch_size
+
     @property
     def num_classes(self) -> int:
         """Get the number of classes.
@@ -112,6 +114,14 @@ class MNISTDataModule(LightningDataModule):
 
         :param stage: The stage to setup. Either `"fit"`, `"validate"`, `"test"`, or `"predict"`. Defaults to ``None``.
         """
+        # Divide batch size by the number of devices.
+        if self.trainer is not None:
+            if self.hparams.batch_size % self.trainer.world_size != 0:
+                raise RuntimeError(
+                    f"Batch size ({self.hparams.batch_size}) is not divisible by the number of devices ({self.trainer.world_size})."
+                )
+            self.batch_size_per_device = self.hparams.batch_size // self.trainer.world_size
+
         # load and split datasets only if not loaded already
         if not self.data_train and not self.data_val and not self.data_test:
             trainset = MNIST(self.hparams.data_dir, train=True, transform=self.transforms)
@@ -130,7 +140,7 @@ class MNISTDataModule(LightningDataModule):
         """
         return DataLoader(
             dataset=self.data_train,
-            batch_size=self.hparams.batch_size,
+            batch_size=self.batch_size_per_device,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             shuffle=True,
@@ -143,7 +153,7 @@ class MNISTDataModule(LightningDataModule):
         """
         return DataLoader(
             dataset=self.data_val,
-            batch_size=self.hparams.batch_size,
+            batch_size=self.batch_size_per_device,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             shuffle=False,
@@ -156,7 +166,7 @@ class MNISTDataModule(LightningDataModule):
         """
         return DataLoader(
             dataset=self.data_test,
-            batch_size=self.hparams.batch_size,
+            batch_size=self.batch_size_per_device,
             num_workers=self.hparams.num_workers,
             pin_memory=self.hparams.pin_memory,
             shuffle=False,
