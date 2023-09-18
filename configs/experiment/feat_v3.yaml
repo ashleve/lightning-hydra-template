@@ -1,0 +1,59 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /data: ptg
+  - override /model: ptg
+  - override /callbacks: default
+  - override /trainer: gpu
+  - override /paths: default
+  - override /logger: aim
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+exp_name: "coffee_feat_v3_move_pts_norm"
+
+tags: ["coffee", "ms_tcn"]
+
+seed: 12345
+
+trainer:
+  min_epochs: 50
+  max_epochs: 200
+
+
+model:
+  compile: false
+
+  net:
+    dim: 207
+
+data:
+  batch_size: 1024
+  num_workers: 0
+  epoch_length: 20000
+  window_size: 30
+  
+  all_transforms:
+    train_order: ["MoveCenterPts", "NormalizeFromCenter"] #["MoveCenterPts", "NormalizeFromCenter"]
+    test_order: ["NormalizeFromCenter"] # ["NormalizeFromCenter"]
+
+    MoveCenterPts:
+        feat_version: 3
+    NormalizeFromCenter:
+      feat_version: 3
+    NormalizePixelPts:
+      feat_version: 3
+
+paths:
+  data_dir: "/data/users/hannah.defazio/ptg_nas/data_copy/TCN_data/coffee_conf_10_all_hands_feat_v3_reordered"
+  root_dir: "/data/PTG/cooking/training/activity_classifier/TCN_HPL"
+
+logger:
+  aim:
+    experiment: ${exp_name}
+    capture_terminal_logs: true
+
+task_name: ${exp_name}
