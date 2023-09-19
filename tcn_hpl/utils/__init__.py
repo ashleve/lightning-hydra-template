@@ -1,5 +1,5 @@
-from src.utils.instantiators import instantiate_callbacks, instantiate_loggers
-from src.utils.logging_utils import log_hyperparameters
-from src.utils.pylogger import get_pylogger
-from src.utils.rich_utils import enforce_tags, print_config_tree
-from src.utils.utils import extras, get_metric_value, task_wrapper
+from tcn_hpl.utils.instantiators import instantiate_callbacks, instantiate_loggers
+from tcn_hpl.utils.logging_utils import log_hyperparameters
+from tcn_hpl.utils.pylogger import get_pylogger
+from tcn_hpl.utils.rich_utils import enforce_tags, print_config_tree
+from tcn_hpl.utils.utils import extras, get_metric_value, task_wrapper

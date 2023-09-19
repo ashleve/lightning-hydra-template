@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, Tuple
 
 from omegaconf import DictConfig
 
-from src.utils import pylogger, rich_utils
+from tcn_hpl.utils import pylogger, rich_utils
 
 log = pylogger.get_pylogger(__name__)
 
