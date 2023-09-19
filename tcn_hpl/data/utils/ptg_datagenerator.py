@@ -43,12 +43,12 @@ training_split = {
     "test": [f"all_activities_{x}" for x in [20, 33, 39, 50, 51, 52, 53, 54]],
 }  # Coffee specific
 
-feat_version = 2
+feat_version = 4
 
 #####################
 # Output
 #####################
-exp_name = f"coffee_conf_10_all_hands_feat_v{str(feat_version)}_fixed"
+exp_name = f"coffee_conf_10_all_hands_feat_v{str(feat_version)}"
 output_data_dir = f"{data_dir}/TCN_data/{exp_name}"
 if not os.path.exists(output_data_dir):
     os.makedirs(output_data_dir)
