@@ -1,7 +1,7 @@
 defaults:
  - all_transforms: default
 
-_target_: src.data.ptg_datamodule.PTGDataModule
+_target_: tcn_hpl.data.ptg_datamodule.PTGDataModule
 data_dir: ${paths.data_dir}
 batch_size: 128
 num_workers: 0

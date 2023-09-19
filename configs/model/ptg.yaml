@@ -1,4 +1,4 @@
-_target_: src.models.ptg_module.PTGLitModule
+_target_: tcn_hpl.models.ptg_module.PTGLitModule
 
 optimizer:
   _target_: torch.optim.Adam
@@ -14,7 +14,7 @@ scheduler:
   patience: 10
 
 net:
-  _target_: src.models.components.ms_tcs_net.MultiStageModel
+  _target_: tcn_hpl.models.components.ms_tcs_net.MultiStageModel
   num_stages: 4 
   num_layers: 10 
   num_f_maps: 64
@@ -22,7 +22,7 @@ net:
   num_classes: ${data.num_classes}
 
 criterion:
-  _target_: src.models.components.focal_loss.FocalLoss
+  _target_: tcn_hpl.models.components.focal_loss.FocalLoss
   alpha: 0.25 
   gamma: 2
   weight: None 

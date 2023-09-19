@@ -247,6 +247,8 @@ class PTGLitModule(LightningModule):
         
         self.logger.experiment.track(Image(fig), name=f'CM Validation Epoch')
 
+        plt.close(fig)
+        
         self.validation_step_outputs_target.clear()
         self.validation_step_outputs_pred.clear()
         
@@ -295,6 +297,8 @@ class PTGLitModule(LightningModule):
         ax.yaxis.set_ticklabels(self.classes, rotation=0)
 
         self.logger.experiment.track(Image(fig), name=f'CM Test Epoch')
+
+        plt.close(fig)
 
         self.validation_step_outputs_target.clear()
         self.validation_step_outputs_pred.clear()

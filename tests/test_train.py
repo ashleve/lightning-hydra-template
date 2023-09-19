@@ -5,7 +5,7 @@ import pytest
 from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig, open_dict
 
-from src.train import train
+from tcn_hpl.train import train
 from tests.helpers.run_if import RunIf
 
 

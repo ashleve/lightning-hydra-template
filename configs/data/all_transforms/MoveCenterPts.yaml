@@ -1,5 +1,5 @@
 MoveCenterPts:
-  _target_: src.data.components.augmentations.MoveCenterPts
+  _target_: tcn_hpl.data.components.augmentations.MoveCenterPts
   hand_dist_delta: 0.05
   obj_dist_delta: 0.05
   window_size: ${data.window_size}
