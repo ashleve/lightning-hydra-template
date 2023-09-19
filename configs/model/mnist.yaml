@@ -1,4 +1,4 @@
-_target_: src.models.mnist_module.MNISTLitModule
+_target_: tcn_hpl.models.mnist_module.MNISTLitModule
 
 optimizer:
   _target_: torch.optim.Adam
@@ -14,7 +14,7 @@ scheduler:
   patience: 10
 
 net:
-  _target_: src.models.components.simple_dense_net.SimpleDenseNet
+  _target_: tcn_hpl.models.components.simple_dense_net.SimpleDenseNet
   input_size: 784
   lin1_size: 64
   lin2_size: 128

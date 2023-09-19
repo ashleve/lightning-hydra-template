@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import torch
 
-from src.data.mnist_datamodule import MNISTDataModule
+from tcn_hpl.data.mnist_datamodule import MNISTDataModule
 
 
 @pytest.mark.parametrize("batch_size", [32, 128])
