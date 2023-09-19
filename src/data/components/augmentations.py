@@ -69,9 +69,10 @@ class MoveCenterPts(torch.nn.Module):
             ) = self.init_deltas()
 
             if self.feat_version == 1:
+                # No distances to move
                 pass
 
-            elif self.feat_version == 2:
+            elif self.feat_version == 2 or self.feat_version == 5:
                 num_obj_feats = self.num_obj_classes - 2  # not including hands in count
                 num_obj_points = num_obj_feats * 2
 
@@ -176,9 +177,7 @@ class ActivationDelta(torch.nn.Module):
         delta = self.init_delta()
 
         if self.feat_version == 1:
-            features[:] = np.where(
-                features[:] != 0, np.clip(features[:] + delta, 0, 1), features[:]
-            )
+            activation_idxs = range(features.shape[1])
 
         elif self.feat_version == 2:
             num_obj_feats = self.num_obj_classes - 2  # not including hands in count
@@ -189,23 +188,26 @@ class ActivationDelta(torch.nn.Module):
                 range(obj_acts_idx, features.shape[1])
             )
 
-            features[:, activation_idxs] = np.where(
-                features[:, activation_idxs] != 0,
-                np.clip(features[:, activation_idxs] + delta, 0, 1),
-                features[:, activation_idxs],
-            )
-
         elif self.feat_version == 3:
             activation_idxs = [0, 3] + list(range(7, features.shape[1], 5))
 
-            features[:, activation_idxs] = np.where(
-                features[:, activation_idxs] != 0,
-                np.clip(features[:, activation_idxs] + delta, 0, 1),
-                features[:, activation_idxs],
+        elif self.feat_version == 5:
+            num_obj_feats = self.num_obj_classes - 2  # not including hands in count
+            num_obj_points = num_obj_feats * 2
+
+            obj_acts_idx = num_obj_points + 1 + num_obj_points + 2 + 1 + 1
+            activation_idxs = [0, num_obj_points + 1] + list(
+                range(obj_acts_idx, features.shape[1], 3)
             )
 
         else:
             NotImplementedError(f"Unhandled version '{self.feat_version}'")
+
+        features[:, activation_idxs] = np.where(
+            features[:, activation_idxs] != 0,
+            np.clip(features[:, activation_idxs] + delta, 0, 1),
+            features[:, activation_idxs],
+        )
 
         return features
 
@@ -235,9 +237,10 @@ class NormalizePixelPts(torch.nn.Module):
 
     def forward(self, features):
         if self.feat_version == 1:
+            # No distances to normalize
             pass
 
-        elif self.feat_version == 2:
+        elif self.feat_version == 2 or self.feat_version == 5:
             num_obj_feats = self.num_obj_classes - 2  # not including hands in count
             num_obj_points = num_obj_feats * 2
 
@@ -263,12 +266,12 @@ class NormalizePixelPts(torch.nn.Module):
             features[:, hands_dist_idx + 1] = features[:, hands_dist_idx + 1] / self.im_h
 
         elif self.feat_version == 3:
+            # Distances are from the center, skip
             pass
 
         else:
             NotImplementedError(f"Unhandled version '{self.feat_version}'")
 
-        
         return features
 
     def __repr__(self) -> str:
@@ -298,9 +301,11 @@ class NormalizeFromCenter(torch.nn.Module):
 
     def forward(self, features):
         if self.feat_version == 1:
+            # No distances to normalize
             pass
 
-        elif self.feat_version == 2:
+        elif self.feat_version == 2 or self.feat_version == 5:
+            # Distances are relative to the image size, skip
             pass
 
         elif self.feat_version == 3:
