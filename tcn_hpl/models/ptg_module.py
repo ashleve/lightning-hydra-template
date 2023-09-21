@@ -71,6 +71,7 @@ class PTGLitModule(LightningModule):
         data_dir: str,
         num_classes: int,
         compile: bool,
+        mapping_file_name: str = "mapping.txt"
     ) -> None:
         """Initialize a `PTGLitModule`.
 
@@ -88,7 +89,7 @@ class PTGLitModule(LightningModule):
         self.net = net
 
         # Get Action Names
-        mapping_file = f"{self.hparams.data_dir}/mapping.txt"
+        mapping_file = f"{self.hparams.data_dir}/{mapping_file_name}"
         file_ptr = open(mapping_file, "r")
         actions = file_ptr.read().split("\n")[:-1]
         file_ptr.close()
