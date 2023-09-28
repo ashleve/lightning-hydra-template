@@ -14,6 +14,14 @@ from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import kwcoco
+
+from hydra.core.hydra_config import HydraConfig
+
+from angel_system.data.common.load_data import (
+    time_from_name,
+)
+
 
 class PTGLitModule(LightningModule):
     """Example of a `LightningModule` for MNIST classification.
@@ -84,6 +92,7 @@ class PTGLitModule(LightningModule):
             actions_dict[a.split()[1]] = int(a.split()[0])
         self.class_ids = list(actions_dict.values())
         self.classes = list(actions_dict.keys())
+        self.action_id_to_str = dict(zip(self.class_ids, self.classes))
 
         # loss functions
         self.criterion = criterion
@@ -102,9 +111,42 @@ class PTGLitModule(LightningModule):
         # for tracking best so far validation accuracy
         self.val_acc_best = MaxMetric()
 
-
+        self.validation_step_outputs_prob = []
         self.validation_step_outputs_pred = []
         self.validation_step_outputs_target = []
+        self.validation_step_outputs_source_vid = []
+        self.validation_step_outputs_source_frame = []
+
+        hydra_cfg = HydraConfig.get()
+        self.output_dir = hydra_cfg['runtime']['output_dir']
+
+        # Load val vidoes
+        vid_list_file_val = f"{self.hparams.data_dir}/splits/val.split1.bundle"
+        with open(vid_list_file_val, "r") as val_f:
+            self.val_videos = val_f.read().split("\n")[:-1]
+
+        self.val_frames = {}
+        for video in self.val_videos:
+            # Load frame filenames for the video
+            frame_list_file_val = f"{self.hparams.data_dir}/frames/{video}"
+            with open(frame_list_file_val, "r") as val_f:
+                val_fns = val_f.read().split("\n")[:-1]
+            
+            self.val_frames[video[:-4]] = val_fns
+
+        # Load test vidoes
+        vid_list_file_tst = f"{self.hparams.data_dir}/splits/test.split1.bundle"
+        with open(vid_list_file_tst, "r") as test_f:
+            self.test_videos = test_f.read().split("\n")[:-1]
+
+        self.test_frames = {}
+        for video in self.test_videos:
+            # Load frame filenames for the video
+            frame_list_file_tst = f"{self.hparams.data_dir}/frames/{video}"
+            with open(frame_list_file_tst, "r") as test_f:
+                test_fns = test_f.read().split("\n")[:-1]
+            
+            self.test_frames[video[:-4]] = test_fns
 
     def forward(self, x: torch.Tensor, m: torch.Tensor) -> torch.Tensor:
         """Perform a forward pass through the model `self.net`.
@@ -113,6 +155,7 @@ class PTGLitModule(LightningModule):
         :param m: A tensor of mask of the valid frames.
         :return: A tensor of logits.
         """
+
         return self.net(x,m)
 
     def on_train_start(self) -> None:
@@ -162,17 +205,25 @@ class PTGLitModule(LightningModule):
 
         :return: A tuple containing (in order):
             - A tensor of losses.
+            - A tensor of probabilities per class
             - A tensor of predictions.
             - A tensor of target labels.
+            - A tensor of [video name, frame idx]
         """
-        x, y, m = batch
-        x = x.transpose(2, 1)
-        logits = self.forward(x, m)
+        x, y, m, source_vid, source_frame = batch # x shape: (batch size, window, feat dim)
+        # y shape: (batch size, window)
+        # m shape: (batch size, window)
+        # source_vid shape: (batch size, window)
+        x = x.transpose(2, 1) # shape (batch size, feat dim, window)
+        logits = self.forward(x, m) # shape (4, batch size, self.hparams.num_classes, window))
         loss = torch.zeros((1)).to(x)
         for p in logits:
             loss += self.compute_loss(p, y, m)
-        preds = torch.argmax(logits[-1,:,:,-1], dim=1)
-        return loss, preds, y
+
+        probs = torch.softmax(logits[-1,:,:,-1], dim=1) # shape (batch size, self.hparams.num_classes)
+        preds = torch.argmax(logits[-1,:,:,-1], dim=1) # shape: batch size
+
+        return loss, probs, preds, y, source_vid, source_frame
 
 
     def training_step(
@@ -185,11 +236,12 @@ class PTGLitModule(LightningModule):
         :param batch_idx: The index of the current batch.
         :return: A tensor of losses between model predictions and targets.
         """
-        loss, preds, targets = self.model_step(batch)
+        loss, probs, preds, targets, source_vid, source_frame = self.model_step(batch)
 
         # update and log metrics
         self.train_loss(loss)
         self.train_acc(preds, targets[:,-1])
+
         self.log("train/loss", self.train_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
 
@@ -207,15 +259,18 @@ class PTGLitModule(LightningModule):
             labels.
         :param batch_idx: The index of the current batch.
         """
-        loss, preds, targets = self.model_step(batch)
-
+        loss, probs, preds, targets, source_vid, source_frame = self.model_step(batch)
         # update and log metrics
         self.val_loss(loss)
         self.val_acc(preds, targets[:,-1])
         self.log("val/loss", self.val_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
+        
         self.validation_step_outputs_target.append(targets[:,-1])
+        self.validation_step_outputs_source_vid.append(source_vid[:,-1])
+        self.validation_step_outputs_source_frame.append(source_frame[:,-1])
         self.validation_step_outputs_pred.append(preds)
+        self.validation_step_outputs_prob.append(probs)
 
     def on_validation_epoch_end(self) -> None:
         "Lightning hook that is called when a validation epoch ends."
@@ -225,9 +280,37 @@ class PTGLitModule(LightningModule):
         # otherwise metric would be reset by lightning after each epoch
         self.log("val/acc_best", self.val_acc_best.compute(), sync_dist=True, prog_bar=True)
 
-        all_targets = torch.concat(self.validation_step_outputs_target)
-        all_preds = torch.concat(self.validation_step_outputs_pred)
+        all_targets = torch.concat(self.validation_step_outputs_target) # shape: #frames
+        all_preds = torch.concat(self.validation_step_outputs_pred) # shape: #frames
+        all_probs = torch.concat(self.validation_step_outputs_prob) # shape (#frames, #act labels)
+        all_source_vids = torch.concat(self.validation_step_outputs_source_vid)
+        all_source_frames = torch.concat(self.validation_step_outputs_source_frame)
         
+        # Save results
+        dset = kwcoco.CocoDataset()
+        dset.fpath = f"{self.output_dir}/val_activity_preds_epoch{self.current_epoch}.mscoco.json"
+        dset.dataset["info"].append({"activity_labels": self.action_id_to_str})
+
+        for (gt, pred, prob, source_vid, source_frame) in zip(all_targets, all_preds, all_probs, all_source_vids, all_source_frames):
+            video_name = self.val_videos[int(source_vid)][:-4]
+
+            video_lookup = dset.index.name_to_video
+            vid = video_lookup[video_name]["id"] if video_name in video_lookup else dset.add_video(name=video_name)
+            
+            frame = self.val_frames[video_name][int(source_frame)]
+            frame_idx, time = time_from_name(frame)
+            
+            dset.add_image(
+                file_name=frame,
+                video_id=vid,
+                frame_index=frame_idx,
+                activity_gt=int(gt),
+                activity_pred=int(pred),
+                activity_conf=prob.tolist()
+            )
+        dset.dump(dset.fpath, newlines=True)
+        print(f"Saved dset to {dset.fpath}")   
+
         # Create confusion matrix
         cm = confusion_matrix(
             all_targets.cpu().numpy(), all_preds.cpu().numpy(),
@@ -250,7 +333,10 @@ class PTGLitModule(LightningModule):
         plt.close(fig)
         
         self.validation_step_outputs_target.clear()
+        self.validation_step_outputs_source_vid.clear()
+        self.validation_step_outputs_source_frame.clear()
         self.validation_step_outputs_pred.clear()
+        self.validation_step_outputs_prob.clear()
         
 
     def test_step(self, batch: Tuple[torch.Tensor, torch.Tensor], batch_idx: int) -> None:
@@ -260,7 +346,7 @@ class PTGLitModule(LightningModule):
             labels.
         :param batch_idx: The index of the current batch.
         """
-        loss, preds, targets = self.model_step(batch)
+        loss, probs, preds, targets, source_vid, source_frame = self.model_step(batch)
 
         # update and log metrics
         self.test_loss(loss)
@@ -269,15 +355,46 @@ class PTGLitModule(LightningModule):
         self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
         
         self.validation_step_outputs_target.append(targets[:,-1])
+        self.validation_step_outputs_source_vid.append(source_vid[:,-1])
+        self.validation_step_outputs_source_frame.append(source_frame[:,-1])
         self.validation_step_outputs_pred.append(preds)
+        self.validation_step_outputs_prob.append(probs)
         
 
     def on_test_epoch_end(self) -> None:
         """Lightning hook that is called when a test epoch ends."""
         # update and log metrics
 
-        all_targets = torch.concat(self.validation_step_outputs_target)
-        all_preds = torch.concat(self.validation_step_outputs_pred)
+        all_targets = torch.concat(self.validation_step_outputs_target) # shape: #frames
+        all_preds = torch.concat(self.validation_step_outputs_pred) # shape: #frames
+        all_probs = torch.concat(self.validation_step_outputs_prob) # shape (#frames, #act labels)
+        all_source_vids = torch.concat(self.validation_step_outputs_source_vid)
+        all_source_frames = torch.concat(self.validation_step_outputs_source_frame)
+
+        # Save results
+        dset = kwcoco.CocoDataset()
+        dset.fpath = f"{self.output_dir}/test_activity_preds.mscoco.json"
+        dset.dataset["info"].append({"activity_labels": self.action_id_to_str})
+
+        for (gt, pred, prob, source_vid, source_frame) in zip(all_targets, all_preds, all_probs, all_source_vids, all_source_frames):
+            video_name = self.test_videos[int(source_vid)][:-4]
+
+            video_lookup = dset.index.name_to_video
+            vid = video_lookup[video_name]["id"] if video_name in video_lookup else dset.add_video(name=video_name)
+            
+            frame = self.test_frames[video_name][int(source_frame)]
+            frame_idx, time = time_from_name(frame)
+            
+            dset.add_image(
+                file_name=frame,
+                video_id=vid,
+                frame_index=frame_idx,
+                activity_gt=int(gt),
+                activity_pred=int(pred),
+                activity_conf=prob.tolist()
+            )
+        dset.dump(dset.fpath, newlines=True)
+        print(f"Saved dset to {dset.fpath}")    
 
         # Create confusion matrix
         cm = confusion_matrix(
@@ -302,6 +419,9 @@ class PTGLitModule(LightningModule):
 
         self.validation_step_outputs_target.clear()
         self.validation_step_outputs_pred.clear()
+        self.validation_step_outputs_prob.clear()
+        self.validation_step_outputs_source_vid.clear()
+        self.validation_step_outputs_source_frame.clear()
 
     def setup(self, stage: str) -> None:
         """Lightning hook that is called at the beginning of fit (train + validate), validate,

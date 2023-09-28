@@ -4,6 +4,7 @@ import torch
 import numpy as np
 
 from typing import Optional, Callable, Dict, List
+from torchvision.transforms import transforms
 
 class PTG_Dataset(torch.utils.data.Dataset):
     def __init__(
@@ -32,35 +33,47 @@ class PTG_Dataset(torch.utils.data.Dataset):
         input_frames_list = []
         target_frames_list = []
         mask_frames_list = []
-        for vid in videos:
+        source_vids_list = []
+        source_frames_list = []
+        for v, vid in enumerate(videos):
             features = np.load(self.features_path + vid.split(".")[0] + ".npy")
             
             file_ptr = open(self.gt_path + vid, "r")
             content = file_ptr.read().split("\n")[:-1]
 
             classes = np.zeros(min(np.shape(features)[1], len(content)))
+            source_vid = np.empty(classes.shape, dtype=int)
+            source_frame = np.empty(classes.shape, dtype=int)
             for i in range(len(classes)):
                 classes[i] = self.actions_dict[content[i]]
+                source_vid[i] = v
+                source_frame[i] = i # find filename????
 
             # mask out the end of the window size of the end of the sequence to prevent overlap between videos.
             mask = np.ones_like(classes)
             mask[-window_size:] = 0
 
-
             input_frames_list.append(features[:, :: self.sample_rate])
             target_frames_list.append(classes[:: self.sample_rate])
             mask_frames_list.append(mask[:: self.sample_rate])
-
+            source_vids_list.append(source_vid[:: self.sample_rate])
+            source_frames_list.append(source_frame[:: self.sample_rate])
 
         self.feature_frames = np.concatenate(input_frames_list, axis=1, dtype=np.single).transpose()
         self.target_frames = np.concatenate(target_frames_list, axis=0, dtype=int, casting='unsafe')
         self.mask_frames = np.concatenate(mask_frames_list, axis=0, dtype=int, casting='unsafe')
+        self.source_vids = np.concatenate(source_vids_list, axis=0, dtype=int, casting='unsafe')
+        self.source_frames = np.concatenate(source_frames_list, dtype=int, axis=0)
+
 
         # Transforms/Augmentations
         if self.transform is not None:
-            self.feature_frames = self.transform(self.feature_frames)
+            self.feature_frames = self.transform(self.feature_frames.copy())
         if self.target_transform is not None:
-            self.target_frames = self.target_transform(self.target_frames)
+            self.target_frames = self.target_transform(self.target_frames.copy())
+
+        #zero_idxs = random.sample(list(range(len(self.mask_frames))), len(self.mask_frames)*0.3)
+        #self.mask_frames[zero_idxs] = 0
 
         self.norm_stats['mean'] = self.feature_frames.mean(axis=0)
         self.norm_stats['std'] = self.feature_frames.std(axis=0)
@@ -87,14 +100,17 @@ class PTG_Dataset(torch.utils.data.Dataset):
         return self.dataset_size
 
     def __getitem__(self, idx):
+        #print(f"window idx: {idx}:{idx+self.window_size}")
         """Grab a window of frames starting at ``idx``
 
         :param idx: The first index of the time window
 
-        :return: features, targets, and mask of the windw
+        :return: features, targets, and mask of the window
         """
-        features = self.feature_frames[idx:idx+self.window_size,:]
+        features = self.feature_frames[idx:idx+self.window_size, :]
         target = self.target_frames[idx:idx+self.window_size]
         mask = self.mask_frames[idx:idx+self.window_size]
+        source_vid = self.source_vids[idx:idx+self.window_size]
+        source_frame = self.source_frames[idx:idx+self.window_size]
         
-        return features, target, mask
+        return features, target, mask, np.array(source_vid), source_frame

@@ -43,12 +43,15 @@ training_split = {
     "test": [f"all_activities_{x}" for x in [20, 33, 39, 50, 51, 52, 53, 54]],
 }  # Coffee specific
 
-feat_version = 4
+feat_version = 5
+using_done = False # Set the gt according to when an activity is done
 
 #####################
 # Output
 #####################
 exp_name = f"coffee_conf_10_all_hands_feat_v{str(feat_version)}"
+if using_done:
+    exp_name = f"{exp_name}" #_done_gt_1.5"
 output_data_dir = f"{data_dir}/TCN_data/{exp_name}"
 if not os.path.exists(output_data_dir):
     os.makedirs(output_data_dir)
@@ -56,6 +59,10 @@ if not os.path.exists(output_data_dir):
 gt_dir = f"{output_data_dir}/groundTruth"
 if not os.path.exists(gt_dir):
     os.makedirs(gt_dir)
+
+frames_dir = f"{output_data_dir}/frames"
+if not os.path.exists(frames_dir):
+    os.makedirs(frames_dir)
 
 bundle_dir = f"{output_data_dir}/splits"
 if not os.path.exists(bundle_dir):
@@ -105,6 +112,11 @@ for split in training_split.keys():
         gt = activities_from_dive_csv(activity_gt_fn)
         gt = objs_as_dataframe(gt)
 
+        if using_done:
+            time_span = 1.5
+            gt["start"] = gt["end"]
+            gt["end"] = gt["start"] + time_span
+
         image_ids = dset.index.vidid_to_gids[video_id]
         num_images = len(image_ids)
 
@@ -131,11 +143,13 @@ for split in training_split.keys():
         )
 
         X = X.T
+        print(f"X after transpose: {X.shape}")
 
         np.save(f"{features_dir}/{video_name}.npy", X)
 
         # groundtruth
-        with open(f"{gt_dir}/{video_name}.txt", "w") as gt_f:
+        with open(f"{gt_dir}/{video_name}.txt", "w") as gt_f, \
+            open(f"{frames_dir}/{video_name}.txt", "w") as frames_f:
             for image_id in image_ids:
                 image = dset.imgs[image_id]
                 image_n = image["file_name"]
@@ -163,6 +177,7 @@ for split in training_split.keys():
                         activity_label = activity["label"]
 
                 gt_f.write(f"{activity_label}\n")
+                frames_f.write(f"{image_n}\n")
 
         # bundles
         with open(f"{bundle_dir}/{split}.split1.bundle", "a+") as bundle:
