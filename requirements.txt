@@ -1,4 +1,8 @@
+# Note: this is assuming a Linux-based installation, for other platforms see https://pytorch.org/get-started/locally/
+
 # --------- pytorch --------- #
+--extra-index-url https://download.pytorch.org/whl/cu118  # gpu+cpu installation (comment this line if doing cpu-only)
+# --extra-index-url https://download.pytorch.org/whl/cpu  # cpu-only installation (uncomment line if doing cpu-only)
 torch>=2.0.0
 torchvision>=0.15.0
 lightning>=2.0.0
