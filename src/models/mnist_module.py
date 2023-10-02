@@ -111,7 +111,7 @@ class MNISTLitModule(LightningModule):
         losses = {}  # a dict of {loss_fn_name: loss_value}
         losses["total_loss"] = 0.0
         for loss_fn in self.loss_fns:
-            losses[loss_fn.tag] = loss_fn(preds, y)
+            losses[loss_fn.tag] = loss_fn(logits, y)
             losses["total_loss"] += losses[loss_fn.tag] * loss_fn.weight
         return losses, preds, y
 
@@ -130,6 +130,7 @@ class MNISTLitModule(LightningModule):
         # update and log metrics
         self.train_loss(losses.get("total_loss"))
         self.train_acc(preds, targets)
+        self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
         for loss_name, loss_value in losses.items():
             self.log(f"train/{loss_name}", loss_value, on_step=False, on_epoch=True, prog_bar=True)
 
@@ -152,6 +153,7 @@ class MNISTLitModule(LightningModule):
         # update and log metrics
         self.val_loss(losses.get("total_loss"))
         self.val_acc(preds, targets)
+        self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
         for loss_name, loss_value in losses.items():
             self.log(f"val/{loss_name}", loss_value, on_step=False, on_epoch=True, prog_bar=True)
 
@@ -175,6 +177,7 @@ class MNISTLitModule(LightningModule):
         # update and log metrics
         self.test_loss(losses.get("total_loss"))
         self.test_acc(preds, targets)
+        self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
         for loss_name, loss_value in losses.items():
             self.log(f"test/{loss_name}", loss_value, on_step=False, on_epoch=True, prog_bar=True)
 
