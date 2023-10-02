@@ -21,5 +21,10 @@ net:
   lin3_size: 64
   output_size: 10
 
+loss_fns:
+  _target_: src.models.components.loss_fn.CrossEntropyLoss
+  tag: cross_entropy_loss
+  weight: 1.0
+
 # compile model for faster training with pytorch 2.0
 compile: false
