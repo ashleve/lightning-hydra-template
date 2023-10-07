@@ -1,0 +1,3 @@
+_target_: lightning.fabric.plugins.environments.SLURMEnvironment
+auto_requeue: true
+requeue_signal: null

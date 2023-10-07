@@ -1,0 +1,12 @@
+_target_: lightning.pytorch.strategies.FSDPStrategy
+sharding_strategy: ${resolve_variable:torch.distributed.fsdp.ShardingStrategy.FULL_SHARD}
+cpu_offload: null
+activation_checkpointing: null
+mixed_precision:
+  _target_: torch.distributed.fsdp.MixedPrecision
+  param_dtype: null
+  reduce_dtype: null
+  buffer_dtype: null
+  keep_low_precision_grads: false
+  cast_forward_inputs: false
+  cast_root_forward_inputs: true

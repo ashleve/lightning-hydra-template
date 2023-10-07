@@ -3,9 +3,10 @@ from typing import Any, Dict, List, Optional, Tuple
 import hydra
 import lightning as L
 import rootutils
-import torch
 from lightning import Callback, LightningDataModule, LightningModule, Trainer
+from lightning.fabric.plugins.environments.cluster_environment import ClusterEnvironment
 from lightning.pytorch.loggers import Logger
+from lightning.pytorch.strategies.strategy import Strategy
 from omegaconf import DictConfig
 
 rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
@@ -26,6 +27,7 @@ rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # more info: https://github.com/ashleve/rootutils
 # ------------------------------------------------------------------------------------ #
 
+from src import register_custom_omegaconf_resolvers, resolve_omegaconf_variable
 from src.utils import (
     RankedLogger,
     extras,
@@ -66,8 +68,49 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     log.info("Instantiating loggers...")
     logger: List[Logger] = instantiate_loggers(cfg.get("logger"))
 
+    plugins = None
+    if "_target_" in cfg.environment:
+        log.info(f"Instantiating environment <{cfg.environment._target_}>")
+        plugins: ClusterEnvironment = hydra.utils.instantiate(cfg.environment)
+
+    strategy = getattr(cfg.trainer, "strategy", None)
+    if "_target_" in cfg.strategy:
+        log.info(f"Instantiating strategy <{cfg.strategy._target_}>")
+        strategy: Strategy = hydra.utils.instantiate(cfg.strategy)
+        if "mixed_precision" in strategy.__dict__:
+            strategy.mixed_precision.param_dtype = (
+                resolve_omegaconf_variable(cfg.strategy.mixed_precision.param_dtype)
+                if cfg.strategy.mixed_precision.param_dtype is not None
+                else None
+            )
+            strategy.mixed_precision.reduce_dtype = (
+                resolve_omegaconf_variable(cfg.strategy.mixed_precision.reduce_dtype)
+                if cfg.strategy.mixed_precision.reduce_dtype is not None
+                else None
+            )
+            strategy.mixed_precision.buffer_dtype = (
+                resolve_omegaconf_variable(cfg.strategy.mixed_precision.buffer_dtype)
+                if cfg.strategy.mixed_precision.buffer_dtype is not None
+                else None
+            )
+
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
-    trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
+    trainer: Trainer = (
+        hydra.utils.instantiate(
+            cfg.trainer,
+            callbacks=callbacks,
+            logger=logger,
+            plugins=plugins,
+            strategy=strategy,
+        )
+        if strategy is not None
+        else hydra.utils.instantiate(
+            cfg.trainer,
+            callbacks=callbacks,
+            logger=logger,
+            plugins=plugins,
+        )
+    )
 
     object_dict = {
         "cfg": cfg,
@@ -129,4 +172,5 @@ def main(cfg: DictConfig) -> Optional[float]:
 
 
 if __name__ == "__main__":
+    register_custom_omegaconf_resolvers()
     main()
