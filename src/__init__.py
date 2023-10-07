@@ -1,7 +1,7 @@
 import importlib
+from typing import Any
 
 from omegaconf import OmegaConf
-from typing import Any
 
 
 def resolve_omegaconf_variable(variable_path: str) -> Any:
