@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import hydra
 import lightning as L
 import rootutils
+import os
 from lightning import Callback, LightningDataModule, LightningModule, Trainer
 from lightning.fabric.plugins.environments.cluster_environment import ClusterEnvironment
 from lightning.pytorch.loggers import Logger
@@ -127,7 +128,14 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
 
     if cfg.get("train"):
         log.info("Starting training!")
-        trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
+        ckpt_path = None
+        if cfg.get("ckpt_path") and os.path.exists(cfg.get("ckpt_path")):
+            ckpt_path = cfg.get("ckpt_path")
+        elif cfg.get("ckpt_path"):
+            log.warning(
+                "`ckpt_path` was given, but the path does not exist. Training with new model weights."
+            )
+        trainer.fit(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
 
     train_metrics = trainer.callback_metrics
 
