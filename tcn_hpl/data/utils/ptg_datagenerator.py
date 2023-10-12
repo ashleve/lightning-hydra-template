@@ -7,6 +7,8 @@ import kwcoco
 import numpy as np
 import ubelt as ub
 
+from pathlib import Path
+
 from angel_system.data.common.load_data import (
     activities_from_dive_csv,
     objs_as_dataframe,
@@ -17,31 +19,21 @@ from angel_system.activity_hmm.train_activity_classifier import (
     data_loader,
     compute_feats,
 )
+from angel_system.data.data_paths import grab_data, data_dir
+
 
 #####################
 # Inputs
 #####################
+recipe = "coffee+tea"
+obj_exp_name = "coffee_base" #"coffee+tea_yolov7"
+
+# obj_dets_dir = f"{data_dir}/annotations/{recipe}/results/{obj_exp_name}"
+obj_dets_dir = "/data/PTG/cooking/object_anns/old_coffee/results/coffee_base/" #"/home/local/KHQ/hannah.defazio/yolov7/runs/detect/coffee+tea_yolov7/"
+
 ptg_root = "/home/local/KHQ/hannah.defazio/angel_system/"
 activity_config_path = f"{ptg_root}/config/activity_labels"
-recipe = "coffee"
 activity_config_fn = f"{activity_config_path}/recipe_{recipe}.yaml"
-
-data_dir = "/data/users/hannah.defazio/ptg_nas/data_copy/"
-extracted_data_dir = f"{data_dir}/coffee_extracted"
-activity_gt_dir = f"{data_dir}/coffee_labels/Labels"
-
-obj_exp_name = "coffee_base"
-obj_dets_dir = f"/data/PTG/cooking/annotations/coffee/results/{obj_exp_name}"
-
-training_split = {
-    "train_activity": [
-        f"all_activities_{x}"
-        for x in [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 25, 26, 27,
-            28, 29, 30, 31, 32, 34, 35, 36, 37, 38, 40, 47, 48, 49]
-    ],
-    "val": [f"all_activities_{x}" for x in [23, 24, 42, 46]],
-    "test": [f"all_activities_{x}" for x in [20, 33, 39, 50, 51, 52, 53, 54]],
-}  # Coffee specific
 
 feat_version = 5
 using_done = False # Set the gt according to when an activity is done
@@ -49,32 +41,25 @@ using_done = False # Set the gt according to when an activity is done
 #####################
 # Output
 #####################
-exp_name = f"coffee_conf_10_all_hands_feat_v{str(feat_version)}"
+exp_name = "coffee_only_data_test_feat_v5"#f"coffee_and_tea_feat_v{str(feat_version)}"
 if using_done:
-    exp_name = f"{exp_name}" #_done_gt_1.5"
-output_data_dir = f"{data_dir}/TCN_data/{exp_name}"
-if not os.path.exists(output_data_dir):
-    os.makedirs(output_data_dir)
+    exp_name = f"{exp_name}_done_gt"
+
+output_data_dir = f"{data_dir}/TCN_data/{recipe}/{exp_name}"
 
 gt_dir = f"{output_data_dir}/groundTruth"
-if not os.path.exists(gt_dir):
-    os.makedirs(gt_dir)
-
 frames_dir = f"{output_data_dir}/frames"
-if not os.path.exists(frames_dir):
-    os.makedirs(frames_dir)
-
 bundle_dir = f"{output_data_dir}/splits"
-if not os.path.exists(bundle_dir):
-    os.makedirs(bundle_dir)
+features_dir = f"{output_data_dir}/features"
+
+# Create directories
+for folder in [output_data_dir, gt_dir, frames_dir, bundle_dir, features_dir]:
+    Path(folder).mkdir(parents=True, exist_ok=True)
+
 # Clear out the bundles
 filelist = [f for f in os.listdir(bundle_dir)]
 for f in filelist:
     os.remove(os.path.join(bundle_dir, f))
-
-features_dir = f"{output_data_dir}/features"
-if not os.path.exists(features_dir):
-    os.makedirs(features_dir)
 
 #####################
 # Mapping
@@ -96,26 +81,17 @@ with open(f"{output_data_dir}/mapping.txt", "w") as mapping:
 # groundtruth and
 # bundles
 #####################
-for split in training_split.keys():
-    kwcoco_file = f"{obj_dets_dir}/{obj_exp_name}_results_{split}_conf_0.1_plus_hl_hands.mscoco.json"
+for split in ["train_activity", "val", "test"]:
+    kwcoco_file = f"{obj_dets_dir}/{obj_exp_name}_results_{split}_conf_0.1_plus_hl_hands_new_obj_labels.mscoco.json"
     dset = kwcoco.CocoDataset(kwcoco_file)
-
-    num_classes = len(dset.cats)
 
     for video_id in ub.ProgIter(
         dset.index.videos.keys(), desc=f"Creating features for videos in {split}"
     ):
         video = dset.index.videos[video_id]
         video_name = video["name"]
-
-        activity_gt_fn = f"{activity_gt_dir}/{video_name}.csv"
-        gt = activities_from_dive_csv(activity_gt_fn)
-        gt = objs_as_dataframe(gt)
-
-        if using_done:
-            time_span = 1.5
-            gt["start"] = gt["end"]
-            gt["end"] = gt["start"] + time_span
+        if "_extracted" in video_name:
+            video_name = video_name.split("_extracted")[0]
 
         image_ids = dset.index.vidid_to_gids[video_id]
         num_images = len(image_ids)
@@ -152,31 +128,15 @@ for split in training_split.keys():
             open(f"{frames_dir}/{video_name}.txt", "w") as frames_f:
             for image_id in image_ids:
                 image = dset.imgs[image_id]
-                image_n = image["file_name"]
+                image_n = image["file_name"] # this is the shortened string
 
                 frame_idx, time = time_from_name(image_n)
-                matching_gt = gt.loc[(gt["start"] <= time) & (gt["end"] >= time)]
+                
+                activity_gt = image["activity_gt"]
+                if activity_gt is None:
+                    activity_gt = "background"
 
-                if matching_gt.empty:
-                    label = "background"
-                    activity_label = label
-                else:
-                    label = matching_gt.iloc[0]["class_label"]
-                    activity = [
-                        x
-                        for x in activity_labels[1:-1]
-                        if sanitize_str(x["full_str"]) == label
-                    ]
-                    if not activity:
-                        warnings.warn(
-                            f"Label: {label} is not in the activity labels config, ignoring"
-                        )
-                        activity_label = "background"
-                    else:
-                        activity = activity[0]
-                        activity_label = activity["label"]
-
-                gt_f.write(f"{activity_label}\n")
+                gt_f.write(f"{activity_gt}\n")
                 frames_f.write(f"{image_n}\n")
 
         # bundles
