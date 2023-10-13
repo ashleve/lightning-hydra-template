@@ -13,7 +13,7 @@ defaults:
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
-exp_name: "coffee_only_data_test"
+exp_name: "yolo_coffee_and_tea_reordered_imgs_norm_mv_pts"
 
 tags: ["coffee+tea", "ms_tcn"]
 
@@ -38,8 +38,8 @@ data:
   window_size: 30
   
   all_transforms:
-    train_order: [] #["MoveCenterPts", "NormalizePixelPts"]
-    test_order: [] #["NormalizePixelPts"]
+    train_order: ["MoveCenterPts", "NormalizePixelPts"]
+    test_order: ["NormalizePixelPts"]
 
     MoveCenterPts:
         feat_version: 5
@@ -51,7 +51,7 @@ data:
       num_obj_classes: 56
 
 paths:
-  data_dir: "/data/PTG/cooking//TCN_data/coffee+tea/coffee_only_data_test_feat_v5"
+  data_dir: "/data/PTG/cooking//TCN_data/coffee+tea/yolo_coffee_and_tea_reordered_imgs"
   root_dir: "/data/PTG/cooking/training/activity_classifier/TCN_HPL"
 
 logger:
