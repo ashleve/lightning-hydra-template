@@ -6,7 +6,7 @@ import rich.syntax
 import rich.tree
 from hydra.core.hydra_config import HydraConfig
 from lightning_utilities.core.rank_zero import rank_zero_only
-from omegaconf import DictConfig, OmegaConf, open_dict
+from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 from rich.prompt import Prompt
 
 from src.utils import pylogger
@@ -58,7 +58,7 @@ def print_config_tree(
         branch = tree.add(field, style=style, guide_style=style)
 
         config_group = cfg[field]
-        if isinstance(config_group, DictConfig):
+        if isinstance(config_group, (DictConfig, ListConfig)):
             branch_content = OmegaConf.to_yaml(config_group, resolve=resolve)
         else:
             branch_content = str(config_group)

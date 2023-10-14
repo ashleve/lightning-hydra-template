@@ -12,7 +12,16 @@ defaults:
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-tags: ["mnist", "simple_dense_net"]
+# `tags` is a list of strings, defined either:
+# 1. In JSON flow-style: ["mnist", "simple_dense_net", ...]
+# 2. As a YAML block-style array, as shown below.
+# Tags can be interpolated dynamically at runtime.
+# NOTE: Dynamic interpolation is only supported in block-style lists, not flow-style.
+tags:
+  - "mnist"
+  - "simple_dense_net"
+  - ${task_name} # will be dynamically interpolated
+  - batch_size_${data.batch_size} # will also be dynamically interpolated
 
 seed: 12345
 
