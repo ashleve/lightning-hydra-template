@@ -19,7 +19,7 @@ defaults:
 tags:
   - "mnist"
   - "simple_dense_net"
-  - ${task_name}  # will be dynamically interpolated
+  - ${task_name} # will be dynamically interpolated
   - batch_size_${data.batch_size} # will also be dynamically interpolated
 
 seed: 12345
