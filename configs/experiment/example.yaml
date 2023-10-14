@@ -12,10 +12,11 @@ defaults:
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
 
-# tags are a list of string that can be defined either as a JSON flow-style (in-line) list
-# e.g. ["mnist", "simple_dense_net", ...] or as a YAML block-style array list like below.
-# tags can even be dynamically interpolated at runtime.
-# NOTE: dynamic interpolation only works in block-style lists like below, not flow-style lists.
+# `tags` is a list of strings, defined either:
+# 1. In JSON flow-style: ["mnist", "simple_dense_net", ...]
+# 2. As a YAML block-style array, as shown below.
+# Tags can be interpolated dynamically at runtime.
+# NOTE: Dynamic interpolation is only supported in block-style lists, not flow-style.
 tags:
   - "mnist"
   - "simple_dense_net"
