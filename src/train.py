@@ -78,7 +78,7 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     if "_target_" in cfg.strategy:
         log.info(f"Instantiating strategy <{cfg.strategy._target_}>")
         strategy: Strategy = hydra.utils.instantiate(cfg.strategy)
-        if "mixed_precision" in strategy.__dict__:
+        if "mixed_precision" in strategy.__dict__ and strategy.mixed_precision is not None:
             strategy.mixed_precision.param_dtype = (
                 resolve_omegaconf_variable(cfg.strategy.mixed_precision.param_dtype)
                 if cfg.strategy.mixed_precision.param_dtype is not None
