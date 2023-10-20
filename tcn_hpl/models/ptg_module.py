@@ -1,4 +1,3 @@
-from aim import Image
 from typing import Any, Dict, Tuple
 
 import torch
@@ -21,6 +20,12 @@ from hydra.core.hydra_config import HydraConfig
 from angel_system.data.common.load_data import (
     time_from_name,
 )
+
+
+try:
+    from aim import Image
+except ImportError:
+    Image = None
 
 
 class PTGLitModule(LightningModule):
@@ -66,6 +71,7 @@ class PTGLitModule(LightningModule):
         data_dir: str,
         num_classes: int,
         compile: bool,
+        mapping_file_name: str = "mapping.txt"
     ) -> None:
         """Initialize a `PTGLitModule`.
 
@@ -83,7 +89,7 @@ class PTGLitModule(LightningModule):
         self.net = net
 
         # Get Action Names
-        mapping_file = f"{self.hparams.data_dir}/mapping.txt"
+        mapping_file = f"{self.hparams.data_dir}/{mapping_file_name}"
         file_ptr = open(mapping_file, "r")
         actions = file_ptr.read().split("\n")[:-1]
         file_ptr.close()
@@ -131,7 +137,7 @@ class PTGLitModule(LightningModule):
             frame_list_file_val = f"{self.hparams.data_dir}/frames/{video}"
             with open(frame_list_file_val, "r") as val_f:
                 val_fns = val_f.read().split("\n")[:-1]
-            
+
             self.val_frames[video[:-4]] = val_fns
 
         # Load test vidoes
@@ -145,7 +151,7 @@ class PTGLitModule(LightningModule):
             frame_list_file_tst = f"{self.hparams.data_dir}/frames/{video}"
             with open(frame_list_file_tst, "r") as test_f:
                 test_fns = test_f.read().split("\n")[:-1]
-            
+
             self.test_frames[video[:-4]] = test_fns
 
     def forward(self, x: torch.Tensor, m: torch.Tensor) -> torch.Tensor:
@@ -181,7 +187,7 @@ class PTGLitModule(LightningModule):
             p.transpose(2, 1).contiguous().view(-1, self.hparams.num_classes),
             y.view(-1),
         )
-                    
+
         loss += self.hparams.smoothing_loss * torch.mean(
             torch.clamp(
                 self.mse(
@@ -265,7 +271,7 @@ class PTGLitModule(LightningModule):
         self.val_acc(preds, targets[:,-1])
         self.log("val/loss", self.val_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=True)
-        
+
         self.validation_step_outputs_target.append(targets[:,-1])
         self.validation_step_outputs_source_vid.append(source_vid[:,-1])
         self.validation_step_outputs_source_frame.append(source_frame[:,-1])
@@ -285,7 +291,7 @@ class PTGLitModule(LightningModule):
         all_probs = torch.concat(self.validation_step_outputs_prob) # shape (#frames, #act labels)
         all_source_vids = torch.concat(self.validation_step_outputs_source_vid)
         all_source_frames = torch.concat(self.validation_step_outputs_source_frame)
-        
+
         # Save results
         dset = kwcoco.CocoDataset()
         dset.fpath = f"{self.output_dir}/val_activity_preds_epoch{self.current_epoch}.mscoco.json"
@@ -296,10 +302,10 @@ class PTGLitModule(LightningModule):
 
             video_lookup = dset.index.name_to_video
             vid = video_lookup[video_name]["id"] if video_name in video_lookup else dset.add_video(name=video_name)
-            
+
             frame = self.val_frames[video_name][int(source_frame)]
             frame_idx, time = time_from_name(frame)
-            
+
             dset.add_image(
                 file_name=frame,
                 video_id=vid,
@@ -309,7 +315,7 @@ class PTGLitModule(LightningModule):
                 activity_conf=prob.tolist()
             )
         dset.dump(dset.fpath, newlines=True)
-        print(f"Saved dset to {dset.fpath}")   
+        print(f"Saved dset to {dset.fpath}")
 
         # Create confusion matrix
         cm = confusion_matrix(
@@ -327,17 +333,16 @@ class PTGLitModule(LightningModule):
         ax.set_title(f'CM Validation Epoch {self.current_epoch}')
         ax.xaxis.set_ticklabels(self.classes, rotation=90)
         ax.yaxis.set_ticklabels(self.classes, rotation=0)
-        
+
         self.logger.experiment.track(Image(fig), name=f'CM Validation Epoch')
 
         plt.close(fig)
-        
+
         self.validation_step_outputs_target.clear()
         self.validation_step_outputs_source_vid.clear()
         self.validation_step_outputs_source_frame.clear()
         self.validation_step_outputs_pred.clear()
         self.validation_step_outputs_prob.clear()
-        
 
     def test_step(self, batch: Tuple[torch.Tensor, torch.Tensor], batch_idx: int) -> None:
         """Perform a single test step on a batch of data from the test set.
@@ -353,13 +358,12 @@ class PTGLitModule(LightningModule):
         self.test_acc(preds, targets[:,-1])
         self.log("test/loss", self.test_loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("test/acc", self.test_acc, on_step=False, on_epoch=True, prog_bar=True)
-        
+
         self.validation_step_outputs_target.append(targets[:,-1])
         self.validation_step_outputs_source_vid.append(source_vid[:,-1])
         self.validation_step_outputs_source_frame.append(source_frame[:,-1])
         self.validation_step_outputs_pred.append(preds)
         self.validation_step_outputs_prob.append(probs)
-        
 
     def on_test_epoch_end(self) -> None:
         """Lightning hook that is called when a test epoch ends."""
@@ -381,10 +385,10 @@ class PTGLitModule(LightningModule):
 
             video_lookup = dset.index.name_to_video
             vid = video_lookup[video_name]["id"] if video_name in video_lookup else dset.add_video(name=video_name)
-            
+
             frame = self.test_frames[video_name][int(source_frame)]
             frame_idx, time = time_from_name(frame)
-            
+
             dset.add_image(
                 file_name=frame,
                 video_id=vid,
@@ -394,7 +398,7 @@ class PTGLitModule(LightningModule):
                 activity_conf=prob.tolist()
             )
         dset.dump(dset.fpath, newlines=True)
-        print(f"Saved dset to {dset.fpath}")    
+        print(f"Saved dset to {dset.fpath}")
 
         # Create confusion matrix
         cm = confusion_matrix(
@@ -402,7 +406,7 @@ class PTGLitModule(LightningModule):
             labels=self.class_ids,
             normalize="true"
         )
-        
+
         fig, ax = plt.subplots(figsize=(20,20))
         sns.heatmap(cm, annot=True, ax=ax, fmt=".2f")
 
