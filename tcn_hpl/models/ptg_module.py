@@ -15,8 +15,6 @@ import seaborn as sns
 
 import kwcoco
 
-from hydra.core.hydra_config import HydraConfig
-
 from angel_system.data.common.load_data import (
     time_from_name,
 )
@@ -71,7 +69,8 @@ class PTGLitModule(LightningModule):
         data_dir: str,
         num_classes: int,
         compile: bool,
-        mapping_file_name: str = "mapping.txt"
+        mapping_file_name: str = "mapping.txt",
+        output_dir: str = None,
     ) -> None:
         """Initialize a `PTGLitModule`.
 
@@ -122,9 +121,6 @@ class PTGLitModule(LightningModule):
         self.validation_step_outputs_target = []
         self.validation_step_outputs_source_vid = []
         self.validation_step_outputs_source_frame = []
-
-        hydra_cfg = HydraConfig.get()
-        self.output_dir = hydra_cfg['runtime']['output_dir']
 
         # Load val vidoes
         vid_list_file_val = f"{self.hparams.data_dir}/splits/val.split1.bundle"
@@ -294,7 +290,7 @@ class PTGLitModule(LightningModule):
 
         # Save results
         dset = kwcoco.CocoDataset()
-        dset.fpath = f"{self.output_dir}/val_activity_preds_epoch{self.current_epoch}.mscoco.json"
+        dset.fpath = f"{self.hparams.output_dir}/val_activity_preds_epoch{self.current_epoch}.mscoco.json"
         dset.dataset["info"].append({"activity_labels": self.action_id_to_str})
 
         for (gt, pred, prob, source_vid, source_frame) in zip(all_targets, all_preds, all_probs, all_source_vids, all_source_frames):
@@ -324,8 +320,10 @@ class PTGLitModule(LightningModule):
             normalize="true"
         )
 
-        fig, ax = plt.subplots(figsize=(20,20))
-        sns.heatmap(cm, annot=True, ax=ax, fmt=".2f")
+        num_act_classes = len(self.class_ids)
+        fig, ax = plt.subplots(figsize=(num_act_classes, num_act_classes))
+        
+        sns.heatmap(cm, annot=True, ax=ax, fmt="0.0%", linewidth=0.5)
 
         # labels, title and ticks
         ax.set_xlabel('Predicted labels')
@@ -377,7 +375,7 @@ class PTGLitModule(LightningModule):
 
         # Save results
         dset = kwcoco.CocoDataset()
-        dset.fpath = f"{self.output_dir}/test_activity_preds.mscoco.json"
+        dset.fpath = f"{self.hparams.output_dir}/test_activity_preds.mscoco.json"
         dset.dataset["info"].append({"activity_labels": self.action_id_to_str})
 
         for (gt, pred, prob, source_vid, source_frame) in zip(all_targets, all_preds, all_probs, all_source_vids, all_source_frames):
@@ -407,7 +405,9 @@ class PTGLitModule(LightningModule):
             normalize="true"
         )
 
-        fig, ax = plt.subplots(figsize=(20,20))
+        num_act_classes = len(self.class_ids)
+        fig, ax = plt.subplots(figsize=(num_act_classes,num_act_classes))
+        
         sns.heatmap(cm, annot=True, ax=ax, fmt=".2f")
 
         # labels, title and ticks
@@ -416,6 +416,8 @@ class PTGLitModule(LightningModule):
         ax.set_title(f'CM Test Epoch {self.current_epoch}')
         ax.xaxis.set_ticklabels(self.classes, rotation=90)
         ax.yaxis.set_ticklabels(self.classes, rotation=0)
+
+        fig.savefig(f"{self.hparams.output_dir}/test_confusion_mat.png", pad_inches=5)
 
         self.logger.experiment.track(Image(fig), name=f'CM Test Epoch')
 
