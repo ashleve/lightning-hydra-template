@@ -38,3 +38,6 @@ num_classes: ${data.num_classes}
 
 # compile model for faster training with pytorch 2.0
 compile: false
+
+# Hydra output dir
+output_dir: ${paths.output_dir}
