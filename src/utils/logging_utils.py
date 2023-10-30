@@ -22,7 +22,7 @@ def log_hyperparameters(object_dict: Dict[str, Any]) -> None:
     """
     hparams = {}
 
-    cfg = OmegaConf.to_container(object_dict["cfg"])
+    cfg = OmegaConf.to_container(object_dict["cfg"], resolve=True)
     model = object_dict["model"]
     trainer = object_dict["trainer"]
 
