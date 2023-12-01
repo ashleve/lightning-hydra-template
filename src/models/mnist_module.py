@@ -51,6 +51,7 @@ class MNISTLitModule(LightningModule):
         :param net: The model to train.
         :param optimizer: The optimizer to use for training.
         :param scheduler: The learning rate scheduler to use for training.
+        :param compile: Whether to compile the model before training.
         """
         super().__init__()
 
