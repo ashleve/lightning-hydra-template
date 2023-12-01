@@ -51,6 +51,7 @@ class MNISTLitModule(LightningModule):
         :param net: The model to train.
         :param optimizer: The optimizer to use for training.
         :param scheduler: The learning rate scheduler to use for training.
+        :param compile: Whether to compile the model before training.
         """
         super().__init__()
 
@@ -198,7 +199,11 @@ class MNISTLitModule(LightningModule):
 
         :return: A dict containing the configured optimizers and learning-rate schedulers to be used for training.
         """
-        optimizer = self.hparams.optimizer(params=self.trainer.model.parameters())
+        try:
+            optimizer = self.hparams.optimizer(params=self.trainer.model.parameters())
+        except TypeError:
+            # NOTE: strategies such as DeepSpeed require `params` to instead be specified as `model_params`
+            optimizer = self.hparams.optimizer(model_params=self.trainer.model.parameters())
         if self.hparams.scheduler is not None:
             scheduler = self.hparams.scheduler(optimizer=optimizer)
             return {
