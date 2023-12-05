@@ -145,7 +145,7 @@ git clone https://github.com/ashleve/lightning-hydra-template
 cd lightning-hydra-template
 
 # [OPTIONAL] create conda environment
-conda create -n myenv python=3.9
+conda create -n myenv python=3.10
 conda activate myenv
 
 # install pytorch according to instructions
@@ -165,6 +165,8 @@ When running `python src/train.py` you should see something like this:
 </div>
 
 ## ⚡  Your Superpowers
+
+Disclaimer: Run the following commands after navigating to the `src/` folder.
 
 <details>
 <summary><b>Override any config parameter from command line</b></summary>
@@ -680,7 +682,7 @@ _Say you want to execute many runs to plot how accuracy changes in respect to ba
 1. Execute the runs with some config parameter that allows you to identify them easily, like tags:
 
    ```bash
-   python train.py -m logger=csv data.batch_size=16,32,64,128 tags=["batch_size_exp"]
+   python src/train.py -m logger=csv data.batch_size=16,32,64,128 tags=["batch_size_exp"]
    ```
 
 2. Write a script or notebook that searches over the `logs/` folder and retrieves csv logs from runs containing given tags in config. Plot the results.
@@ -729,7 +731,7 @@ PyTorch Lightning supports many popular logging frameworks: [Weights&Biases](htt
 These tools help you keep track of hyperparameters and output metrics and allow you to compare and visualize results. To use one of them simply complete its configuration in [configs/logger](configs/logger) and run:
 
 ```bash
-python train.py logger=logger_name
+python src/train.py logger=logger_name
 ```
 
 You can use many of them at once (see [configs/logger/many_loggers.yaml](configs/logger/many_loggers.yaml) for example).
@@ -816,7 +818,7 @@ hydra:
 
 </details>
 
-Next, execute it with: `python train.py -m hparams_search=mnist_optuna`
+Next, execute it with: `python src/train.py -m hparams_search=mnist_optuna`
 
 Using this approach doesn't require adding any boilerplate to code, everything is defined in a single config file. The only necessary thing is to return the optimized metric value from the launch file.
 
@@ -845,7 +847,7 @@ Lightning supports multiple ways of doing distributed training. The most common 
 You can run DDP on mnist example with 4 GPUs like this:
 
 ```bash
-python train.py trainer=ddp
+python src/train.py trainer=ddp
 ```
 
 > **Note**: When using DDP you have to be careful how you write your models - read the [docs](https://lightning.ai/docs/pytorch/latest/advanced/speed.html).
@@ -1248,7 +1250,7 @@ git clone https://github.com/YourGithubName/your-repo-name
 cd your-repo-name
 
 # [OPTIONAL] create conda environment
-conda create -n myenv python=3.9
+conda create -n myenv python=3.10
 conda activate myenv
 
 # install pytorch according to instructions
