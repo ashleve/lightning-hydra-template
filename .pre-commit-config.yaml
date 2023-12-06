@@ -111,8 +111,9 @@ repos:
         args: ["--number"]
         additional_dependencies:
           - mdformat-gfm
+          - mdformat-frontmatter
+          - mdformat-myst
           - mdformat-tables
-          - mdformat_frontmatter
           # - mdformat-toc
           # - mdformat-black
 
