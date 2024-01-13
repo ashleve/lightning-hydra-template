@@ -15,25 +15,25 @@ from angel_system.data.common.load_data import (
     time_from_name,
     sanitize_str,
 )
-from angel_system.activity_hmm.train_activity_classifier import (
+from angel_system.activity_classification.train_activity_classifier import (
     data_loader,
     compute_feats,
 )
-from angel_system.data.data_paths import grab_data, data_dir
+from angel_system.data.medical.data_paths import grab_data, data_dir # task specific
 
 
 #####################
 # Inputs
 #####################
-recipe = "coffee+tea"
-obj_exp_name = "coffee_base" #"coffee+tea_yolov7"
+task = "m2"
+obj_exp_name = "bbn_model_m2_m3_m5_r18_v9"
+kwcoco_exp_name = "bbn_model_m2_v9"
 
-# obj_dets_dir = f"{data_dir}/annotations/{recipe}/results/{obj_exp_name}"
-obj_dets_dir = "/data/PTG/cooking/object_anns/old_coffee/results/coffee_base/" #"/home/local/KHQ/hannah.defazio/yolov7/runs/detect/coffee+tea_yolov7/"
+obj_dets_dir = f"/data/PTG/medical/training/yolo_object_detector/detect/{obj_exp_name}"
 
 ptg_root = "/home/local/KHQ/hannah.defazio/angel_system/"
-activity_config_path = f"{ptg_root}/config/activity_labels"
-activity_config_fn = f"{activity_config_path}/recipe_{recipe}.yaml"
+activity_config_path = f"{ptg_root}/config/activity_labels/medical"
+activity_config_fn = f"{activity_config_path}/task_{task}.yaml"
 
 feat_version = 5
 using_done = False # Set the gt according to when an activity is done
@@ -41,11 +41,11 @@ using_done = False # Set the gt according to when an activity is done
 #####################
 # Output
 #####################
-exp_name = "coffee_only_data_test_feat_v5"#f"coffee_and_tea_feat_v{str(feat_version)}"
+exp_name = f"yolov8_m2_feat_v{feat_version}"
 if using_done:
     exp_name = f"{exp_name}_done_gt"
 
-output_data_dir = f"{data_dir}/TCN_data/{recipe}/{exp_name}"
+output_data_dir = f"{data_dir}/TCN_data/{task}/{exp_name}"
 
 gt_dir = f"{output_data_dir}/groundTruth"
 frames_dir = f"{output_data_dir}/frames"
@@ -67,6 +67,7 @@ for f in filelist:
 with open(activity_config_fn, "r") as stream:
     activity_config = yaml.safe_load(stream)
 activity_labels = activity_config["labels"]
+activity_strs = []
 
 with open(f"{output_data_dir}/mapping.txt", "w") as mapping:
     for label in activity_labels:
@@ -74,6 +75,7 @@ with open(f"{output_data_dir}/mapping.txt", "w") as mapping:
         label_str = label["label"]
         if label_str == "done":
             continue
+        activity_strs.append(label_str)
         mapping.write(f"{i} {label_str}\n")
 
 #####################
@@ -82,7 +84,7 @@ with open(f"{output_data_dir}/mapping.txt", "w") as mapping:
 # bundles
 #####################
 for split in ["train_activity", "val", "test"]:
-    kwcoco_file = f"{obj_dets_dir}/{obj_exp_name}_results_{split}_conf_0.1_plus_hl_hands_new_obj_labels.mscoco.json"
+    kwcoco_file = f"{obj_dets_dir}/{kwcoco_exp_name}_{split}_obj_results.mscoco.json"
     dset = kwcoco.CocoDataset(kwcoco_file)
 
     for video_id in ub.ProgIter(
@@ -135,6 +137,9 @@ for split in ["train_activity", "val", "test"]:
                 activity_gt = image["activity_gt"]
                 if activity_gt is None:
                     activity_gt = "background"
+
+                if activity_gt not in activity_strs:
+                    warnings.warn(f"Label {activity_gt} is not in the activity config file!")
 
                 gt_f.write(f"{activity_gt}\n")
                 frames_f.write(f"{image_n}\n")
