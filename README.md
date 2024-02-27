@@ -408,7 +408,7 @@ python train.py -m seed=1,2,3,4,5 trainer.deterministic=True logger=csv tags=["b
 <details>
 <summary><b>Execute sweep on a remote AWS cluster</b></summary>
 
-> **Note**: This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/next/plugins/ray_launcher). Example is not implemented in this template.
+> **Note**: This should be achievable with simple config using [Ray AWS launcher for Hydra](https://hydra.cc/docs/plugins/ray_launcher/). Example is not implemented in this template.
 
 </details>
 
