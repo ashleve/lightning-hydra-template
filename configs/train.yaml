@@ -8,10 +8,12 @@ defaults:
   - model: mnist
   - callbacks: default
   - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
+  - strategy: default
   - trainer: default
   - paths: default
   - extras: default
   - hydra: default
+  - environment: default
 
   # experiment configs allow for version control of specific hyperparameters
   # e.g. best hyperparameters for given model and datamodule
