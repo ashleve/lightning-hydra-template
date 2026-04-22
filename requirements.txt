@@ -1,6 +1,6 @@
 # --------- pytorch --------- #
 torch>=2.0.0
-torchvision>=0.15.0
+torchvision>=0.26.0
 lightning>=2.0.0
 torchmetrics>=0.11.4
 
