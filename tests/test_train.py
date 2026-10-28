@@ -1,12 +1,54 @@
 import os
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from hydra.core.hydra_config import HydraConfig
-from omegaconf import DictConfig, open_dict
+from omegaconf import DictConfig, OmegaConf, open_dict
 
 from src.train import train
 from tests.helpers.run_if import RunIf
+
+
+def test_train_without_checkpoint_callback_uses_current_weights(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Training with checkpointing disabled should still test the current model weights."""
+    trainer_test_args = {}
+
+    def fake_instantiate(config: DictConfig, **kwargs):
+        if config._target_ == "synthetic.trainer":
+            return SimpleNamespace(
+                callback_metrics={},
+                checkpoint_callback=None,
+                fit=lambda **fit_kwargs: None,
+                test=lambda **test_kwargs: trainer_test_args.update(test_kwargs),
+            )
+        return object()
+
+    monkeypatch.setattr("src.train.hydra.utils.instantiate", fake_instantiate)
+    monkeypatch.setattr("src.train.instantiate_callbacks", lambda _: [])
+    monkeypatch.setattr("src.train.instantiate_loggers", lambda _: [])
+    monkeypatch.setattr("src.utils.utils.find_spec", lambda _: None)
+
+    cfg = OmegaConf.create(
+        {
+            "seed": None,
+            "data": {"_target_": "synthetic.data"},
+            "model": {"_target_": "synthetic.model"},
+            "trainer": {"_target_": "synthetic.trainer"},
+            "callbacks": None,
+            "logger": None,
+            "train": True,
+            "test": True,
+            "ckpt_path": None,
+            "paths": {"output_dir": "synthetic-output"},
+        }
+    )
+
+    train(cfg)
+
+    assert trainer_test_args["ckpt_path"] is None
 
 
 def test_train_fast_dev_run(cfg_train: DictConfig) -> None:

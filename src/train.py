@@ -26,6 +26,7 @@ rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 # more info: https://github.com/ashleve/rootutils
 # ------------------------------------------------------------------------------------ #
 
+from src.checkpoint_utils import get_best_checkpoint_path
 from src.utils import (
     RankedLogger,
     extras,
@@ -90,10 +91,9 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
 
     if cfg.get("test"):
         log.info("Starting testing!")
-        ckpt_path = trainer.checkpoint_callback.best_model_path
-        if ckpt_path == "":
+        ckpt_path = get_best_checkpoint_path(trainer)
+        if ckpt_path is None:
             log.warning("Best ckpt not found! Using current weights for testing...")
-            ckpt_path = None
         trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
         log.info(f"Best ckpt path: {ckpt_path}")
 
